@@ -65,7 +65,6 @@ public class InitBean {
                     }
                 }
                 IocUtil.addBean(aClass.getName(), aClass.newInstance());
-
             }
 
         } catch (Exception e) {
@@ -86,25 +85,26 @@ public class InitBean {
                 //检查是否有注解@In
                 In annotation = declaredField.getAnnotation(In.class);
                 if (annotation != null) {
-
                     String findMsg;
                     Object bean;
-                    if (annotation != null && annotation.value().trim().length() > 0) {
+                    if (annotation.value().trim().length() > 0) {
                         bean = IocUtil.getBean(annotation.value());
                         findMsg = "按自定义名字装配，" + declaredField.getType();
                     } else {
                         findMsg = "按类型装配，" + declaredField.getType();
                         bean = IocUtil.getBean(declaredField.getType());
                     }
-
                     if (bean == null) {
                         log.error("装配错误:容器中未找到对应的Bean对象装备配,查找说明：" + findMsg);
                         continue;
                     }
-
                     try {
-                        declaredField.set(v, bean);
-                        log.info(declaredField.getName() + "装配完成");
+                        if (bean.getClass().getName().equals(declaredField.getType().getName())) {
+                            declaredField.set(v, bean);
+                            log.info(v.getClass().getName() + "----->" + declaredField.getName() + "装配完成");
+                        } else {
+                            log.error(v.getClass().getName() + "----->" + declaredField.getName() + "装配错误:类型不匹配");
+                        }
                     } catch (Exception e) {
                         log.error("装配错误:" + e.getMessage());
                     }
