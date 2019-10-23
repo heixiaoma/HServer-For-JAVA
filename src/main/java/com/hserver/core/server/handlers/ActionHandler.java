@@ -31,7 +31,6 @@ public class ActionHandler extends SimpleChannelInboundHandler<HttpRequest> {
         Executor executor = ctx.executor();
 
 
-
         if (req.getUri().equals("/hello") || req.getUri().equals("/hello/")) {
 
             RouterInfo routerInfo = RouterManager.getRouterInfo("/hello", RequestType.GET);
