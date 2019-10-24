@@ -7,8 +7,20 @@ public class WebContext {
 
     private Response response;
 
+    private boolean isStaticFile;
+
+    private StaticFile staticFile;
+
     private String result;
 
+
+    public boolean isStaticFile() {
+        return isStaticFile;
+    }
+
+    public void setStaticFile(boolean staticFile) {
+        isStaticFile = staticFile;
+    }
 
     public Request getRequest() {
         return request;
@@ -32,5 +44,13 @@ public class WebContext {
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    public StaticFile getStaticFile() {
+        return staticFile;
+    }
+
+    public void setStaticFile(StaticFile staticFile) {
+        this.staticFile = staticFile;
     }
 }

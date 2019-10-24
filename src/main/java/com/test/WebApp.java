@@ -1,23 +1,31 @@
 package com.test;
 
-import com.hserver.HServerApplication;
-import com.hserver.core.server.context.WebContext;
+import com.hserver.core.server.context.StaticFile;
+import com.hserver.core.server.handlers.StaticHandler;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class WebApp {
     public static void main(String[] args) {
-        Method[] methods = WebApp.class.getMethods();
-        Type[] genericParameterTypes = methods[1].getGenericParameterTypes();
-        for (Type genericParameterType : genericParameterTypes) {
-            System.out.println(genericParameterType.getTypeName());
+//        HServerApplication.run(WebApp.class);
+        StaticFile handler = new StaticHandler().handler("a.txt");
+
+        System.out.println(getInputString(handler.getInputStream()));
+    }
+    private static String getInputString(InputStream inputStream) {
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String s; // 依次循环，至到读的值为空
+            StringBuilder sb = new StringBuilder();
+            while ((s = bufferedReader.readLine()) != null) {
+                sb.append(s);
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            return null;
         }
-
-        HServerApplication.run(WebApp.class);
     }
 
-    public void aa(String ss, int a, WebContext webContext) {
-
-    }
 }

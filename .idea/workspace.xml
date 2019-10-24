@@ -2,22 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1f5ee5b0-026f-42c9-a220-ea51a0ed932e" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Request.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Response.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/WebContext.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/StaticFile.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/StaticHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/a.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/log/app.log" beforeDir="false" afterPath="$PROJECT_DIR$/log/app.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/IocUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/IocUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/WebContext.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/WebContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/WebContext.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/ActionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/ActionHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/Dispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/Dispatcher.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/test/WebApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/test/WebApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/action/Hello.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/test/action/Hello.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/hserver/core/ioc/IocUtil.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/hserver/core/ioc/IocUtil.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/hserver/core/ioc/ref/InitBean.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/hserver/core/ioc/ref/InitBean.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/test/WebApp.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/test/WebApp.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/test/action/Hello.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/test/action/Hello.class" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -44,11 +37,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="WebApp.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="WebApp.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/test/WebApp.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="17" column="5" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
+            <state relative-caret-position="277">
+              <caret line="19" column="37" lean-forward="true" selection-start-line="19" selection-start-column="37" selection-end-line="19" selection-end-column="37" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -59,8 +52,8 @@
       <file leaf-file-name="Hello.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/test/action/Hello.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="290">
-              <caret line="15" column="32" lean-forward="true" selection-start-line="15" selection-start-column="32" selection-end-line="15" selection-end-column="32" />
+            <state relative-caret-position="264">
+              <caret line="15" column="32" selection-start-line="15" selection-start-column="32" selection-end-line="15" selection-end-column="32" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -68,29 +61,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RouterInfo.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/router/RouterInfo.java">
+      <file leaf-file-name="ClassLoader.java" pinned="false" current-in-tab="false">
+        <entry file="jar://D:/Java/jdk1.8.0_101/src.zip!/java/lang/ClassLoader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="33">
-              <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-              <folding>
-                <element signature="e#491#492#0" expanded="true" />
-                <element signature="e#520#521#0" expanded="true" />
-                <element signature="e#564#565#0" expanded="true" />
-                <element signature="e#600#601#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RouterManager.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/router/RouterManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="179">
-              <caret line="18" column="57" selection-start-line="18" selection-start-column="57" selection-end-line="18" selection-end-column="57" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="232">
+              <caret line="1087" column="15" selection-start-line="1087" selection-start-column="15" selection-end-line="1087" selection-end-column="15" />
             </state>
           </provider>
         </entry>
@@ -98,25 +73,43 @@
       <file leaf-file-name="Dispatcher.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/Dispatcher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1232">
-              <caret line="89" column="5" lean-forward="true" selection-start-line="89" selection-start-column="5" selection-end-line="89" selection-end-column="5" />
+            <state relative-caret-position="240">
+              <caret line="48" column="20" selection-start-line="48" selection-start-column="20" selection-end-line="48" selection-end-column="20" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#589#590#0" expanded="true" />
-                <element signature="e#622#623#0" expanded="true" />
+                <element signature="e#1208#1209#0" expanded="true" />
+                <element signature="e#1241#1242#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README.MD" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.MD">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="198">
-                <caret line="6" column="22" selection-start-line="6" selection-start-column="22" selection-end-line="6" selection-end-column="22" />
-              </first_editor>
-              <second_editor />
+      <file leaf-file-name="StaticHandler.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/StaticHandler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="215">
+              <caret line="22" column="28" selection-start-line="22" selection-start-column="28" selection-end-line="22" selection-end-column="28" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="245">
+              <caret line="84" column="52" selection-start-line="84" selection-start-column="52" selection-end-line="84" selection-end-column="52" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="InputStream.java" pinned="false" current-in-tab="false">
+        <entry file="jar://D:/Java/jdk1.8.0_101/src.zip!/java/io/InputStream.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-488">
+              <caret line="259" column="15" selection-start-line="259" selection-start-column="15" selection-end-line="259" selection-end-column="15" />
             </state>
           </provider>
         </entry>
@@ -124,9 +117,13 @@
       <file leaf-file-name="WebContext.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/WebContext.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="33">
-              <caret line="3" column="13" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
+            <state relative-caret-position="616">
+              <caret line="42" column="5" selection-start-line="42" selection-start-column="5" selection-end-line="42" selection-end-column="5" />
               <folding>
+                <element signature="e#230#231#0" expanded="true" />
+                <element signature="e#265#266#0" expanded="true" />
+                <element signature="e#318#319#0" expanded="true" />
+                <element signature="e#359#360#0" expanded="true" />
                 <element signature="e#193#194#0" expanded="true" />
                 <element signature="e#223#224#0" expanded="true" />
                 <element signature="e#270#271#0" expanded="true" />
@@ -135,20 +132,38 @@
                 <element signature="e#376#377#0" expanded="true" />
                 <element signature="e#426#427#0" expanded="true" />
                 <element signature="e#466#467#0" expanded="true" />
-                <element signature="e#135#136#0" expanded="true" />
-                <element signature="e#164#165#0" expanded="true" />
-                <element signature="e#208#209#0" expanded="true" />
-                <element signature="e#244#245#0" expanded="true" />
+                <element signature="e#886#887#0" expanded="true" />
+                <element signature="e#919#920#0" expanded="true" />
+                <element signature="e#975#976#0" expanded="true" />
+                <element signature="e#1019#1020#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Request.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Request.java">
+      <file leaf-file-name="StaticFile.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/StaticFile.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="99">
-              <caret line="3" column="4" selection-start-line="3" selection-start-column="4" selection-end-line="3" selection-end-column="4" />
+            <state relative-caret-position="132">
+              <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
+              <folding>
+                <element signature="e#288#289#0" expanded="true" />
+                <element signature="e#315#316#0" expanded="true" />
+                <element signature="e#353#354#0" expanded="true" />
+                <element signature="e#385#386#0" expanded="true" />
+                <element signature="e#420#421#0" expanded="true" />
+                <element signature="e#451#452#0" expanded="true" />
+                <element signature="e#499#500#0" expanded="true" />
+                <element signature="e#539#540#0" expanded="true" />
+                <element signature="e#574#575#0" expanded="true" />
+                <element signature="e#605#606#0" expanded="true" />
+                <element signature="e#654#655#0" expanded="true" />
+                <element signature="e#694#695#0" expanded="true" />
+                <element signature="e#737#738#0" expanded="true" />
+                <element signature="e#771#772#0" expanded="true" />
+                <element signature="e#830#831#0" expanded="true" />
+                <element signature="e#876#877#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -156,20 +171,11 @@
       <file leaf-file-name="ActionHandler.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/ActionHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-306">
-              <caret line="38" column="53" selection-start-line="38" selection-start-column="53" selection-end-line="38" selection-end-column="53" />
+            <state relative-caret-position="241">
+              <caret line="31" column="52" selection-start-line="31" selection-start-column="52" selection-end-line="31" selection-end-column="52" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Response.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Response.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="99">
-              <caret line="3" selection-start-line="3" selection-end-line="3" />
             </state>
           </provider>
         </entry>
@@ -200,10 +206,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/error/ErrorHandler.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/request/ServerResponse.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/handlers/HttpStaticFileHandler.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/auth/UserSessionDetail.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/HttpRequestChannelHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/HttpServerConfig.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/ErrorHandler.java" />
@@ -238,19 +240,23 @@
         <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/router/RequestCode.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/router/ResponseCode.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/exception/BusinessException.java" />
-        <option value="$PROJECT_DIR$/README.MD" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/ActionHandler.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/ref/InitBean.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/IocUtil.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/WebContext.java" />
-        <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/com/test/WebApp.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Response.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/test/action/Hello.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/WebContext.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/Dispatcher.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Request.java" />
+        <option value="$PROJECT_DIR$/README.MD" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/StaticFileHandler.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/ActionHandler.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/static/a.txt" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/Dispatcher.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/StaticFile.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/WebContext.java" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/com/test/WebApp.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/StaticHandler.java" />
       </list>
     </option>
   </component>
@@ -287,10 +293,10 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-1448" />
+    <option name="x" value="-8" />
     <option name="y" value="-8" />
-    <option name="width" value="1456" />
-    <option name="height" value="876" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -299,7 +305,6 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
-      <pane id="AndroidView" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -323,105 +328,18 @@
               <item name="HServer" type="b2602c69:ProjectViewProjectNode" />
               <item name="HServer" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="HServer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="HServer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="HServer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="HServer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="hserver" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="HServer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="HServer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="hserver" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="HServer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="HServer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="hserver" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
-              <item name="server" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="HServer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="HServer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="hserver" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
-              <item name="server" type="462c0819:PsiDirectoryNode" />
-              <item name="context" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="HServer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="HServer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
               <item name="test" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="HServer" type="b2602c69:ProjectViewProjectNode" />
               <item name="HServer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="action" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="HServer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="HServer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="bean" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="HServer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="HServer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="HServer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="HServer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="target" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -438,10 +356,10 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.hserver.core.server.handlers" />
       <recent name="com.hserver.core.server.context" />
       <recent name="com.hserver.core.server.router" />
       <recent name="com.hserver.core.ioc.annotation" />
-      <recent name="com.hserver.core.server.handlers" />
       <recent name="com.hserver.core.server" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
@@ -536,7 +454,8 @@
       <workItem from="1571364198715" duration="6523000" />
       <workItem from="1571712558403" duration="15859000" />
       <workItem from="1571730749391" duration="10283000" />
-      <workItem from="1571793963911" duration="13149000" />
+      <workItem from="1571793963911" duration="13351000" />
+      <workItem from="1571898065388" duration="5389000" />
     </task>
     <task id="LOCAL-00001" summary="s">
       <created>1571807115577</created>
@@ -573,11 +492,32 @@
       <option name="project" value="LOCAL" />
       <updated>1571813676628</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="装配前先验证类型，避免装配错误">
+      <created>1571816104250</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1571816104251</updated>
+    </task>
+    <task id="LOCAL-00007" summary="装配前先验证类型，避免装配错误">
+      <created>1571816137891</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1571816137891</updated>
+    </task>
+    <task id="LOCAL-00008" summary="更新日志">
+      <created>1571816193983</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1571816193983</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="45814000" />
+    <option name="totallyTimeSpent" value="51405000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1448" y="-8" width="1456" height="876" extended-state="6" />
@@ -585,25 +525,25 @@
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Messages" order="7" weight="0.5291723" />
-      <window_info anchor="right" id="Palette&#9;" order="3" />
+      <window_info anchor="bottom" id="Messages" order="10" weight="0.1696065" />
+      <window_info anchor="right" id="Palette&#9;" order="8" />
       <window_info id="Image Layers" order="2" />
-      <window_info anchor="right" id="Capture Analysis" order="3" />
-      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="right" id="Maven Projects" order="3" weight="0.3295129" />
-      <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32971507" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.59565806" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.5468114" />
-      <window_info id="Capture Tool" order="2" />
-      <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2901146" />
-      <window_info anchor="right" id="Database" order="3" weight="0.3295129" />
+      <window_info anchor="right" id="Capture Analysis" order="4" />
+      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
+      <window_info anchor="right" id="Maven Projects" order="7" visible="true" weight="0.3295129" />
+      <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.01899593" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.43554953" />
+      <window_info anchor="bottom" id="Terminal" order="9" weight="0.5468114" />
+      <window_info id="Capture Tool" order="6" />
+      <window_info id="Designer" order="3" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15687679" />
+      <window_info anchor="right" id="Database" order="6" weight="0.3295129" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info id="UI Designer" order="2" />
-      <window_info anchor="right" id="Theme Preview" order="3" />
-      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info id="UI Designer" order="4" />
+      <window_info anchor="right" id="Theme Preview" order="5" />
+      <window_info id="Favorites" order="5" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4084125" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -623,11 +563,32 @@
     <MESSAGE value="s" />
     <MESSAGE value="分发处理" />
     <MESSAGE value="装配前先验证类型，避免装配错误" />
-    <option name="LAST_COMMIT_MESSAGE" value="装配前先验证类型，避免装配错误" />
+    <MESSAGE value="更新日志" />
+    <option name="LAST_COMMIT_MESSAGE" value="更新日志" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="17" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/StaticHandler.java</url>
+          <line>77</line>
+          <properties />
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/StaticHandler.java</url>
+          <line>57</line>
+          <properties />
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/StaticHandler.java</url>
+          <line>22</line>
+          <properties />
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="20" />
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
@@ -680,43 +641,10 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$MAVEN_REPOSITORY$/io/netty/netty-all/4.1.42.Final/netty-all-4.1.42.Final.jar!/io/netty/handler/traffic/ChannelTrafficShapingHandler.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="30" column="11" selection-start-line="30" selection-start-column="11" selection-end-line="30" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/stat/StatisticsController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="28" selection-start-line="28" selection-end-line="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/HttpServerHandler.java" />
-    <entry file="file://$PROJECT_DIR$/log/app.log">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="158" column="68" lean-forward="true" selection-start-line="158" selection-start-column="68" selection-end-line="158" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/Epoll.java" />
-    <entry file="jar://$MAVEN_REPOSITORY$/io/netty/netty-all/4.1.42.Final/netty-all-4.1.42.Final.jar!/io/netty/channel/epoll/EpollServerSocketChannel.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="19" column="19" selection-start-line="19" selection-start-column="19" selection-end-line="19" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/epoll/NettyServerGroup.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
           <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -750,10 +678,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="104">
           <caret line="34" selection-start-line="34" selection-end-line="34" />
-          <folding>
-            <element signature="e#481#482#0" expanded="true" />
-            <element signature="e#527#528#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -778,9 +702,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="528">
           <caret line="21" column="31" selection-start-line="21" selection-start-column="31" selection-end-line="21" selection-end-column="31" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -826,21 +747,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/exception.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="66">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/exception.java" />
     <entry file="jar://D:/Java/jdk1.8.0_101/src.zip!/java/lang/NullPointerException.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="207">
           <caret line="52" column="6" selection-start-line="52" selection-start-column="6" selection-end-line="52" selection-end-column="6" />
-          <folding>
-            <element signature="e#1616#1617#0" expanded="true" />
-            <element signature="e#1640#1641#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -854,23 +765,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/router/RequestCode.java">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/router/ResponseCode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="99">
-          <caret line="3" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/router/ResponseCode.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/epoll/EpollKit.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
           <caret line="10" column="92" selection-start-line="10" selection-start-column="89" selection-end-line="10" selection-end-column="92" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -892,12 +791,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="58">
           <caret line="8" column="22" selection-start-line="8" selection-start-column="22" selection-end-line="8" selection-end-column="22" />
-          <folding>
-            <element signature="e#242#243#0" expanded="true" />
-            <element signature="e#265#266#0" expanded="true" />
-            <element signature="e#292#293#0" expanded="true" />
-            <element signature="e#316#317#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -905,9 +798,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="321">
           <caret line="58" column="45" selection-start-line="58" selection-start-column="45" selection-end-line="58" selection-end-column="45" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -980,36 +870,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="59" selection-start-line="59" selection-end-line="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/test/WebApp.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="17" column="5" selection-start-line="17" selection-start-column="5" selection-end-line="17" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.MD">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="198">
-            <caret line="6" column="22" selection-start-line="6" selection-start-column="22" selection-end-line="6" selection-end-column="22" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/router/RouterInfo.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="33">
+        <state relative-caret-position="165">
           <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
           <folding>
             <element signature="e#491#492#0" expanded="true" />
@@ -1022,7 +885,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/router/RouterManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="179">
+        <state relative-caret-position="462">
           <caret line="18" column="57" selection-start-line="18" selection-start-column="57" selection-end-line="18" selection-end-column="57" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1037,41 +900,68 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/WebContext.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Request.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="33">
-          <caret line="3" column="13" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
-          <folding>
-            <element signature="e#193#194#0" expanded="true" />
-            <element signature="e#223#224#0" expanded="true" />
-            <element signature="e#270#271#0" expanded="true" />
-            <element signature="e#308#309#0" expanded="true" />
-            <element signature="e#345#346#0" expanded="true" />
-            <element signature="e#376#377#0" expanded="true" />
-            <element signature="e#426#427#0" expanded="true" />
-            <element signature="e#466#467#0" expanded="true" />
-            <element signature="e#135#136#0" expanded="true" />
-            <element signature="e#164#165#0" expanded="true" />
-            <element signature="e#208#209#0" expanded="true" />
-            <element signature="e#244#245#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="198">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/test/action/Hello.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/StaticFileHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="290">
-          <caret line="15" column="32" lean-forward="true" selection-start-line="15" selection-start-column="32" selection-end-line="15" selection-end-column="32" />
+        <state relative-caret-position="382">
+          <caret line="74" selection-start-line="74" selection-end-line="74" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/README.MD">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="231">
+            <caret line="7" column="4" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="4" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/static/a.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="8" selection-start-column="8" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/ActionHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-306">
-          <caret line="38" column="53" selection-start-line="38" selection-start-column="53" selection-end-line="38" selection-end-column="53" />
+        <state relative-caret-position="241">
+          <caret line="31" column="52" selection-start-line="31" selection-start-column="52" selection-end-line="31" selection-end-column="52" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/Java/jdk1.8.0_101/src.zip!/java/lang/ClassLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="232">
+          <caret line="1087" column="15" selection-start-line="1087" selection-start-column="15" selection-end-line="1087" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/Java/jdk1.8.0_101/jre/lib/rt.jar!/com/sun/xml/internal/bind/v2/runtime/reflect/opt/Const.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="88">
+          <caret line="7" column="19" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/test/action/Hello.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="15" column="32" selection-start-line="15" selection-start-column="32" selection-end-line="15" selection-end-column="32" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1080,20 +970,97 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/Dispatcher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1232">
-          <caret line="89" column="5" lean-forward="true" selection-start-line="89" selection-start-column="5" selection-end-line="89" selection-end-column="5" />
+        <state relative-caret-position="240">
+          <caret line="48" column="20" selection-start-line="48" selection-start-column="20" selection-end-line="48" selection-end-column="20" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#589#590#0" expanded="true" />
-            <element signature="e#622#623#0" expanded="true" />
+            <element signature="e#1208#1209#0" expanded="true" />
+            <element signature="e#1241#1242#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Request.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/WebContext.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="99">
-          <caret line="3" column="4" selection-start-line="3" selection-start-column="4" selection-end-line="3" selection-end-column="4" />
+        <state relative-caret-position="616">
+          <caret line="42" column="5" selection-start-line="42" selection-start-column="5" selection-end-line="42" selection-end-column="5" />
+          <folding>
+            <element signature="e#230#231#0" expanded="true" />
+            <element signature="e#265#266#0" expanded="true" />
+            <element signature="e#318#319#0" expanded="true" />
+            <element signature="e#359#360#0" expanded="true" />
+            <element signature="e#193#194#0" expanded="true" />
+            <element signature="e#223#224#0" expanded="true" />
+            <element signature="e#270#271#0" expanded="true" />
+            <element signature="e#308#309#0" expanded="true" />
+            <element signature="e#345#346#0" expanded="true" />
+            <element signature="e#376#377#0" expanded="true" />
+            <element signature="e#426#427#0" expanded="true" />
+            <element signature="e#466#467#0" expanded="true" />
+            <element signature="e#886#887#0" expanded="true" />
+            <element signature="e#919#920#0" expanded="true" />
+            <element signature="e#975#976#0" expanded="true" />
+            <element signature="e#1019#1020#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/StaticFile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
+          <folding>
+            <element signature="e#288#289#0" expanded="true" />
+            <element signature="e#315#316#0" expanded="true" />
+            <element signature="e#353#354#0" expanded="true" />
+            <element signature="e#385#386#0" expanded="true" />
+            <element signature="e#420#421#0" expanded="true" />
+            <element signature="e#451#452#0" expanded="true" />
+            <element signature="e#499#500#0" expanded="true" />
+            <element signature="e#539#540#0" expanded="true" />
+            <element signature="e#574#575#0" expanded="true" />
+            <element signature="e#605#606#0" expanded="true" />
+            <element signature="e#654#655#0" expanded="true" />
+            <element signature="e#694#695#0" expanded="true" />
+            <element signature="e#737#738#0" expanded="true" />
+            <element signature="e#771#772#0" expanded="true" />
+            <element signature="e#830#831#0" expanded="true" />
+            <element signature="e#876#877#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/Java/jdk1.8.0_101/src.zip!/java/io/InputStream.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-488">
+          <caret line="259" column="15" selection-start-line="259" selection-start-column="15" selection-end-line="259" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="245">
+          <caret line="84" column="52" selection-start-line="84" selection-start-column="52" selection-end-line="84" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/StaticHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="215">
+          <caret line="22" column="28" selection-start-line="22" selection-start-column="28" selection-end-line="22" selection-end-column="28" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/test/WebApp.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="277">
+          <caret line="19" column="37" lean-forward="true" selection-start-line="19" selection-start-column="37" selection-end-line="19" selection-end-column="37" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -41,12 +41,31 @@ public class Dispatcher {
     }
 
     /**
+     * 静态文件的处理
+     *
+     * @param webContext
+     * @return
+     */
+    public static WebContext staticFile(WebContext webContext) {
+        //检查是不是静态文件，如果是封装下请求，然后跳过控制器的方法
+        webContext.setStaticFile(true);
+        return webContext;
+    }
+
+    /**
      * 去执行控制器的方法
      *
      * @param webContext
      * @return
      */
     public static WebContext findController(WebContext webContext) {
+
+        /**
+         * 如果静态文件就跳过当前的处理，否则就去执行控制器的方法
+         */
+        if (webContext.isStaticFile()) {
+            return webContext;
+        }
         try {
             RouterInfo routerInfo = RouterManager.getRouterInfo("/hello", RequestType.GET);
             if (routerInfo == null) {

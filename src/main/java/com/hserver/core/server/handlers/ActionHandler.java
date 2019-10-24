@@ -28,6 +28,7 @@ public class ActionHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
         future.thenApplyAsync(req -> Dispatcher.buildWebContext(ctx, req), executor)
                 .thenApplyAsync(Dispatcher::Statistics, executor)
+                .thenApplyAsync(Dispatcher::staticFile, executor)
                 .thenApplyAsync(Dispatcher::findController, executor)
                 .thenApplyAsync(Dispatcher::buildResponse, executor)
                 .exceptionally(Dispatcher::handleException)
