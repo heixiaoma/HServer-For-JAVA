@@ -3,6 +3,7 @@ package com.hserver.core.server.handlers;
 import com.alibaba.fastjson.JSON;
 import com.hserver.core.ioc.IocUtil;
 import com.hserver.core.server.context.Request;
+import com.hserver.core.server.context.StaticFile;
 import com.hserver.core.server.context.WebContext;
 import com.hserver.core.server.exception.BusinessException;
 import com.hserver.core.server.router.RequestType;
@@ -22,11 +23,16 @@ import java.util.concurrent.CompletableFuture;
  */
 public class Dispatcher {
 
+    private final static StaticHandler staticHandler = new StaticHandler();
+
+
     public static WebContext buildWebContext(ChannelHandlerContext ctx,
                                              HttpRequest req) {
         String remoteAddress = ctx.channel().remoteAddress().toString();
         WebContext webContext = new WebContext();
-        webContext.setRequest(new Request());
+        Request request = new Request();
+        request.setUri(req.uri());
+        webContext.setRequest(request);
         return webContext;
     }
 
@@ -48,7 +54,11 @@ public class Dispatcher {
      */
     public static WebContext staticFile(WebContext webContext) {
         //检查是不是静态文件，如果是封装下请求，然后跳过控制器的方法
-        webContext.setStaticFile(true);
+        StaticFile handler = staticHandler.handler(webContext.getRequest().getUri());
+        if (handler != null) {
+            webContext.setStaticFile(true);
+            webContext.setStaticFile(handler);
+        }
         return webContext;
     }
 
@@ -116,6 +126,17 @@ public class Dispatcher {
      */
     public static FullHttpResponse buildResponse(WebContext webContext) {
 
+        /**
+         * 如果是文件特殊处理下
+         */
+        if (webContext.isStaticFile()) {
+            webContext.setResult("文件：" + webContext.getStaticFile().getFileName() + "\t大小:" + webContext.getStaticFile().getSize());
+            try {
+                webContext.getStaticFile().getInputStream().close();
+            } catch (Exception e) {
+                throw new BusinessException("文件下载错误" + e.getMessage());
+            }
+        }
         FullHttpResponse response = new DefaultFullHttpResponse(
                 HttpVersion.HTTP_1_1,
                 HttpResponseStatus.OK,

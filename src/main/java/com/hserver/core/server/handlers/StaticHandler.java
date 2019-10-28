@@ -20,7 +20,7 @@ public class StaticHandler {
     public StaticFile handler(String uri) {
 
         //jar环境还是开发环境;
-        boolean isJar = true;
+        boolean isJar = false;
 
         // jar file
         if (isJar) {
@@ -63,7 +63,7 @@ public class StaticHandler {
             staticFile.setSize(available);
             //获取文件名
             int i = url.lastIndexOf("/");
-            if (i > 0) {
+            if (i > -1) {
                 staticFile.setFileName(url.substring(i + 1, url.length()));
             }
             staticFile.setFileType(true);

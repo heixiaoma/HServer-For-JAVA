@@ -1,6 +1,12 @@
 package com.hserver.core.server.context;
 
-public class Request {
+import com.hserver.core.ioc.annotation.GET;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
+public class Request {
+    private String uri;
 
 }

@@ -11,15 +11,15 @@ import java.util.Map;
 public class HServerApplication {
 
     public static void run(Class classz) {
-        log.info("HServer 启动中....", classz.getName());
-        log.info("Package 扫描中", classz.getName());
+        log.info("HServer 启动中....");
+        log.info("Package 扫描中");
         InitBean.init(HServerApplication.class);
         InitBean.init(classz);
         log.info("IOC 装配中", classz.getName());
         InitBean.injection();
         log.info("IOC 全部装配完成", classz.getName());
         try {
-            new HServer(8081).run();
+            new HServer(8080).run();
         } catch (Exception e) {
             log.error(e.getMessage());
         }
