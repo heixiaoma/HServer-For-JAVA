@@ -9,10 +9,14 @@ import com.hserver.core.server.exception.BusinessException;
 import com.hserver.core.server.router.RequestType;
 import com.hserver.core.server.router.RouterInfo;
 import com.hserver.core.server.router.RouterManager;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -126,25 +130,39 @@ public class Dispatcher {
      */
     public static FullHttpResponse buildResponse(WebContext webContext) {
 
+        FullHttpResponse response = null;
+
         /**
-         * 如果是文件特殊处理下
+         * 如果是文件特殊处理下,是静态文件，同时需要下载的文件
          */
         if (webContext.isStaticFile()) {
-            webContext.setResult("文件：" + webContext.getStaticFile().getFileName() + "\t大小:" + webContext.getStaticFile().getSize());
-            try {
-                webContext.getStaticFile().getInputStream().close();
-            } catch (Exception e) {
-                throw new BusinessException("文件下载错误" + e.getMessage());
+            //显示型的
+            if (webContext.getStaticFile().isFileType()) {
+                response = new DefaultFullHttpResponse(
+                        HttpVersion.HTTP_1_1,
+                        HttpResponseStatus.OK,
+                        Unpooled.wrappedBuffer(webContext.getStaticFile().getByteBuf()));
+                response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
+            } else {
+                //下载类型的
+                response = new DefaultFullHttpResponse(
+                        HttpVersion.HTTP_1_1,
+                        HttpResponseStatus.OK,
+                        Unpooled.wrappedBuffer(webContext.getStaticFile().getByteBuf()));
+                response.headers().set(HttpHeaderNames.CONTENT_TRANSFER_ENCODING, "binary");
+                response.headers().set(HttpHeaderNames.CONTENT_DISPOSITION, "attachment; filename=" + webContext.getStaticFile().getFileName());
+                response.headers().set(HttpHeaderNames.CACHE_CONTROL, "public");
             }
+        } else {
+            response = new DefaultFullHttpResponse(
+                    HttpVersion.HTTP_1_1,
+                    HttpResponseStatus.OK,
+                    Unpooled.wrappedBuffer(webContext.getResult().getBytes(Charset.forName("UTF-8"))));
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
         }
-        FullHttpResponse response = new DefaultFullHttpResponse(
-                HttpVersion.HTTP_1_1,
-                HttpResponseStatus.OK,
-                Unpooled.wrappedBuffer(webContext.getResult().getBytes(Charset.forName("UTF-8"))));
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
+
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-
         return response;
     }
 

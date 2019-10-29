@@ -1,6 +1,10 @@
 package com.hserver.core.server.context;
 
-import java.io.InputStream;
+import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class StaticFile {
 
@@ -8,10 +12,21 @@ public class StaticFile {
     private long size;
     //文件名字
     private String fileName;
-    //文件类型
+    //是否文件类型
     private boolean fileType;
     //文件流
-    private InputStream inputStream;
+    private ByteBuf byteBuf;
+
+    private static List<String> readType = new ArrayList<>();
+
+    static {
+        readType.add("html");
+        readType.add("txt");
+        readType.add("xml");
+        readType.add("java");
+        readType.add("php");
+        readType.add("c");
+    }
 
 
     public long getSize() {
@@ -34,16 +49,23 @@ public class StaticFile {
         return fileType;
     }
 
-    public void setFileType(boolean fileType) {
-        this.fileType = fileType;
+    public void setFileType(String type) {
+
+        if (readType.contains(type)) {
+            this.fileType = true;
+        } else {
+            this.fileType = false;
+        }
+
+
     }
 
-    public InputStream getInputStream() {
-        return inputStream;
+    public ByteBuf getByteBuf() {
+        return byteBuf;
     }
 
-    public void setInputStream(InputStream inputStream) {
-        this.inputStream = inputStream;
+    public void setByteBuf(ByteBuf byteBuf) {
+        this.byteBuf = byteBuf;
     }
 }
 

@@ -2,11 +2,11 @@ package com.hserver.core.server.handlers;
 
 
 import com.hserver.core.server.context.StaticFile;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * 静态文件的处理，包括文件缓存效果等
@@ -33,33 +33,50 @@ public class StaticHandler {
     /**
      * 构建一个静态文件对象
      *
-     * @param inputStream
+     * @param input
+     * @param url
      * @return
      */
-    private StaticFile buildStaticFile(InputStream inputStream, String url) {
+    private StaticFile buildStaticFile(InputStream input, String url) {
         StaticFile staticFile = new StaticFile();
-
         try {
             //获取文件大小
-            int available = inputStream.available();
+            int available = input.available();
             staticFile.setSize(available);
             //获取文件名
             int i = url.lastIndexOf("/");
             if (i > -1) {
-                staticFile.setFileName(url.substring(i + 1, url.length()));
+                String fileName = url.substring(i + 1, url.length());
+                String[] split = fileName.split("\\.");
+                staticFile.setFileName(fileName);
+                //设置文件是下载还
+                staticFile.setFileType(split[1]);
             }
-            staticFile.setFileType(true);
-            staticFile.setInputStream(inputStream);
-
+            //input转ByteBuf
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            int size = 0;
+            InputStream inputStream;
+            ByteBuf byteBuf = Unpooled.buffer();
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = input.read(buffer)) > -1) {
+                size += len;
+                baos.write(buffer, 0, len);
+            }
+            baos.flush();
+            inputStream = new ByteArrayInputStream(baos.toByteArray());
+            byteBuf.writeBytes(inputStream, size);
+            staticFile.setByteBuf(byteBuf);
+            baos.close();
+            inputStream.close();
         } catch (Exception e) {
             log.error("获取文件大小异常:" + e.getMessage());
             try {
-                inputStream.close();
+                input.close();
             } catch (Exception e1) {
                 log.error("关闭文件流异常:" + e.getMessage());
             }
         }
         return staticFile;
-
     }
 }
