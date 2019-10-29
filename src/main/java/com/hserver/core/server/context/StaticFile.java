@@ -26,6 +26,8 @@ public class StaticFile {
         readType.add("java");
         readType.add("php");
         readType.add("c");
+        readType.add("js");
+        readType.add("css");
     }
 
 
