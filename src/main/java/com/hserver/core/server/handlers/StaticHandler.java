@@ -15,37 +15,19 @@ import java.io.InputStreamReader;
 @Slf4j
 public class StaticHandler {
 
-    private String basePath = "/static/";
+    private String basePath = "/static";
 
     public StaticFile handler(String uri) {
-
-        //jar环境还是开发环境;
-        boolean isJar = false;
-
-        // jar file
-        if (isJar) {
-            InputStream input = getResourceStreamFromJar(basePath + uri);
-            if (input != null) {
-                return buildStaticFile(input, uri);
-            }
-            return null;
-        }
-
-        // no jar file
-        if (!isJar) {
-            InputStream input = StaticHandler.class.getResourceAsStream(basePath + uri);
-            if (input != null) {
-                return buildStaticFile(input, uri);
-            }
-            return null;
+        InputStream input = getResourceStreamFromJar(basePath + uri);
+        if (input != null) {
+            return buildStaticFile(input, uri);
         }
         return null;
     }
 
 
-
     private InputStream getResourceStreamFromJar(String uri) {
-        return StaticHandler.class.getResourceAsStream("/META-INF/resources" + uri);
+        return StaticHandler.class.getResourceAsStream(uri);
     }
 
     /**
