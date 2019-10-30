@@ -1,10 +1,13 @@
 package com.hserver.core.server.router;
 
 import com.hserver.core.ioc.IocUtil;
+import io.netty.handler.codec.http.HttpMethod;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static io.netty.handler.codec.http.HttpMethod.GET;
 
 @Slf4j
 public class RouterManager {
@@ -19,7 +22,7 @@ public class RouterManager {
     public static void addRouter(RouterInfo routerInfo) {
         if (routerInfo != null) {
             String url = routerInfo.getUrl();
-            if (RequestType.GET.equals(routerInfo.reqMethodName)) {
+            if (GET == routerInfo.reqMethodName) {
                 if (routerGets.containsKey(url)) {
                     log.warn("url<" + url + ">映射已经存在，可能会影响程序使用" + routerInfo.getaClass().getClass().getName());
                 }
@@ -33,18 +36,8 @@ public class RouterManager {
         }
     }
 
-    public static Object getRouterObj(String url, RequestType requestType) {
-        if (RequestType.GET.equals(requestType)) {
-            RouterInfo routerInfo = routerGets.get(url);
-            return IocUtil.getBean(routerInfo.getaClass());
-        } else {
-            RouterInfo routerInfo = routerPosts.get(url);
-            return IocUtil.getBean(routerInfo.getaClass());
-        }
-    }
-
-    public static RouterInfo getRouterInfo(String url, RequestType requestType) {
-        if (RequestType.GET.equals(requestType)) {
+    public static RouterInfo getRouterInfo(String url, HttpMethod requestType) {
+        if (GET == requestType) {
             return routerGets.get(url);
         } else {
             return routerPosts.get(url);

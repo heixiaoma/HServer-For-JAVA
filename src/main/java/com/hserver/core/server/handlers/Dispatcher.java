@@ -6,21 +6,27 @@ import com.hserver.core.server.context.Request;
 import com.hserver.core.server.context.StaticFile;
 import com.hserver.core.server.context.WebContext;
 import com.hserver.core.server.exception.BusinessException;
-import com.hserver.core.server.router.RequestType;
 import com.hserver.core.server.router.RouterInfo;
 import com.hserver.core.server.router.RouterManager;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.multipart.DefaultHttpDataFactory;
+import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpData;
+import io.netty.handler.codec.http.multipart.MemoryAttribute;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+
+import static io.netty.handler.codec.http.HttpMethod.GET;
+import static io.netty.handler.codec.http.HttpMethod.POST;
 
 /**
  * 分发器
@@ -29,13 +35,42 @@ public class Dispatcher {
 
     private final static StaticHandler staticHandler = new StaticHandler();
 
-
     public static WebContext buildWebContext(ChannelHandlerContext ctx,
                                              HttpRequest req) {
-        String remoteAddress = ctx.channel().remoteAddress().toString();
+
+
         WebContext webContext = new WebContext();
         Request request = new Request();
+        Map<String, String> requestParams = new HashMap<>();
+
+        //如果GET请求
+        if (req.method() == GET) {
+            QueryStringDecoder decoder = new QueryStringDecoder(req.getUri());
+            Map<String, List<String>> parame = decoder.parameters();
+            Iterator<Map.Entry<String, List<String>>> iterator = parame.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, List<String>> next = iterator.next();
+                requestParams.put(next.getKey(), next.getValue().get(0));
+            }
+            request.setRequestType(GET);
+        }
+
+        //如果POST请求
+        if (req.method() == POST) {
+            HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(
+                    new DefaultHttpDataFactory(false), req);
+            List<InterfaceHttpData> postData = decoder.getBodyHttpDatas(); //
+            for (InterfaceHttpData data : postData) {
+                if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute) {
+                    MemoryAttribute attribute = (MemoryAttribute) data;
+                    requestParams.put(attribute.getName(), attribute.getValue());
+                }
+            }
+            request.setRequestType(POST);
+        }
+        //获取URi
         request.setUri(req.uri());
+        request.setRequestParams(requestParams);
         webContext.setRequest(request);
         return webContext;
     }
@@ -81,7 +116,7 @@ public class Dispatcher {
             return webContext;
         }
         try {
-            RouterInfo routerInfo = RouterManager.getRouterInfo("/hello", RequestType.GET);
+            RouterInfo routerInfo = RouterManager.getRouterInfo("/hello",GET);
             if (routerInfo == null) {
                 throw new BusinessException(404, "为找到对应的解析器");
             }
@@ -107,12 +142,14 @@ public class Dispatcher {
             } else {
                 res = method.invoke(bean);
             }
+
+            //调用结果进行设置
             if (res == null) {
                 webContext.setResult("");
             } else if (res.getClass().getName().equals("java.lang.String")) {
                 webContext.setResult(res.toString());
             } else {
-                //转换Json输入
+                //非字符串类型的将对象转换Json字符串
                 webContext.setResult(JSON.toJSONString(res));
             }
             return webContext;
@@ -181,7 +218,6 @@ public class Dispatcher {
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
         return response;
-
     }
 
     /**

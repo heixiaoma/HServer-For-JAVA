@@ -2,12 +2,11 @@ package com.hserver.core.ioc.ref;
 
 import com.hserver.core.ioc.IocUtil;
 import com.hserver.core.ioc.annotation.*;
-import com.hserver.core.server.router.RequestType;
 import com.hserver.core.server.router.RouterInfo;
 import com.hserver.core.server.router.RouterManager;
+import io.netty.handler.codec.http.HttpMethod;
 import lombok.extern.slf4j.Slf4j;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -52,7 +51,7 @@ public class InitBean {
                         routerInfo.setMethod(method);
                         routerInfo.setUrl(get.value());
                         routerInfo.setaClass(aClass);
-                        routerInfo.setReqMethodName(RequestType.GET);
+                        routerInfo.setReqMethodName(HttpMethod.GET);
                         RouterManager.addRouter(routerInfo);
                     }
                     if (post != null) {
@@ -60,7 +59,7 @@ public class InitBean {
                         routerInfo.setMethod(method);
                         routerInfo.setUrl(post.value());
                         routerInfo.setaClass(aClass);
-                        routerInfo.setReqMethodName(RequestType.POST);
+                        routerInfo.setReqMethodName(HttpMethod.POST);
                         RouterManager.addRouter(routerInfo);
                     }
                 }

@@ -1,13 +1,15 @@
 package com.hserver.core.server.router;
 
 
+import io.netty.handler.codec.http.HttpMethod;
+
 import java.lang.reflect.Method;
 
 public class RouterInfo {
 
     String url;
     Method method;
-    RequestType reqMethodName;
+    HttpMethod reqMethodName;
     Class<?> aClass;
 
     public String getUrl() {
@@ -34,11 +36,11 @@ public class RouterInfo {
         this.method = method;
     }
 
-    public RequestType getReqMethodName() {
+    public HttpMethod getReqMethodName() {
         return reqMethodName;
     }
 
-    public void setReqMethodName(RequestType reqMethodName) {
+    public void setReqMethodName(HttpMethod reqMethodName) {
         this.reqMethodName = reqMethodName;
     }
 }
