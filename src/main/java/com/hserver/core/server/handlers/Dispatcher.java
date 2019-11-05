@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import static io.netty.handler.codec.http.HttpMethod.GET;
 import static io.netty.handler.codec.http.HttpMethod.POST;
@@ -35,6 +36,9 @@ public class Dispatcher {
 
     private final static StaticHandler staticHandler = new StaticHandler();
 
+    //标识不是静态文件，这样下次使用方便直接跳过检查
+    private final static CopyOnWriteArraySet<String> noStaticFileUri = new CopyOnWriteArraySet<>();
+
     public static WebContext buildWebContext(ChannelHandlerContext ctx,
                                              HttpRequest req) {
 
@@ -45,7 +49,7 @@ public class Dispatcher {
 
         //如果GET请求
         if (req.method() == GET) {
-            QueryStringDecoder decoder = new QueryStringDecoder(req.getUri());
+            QueryStringDecoder decoder = new QueryStringDecoder(req.uri());
             Map<String, List<String>> parame = decoder.parameters();
             Iterator<Map.Entry<String, List<String>>> iterator = parame.entrySet().iterator();
             while (iterator.hasNext()) {
@@ -93,11 +97,16 @@ public class Dispatcher {
      */
     public static WebContext staticFile(WebContext webContext) {
         //检查是不是静态文件，如果是封装下请求，然后跳过控制器的方法
+        if (noStaticFileUri.contains(webContext.getRequest().getUri())) {
+            return webContext;
+        }
         StaticFile handler = staticHandler.handler(webContext.getRequest().getUri());
         if (handler != null) {
             webContext.setStaticFile(true);
             webContext.setStaticFile(handler);
         }
+        noStaticFileUri.add(webContext.getRequest().getUri());
+
         return webContext;
     }
 
@@ -116,7 +125,7 @@ public class Dispatcher {
             return webContext;
         }
         try {
-            RouterInfo routerInfo = RouterManager.getRouterInfo("/hello",GET);
+            RouterInfo routerInfo = RouterManager.getRouterInfo("/hello", GET);
             if (routerInfo == null) {
                 throw new BusinessException(404, "为找到对应的解析器");
             }
