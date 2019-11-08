@@ -78,7 +78,13 @@ public class Dispatcher {
             request.setRequestType(POST);
         }
         //获取URi
-        request.setUri(req.uri());
+        int i = req.uri().indexOf("?");
+        if (i > 0) {
+            String uri = req.uri();
+            request.setUri(uri.substring(0, i));
+        } else {
+            request.setUri(req.uri());
+        }
         request.setRequestParams(requestParams);
         webContext.setRequest(request);
         return webContext;

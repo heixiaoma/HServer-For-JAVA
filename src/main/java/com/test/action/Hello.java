@@ -4,6 +4,7 @@ import com.hserver.core.ioc.annotation.Action;
 import com.hserver.core.ioc.annotation.GET;
 import com.hserver.core.ioc.annotation.In;
 import com.hserver.core.server.context.Request;
+import com.test.bean.Test;
 import com.test.bean.TestService;
 
 import java.util.HashMap;
@@ -13,7 +14,7 @@ import java.util.Map;
 public class Hello {
 
     @In
-    private TestService testService;
+    private Test test1q;
 
 
     @GET("/hello")
@@ -21,6 +22,8 @@ public class Hello {
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("res", request.getRequestParams());
+        res.put("msg",test1q.show());
+
         return res;
     }
 }

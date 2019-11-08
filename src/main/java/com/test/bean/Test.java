@@ -9,7 +9,11 @@ public class Test {
     @In
     private TestService testService;
 
-    public void show() {
-        testService.test();
+    public String show() {
+        return testService.testa();
+    }
+
+    public String ac(){
+        return "牛皮得很";
     }
 }

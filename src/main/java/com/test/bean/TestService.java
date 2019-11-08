@@ -1,12 +1,16 @@
 package com.test.bean;
 
 import com.hserver.core.ioc.annotation.Bean;
+import com.hserver.core.ioc.annotation.In;
 
 @Bean
 public class TestService {
 
-    public String test() {
-        return "牛皮得很";
+    @In
+    private Test test;
+
+    public String testa() {
+        return test.ac();
     }
 
 }
