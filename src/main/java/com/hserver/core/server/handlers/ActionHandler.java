@@ -43,18 +43,15 @@ public class ActionHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        if (cause instanceof BusinessException) {
-            BusinessException businessException = (BusinessException) cause;
-            FullHttpResponse response = new DefaultFullHttpResponse(
-                    HttpVersion.HTTP_1_1,
-                    HttpResponseStatus.OK,
-                    Unpooled.wrappedBuffer(businessException.getRespMsg().getBytes(Charset.forName("UTF-8"))));
-            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
-            response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
-            response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-            ctx.write(response);
-            ctx.flush();
-        }
+        FullHttpResponse response = new DefaultFullHttpResponse(
+                HttpVersion.HTTP_1_1,
+                HttpResponseStatus.SERVICE_UNAVAILABLE,
+                Unpooled.wrappedBuffer("服务器为检查到的错误".getBytes(Charset.forName("UTF-8"))));
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
+        response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
+        response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+        ctx.write(response);
+        ctx.flush();
         ctx.close();
     }
 }

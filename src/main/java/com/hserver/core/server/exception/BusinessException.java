@@ -27,14 +27,22 @@ public class BusinessException extends RuntimeException {
         if (httpCode != null) {
             switch (httpCode) {
                 case 404:
-                    return "404";
+                    return "404：" + msg;
                 case 503:
-                    return "503";
+                    return "503：" + msg;
                 default:
-                    return "503";
+                    return "503：" + msg;
             }
         } else {
-            return "错误";
+            return "未知错误";
+        }
+    }
+
+    public Integer getHttpCode() {
+        if (httpCode != null) {
+            return httpCode;
+        } else {
+            return 503;
         }
     }
 }

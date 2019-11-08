@@ -8,6 +8,7 @@ import com.hserver.core.server.context.WebContext;
 import com.hserver.core.server.exception.BusinessException;
 import com.hserver.core.server.router.RouterInfo;
 import com.hserver.core.server.router.RouterManager;
+import com.hserver.util.ExceptionUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
@@ -15,7 +16,10 @@ import io.netty.handler.codec.http.multipart.DefaultHttpDataFactory;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 import io.netty.handler.codec.http.multipart.MemoryAttribute;
+import lombok.extern.slf4j.Slf4j;
+import sun.rmi.runtime.Log;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -32,6 +36,7 @@ import static io.netty.handler.codec.http.HttpMethod.POST;
 /**
  * 分发器
  */
+@Slf4j
 public class Dispatcher {
 
     private final static StaticHandler staticHandler = new StaticHandler();
@@ -104,9 +109,9 @@ public class Dispatcher {
         if (handler != null) {
             webContext.setStaticFile(true);
             webContext.setStaticFile(handler);
+        } else {
+            noStaticFileUri.add(webContext.getRequest().getUri());
         }
-        noStaticFileUri.add(webContext.getRequest().getUri());
-
         return webContext;
     }
 
@@ -124,11 +129,12 @@ public class Dispatcher {
         if (webContext.isStaticFile()) {
             return webContext;
         }
+        RouterInfo routerInfo = RouterManager.getRouterInfo(webContext.getRequest().getUri(), GET);
+        if (routerInfo == null) {
+            log.error("为找到对应的控制器");
+            throw new BusinessException(404, "为找到对应的控制器");
+        }
         try {
-            RouterInfo routerInfo = RouterManager.getRouterInfo("/hello", GET);
-            if (routerInfo == null) {
-                throw new BusinessException(404, "为找到对应的解析器");
-            }
             Method method = routerInfo.getMethod();
             Class<?> aClass = routerInfo.getaClass();
             Object bean = IocUtil.getBean(aClass);
@@ -147,6 +153,7 @@ public class Dispatcher {
                         objects[i] = null;
                     }
                 }
+
                 res = method.invoke(bean, objects);
             } else {
                 res = method.invoke(bean);
@@ -163,7 +170,9 @@ public class Dispatcher {
             }
             return webContext;
         } catch (Exception e) {
-            throw new BusinessException(503, "调用方法失败" + e.getMessage());
+            String message = ExceptionUtil.getMessage(e);
+            log.error(message);
+            throw new BusinessException(503, "调用方法失败" + message);
         }
 
     }
@@ -176,7 +185,7 @@ public class Dispatcher {
      */
     public static FullHttpResponse buildResponse(WebContext webContext) {
 
-        FullHttpResponse response = null;
+        FullHttpResponse response;
 
         /**
          * 如果是文件特殊处理下,是静态文件，同时需要下载的文件
@@ -219,10 +228,12 @@ public class Dispatcher {
      * @return
      */
     public static FullHttpResponse handleException(Throwable e) {
+        BusinessException cause = (BusinessException) e.getCause();
+        HttpResponseStatus httpResponseStatus = HttpResponseStatus.valueOf(cause.getHttpCode());
         FullHttpResponse response = new DefaultFullHttpResponse(
                 HttpVersion.HTTP_1_1,
-                HttpResponseStatus.OK,
-                Unpooled.wrappedBuffer("error".getBytes(Charset.forName("UTF-8"))));
+                httpResponseStatus,
+                Unpooled.wrappedBuffer(cause.getRespMsg().getBytes(Charset.forName("UTF-8"))));
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
