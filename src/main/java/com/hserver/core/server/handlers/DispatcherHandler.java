@@ -37,7 +37,7 @@ import static io.netty.handler.codec.http.HttpMethod.POST;
  * 分发器
  */
 @Slf4j
-public class Dispatcher {
+public class DispatcherHandler {
 
     private final static StaticHandler staticHandler = new StaticHandler();
 
@@ -135,6 +135,7 @@ public class Dispatcher {
         if (webContext.isStaticFile()) {
             return webContext;
         }
+
         RouterInfo routerInfo = RouterManager.getRouterInfo(webContext.getRequest().getUri(), GET);
         if (routerInfo == null) {
             log.error("为找到对应的控制器");
@@ -203,7 +204,7 @@ public class Dispatcher {
                         HttpVersion.HTTP_1_1,
                         HttpResponseStatus.OK,
                         Unpooled.wrappedBuffer(webContext.getStaticFile().getByteBuf()));
-                response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
+                response.headers().set(HttpHeaderNames.CONTENT_TYPE, webContext.getStaticFile().getFileHead() + ";charset=UTF-8");
             } else {
                 //下载类型的
                 response = new DefaultFullHttpResponse(

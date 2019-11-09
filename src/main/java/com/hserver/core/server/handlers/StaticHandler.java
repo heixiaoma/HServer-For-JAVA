@@ -2,6 +2,8 @@ package com.hserver.core.server.handlers;
 
 
 import com.hserver.core.server.context.StaticFile;
+import com.hserver.core.server.exception.BusinessException;
+import com.hserver.util.ExceptionUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,10 @@ public class StaticHandler {
     private String basePath = "/static";
 
     public StaticFile handler(String uri) {
+        //判断一次文件是否有/index.html文件
+        if ("/".equals(uri)) {
+            uri = "/index.html";
+        }
         InputStream input = getResourceStreamFromJar(basePath + uri);
         if (input != null) {
             return buildStaticFile(input, uri);
@@ -51,6 +57,8 @@ public class StaticHandler {
                 staticFile.setFileName(fileName);
                 //设置文件是下载还
                 staticFile.setFileType(split[1]);
+            } else {
+                return null;
             }
             //input转ByteBuf
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -75,7 +83,9 @@ public class StaticHandler {
                 input.close();
             } catch (Exception e1) {
                 log.error("关闭文件流异常:" + e.getMessage());
+                throw new BusinessException(503, "关闭文件流异常" + ExceptionUtil.getMessage(e));
             }
+            throw new BusinessException(503, "获取文件大小异常" + ExceptionUtil.getMessage(e));
         }
         return staticFile;
     }

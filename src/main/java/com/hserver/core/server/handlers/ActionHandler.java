@@ -26,13 +26,13 @@ public class ActionHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
         Executor executor = ctx.executor();
 
-        future.thenApplyAsync(req -> Dispatcher.buildWebContext(ctx, req), executor)
-                .thenApplyAsync(Dispatcher::Statistics, executor)
-                .thenApplyAsync(Dispatcher::staticFile, executor)
-                .thenApplyAsync(Dispatcher::findController, executor)
-                .thenApplyAsync(Dispatcher::buildResponse, executor)
-                .exceptionally(Dispatcher::handleException)
-                .thenAcceptAsync(msg -> Dispatcher.writeResponse(ctx, future, msg), ctx.channel().eventLoop());
+        future.thenApplyAsync(req -> DispatcherHandler.buildWebContext(ctx, req), executor)
+                .thenApplyAsync(DispatcherHandler::Statistics, executor)
+                .thenApplyAsync(DispatcherHandler::staticFile, executor)
+                .thenApplyAsync(DispatcherHandler::findController, executor)
+                .thenApplyAsync(DispatcherHandler::buildResponse, executor)
+                .exceptionally(DispatcherHandler::handleException)
+                .thenAcceptAsync(msg -> DispatcherHandler.writeResponse(ctx, future, msg), ctx.channel().eventLoop());
     }
 
 

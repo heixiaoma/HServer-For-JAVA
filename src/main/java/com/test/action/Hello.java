@@ -20,7 +20,7 @@ public class Hello {
     @GET("/hello")
     public Map index(Request request) {
         Map<String, Object> res = new HashMap<>();
-        res.put("code", 200);
+        res.put("code",200);
         res.put("res", request.getRequestParams());
         res.put("msg",test1q.show());
 

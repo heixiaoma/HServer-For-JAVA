@@ -14,12 +14,18 @@ public class StaticFile {
     private String fileName;
     //是否文件类型
     private boolean fileType;
+    private String fileHeadType;
     //文件流
     private ByteBuf byteBuf;
-
+    //不是下载类型
     private static List<String> readType = new ArrayList<>();
+    //该文件的下载类型
+    private static List<String> downLoadType = new ArrayList<>();
+    //图片类型
+    private static List<String> imgType = new ArrayList<>();
 
     static {
+        //文本类型
         readType.add("html");
         readType.add("txt");
         readType.add("xml");
@@ -28,6 +34,16 @@ public class StaticFile {
         readType.add("c");
         readType.add("js");
         readType.add("css");
+
+        //文本头
+        downLoadType.add("html");
+        downLoadType.add("txt");
+        downLoadType.add("xml");
+        downLoadType.add("js");
+        downLoadType.add("css");
+
+        imgType.add("png");
+        imgType.add("jpg");
     }
 
 
@@ -51,10 +67,25 @@ public class StaticFile {
         return fileType;
     }
 
+    public String getFileHead() {
+        if (this.fileType && fileHeadType != null) {
+            return this.fileHeadType;
+        } else {
+            return "text/plain";
+        }
+    }
+
     public void setFileType(String type) {
 
         if (readType.contains(type)) {
             this.fileType = true;
+            if (downLoadType.contains(type)) {
+                this.fileHeadType = "text/" + type;
+            }
+            if (imgType.contains("type")) {
+                this.fileHeadType = "image/" + type;
+            }
+
         } else {
             this.fileType = false;
         }
