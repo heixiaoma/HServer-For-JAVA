@@ -2,10 +2,6 @@ package com.hserver.core.server.context;
 
 import io.netty.buffer.ByteBuf;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 public class StaticFile {
 
     //文件大小
