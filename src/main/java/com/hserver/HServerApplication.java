@@ -10,7 +10,11 @@ import java.util.Map;
 @Slf4j
 public class HServerApplication {
 
-    public static void run(Class classz) {
+    public static void run(Class classz, Integer port) {
+        if (classz == null || port == null) {
+            log.info("HServer 启动失败");
+            return;
+        }
         log.info("HServer 启动中....");
         log.info("Package 扫描中");
         InitBean.init(HServerApplication.class);
@@ -19,7 +23,7 @@ public class HServerApplication {
         InitBean.injection();
         log.info("IOC 全部装配完成", classz.getName());
         try {
-            new HServer(8080).run();
+            new HServer(port).run();
         } catch (Exception e) {
             log.error(e.getMessage());
         }

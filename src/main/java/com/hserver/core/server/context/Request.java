@@ -11,7 +11,5 @@ import java.util.Map;
 public class Request {
     private String uri;
     private HttpMethod requestType;
-    private Map<String,String> requestParams;
-
-
+    private Map<String, String> requestParams;
 }
