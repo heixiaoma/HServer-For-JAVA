@@ -2,10 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec71a202-50a0-475a-9494-ae1c3a5bc82e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/MimeType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/StaticFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/StaticFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/DispatcherHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/DispatcherHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/tserver-ad-icon1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/tserver-ad-icon2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/tserver-ad-icon3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/tserver-ad-icon4.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/tserver-ad-icon5.png" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -160,7 +162,7 @@
       <workItem from="1572272886939" duration="1326000" />
       <workItem from="1572274233657" duration="1151000" />
       <workItem from="1572275403190" duration="1459000" />
-      <workItem from="1573294411837" duration="1029000" />
+      <workItem from="1573294411837" duration="1327000" />
     </task>
     <task id="LOCAL-00001" summary="s">
       <created>1571807115577</created>
@@ -232,7 +234,21 @@
       <option name="project" value="LOCAL" />
       <updated>1573294107145</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="对文件下载类型进行处理">
+      <created>1573295598919</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1573295598919</updated>
+    </task>
+    <task id="LOCAL-00012" summary="对文件下载类型进行处理">
+      <created>1573295614999</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1573295614999</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -260,6 +276,7 @@
     <MESSAGE value="装配前先验证类型，避免装配错误" />
     <MESSAGE value="更新日志" />
     <MESSAGE value="处理文件下载类型的处理文件头处理相关等" />
-    <option name="LAST_COMMIT_MESSAGE" value="处理文件下载类型的处理文件头处理相关等" />
+    <MESSAGE value="对文件下载类型进行处理" />
+    <option name="LAST_COMMIT_MESSAGE" value="对文件下载类型进行处理" />
   </component>
 </project>
