@@ -199,22 +199,11 @@ public class DispatcherHandler {
          */
         if (webContext.isStaticFile()) {
             //显示型的
-            if (webContext.getStaticFile().isFileType()) {
-                response = new DefaultFullHttpResponse(
-                        HttpVersion.HTTP_1_1,
-                        HttpResponseStatus.OK,
-                        Unpooled.wrappedBuffer(webContext.getStaticFile().getByteBuf()));
-                response.headers().set(HttpHeaderNames.CONTENT_TYPE, webContext.getStaticFile().getFileHead() + ";charset=UTF-8");
-            } else {
-                //下载类型的
-                response = new DefaultFullHttpResponse(
-                        HttpVersion.HTTP_1_1,
-                        HttpResponseStatus.OK,
-                        Unpooled.wrappedBuffer(webContext.getStaticFile().getByteBuf()));
-                response.headers().set(HttpHeaderNames.CONTENT_TRANSFER_ENCODING, "binary");
-                response.headers().set(HttpHeaderNames.CONTENT_DISPOSITION, "attachment; filename=" + webContext.getStaticFile().getFileName());
-                response.headers().set(HttpHeaderNames.CACHE_CONTROL, "public");
-            }
+            response = new DefaultFullHttpResponse(
+                    HttpVersion.HTTP_1_1,
+                    HttpResponseStatus.OK,
+                    Unpooled.wrappedBuffer(webContext.getStaticFile().getByteBuf()));
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, webContext.getStaticFile().getFileHead() + ";charset=UTF-8");
         } else {
             response = new DefaultFullHttpResponse(
                     HttpVersion.HTTP_1_1,

@@ -2,29 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec71a202-50a0-475a-9494-ae1c3a5bc82e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/css/style.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/360server-icon1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/360server-icon2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/360server-icon3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/360server-icon4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/360server-icon5.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/360server-icon6.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/360server-icon7.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/360server-line.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/tserver-ad-icon1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/tserver-ad-icon2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/tserver-ad-icon3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/tserver-ad-icon4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/tserver-ad-icon5.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/MimeType.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/StaticFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/StaticFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/ActionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/ActionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/Dispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/DispatcherHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/StaticHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/StaticHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/action/Hello.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/test/action/Hello.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/a.ara" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/file/a.ara" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/a.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/file/a.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/DispatcherHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/DispatcherHandler.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -77,7 +58,7 @@
     <property name="SearchEverywhereHistoryKey" value="rootLevel&#9;PSI&#9;JAVA://org.slf4j.impl.SimpleLogger#rootLevel" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources/static/images" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Modules" />
@@ -86,9 +67,12 @@
     <property name="settings.editor.selected.configurable" value="configurable.group.language" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Java\HServer\src\main\java\com\hserver\core\server\context" />
       <recent name="D:\Java\HServer\src\main\resources\static\images" />
-      <recent name="D:\Java\HServer\src\main\resources\static\file" />
+      <recent name="D:\Java\HServer\src\main\resources\static\img" />
+      <recent name="F:\JAVA\HServer\src\main\java\com\hserver\core\server" />
+      <recent name="F:\JAVA\HServer\src\main\java\com\hserver\core" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.hserver.core.server.handlers" />
@@ -97,12 +81,9 @@
       <recent name="com.hserver.core.ioc.annotation" />
       <recent name="com.hserver.core.server" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Java\HServer\src\main\resources\static\images" />
-      <recent name="D:\Java\HServer\src\main\resources\static\img" />
-      <recent name="F:\JAVA\HServer\src\main\java\com\hserver\core\server" />
-      <recent name="F:\JAVA\HServer\src\main\java\com\hserver\core" />
-      <recent name="F:\JAVA\HServer\src\main\java\com\hserver\util" />
+      <recent name="D:\Java\HServer\src\main\resources\static\file" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -166,7 +147,7 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="1f5ee5b0-026f-42c9-a220-ea51a0ed932e" name="Default" comment="" />
+      <changelist id="ec71a202-50a0-475a-9494-ae1c3a5bc82e" name="Default Changelist" comment="" />
       <created>1571364195596</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -179,6 +160,7 @@
       <workItem from="1572272886939" duration="1326000" />
       <workItem from="1572274233657" duration="1151000" />
       <workItem from="1572275403190" duration="1459000" />
+      <workItem from="1573294411837" duration="1029000" />
     </task>
     <task id="LOCAL-00001" summary="s">
       <created>1571807115577</created>
@@ -243,7 +225,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573290992197</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="处理文件下载类型的处理文件头处理相关等">
+      <created>1573294107145</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1573294107145</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -270,6 +259,7 @@
     <MESSAGE value="分发处理" />
     <MESSAGE value="装配前先验证类型，避免装配错误" />
     <MESSAGE value="更新日志" />
-    <option name="LAST_COMMIT_MESSAGE" value="更新日志" />
+    <MESSAGE value="处理文件下载类型的处理文件头处理相关等" />
+    <option name="LAST_COMMIT_MESSAGE" value="处理文件下载类型的处理文件头处理相关等" />
   </component>
 </project>
