@@ -19,18 +19,19 @@ public class Hello {
 
 
     @GET("/hello")
-    public Map index(Request request) {
+    public Map index(Request request, String name) {
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("res", request.getRequestParams());
         res.put("msg", test1q.show());
+        res.put("name", name);
         return res;
     }
 
     @POST("/file")
     public Map file(Request request) {
         Map<String, FileItem> fileItems = request.getFileItems();
-        fileItems.forEach((k,v)->{
+        fileItems.forEach((k, v) -> {
             System.out.println(k);
             System.out.println(v);
         });
@@ -43,7 +44,8 @@ public class Hello {
 
 
     @POST("/a")
-    public Map a(Request request) {
+    public Map a(Request request, Integer a) {
+        System.out.println(request.getRequestParams());
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("res", request.getRequestParams());

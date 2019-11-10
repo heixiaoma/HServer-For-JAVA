@@ -3,11 +3,13 @@ package com.hserver.core.server.handlers;
 import com.alibaba.fastjson.JSON;
 import com.hserver.core.ioc.IocUtil;
 import com.hserver.core.server.context.Request;
+import com.hserver.core.server.context.Response;
 import com.hserver.core.server.context.StaticFile;
 import com.hserver.core.server.context.WebContext;
 import com.hserver.core.server.exception.BusinessException;
 import com.hserver.core.server.router.RouterInfo;
 import com.hserver.core.server.router.RouterManager;
+import com.hserver.core.server.util.ParameterUtil;
 import com.hserver.util.ExceptionUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -15,10 +17,12 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.multipart.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtils;
 import sun.rmi.runtime.Log;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -34,7 +38,6 @@ import static io.netty.handler.codec.http.HttpMethod.POST;
 @Slf4j
 public class DispatcherHandler {
 
-    private final static UploadHandler uploadHandler = new UploadHandler();
     private final static StaticHandler staticHandler = new StaticHandler();
     private static final HttpDataFactory HTTP_DATA_FACTORY = new DefaultHttpDataFactory(true);
     //标识不是静态文件，这样下次使用方便直接跳过检查
@@ -151,40 +154,46 @@ public class DispatcherHandler {
             Class<?> aClass = routerInfo.getaClass();
             Object bean = IocUtil.getBean(aClass);
             //检查下方法参数
-            Type[] parameterTypes = method.getGenericParameterTypes();
+            Parameter[] parameterTypes = method.getParameters();
             Object res;
-            if (parameterTypes.length > 0) {
-                Object[] objects = new Object[parameterTypes.length];
-                for (int i = 0; i < parameterTypes.length; i++) {
-                    //构建方法参数
-                    if (parameterTypes[i].getTypeName().contains("com.hserver.core.server.context.Request")) {
-                        objects[i] = webContext.getRequest();
-                    } else if (parameterTypes[i].getTypeName().contains("com.hserver.core.server.context.Response")) {
-                        objects[i] = webContext.getResponse();
-                    } else {
-                        objects[i] = null;
+            //如果控制器有参数，那么就进行，模糊赋值，在检测是否有req 和resp
+            try {
+                if (parameterTypes.length > 0) {
+                    Object[] methodArgs = null;
+                    try {
+                        methodArgs = ParameterUtil.getMethodArgs(parameterTypes, webContext);
+                    } catch (Exception e) {
+                        String message = ExceptionUtil.getMessage(e);
+                        log.error(message);
+                        throw new BusinessException(503, "生成控制器时参数异常" + message);
                     }
+                    res = method.invoke(bean, methodArgs);
+                } else {
+                    res = method.invoke(bean);
                 }
-
-                res = method.invoke(bean, objects);
-            } else {
-                res = method.invoke(bean);
-            }
-
-            //调用结果进行设置
-            if (res == null) {
-                webContext.setResult("");
-            } else if (res.getClass().getName().equals("java.lang.String")) {
-                webContext.setResult(res.toString());
-            } else {
-                //非字符串类型的将对象转换Json字符串
-                webContext.setResult(JSON.toJSONString(res));
+                //调用结果进行设置
+                if (res == null) {
+                    webContext.setResult("");
+                } else if (res.getClass().getName().equals("java.lang.String")) {
+                    webContext.setResult(res.toString());
+                } else {
+                    //非字符串类型的将对象转换Json字符串
+                    webContext.setResult(JSON.toJSONString(res));
+                }
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                String message = ExceptionUtil.getMessage(e);
+                log.error(message);
+                throw new BusinessException(503, "调用方法失败" + message);
+            } catch (IllegalArgumentException e) {
+                String message = ExceptionUtil.getMessage(e);
+                log.error(message);
+                throw new BusinessException(503, "调用控制器时参数异常" + message);
             }
             return webContext;
-        } catch (Exception e) {
+        } catch (BusinessException e) {
             String message = ExceptionUtil.getMessage(e);
             log.error(message);
-            throw new BusinessException(503, "调用方法失败" + message);
+            throw new BusinessException(e.getHttpCode(), e.getMsg() + message);
         }
 
     }

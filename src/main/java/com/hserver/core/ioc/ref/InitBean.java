@@ -42,7 +42,7 @@ public class InitBean {
             for (String packge : actionsPackages) {
                 Class aClass = Class.forName(packge);
                 //检查注解里面是否有值
-                Method[] methods = aClass.getMethods();
+                Method[] methods = aClass.getDeclaredMethods();
                 for (Method method : methods) {
                     GET get = method.getAnnotation(GET.class);
                     POST post = method.getAnnotation(POST.class);

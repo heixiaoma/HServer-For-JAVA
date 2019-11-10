@@ -45,4 +45,8 @@ public class BusinessException extends RuntimeException {
             return 503;
         }
     }
+
+    public String getMsg() {
+        return msg;
+    }
 }

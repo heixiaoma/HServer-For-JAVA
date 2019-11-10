@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ec71a202-50a0-475a-9494-ae1c3a5bc82e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/tserver-ad-icon1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/tserver-ad-icon2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/tserver-ad-icon3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/tserver-ad-icon4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/tserver-ad-icon5.png" beforeDir="false" />
+    <list default="true" id="ec71a202-50a0-475a-9494-ae1c3a5bc82e" name="Default Changelist" comment="更新提示">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/util/ParameterUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/ref/InitBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/ref/InitBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Request.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/exception/BusinessException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/exception/BusinessException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/DispatcherHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/DispatcherHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/UploadHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/action/Hello.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/test/action/Hello.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,8 +37,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Enum" />
-        <option value="Class" />
         <option value="HTML File" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -69,12 +73,9 @@
     <property name="settings.editor.selected.configurable" value="configurable.group.language" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\Java\HServer\src\main\java\com\hserver\core\server\context" />
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Java\HServer\src\main\resources\static\images" />
-      <recent name="D:\Java\HServer\src\main\resources\static\img" />
-      <recent name="F:\JAVA\HServer\src\main\java\com\hserver\core\server" />
-      <recent name="F:\JAVA\HServer\src\main\java\com\hserver\core" />
+      <recent name="D:\Java\HServer\src\main\resources\static\file" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.hserver.core.server.handlers" />
@@ -83,9 +84,12 @@
       <recent name="com.hserver.core.ioc.annotation" />
       <recent name="com.hserver.core.server" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Java\HServer\src\main\java\com\hserver\core\server\context" />
       <recent name="D:\Java\HServer\src\main\resources\static\images" />
-      <recent name="D:\Java\HServer\src\main\resources\static\file" />
+      <recent name="D:\Java\HServer\src\main\resources\static\img" />
+      <recent name="F:\JAVA\HServer\src\main\java\com\hserver\core\server" />
+      <recent name="F:\JAVA\HServer\src\main\java\com\hserver\core" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -162,7 +166,9 @@
       <workItem from="1572272886939" duration="1326000" />
       <workItem from="1572274233657" duration="1151000" />
       <workItem from="1572275403190" duration="1459000" />
-      <workItem from="1573294411837" duration="1327000" />
+      <workItem from="1573294411837" duration="1631000" />
+      <workItem from="1573354711072" duration="8505000" />
+      <workItem from="1573383470342" duration="10162000" />
     </task>
     <task id="LOCAL-00001" summary="s">
       <created>1571807115577</created>
@@ -248,7 +254,42 @@
       <option name="project" value="LOCAL" />
       <updated>1573295614999</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="处理HServer index文件">
+      <created>1573295875287</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1573295875287</updated>
+    </task>
+    <task id="LOCAL-00014" summary="处理HServer index文件">
+      <created>1573295967096</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1573295967096</updated>
+    </task>
+    <task id="LOCAL-00015" summary="修復文件處理">
+      <created>1573369942520</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1573369942520</updated>
+    </task>
+    <task id="LOCAL-00016" summary="更新提示">
+      <created>1573370010371</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1573370010371</updated>
+    </task>
+    <task id="LOCAL-00017" summary="更新提示">
+      <created>1573383699243</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1573383699243</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -277,6 +318,25 @@
     <MESSAGE value="更新日志" />
     <MESSAGE value="处理文件下载类型的处理文件头处理相关等" />
     <MESSAGE value="对文件下载类型进行处理" />
-    <option name="LAST_COMMIT_MESSAGE" value="对文件下载类型进行处理" />
+    <MESSAGE value="处理HServer index文件" />
+    <MESSAGE value="修復文件處理" />
+    <MESSAGE value="更新提示" />
+    <option name="LAST_COMMIT_MESSAGE" value="更新提示" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/test/action/Hello.java</url>
+          <line>32</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/HServer$WebApp.ic" NAME="WebApp Coverage Results" MODIFIED="1573388671904" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>com.test.*</FILTER>
+    </SUITE>
   </component>
 </project>
