@@ -82,9 +82,7 @@ public class Request {
     }
 
     private void parseAttribute(Attribute attribute) throws IOException {
-        var name = attribute.getName();
-        var value = attribute.getValue();
-        this.requestParams.put(name, value);
+        this.requestParams.put(attribute.getName(), attribute.getValue());
     }
 
     private void parseFileUpload(FileUpload fileUpload) throws IOException {
@@ -95,7 +93,7 @@ public class Request {
         fileItem.setName(fileUpload.getName());
         fileItem.setFileName(fileUpload.getFilename());
         Path tmpFile = Files.createTempFile(
-                Paths.get(fileUpload.getFile().getParent()), "blade_", "_upload");
+                Paths.get(fileUpload.getFile().getParent()), "h_server_", "_upload");
 
         Path fileUploadPath = Paths.get(fileUpload.getFile().getPath());
         Files.move(fileUploadPath, tmpFile, StandardCopyOption.REPLACE_EXISTING);
