@@ -22,8 +22,10 @@ public class HttpNettyServerInitializer extends ChannelInitializer<Channel> {
 //        if (false) {
 //            pipeline.addLast(new HttpContentCompressor());
 //        }
-        pipeline.addLast(new HttpResponseEncoder());
-        pipeline.addLast(new HttpRequestDecoder());
-        pipeline.addLast("ActionHandler", new ActionHandler());
+        pipeline.addLast(new HttpServerCodec());
+        pipeline.addLast(new HttpServerExpectContinueHandler());
+
+        pipeline.addLast("对象合并",new ObjectHandler());
+        pipeline.addLast("业务处理", new ActionHandler());
     }
 }

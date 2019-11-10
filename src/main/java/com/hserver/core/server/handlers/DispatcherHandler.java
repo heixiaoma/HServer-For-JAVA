@@ -9,13 +9,11 @@ import com.hserver.core.server.exception.BusinessException;
 import com.hserver.core.server.router.RouterInfo;
 import com.hserver.core.server.router.RouterManager;
 import com.hserver.util.ExceptionUtil;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
-import io.netty.handler.codec.http.multipart.DefaultHttpDataFactory;
-import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import io.netty.handler.codec.http.multipart.InterfaceHttpData;
-import io.netty.handler.codec.http.multipart.MemoryAttribute;
+import io.netty.handler.codec.http.multipart.*;
 import lombok.extern.slf4j.Slf4j;
 import sun.rmi.runtime.Log;
 
@@ -23,10 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -39,21 +34,20 @@ import static io.netty.handler.codec.http.HttpMethod.POST;
 @Slf4j
 public class DispatcherHandler {
 
+    private final static UploadHandler uploadHandler = new UploadHandler();
     private final static StaticHandler staticHandler = new StaticHandler();
-
+    private static final HttpDataFactory HTTP_DATA_FACTORY = new DefaultHttpDataFactory(true);
     //标识不是静态文件，这样下次使用方便直接跳过检查
     private final static CopyOnWriteArraySet<String> noStaticFileUri = new CopyOnWriteArraySet<>();
 
     public static WebContext buildWebContext(ChannelHandlerContext ctx,
-                                             HttpRequest req) {
+                                             WebContext webContext) {
 
-
-        WebContext webContext = new WebContext();
+        HttpRequest req = webContext.getHttpRequest();
         Request request = new Request();
-        Map<String, String> requestParams = new HashMap<>();
-
         //如果GET请求
         if (req.method() == GET) {
+            Map<String, String> requestParams = new HashMap<>();
             QueryStringDecoder decoder = new QueryStringDecoder(req.uri());
             Map<String, List<String>> parame = decoder.parameters();
             Iterator<Map.Entry<String, List<String>>> iterator = parame.entrySet().iterator();
@@ -61,23 +55,34 @@ public class DispatcherHandler {
                 Map.Entry<String, List<String>> next = iterator.next();
                 requestParams.put(next.getKey(), next.getValue().get(0));
             }
-            request.setRequestType(GET);
+            request.setRequestParams(requestParams);
         }
 
         //如果POST请求
         if (req.method() == POST) {
-            HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(
-                    new DefaultHttpDataFactory(false), req);
-            List<InterfaceHttpData> postData = decoder.getBodyHttpDatas(); //
-            for (InterfaceHttpData data : postData) {
-                if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute) {
-                    MemoryAttribute attribute = (MemoryAttribute) data;
-                    requestParams.put(attribute.getName(), attribute.getValue());
+            //檢查是否有文件上传
+            try {
+                HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(HTTP_DATA_FACTORY, req);
+                boolean isMultipart = decoder.isMultipart();
+                List<ByteBuf> byteBuffs = new ArrayList<>(webContext.getContents().size());
+                for (HttpContent content : webContext.getContents()) {
+                    if (!isMultipart) {
+                        byteBuffs.add(content.content().copy());
+                    }
+                    decoder.offer(content);
+                    request.readHttpDataChunkByChunk(decoder);
+                    content.release();
                 }
+                if (!byteBuffs.isEmpty()) {
+                    request.setBody(Unpooled.copiedBuffer(byteBuffs.toArray(new ByteBuf[0])));
+                }
+            } catch (Exception e) {
+                String message = ExceptionUtil.getMessage(e);
+                log.error(message);
+                throw new BusinessException(503, "生成解码器失败" + message);
             }
-            request.setRequestType(POST);
         }
-        //获取URi
+        //获取URi，設置真實的URI
         int i = req.uri().indexOf("?");
         if (i > 0) {
             String uri = req.uri();
@@ -85,7 +90,7 @@ public class DispatcherHandler {
         } else {
             request.setUri(req.uri());
         }
-        request.setRequestParams(requestParams);
+        request.setRequestType(req.method());
         webContext.setRequest(request);
         return webContext;
     }
@@ -136,7 +141,7 @@ public class DispatcherHandler {
             return webContext;
         }
 
-        RouterInfo routerInfo = RouterManager.getRouterInfo(webContext.getRequest().getUri(), GET);
+        RouterInfo routerInfo = RouterManager.getRouterInfo(webContext.getRequest().getUri(), webContext.getRequest().getRequestType());
         if (routerInfo == null) {
             log.error("为找到对应的控制器");
             throw new BusinessException(404, "为找到对应的控制器");
@@ -243,7 +248,7 @@ public class DispatcherHandler {
      * @param future
      * @param msg
      */
-    public static void writeResponse(ChannelHandlerContext ctx, CompletableFuture<HttpRequest> future, FullHttpResponse msg) {
+    public static void writeResponse(ChannelHandlerContext ctx, CompletableFuture<WebContext> future, FullHttpResponse msg) {
         ctx.writeAndFlush(msg);
         future.complete(null);
     }

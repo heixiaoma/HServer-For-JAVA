@@ -51,7 +51,8 @@ public class StaticHandler {
             staticFile.setSize(available);
             //获取文件名
             int i = url.lastIndexOf("/");
-            if (i > -1) {
+            int i1 = url.lastIndexOf("\\.");
+            if (i > -1 && i1 > 0) {
                 String fileName = url.substring(i + 1, url.length());
                 String[] split = fileName.split("\\.");
                 staticFile.setFileName(fileName);
