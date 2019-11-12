@@ -1,8 +1,8 @@
 package com.hserver.core.ioc.ref;
 
 
-import com.hserver.core.ioc.annotation.Action;
 import com.hserver.core.ioc.annotation.Bean;
+import com.hserver.core.ioc.annotation.Controller;
 import org.reflections.Reflections;
 
 import java.io.IOException;
@@ -40,8 +40,8 @@ public class ClasspathPackageScanner implements PackageScanner {
         List<String> clazzLis = new ArrayList<>();
         Reflections reflections = new Reflections(basePackage + ".*");
         //比如可以获取有Pay注解的class
-        Set<Class<?>> actions = reflections.getTypesAnnotatedWith(Action.class);
-        for (Class<?> cl : actions) {
+        Set<Class<?>> controllers = reflections.getTypesAnnotatedWith(Controller.class);
+        for (Class<?> cl : controllers) {
             clazzLis.add(cl.getCanonicalName());
         }
         return clazzLis;

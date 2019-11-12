@@ -1,12 +1,12 @@
 package com.test.bean;
 
+import com.hserver.core.ioc.annotation.Autowired;
 import com.hserver.core.ioc.annotation.Bean;
-import com.hserver.core.ioc.annotation.In;
 
 @Bean
 public class TestService {
 
-    @In
+    @Autowired
     private Test test;
 
     public String testa() {

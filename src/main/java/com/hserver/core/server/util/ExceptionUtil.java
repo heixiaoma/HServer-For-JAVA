@@ -1,4 +1,4 @@
-package com.hserver.util;
+package com.hserver.core.server.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

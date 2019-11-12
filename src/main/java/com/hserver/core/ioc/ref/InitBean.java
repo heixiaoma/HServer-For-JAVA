@@ -82,7 +82,7 @@ public class InitBean {
             for (Field declaredField : declaredFields) {
                 declaredField.setAccessible(true);
                 //检查是否有注解@In
-                In annotation = declaredField.getAnnotation(In.class);
+                Autowired  annotation = declaredField.getAnnotation(Autowired .class);
                 if (annotation != null) {
                     String findMsg;
                     Object bean;

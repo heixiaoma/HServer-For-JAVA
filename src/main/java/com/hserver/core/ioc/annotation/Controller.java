@@ -2,10 +2,9 @@ package com.hserver.core.ioc.annotation;
 
 import java.lang.annotation.*;
 
-
-@Target({ElementType.TYPE,ElementType.FIELD})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface In {
-    String value() default "";
+public @interface Controller {
+
 }

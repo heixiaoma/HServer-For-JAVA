@@ -3,7 +3,7 @@ package com.hserver.core.server.handlers;
 
 import com.hserver.core.server.context.StaticFile;
 import com.hserver.core.server.exception.BusinessException;
-import com.hserver.util.ExceptionUtil;
+import com.hserver.core.server.util.ExceptionUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +51,7 @@ public class StaticHandler {
             staticFile.setSize(available);
             //获取文件名
             int i = url.lastIndexOf("/");
-            int i1 = url.lastIndexOf("\\.");
+            int i1 = url.lastIndexOf(".");
             if (i > -1 && i1 > 0) {
                 String fileName = url.substring(i + 1, url.length());
                 String[] split = fileName.split("\\.");

@@ -2,9 +2,10 @@ package com.hserver.core.ioc.annotation;
 
 import java.lang.annotation.*;
 
-@Target(ElementType.TYPE)
+
+@Target({ElementType.TYPE,ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Action {
-
+public @interface Autowired {
+    String value() default "";
 }
