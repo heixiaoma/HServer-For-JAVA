@@ -5,6 +5,7 @@ import com.hserver.core.ioc.annotation.Controller;
 import com.hserver.core.ioc.annotation.GET;
 import com.hserver.core.ioc.annotation.POST;
 import com.hserver.core.server.context.Request;
+import com.hserver.core.server.context.Response;
 import com.hserver.core.server.handlers.FileItem;
 import com.test.bean.Test;
 
@@ -17,6 +18,13 @@ public class Hello {
     @Autowired
     private Test test1q;
 
+    /**
+     * json测试，依赖注入测试
+     *
+     * @param request
+     * @param name
+     * @return
+     */
     @GET("/hello")
     public Map index(Request request, String name) {
         Map<String, Object> res = new HashMap<>();
@@ -27,6 +35,12 @@ public class Hello {
         return res;
     }
 
+    /**
+     * 上传文件测试
+     *
+     * @param request
+     * @return
+     */
     @POST("/file")
     public Map file(Request request) {
         Map<String, FileItem> fileItems = request.getFileItems();
@@ -42,6 +56,13 @@ public class Hello {
     }
 
 
+    /**
+     * POST带参数据测试
+     *
+     * @param request
+     * @param a
+     * @return
+     */
     @POST("/a")
     public Map a(Request request, Integer a) {
         System.out.println(request.getRequestParams());
@@ -51,5 +72,21 @@ public class Hello {
         res.put("msg", test1q.show());
         return res;
     }
+
+    /**
+     * 响应头测试
+     *
+     * @param response
+     * @return
+     */
+    @GET("/head")
+    public Map head(Request request,Response response) {
+        response.setHeader("我", "b");
+        Map<String, Object> res = new HashMap<>();
+        res.put("code", 200);
+        res.put("msg", test1q.show());
+        return res;
+    }
+
 
 }

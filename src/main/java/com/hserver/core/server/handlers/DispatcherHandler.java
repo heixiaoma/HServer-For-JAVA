@@ -3,6 +3,7 @@ package com.hserver.core.server.handlers;
 import com.alibaba.fastjson.JSON;
 import com.hserver.core.ioc.IocUtil;
 import com.hserver.core.server.context.Request;
+import com.hserver.core.server.context.Response;
 import com.hserver.core.server.context.StaticFile;
 import com.hserver.core.server.context.WebContext;
 import com.hserver.core.server.exception.BusinessException;
@@ -91,6 +92,7 @@ public class DispatcherHandler {
         }
         request.setRequestType(req.method());
         webContext.setRequest(request);
+        webContext.setResponse(new Response());
         return webContext;
     }
 
@@ -191,7 +193,6 @@ public class DispatcherHandler {
             log.error(message);
             throw new BusinessException(e.getHttpCode(), e.getMsg() + message);
         }
-
     }
 
     /**
@@ -201,30 +202,38 @@ public class DispatcherHandler {
      * @return
      */
     public static FullHttpResponse buildResponse(WebContext webContext) {
+        try {
+            FullHttpResponse response;
+            /**
+             * 如果是文件特殊处理下,是静态文件，同时需要下载的文件
+             */
+            if (webContext.isStaticFile()) {
+                //显示型的
+                response = new DefaultFullHttpResponse(
+                        HttpVersion.HTTP_1_1,
+                        HttpResponseStatus.OK,
+                        Unpooled.wrappedBuffer(webContext.getStaticFile().getByteBuf()));
+                response.headers().set(HttpHeaderNames.CONTENT_TYPE, webContext.getStaticFile().getFileHead() + ";charset=UTF-8");
+            } else {
+                response = new DefaultFullHttpResponse(
+                        HttpVersion.HTTP_1_1,
+                        HttpResponseStatus.OK,
+                        Unpooled.wrappedBuffer(webContext.getResult().getBytes(Charset.forName("UTF-8"))));
+                response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
+            }
+            response.headers().set(HttpHeaderNames.SERVER, "HServer");
+            response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
+            response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+            //用户自定义头头
+            Map<String, String> headers = webContext.getResponse().getHeaders();
+            headers.forEach((a, b) -> response.headers().set(a, b));
+            return response;
 
-        FullHttpResponse response;
-
-        /**
-         * 如果是文件特殊处理下,是静态文件，同时需要下载的文件
-         */
-        if (webContext.isStaticFile()) {
-            //显示型的
-            response = new DefaultFullHttpResponse(
-                    HttpVersion.HTTP_1_1,
-                    HttpResponseStatus.OK,
-                    Unpooled.wrappedBuffer(webContext.getStaticFile().getByteBuf()));
-            response.headers().set(HttpHeaderNames.CONTENT_TYPE, webContext.getStaticFile().getFileHead() + ";charset=UTF-8");
-        } else {
-            response = new DefaultFullHttpResponse(
-                    HttpVersion.HTTP_1_1,
-                    HttpResponseStatus.OK,
-                    Unpooled.wrappedBuffer(webContext.getResult().getBytes(Charset.forName("UTF-8"))));
-            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
+        } catch (Exception e) {
+            String message = ExceptionUtil.getMessage(e);
+            log.error(message);
+            throw new BusinessException(503, "构建Response对象异常" + message);
         }
-
-        response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
-        response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-        return response;
     }
 
     /**
@@ -241,6 +250,7 @@ public class DispatcherHandler {
                 httpResponseStatus,
                 Unpooled.wrappedBuffer(cause.getRespMsg().getBytes(Charset.forName("UTF-8"))));
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
+        response.headers().set(HttpHeaderNames.SERVER, "HServer");
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
         return response;
