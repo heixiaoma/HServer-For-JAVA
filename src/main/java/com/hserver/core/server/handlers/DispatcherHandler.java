@@ -9,6 +9,7 @@ import com.hserver.core.server.context.WebContext;
 import com.hserver.core.server.exception.BusinessException;
 import com.hserver.core.server.router.RouterInfo;
 import com.hserver.core.server.router.RouterManager;
+import com.hserver.core.server.util.DownLoadUtil;
 import com.hserver.core.server.util.ParameterUtil;
 import com.hserver.core.server.util.ExceptionUtil;
 import io.netty.buffer.ByteBuf;
@@ -214,6 +215,23 @@ public class DispatcherHandler {
                         HttpResponseStatus.OK,
                         Unpooled.wrappedBuffer(webContext.getStaticFile().getByteBuf()));
                 response.headers().set(HttpHeaderNames.CONTENT_TYPE, webContext.getStaticFile().getFileHead() + ";charset=UTF-8");
+            } else if (webContext.getResponse().isDownload()) {
+                //控制器的
+                Response response1 = webContext.getResponse();
+
+                if (response1.getFile() == null) {
+                    response = new DefaultFullHttpResponse(
+                            HttpVersion.HTTP_1_1,
+                            HttpResponseStatus.OK,
+                            Unpooled.wrappedBuffer(DownLoadUtil.FileToByteBuf(response1.getInputStream())));
+                } else {
+                    response = new DefaultFullHttpResponse(
+                            HttpVersion.HTTP_1_1,
+                            HttpResponseStatus.OK,
+                            Unpooled.wrappedBuffer(DownLoadUtil.FileToByteBuf(response1.getFile())));
+                }
+                response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/octet-stream;charset=UTF-8");
+                response.headers().add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", webContext.getResponse().getFileName()));
             } else {
                 response = new DefaultFullHttpResponse(
                         HttpVersion.HTTP_1_1,

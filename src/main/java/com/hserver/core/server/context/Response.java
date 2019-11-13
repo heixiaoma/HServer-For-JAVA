@@ -13,6 +13,10 @@ public class Response {
 
     private InputStream inputStream;
 
+    private boolean isDownload;
+
+    private String fileName;
+
     /**
      * 设置响应头
      *
@@ -30,6 +34,8 @@ public class Response {
      */
     public void setDownloadFile(File file) {
         this.file = file;
+        this.isDownload = true;
+        this.fileName = file.getName();
     }
 
     /**
@@ -37,8 +43,10 @@ public class Response {
      *
      * @param inputStream
      */
-    public void setDownloadFile(InputStream inputStream) {
+    public void setDownloadFile(InputStream inputStream, String fileName) {
         this.inputStream = inputStream;
+        this.isDownload = true;
+        this.fileName = fileName;
     }
 
 
@@ -54,5 +62,13 @@ public class Response {
 
     public InputStream getInputStream() {
         return inputStream;
+    }
+
+    public boolean isDownload() {
+        return isDownload;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 }

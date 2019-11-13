@@ -9,6 +9,7 @@ import com.hserver.core.server.context.Response;
 import com.hserver.core.server.handlers.FileItem;
 import com.test.bean.Test;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,7 +81,7 @@ public class Hello {
      * @return
      */
     @GET("/head")
-    public Map head(Request request,Response response) {
+    public Map head(Request request, Response response) {
         response.setHeader("我", "b");
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
@@ -88,5 +89,19 @@ public class Hello {
         return res;
     }
 
+    /**
+     * 响应头测试
+     *
+     * @param response
+     * @return
+     */
+    @GET("/down")
+    public Map downFile(Request request, Response response) {
+        response.setDownloadFile(new File("D:\\Java\\HServer\\README.MD"));
+        Map<String, Object> res = new HashMap<>();
+        res.put("code", 200);
+        res.put("msg", test1q.show());
+        return res;
+    }
 
 }
