@@ -153,19 +153,19 @@ public class DispatcherHandler {
             Class<?> aClass = routerInfo.getaClass();
             Object bean = IocUtil.getBean(aClass);
             //检查下方法参数
-            Parameter[] parameterTypes = method.getParameters();
             Object res;
             //如果控制器有参数，那么就进行，模糊赋值，在检测是否有req 和resp
             try {
-                if (parameterTypes.length > 0) {
-                    Object[] methodArgs = null;
-                    try {
-                        methodArgs = ParameterUtil.getMethodArgs(parameterTypes, webContext);
-                    } catch (Exception e) {
-                        String message = ExceptionUtil.getMessage(e);
-                        log.error(message);
-                        throw new BusinessException(503, "生成控制器时参数异常" + message);
-                    }
+
+                Object[] methodArgs = null;
+                try {
+                    methodArgs = ParameterUtil.getMethodArgs(aClass, method, webContext);
+                } catch (Exception e) {
+                    String message = ExceptionUtil.getMessage(e);
+                    log.error(message);
+                    throw new BusinessException(503, "生成控制器时参数异常" + message);
+                }
+                if (methodArgs != null) {
                     res = method.invoke(bean, methodArgs);
                 } else {
                     res = method.invoke(bean);

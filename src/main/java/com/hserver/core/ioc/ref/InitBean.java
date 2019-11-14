@@ -4,6 +4,7 @@ import com.hserver.core.ioc.IocUtil;
 import com.hserver.core.ioc.annotation.*;
 import com.hserver.core.server.router.RouterInfo;
 import com.hserver.core.server.router.RouterManager;
+import com.hserver.core.server.util.ParameterUtil;
 import io.netty.handler.codec.http.HttpMethod;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,6 +45,10 @@ public class InitBean {
                 //检查注解里面是否有值
                 Method[] methods = aClass.getDeclaredMethods();
                 for (Method method : methods) {
+                    /**
+                     * 这里对方法控制器的注解的方法参数，进行初始化
+                     */
+                    ParameterUtil.addParam(aClass, method);
                     GET get = method.getAnnotation(GET.class);
                     POST post = method.getAnnotation(POST.class);
                     if (get != null) {
@@ -82,7 +87,7 @@ public class InitBean {
             for (Field declaredField : declaredFields) {
                 declaredField.setAccessible(true);
                 //检查是否有注解@In
-                Autowired  annotation = declaredField.getAnnotation(Autowired .class);
+                Autowired annotation = declaredField.getAnnotation(Autowired.class);
                 if (annotation != null) {
                     String findMsg;
                     Object bean;

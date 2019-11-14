@@ -1,4 +1,4 @@
-package com.test.bean;
+package com.test.service;
 
 import com.hserver.core.ioc.annotation.Autowired;
 import com.hserver.core.ioc.annotation.Bean;

@@ -7,7 +7,9 @@ import com.hserver.core.ioc.annotation.POST;
 import com.hserver.core.server.context.Request;
 import com.hserver.core.server.context.Response;
 import com.hserver.core.server.handlers.FileItem;
-import com.test.bean.Test;
+import com.test.bean.User;
+import com.test.service.Test;
+import javassist.CtField;
 
 import java.io.File;
 import java.util.HashMap;
@@ -101,6 +103,21 @@ public class Hello {
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("msg", test1q.show());
+        return res;
+    }
+
+    /**
+     * javaBean和基础数据类型测试
+     *
+     * @return
+     */
+    @GET("/javaBean")
+    public Map javaBean(User user, String name) {
+        Map<String, Object> res = new HashMap<>();
+        res.put("code", 200);
+        res.put("msg", test1q.show());
+        res.put("user", user);
+        res.put("name", name);
         return res;
     }
 

@@ -16,10 +16,11 @@ import io.netty.util.CharsetUtil;
 import java.util.Deque;
 import java.util.Map;
 
-import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
-import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
+
+import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_TYPE;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+import static io.netty.handler.codec.rtsp.RtspHeaderNames.CONTENT_LENGTH;
 
 /**
  * this class handles the "status" request and builds a response to client with certain statistic
@@ -33,8 +34,8 @@ public class StatusHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, HttpRequest req) throws Exception {
-        if (req.getUri().equals("/status") || req.getUri().equals("/status/")) {
-            String url = req.getUri();
+        if (req.uri().equals("/status") || req.uri().equals("/status/")) {
+            String url = req.uri();
             controller.IncreaseCount();
             controller.addToIpMap(ctx);
             responseContent.setLength(0);
