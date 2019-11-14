@@ -6,6 +6,11 @@ import com.hserver.core.server.router.RouterInfo;
 import com.hserver.core.server.router.RouterManager;
 import com.hserver.core.server.util.ParameterUtil;
 import io.netty.handler.codec.http.HttpMethod;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.bytecode.CodeAttribute;
+import javassist.bytecode.MethodInfo;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -24,60 +29,122 @@ public class InitBean {
     public static void init(Class<?> baseClass) {
         try {
             PackageScanner scan = new ClasspathPackageScanner(baseClass.getPackage().getName());
-            List<String> packges = scan.getBeansPackage();
-            for (String packge : packges) {
-                Class aClass = Class.forName(packge);
-                //检查注解里面是否有值
-                Bean annotation = (Bean) aClass.getAnnotation(Bean.class);
-                if (annotation != null && annotation.value().trim().length() > 0) {
-                    IocUtil.addBean(annotation.value(), aClass.newInstance());
-                } else {
-                    IocUtil.addBean(aClass.getName(), aClass.newInstance());
-                }
-            }
-
-            /**
-             * 检查是否有方法注解
-             */
-            List<String> actionsPackages = scan.getActionsPackage();
-            for (String packge : actionsPackages) {
-                Class aClass = Class.forName(packge);
-                //检查注解里面是否有值
-                Method[] methods = aClass.getDeclaredMethods();
-                for (Method method : methods) {
-                    /**
-                     * 这里对方法控制器的注解的方法参数，进行初始化
-                     */
-                    ParameterUtil.addParam(aClass, method);
-                    GET get = method.getAnnotation(GET.class);
-                    POST post = method.getAnnotation(POST.class);
-                    if (get != null) {
-                        RouterInfo routerInfo = new RouterInfo();
-                        routerInfo.setMethod(method);
-                        routerInfo.setUrl(get.value());
-                        routerInfo.setaClass(aClass);
-                        routerInfo.setReqMethodName(HttpMethod.GET);
-                        RouterManager.addRouter(routerInfo);
-                    }
-                    if (post != null) {
-                        RouterInfo routerInfo = new RouterInfo();
-                        routerInfo.setMethod(method);
-                        routerInfo.setUrl(post.value());
-                        routerInfo.setaClass(aClass);
-                        routerInfo.setReqMethodName(HttpMethod.POST);
-                        RouterManager.addRouter(routerInfo);
-                    }
-                }
-                IocUtil.addBean(aClass.getName(), aClass.newInstance());
-            }
-
+            initHook(scan);
+            initBean(scan);
+            initController(scan);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
     /**
-     * 给所有bean分配依赖
+     * 初始化Bean
+     */
+    private static void initBean(PackageScanner scan) throws Exception {
+
+        List<String> packges = scan.getBeansPackage();
+        for (String packge : packges) {
+            Class aClass = Class.forName(packge);
+            //检查注解里面是否有值
+            Bean annotation = (Bean) aClass.getAnnotation(Bean.class);
+            if (annotation != null && annotation.value().trim().length() > 0) {
+                IocUtil.addBean(annotation.value(), aClass.newInstance());
+            } else {
+                IocUtil.addBean(aClass.getName(), aClass.newInstance());
+            }
+        }
+    }
+
+    /**
+     * 初始化控制器
+     */
+    private static void initController(PackageScanner scan) throws Exception {
+        /**
+         * 检查是否有方法注解
+         */
+        List<String> actionsPackages = scan.getControllersPackage();
+        for (String packge : actionsPackages) {
+            Class aClass = Class.forName(packge);
+            //检查注解里面是否有值
+            Method[] methods = aClass.getDeclaredMethods();
+            for (Method method : methods) {
+                /**
+                 * 这里对方法控制器的注解的方法参数，进行初始化
+                 */
+                ParameterUtil.addParam(aClass, method);
+                GET get = method.getAnnotation(GET.class);
+                POST post = method.getAnnotation(POST.class);
+                if (get != null) {
+                    RouterInfo routerInfo = new RouterInfo();
+                    routerInfo.setMethod(method);
+                    routerInfo.setUrl(get.value());
+                    routerInfo.setaClass(aClass);
+                    routerInfo.setReqMethodName(HttpMethod.GET);
+                    RouterManager.addRouter(routerInfo);
+                }
+                if (post != null) {
+                    RouterInfo routerInfo = new RouterInfo();
+                    routerInfo.setMethod(method);
+                    routerInfo.setUrl(post.value());
+                    routerInfo.setaClass(aClass);
+                    routerInfo.setReqMethodName(HttpMethod.POST);
+                    RouterManager.addRouter(routerInfo);
+                }
+            }
+            IocUtil.addBean(aClass.getName(), aClass.newInstance());
+        }
+
+    }
+
+
+    private static void initHook(PackageScanner scan) throws Exception {
+
+        List<String> packges = scan.getHooksPackage();
+        for (String packge : packges) {
+            Class aClass = Class.forName(packge);
+            Method[] methods = aClass.getDeclaredMethods();
+            for (Method method : methods) {
+                //这一层是Hook的方法
+                Before before = method.getAnnotation(Before.class);
+                After after = method.getAnnotation(After.class);
+                //对类进行Hook配置操作
+                if (before != null) {
+                    //这个是需要被Hook的类的Before
+                    Class cs1 = before.value();
+                    Method[] methods1 = cs1.getMethods();
+                    for (Method method1 : methods1) {
+                        //如果存在前置方法，需要Hook的
+                        if (method.getName().equals(method1.getName())) {
+                            //获取注解的里面的方法，设置到被Hook方法的前面去
+                            System.out.println("前置设置");
+                        }
+                    }
+                }
+
+                if (after != null) {
+                    //这个是需要被Hook的类的After
+                    Class cs2 = after.value();
+                    Method[] methods2 = cs2.getMethods();
+                    for (Method method2 : methods2) {
+                        //如果存在后置方法，需要Hook的
+                        if (method.getName().equals(method2.getName())) {
+                            //获取注解的里面的方法，设置到被Hook方法的后面去
+                            System.out.println("存在后置");
+                        }
+                    }
+                }
+
+
+            }
+
+
+        }
+    }
+
+
+    /**
+     * 给所有bean分配依赖(自动装配)
      */
     public static void injection() {
         Map<String, Object> all = IocUtil.getAll();
@@ -114,10 +181,7 @@ public class InitBean {
                     }
                 }
             }
-
         });
-
-
     }
 
 }

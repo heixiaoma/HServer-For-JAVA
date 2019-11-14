@@ -3,6 +3,7 @@ package com.hserver.core.ioc.ref;
 
 import com.hserver.core.ioc.annotation.Bean;
 import com.hserver.core.ioc.annotation.Controller;
+import com.hserver.core.ioc.annotation.Hook;
 import org.reflections.Reflections;
 
 import java.io.IOException;
@@ -27,7 +28,6 @@ public class ClasspathPackageScanner implements PackageScanner {
     public List<String> getBeansPackage() throws IOException {
         List<String> clazzLis = new ArrayList<>();
         Reflections reflections = new Reflections(basePackage + ".*");
-        //比如可以获取有Pay注解的class
         Set<Class<?>> beans = reflections.getTypesAnnotatedWith(Bean.class);
         for (Class<?> cl : beans) {
             clazzLis.add(cl.getCanonicalName());
@@ -36,10 +36,9 @@ public class ClasspathPackageScanner implements PackageScanner {
     }
 
     @Override
-    public List<String> getActionsPackage() throws IOException {
+    public List<String> getControllersPackage() throws IOException {
         List<String> clazzLis = new ArrayList<>();
         Reflections reflections = new Reflections(basePackage + ".*");
-        //比如可以获取有Pay注解的class
         Set<Class<?>> controllers = reflections.getTypesAnnotatedWith(Controller.class);
         for (Class<?> cl : controllers) {
             clazzLis.add(cl.getCanonicalName());
@@ -47,4 +46,14 @@ public class ClasspathPackageScanner implements PackageScanner {
         return clazzLis;
     }
 
+    @Override
+    public List<String> getHooksPackage() throws IOException {
+        List<String> clazzLis = new ArrayList<>();
+        Reflections reflections = new Reflections(basePackage + ".*");
+        Set<Class<?>> controllers = reflections.getTypesAnnotatedWith(Hook.class);
+        for (Class<?> cl : controllers) {
+            clazzLis.add(cl.getCanonicalName());
+        }
+        return clazzLis;
+    }
 }
