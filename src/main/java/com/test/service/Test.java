@@ -9,11 +9,11 @@ public class Test {
     @Autowired
     private TestService testService;
 
-    public String show() {
-        return testService.testa();
+    public String show(String name) {
+        return testService.testa() + name;
     }
 
-    public String ac(){
+    public String ac() {
         return "牛皮得很";
     }
 }

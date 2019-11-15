@@ -33,7 +33,7 @@ public class Hello {
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("res", request.getRequestParams());
-        res.put("msg", test1q.show());
+        res.put("msg", test1q.show("xx"));
         res.put("name", name);
         return res;
     }
@@ -54,7 +54,7 @@ public class Hello {
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("res", request.getRequestParams());
-        res.put("msg", test1q.show());
+        res.put("msg", test1q.show("xx"));
         return res;
     }
 
@@ -72,7 +72,7 @@ public class Hello {
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("res", request.getRequestParams());
-        res.put("msg", test1q.show());
+        res.put("msg", test1q.show("xx"));
         return res;
     }
 
@@ -84,10 +84,9 @@ public class Hello {
      */
     @GET("/head")
     public Map head(Request request, Response response) {
-        response.setHeader("我", "b");
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
-        res.put("msg", test1q.show());
+        res.put("msg", test1q.show("xx"));
         return res;
     }
 
@@ -102,7 +101,7 @@ public class Hello {
         response.setDownloadFile(new File("D:\\Java\\HServer\\README.MD"));
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
-        res.put("msg", test1q.show());
+        res.put("msg", test1q.show("xx"));
         return res;
     }
 
@@ -115,7 +114,7 @@ public class Hello {
     public Map javaBean(User user, String name) {
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
-        res.put("msg", test1q.show());
+        res.put("msg", test1q.show("xx"));
         res.put("user", user);
         res.put("name", name);
         return res;

@@ -30,7 +30,6 @@ public class JavassistProxyFactory {
                                      * 调用代理类实例上的代理方法的父类方法（即实体类ConcreteClassNoInterface中对应的方法）
                                      */
                                     public Object invoke(Object self, Method thismethod, Method proceed, Object[] args) throws Throwable {
-                                        System.out.println("-------------proxy-------------------");
                                         HookAdapter hookAdapter = (HookAdapter) IocUtil.getBean(hookPageName);
                                         if (thismethod.getName().equals(method)) {
                                             hookAdapter.before(args);
