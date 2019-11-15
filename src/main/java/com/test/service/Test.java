@@ -6,7 +6,7 @@ import com.hserver.core.ioc.annotation.Bean;
 @Bean
 public class Test {
 
-    @Autowired()
+    @Autowired
     private TestService testService;
 
     public String show() {

@@ -3,11 +3,11 @@ package com.hserver.core.ioc;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-public class HServerIoc implements Ioc {
+public class HookIoc implements Ioc {
 
     private static final Map<String, Object> pool = new ConcurrentHashMap<>(32);
 
@@ -56,7 +56,7 @@ public class HServerIoc implements Ioc {
 
     @Override
     public void addBean(String name, Object bean) {
-        if (name != null && name.trim().length() > 0 && bean != null ) {
+        if (name != null && name.trim().length() > 0 && bean != null) {
             pool.put(name, bean);
         }
     }

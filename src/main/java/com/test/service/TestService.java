@@ -5,7 +5,6 @@ import com.hserver.core.ioc.annotation.Bean;
 
 @Bean
 public class TestService {
-
     @Autowired
     private Test test;
 
