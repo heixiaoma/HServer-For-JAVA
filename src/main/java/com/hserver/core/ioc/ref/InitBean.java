@@ -2,7 +2,10 @@ package com.hserver.core.ioc.ref;
 
 import com.hserver.core.ioc.IocUtil;
 import com.hserver.core.ioc.annotation.*;
+import com.hserver.core.ioc.interfaces.FilterAdapter;
+import com.hserver.core.ioc.util.ClassLoadUtil;
 import com.hserver.core.proxy.JavassistProxyFactory;
+import com.hserver.core.server.filter.FilterChain;
 import com.hserver.core.server.router.RouterInfo;
 import com.hserver.core.server.router.RouterManager;
 import com.hserver.core.server.util.ParameterUtil;
@@ -11,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,23 +32,21 @@ public class InitBean {
             initBean(scan);
             initController(scan);
             initHook(scan);
+            initFilter(scan);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
     /**
      * 初始化Bean
      */
     private static void initBean(PackageScanner scan) throws Exception {
-
-        List<String> packges = scan.getBeansPackage();
-        for (String packge : packges) {
-            Class aClass = Class.forName(packge);
+        List<Class<?>> classs = scan.getBeansPackage();
+        for (Class aClass : classs) {
             //检查注解里面是否有值
             Bean annotation = (Bean) aClass.getAnnotation(Bean.class);
-            if (annotation != null && annotation.value().trim().length() > 0) {
+            if (annotation.value().trim().length() > 0) {
                 IocUtil.addBean(annotation.value(), aClass.newInstance());
             } else {
                 IocUtil.addBean(aClass.getName(), aClass.newInstance());
@@ -59,9 +61,8 @@ public class InitBean {
         /**
          * 检查是否有方法注解
          */
-        List<String> actionsPackages = scan.getControllersPackage();
-        for (String packge : actionsPackages) {
-            Class aClass = Class.forName(packge);
+        List<Class<?>> classs = scan.getControllersPackage();
+        for (Class aClass : classs) {
             //检查注解里面是否有值
             Method[] methods = aClass.getDeclaredMethods();
             for (Method method : methods) {
@@ -90,15 +91,57 @@ public class InitBean {
             }
             IocUtil.addBean(aClass.getName(), aClass.newInstance());
         }
+    }
 
+
+    /**
+     * 处理下Filter的加载，放在Ioc容器
+     */
+    private static void initFilter(PackageScanner scan) throws Exception {
+        List<Class<?>> classes = scan.getFiltersPackage();
+        // 载入事件处理类
+        Map<Integer, Map<String, FilterAdapter>> map = new HashMap<>();
+        int tempMax = 0;
+        // 解析事件处理类
+        for (Class<?> clazz : classes) {
+            Filter handlerAnno = clazz.getAnnotation(Filter.class);
+            if (handlerAnno == null) {
+                continue;
+            }
+            log.info(clazz.getCanonicalName() + "优先级：" + handlerAnno.value());
+            FilterAdapter obj = null;
+            try {
+                obj = (FilterAdapter) clazz.newInstance();
+            } catch (Exception e) {
+                log.error("初始化 " + clazz.getSimpleName() + " 错误", e);
+                continue;
+            }
+            if (obj != null) {
+                if (map.containsKey(handlerAnno.value())) {
+                    throw new RuntimeException("初始化插件出现异常，顺序冲突:" + handlerAnno.value());
+                } else {
+                    Map<String, FilterAdapter> filterMap = new HashMap<>();
+                    filterMap.put(clazz.getName(), obj);
+                    map.put(handlerAnno.value(), filterMap);
+                    if (handlerAnno.value() > tempMax) {
+                        tempMax = handlerAnno.value();
+                    }
+                }
+            }
+        }
+        for (int i = 0; i <= tempMax; i++) {
+            if (map.containsKey(i)) {
+                Map<String, FilterAdapter> filterMap = map.get(i);
+                FilterChain.filtersIoc.add(filterMap);
+            }
+        }
     }
 
 
     private static void initHook(PackageScanner scan) throws Exception {
         JavassistProxyFactory javassistProxyFactory = new JavassistProxyFactory();
-        List<String> packges = scan.getHooksPackage();
-        for (String packge : packges) {
-            Class aClass = Class.forName(packge);
+        List<Class<?>> classs = scan.getHooksPackage();
+        for (Class aClass : classs) {
             Hook hook = (Hook) aClass.getAnnotation(Hook.class);
             Class value = hook.value();
             String method = hook.method();
@@ -109,7 +152,6 @@ public class InitBean {
             IocUtil.addBean(value.getName(), newProxyInstance);
         }
     }
-
 
     /**
      * 给所有bean分配依赖(自动装配)
@@ -127,7 +169,6 @@ public class InitBean {
             for (Field field : declaredFields1) {
                 zr(field, k, v);
             }
-
         });
     }
 
@@ -152,9 +193,9 @@ public class InitBean {
             try {
                 if (bean.getClass().getName().contains(declaredField.getType().getName())) {
                     declaredField.set(v, bean);
-                    log.info(v.getClass().getName() + "----->" + declaredField.getName() + "装配完成");
+                    log.info(v.getClass().getName() + "----->" + declaredField.getName() + "：装配完成");
                 } else {
-                    log.error(v.getClass().getName() + "----->" + declaredField.getName() + "装配错误:类型不匹配");
+                    log.error(v.getClass().getName() + "----->" + declaredField.getName() + "：装配错误:类型不匹配");
                 }
             } catch (Exception e) {
                 log.error("装配错误:" + e.getMessage());

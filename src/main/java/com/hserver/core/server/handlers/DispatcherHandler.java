@@ -7,6 +7,7 @@ import com.hserver.core.server.context.Response;
 import com.hserver.core.server.context.StaticFile;
 import com.hserver.core.server.context.WebContext;
 import com.hserver.core.server.exception.BusinessException;
+import com.hserver.core.server.filter.FilterChain;
 import com.hserver.core.server.router.RouterInfo;
 import com.hserver.core.server.router.RouterManager;
 import com.hserver.core.server.util.DownLoadUtil;
@@ -124,6 +125,18 @@ public class DispatcherHandler {
             webContext.setStaticFile(handler);
         } else {
             noStaticFileUri.add(webContext.getRequest().getUri());
+        }
+        return webContext;
+    }
+
+    public static WebContext filter(WebContext webContext) {
+        /**
+         * 检测下Filter的过滤哈哈
+         */
+        if (!FilterChain.filtersIoc.isEmpty()) {
+            //不是空就要进行Filter过滤洛
+            webContext.setFilter(true);
+            FilterChain.getFileChain().doFilter(webContext);
         }
         return webContext;
     }

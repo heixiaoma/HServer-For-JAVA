@@ -1,5 +1,8 @@
-package com.hserver.core.ioc;
+package com.hserver.core.ioc.interfaces;
 
+/**
+ * Aop
+ */
 public interface HookAdapter {
 
     void before(Object[] args);

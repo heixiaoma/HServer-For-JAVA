@@ -45,12 +45,6 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.11</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -60,9 +54,9 @@
 
 
         <dependency>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>3.12.1.GA</version>
+            <groupId>org.javassist </groupId>
+            <artifactId>javassist </artifactId>
+            <version>3.18.2-GA</version>
         </dependency>
 
 

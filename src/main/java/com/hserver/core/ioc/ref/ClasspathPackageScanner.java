@@ -3,14 +3,17 @@ package com.hserver.core.ioc.ref;
 
 import com.hserver.core.ioc.annotation.Bean;
 import com.hserver.core.ioc.annotation.Controller;
+import com.hserver.core.ioc.annotation.Filter;
 import com.hserver.core.ioc.annotation.Hook;
-import org.reflections.Reflections;
+import com.hserver.core.ioc.interfaces.FilterAdapter;
+import com.hserver.core.ioc.util.ClassLoadUtil;
+import com.hserver.core.server.filter.FilterChain;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+@Slf4j
 public class ClasspathPackageScanner implements PackageScanner {
 
     private String basePackage;
@@ -25,35 +28,53 @@ public class ClasspathPackageScanner implements PackageScanner {
     }
 
     @Override
-    public List<String> getBeansPackage() throws IOException {
-        List<String> clazzLis = new ArrayList<>();
-        Reflections reflections = new Reflections(basePackage + ".*");
-        Set<Class<?>> beans = reflections.getTypesAnnotatedWith(Bean.class);
-        for (Class<?> cl : beans) {
-            clazzLis.add(cl.getCanonicalName());
+    public List<Class<?>> getBeansPackage() throws IOException {
+        List<Class<?>> clazzLis = new ArrayList<>();
+        List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true);
+        for (Class<?> aClass : classes) {
+            if (aClass.getAnnotation(Bean.class)!=null){
+                clazzLis.add(aClass);
+            }
         }
         return clazzLis;
     }
 
     @Override
-    public List<String> getControllersPackage() throws IOException {
-        List<String> clazzLis = new ArrayList<>();
-        Reflections reflections = new Reflections(basePackage + ".*");
-        Set<Class<?>> controllers = reflections.getTypesAnnotatedWith(Controller.class);
-        for (Class<?> cl : controllers) {
-            clazzLis.add(cl.getCanonicalName());
+    public List<Class<?>> getControllersPackage() throws IOException {
+        List<Class<?>> clazzLis = new ArrayList<>();
+        List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true);
+        for (Class<?> aClass : classes) {
+            if (aClass.getAnnotation(Controller.class)!=null){
+                clazzLis.add(aClass);
+            }
         }
         return clazzLis;
     }
 
     @Override
-    public List<String> getHooksPackage() throws IOException {
-        List<String> clazzLis = new ArrayList<>();
-        Reflections reflections = new Reflections(basePackage + ".*");
-        Set<Class<?>> controllers = reflections.getTypesAnnotatedWith(Hook.class);
-        for (Class<?> cl : controllers) {
-            clazzLis.add(cl.getCanonicalName());
+    public List<Class<?>> getHooksPackage() throws IOException {
+        List<Class<?>> clazzLis = new ArrayList<>();
+        List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true);
+        for (Class<?> aClass : classes) {
+            if (aClass.getAnnotation(Hook.class)!=null){
+                clazzLis.add(aClass);
+            }
         }
         return clazzLis;
     }
+
+
+    @Override
+    public List<Class<?>> getFiltersPackage() throws IOException {
+        List<Class<?>> clazzLis = new ArrayList<>();
+        List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true);
+        for (Class<?> aClass : classes) {
+            if (aClass.getAnnotation(Filter.class)!=null){
+                clazzLis.add(aClass);
+            }
+        }
+        return clazzLis;
+    }
+
+
 }

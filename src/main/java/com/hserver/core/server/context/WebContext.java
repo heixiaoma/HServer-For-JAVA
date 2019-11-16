@@ -19,6 +19,8 @@ public class WebContext {
 
     private boolean isStaticFile;
 
+    private boolean isFilter;
+
     private HttpRequest httpRequest;
 
     private StaticFile staticFile;
@@ -85,5 +87,13 @@ public class WebContext {
 
     public void setContents(Queue<HttpContent> contents) {
         this.contents = contents;
+    }
+
+    public boolean isFilter() {
+        return isFilter;
+    }
+
+    public void setFilter(boolean filter) {
+        isFilter = filter;
     }
 }
