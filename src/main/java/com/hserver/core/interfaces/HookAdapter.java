@@ -1,4 +1,4 @@
-package com.hserver.core.ioc.interfaces;
+package com.hserver.core.interfaces;
 
 /**
  * Aop

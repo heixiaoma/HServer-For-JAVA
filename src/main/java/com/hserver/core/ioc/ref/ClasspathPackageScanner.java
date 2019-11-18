@@ -5,9 +5,7 @@ import com.hserver.core.ioc.annotation.Bean;
 import com.hserver.core.ioc.annotation.Controller;
 import com.hserver.core.ioc.annotation.Filter;
 import com.hserver.core.ioc.annotation.Hook;
-import com.hserver.core.ioc.interfaces.FilterAdapter;
 import com.hserver.core.ioc.util.ClassLoadUtil;
-import com.hserver.core.server.filter.FilterChain;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;

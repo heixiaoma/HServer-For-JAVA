@@ -1,5 +1,7 @@
 package com.test.action;
 
+import com.hserver.core.interfaces.HttpRequest;
+import com.hserver.core.interfaces.HttpResponse;
 import com.hserver.core.ioc.annotation.Autowired;
 import com.hserver.core.ioc.annotation.Controller;
 import com.hserver.core.ioc.annotation.GET;
@@ -29,7 +31,7 @@ public class Hello {
      * @return
      */
     @GET("/hello")
-    public Map index(Request request, String name) {
+    public Map index(HttpRequest request, String name) {
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("res", request.getRequestParams());
@@ -45,7 +47,7 @@ public class Hello {
      * @return
      */
     @POST("/file")
-    public Map file(Request request) {
+    public Map file(HttpRequest request) {
         Map<String, FileItem> fileItems = request.getFileItems();
         fileItems.forEach((k, v) -> {
             System.out.println(k);
@@ -67,7 +69,7 @@ public class Hello {
      * @return
      */
     @POST("/a")
-    public Map a(Request request, Integer a) {
+    public Map a(HttpRequest request, Integer a) {
         System.out.println(request.getRequestParams());
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
@@ -83,7 +85,7 @@ public class Hello {
      * @return
      */
     @GET("/head")
-    public Map head(Request request, Response response) {
+    public Map head(HttpRequest request, Response response) {
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("msg", test1q.show("xx"));
@@ -97,7 +99,7 @@ public class Hello {
      * @return
      */
     @GET("/down")
-    public Map downFile(Request request, Response response) {
+    public Map downFile(HttpRequest request, HttpResponse response) {
         response.setDownloadFile(new File("D:\\Java\\HServer\\README.MD"));
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);

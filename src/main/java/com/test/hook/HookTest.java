@@ -1,6 +1,6 @@
 package com.test.hook;
 
-import com.hserver.core.ioc.interfaces.HookAdapter;
+import com.hserver.core.interfaces.HookAdapter;
 import com.hserver.core.ioc.annotation.Hook;
 import com.test.service.Test;
 import lombok.extern.slf4j.Slf4j;

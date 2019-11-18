@@ -2,6 +2,8 @@ package com.hserver.core.server.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.hserver.core.interfaces.HttpRequest;
+import com.hserver.core.interfaces.HttpResponse;
 import com.hserver.core.server.context.Request;
 import com.hserver.core.server.context.Response;
 import com.hserver.core.server.context.WebContext;
@@ -41,9 +43,9 @@ public class ParameterUtil {
 
         for (int i = 0; i < parameterTypes.length; i++) {
             //构建方法参数
-            if (parameterTypes[i].getParameterizedType() == Request.class) {
+            if (parameterTypes[i].getParameterizedType() == HttpRequest.class) {
                 objects[i] = webContext.getRequest();
-            } else if (parameterTypes[i].getParameterizedType() == Response.class) {
+            } else if (parameterTypes[i].getParameterizedType() == HttpResponse.class) {
                 objects[i] = webContext.getResponse();
             } else {
                 Parameter parameterType = parameterTypes[i];

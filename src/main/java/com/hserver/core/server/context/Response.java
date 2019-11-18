@@ -1,11 +1,13 @@
 package com.hserver.core.server.context;
 
+import com.hserver.core.interfaces.HttpResponse;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Response {
+public class Response implements HttpResponse {
 
     private Map<String, String> headers = new HashMap<>();
 

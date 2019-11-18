@@ -2,10 +2,7 @@ package com.hserver.core.server.handlers;
 
 import com.alibaba.fastjson.JSON;
 import com.hserver.core.ioc.IocUtil;
-import com.hserver.core.server.context.Request;
-import com.hserver.core.server.context.Response;
-import com.hserver.core.server.context.StaticFile;
-import com.hserver.core.server.context.WebContext;
+import com.hserver.core.server.context.*;
 import com.hserver.core.server.exception.BusinessException;
 import com.hserver.core.server.filter.FilterChain;
 import com.hserver.core.server.router.RouterInfo;
@@ -136,7 +133,11 @@ public class DispatcherHandler {
         if (!FilterChain.filtersIoc.isEmpty()) {
             //不是空就要进行Filter过滤洛
             webContext.setFilter(true);
-            FilterChain.getFileChain().doFilter(webContext);
+            Webkit webkit = new Webkit();
+            webkit.httpRequest = webContext.getRequest();
+            webkit.httpResponse = webContext.getResponse();
+            FilterChain.getFileChain().doFilter(webkit);
+            //Filter走完又回来
         }
         return webContext;
     }

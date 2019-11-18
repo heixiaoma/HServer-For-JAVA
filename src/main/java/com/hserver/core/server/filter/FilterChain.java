@@ -1,7 +1,7 @@
 package com.hserver.core.server.filter;
 
-import com.hserver.core.ioc.interfaces.FilterAdapter;
-import com.hserver.core.server.context.WebContext;
+import com.hserver.core.interfaces.FilterAdapter;
+import com.hserver.core.server.context.Webkit;
 
 import java.util.*;
 
@@ -40,9 +40,9 @@ public class FilterChain {
         this.filters = filters;
     }
 
-    public void doFilter(WebContext webContext) {
+    public void doFilter(Webkit webkit) {
         if (pos < filters.size()) {
-            filters.get(pos++).doFilter(this, webContext);
+            filters.get(pos++).doFilter(this, webkit);
         }
     }
 

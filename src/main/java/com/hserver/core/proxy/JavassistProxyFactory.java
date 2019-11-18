@@ -1,6 +1,6 @@
 package com.hserver.core.proxy;
 
-import com.hserver.core.ioc.interfaces.HookAdapter;
+import com.hserver.core.interfaces.HookAdapter;
 import com.hserver.core.ioc.IocUtil;
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;

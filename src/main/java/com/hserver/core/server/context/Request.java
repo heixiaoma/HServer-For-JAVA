@@ -1,5 +1,6 @@
 package com.hserver.core.server.context;
 
+import com.hserver.core.interfaces.HttpRequest;
 import com.hserver.core.server.handlers.FileItem;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -19,7 +20,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class Request {
+public class Request implements HttpRequest {
     private String uri;
     private HttpMethod requestType;
     private Map<String, String> requestParams = new HashMap<>();
@@ -37,6 +38,16 @@ public class Request {
 
     public void setBody(ByteBuf body) {
         this.body = body;
+    }
+
+    @Override
+    public String query(String name) {
+        return requestParams.get(name);
+    }
+
+    @Override
+    public FileItem queryFile(String name) {
+        return fileItems.get(name);
     }
 
     public void readHttpDataChunkByChunk(HttpPostRequestDecoder decoder) {
