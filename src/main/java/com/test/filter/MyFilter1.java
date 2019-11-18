@@ -16,7 +16,11 @@ public class MyFilter1 implements FilterAdapter {
 
     @Override
     public void doFilter(FilterChain chain, Webkit webkit) {
-        log.info(webkit.httpRequest.getUri());
-        chain.doFilter(webkit);
+//        log.info(webkit.httpRequest.getUri());
+        if (webkit.httpRequest.getUri().equals("/filter")) {
+            webkit.httpResponse.sendJson("我是拦截器拦截");
+        } else {
+            chain.doFilter(webkit);
+        }
     }
 }

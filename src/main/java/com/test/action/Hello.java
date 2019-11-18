@@ -138,4 +138,15 @@ public class Hello {
 //        httpResponse.sendHtml("<h1>666</h1>");
     }
 
+
+    /**
+     * Filter测试
+     *
+     * @return
+     */
+    @GET("/filter")
+    public void Filter() {
+    //        拦截器会拦截的
+    }
+
 }

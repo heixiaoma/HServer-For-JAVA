@@ -24,12 +24,12 @@ public class RouterManager {
             String url = routerInfo.getUrl();
             if (GET == routerInfo.reqMethodName) {
                 if (routerGets.containsKey(url)) {
-                    log.warn("url<" + url + ">映射已经存在，可能会影响程序使用" + routerInfo.getaClass().getClass().getName());
+                    log.warn("url<" + url + ">映射已经存在，可能会影响程序使用" );
                 }
                 routerGets.put(url, routerInfo);
             } else {
                 if (routerPosts.containsKey(url)) {
-                    log.warn("url<" + url + ">映射已经存在，可能会影响程序使用" + routerInfo.getaClass().getClass().getName());
+                    log.warn("url<" + url + ">映射已经存在，可能会影响程序使用");
                 }
                 routerPosts.put(url, routerInfo);
             }
