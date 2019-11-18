@@ -100,7 +100,7 @@ public class Hello {
      */
     @GET("/down")
     public Map downFile(HttpRequest request, HttpResponse response) {
-        response.setDownloadFile(new File("D:\\Java\\HServer\\README.MD"));
+        response.setDownloadFile(new File("D:\\Java\\HServer\\README.md"));
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("msg", test1q.show("xx"));
