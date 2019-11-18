@@ -66,6 +66,10 @@ public class Response implements HttpResponse {
         headers.put("content-type", "text/html;charset=UTF-8");
     }
 
+    @Override
+    public void sendTemplate(String htmlPath, Map<String,Object> obj) {
+
+    }
 
     //---------------系统用的Get操作
 

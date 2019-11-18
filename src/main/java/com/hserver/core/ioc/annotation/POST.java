@@ -3,9 +3,9 @@ package com.hserver.core.ioc.annotation;
 import java.lang.annotation.*;
 
 
-@Target({ElementType.TYPE,ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface POST {
-    String value() default "";
+    String value();
 }

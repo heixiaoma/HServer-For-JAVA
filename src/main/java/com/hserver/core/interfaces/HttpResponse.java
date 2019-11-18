@@ -2,6 +2,7 @@ package com.hserver.core.interfaces;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Map;
 
 public interface HttpResponse {
 
@@ -14,5 +15,7 @@ public interface HttpResponse {
     void sendJson(Object object);
 
     void sendHtml(String html);
+
+    void sendTemplate(String htmlPath, Map<String,Object> obj);
 
 }

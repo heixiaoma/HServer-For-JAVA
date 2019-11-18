@@ -142,11 +142,23 @@ public class Hello {
     /**
      * Filter测试
      *
-     * @return
      */
     @GET("/filter")
     public void Filter() {
-    //        拦截器会拦截的
+        //        拦截器会拦截的
+    }
+
+    @GET("/template")
+    public void template(HttpResponse httpResponse) {
+
+        User user = new User();
+        user.setAge(20);
+        user.setName("xx");
+        user.setSex("男");
+        Map<String,Object> obj=new HashMap<>();
+        obj.put("user",user);
+        httpResponse.sendTemplate("index.html", obj);
+
     }
 
 }
