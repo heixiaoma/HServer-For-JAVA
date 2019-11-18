@@ -1,9 +1,9 @@
 # HServer
 
 #### 介绍
-    基于Netty而做的一个高并发Webserver
-    如果你是一个phper或者喜欢php，可以关注下 
-    https://gitee.com/heixiaomas/HServer
+基于Netty而做的一个高并发Webserver
+如果你是一个phper或者喜欢php，可以关注下 
+https://gitee.com/heixiaomas/HServer
     
 ### 压测说明
 请查看 [PM.md](PM.md) 查看说明
