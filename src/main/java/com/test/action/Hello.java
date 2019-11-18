@@ -150,15 +150,13 @@ public class Hello {
 
     @GET("/template")
     public void template(HttpResponse httpResponse) {
-
         User user = new User();
         user.setAge(20);
         user.setName("xx");
         user.setSex("男");
         Map<String,Object> obj=new HashMap<>();
         obj.put("user",user);
-        httpResponse.sendTemplate("index.html", obj);
-
+        httpResponse.sendTemplate("a.ftl", obj);
     }
 
 }

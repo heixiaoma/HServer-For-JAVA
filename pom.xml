@@ -8,7 +8,6 @@
     <artifactId>HServer</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-
     <properties>
         <java.version>1.8</java.version>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -44,7 +43,6 @@
             <version>0.1.6</version>
         </dependency>
 
-
         <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -52,13 +50,17 @@
             <version>1.2.62</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.javassist </groupId>
             <artifactId>javassist </artifactId>
             <version>3.18.2-GA</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.28</version>
+        </dependency>
 
     </dependencies>
 

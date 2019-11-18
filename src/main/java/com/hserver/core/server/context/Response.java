@@ -2,6 +2,7 @@ package com.hserver.core.server.context;
 
 import com.alibaba.fastjson.JSON;
 import com.hserver.core.interfaces.HttpResponse;
+import com.hserver.core.server.util.FreemarkerUtil;
 
 import java.io.File;
 import java.io.InputStream;
@@ -68,7 +69,12 @@ public class Response implements HttpResponse {
 
     @Override
     public void sendTemplate(String htmlPath, Map<String,Object> obj) {
-
+        try {
+            this.jsonAndHtml = FreemarkerUtil.getTemplate(htmlPath, obj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        headers.put("content-type", "text/html;charset=UTF-8");
     }
 
     //---------------系统用的Get操作
