@@ -2,28 +2,42 @@
 
 #### 介绍
     基于Netty而做的一个高并发Webserver
+    
+### 压测截图
 
+##### 1.压测json
+![AB测试](https://gitee.com/heixiaomas/HServer/raw/master/app/static/img/f.png)
+##### 1.压测html
+![AB测试](https://gitee.com/heixiaomas/HServer/raw/master/app/static/img/f.png)
+##### 1.模板引擎html
+![AB测试](https://gitee.com/heixiaomas/HServer/raw/master/app/static/img/f.png)
 
 ## 快速开始
-#### 1.文件结构
+#### 1.文件结构框架架构说明
     待更新
 #### 2.注解认识
     待更新
 #### 3.完成Hello World项目
     待更新
-#### 4.Aop操作
+#### 4.文件上传下载操作
+    待更新    
+#### 5.Aop操作
     待更新
-#### 5.Filter操作
+#### 6.Filter操作
     待更新
-#### 6.定时任务操作
+#### 7.定时任务操作
     待更新
-#### 7.websocket操作
+#### 8.websocket操作
     待更新
-#### 8.自带监控操作
+#### 9.自带监控操作
     待更新
-#### 8.集群分布式监控操作
+#### 10.集群分布式监控操作
     待更新
+#### 11.技巧篇
+    1.Linux上使用Epoll提高性能
+    2.待更新
 
+## 更新历史
 ### 2019-10-23
     完成系统的IOC容器和bean的装配,控制器方法的装配已经Json的处理
 
