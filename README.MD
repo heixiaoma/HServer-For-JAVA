@@ -6,11 +6,11 @@
 ### 压测截图
 
 ##### 1.压测json
-![AB测试](https://gitee.com/heixiaomas/HServer/raw/master/app/static/img/f.png)
-##### 1.压测html
-![AB测试](https://gitee.com/heixiaomas/HServer/raw/master/app/static/img/f.png)
+![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/json.png)
+##### 1.压测静态文件
+![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/file.png)
 ##### 1.模板引擎html
-![AB测试](https://gitee.com/heixiaomas/HServer/raw/master/app/static/img/f.png)
+![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/template.png)
 
 ## 快速开始
 #### 1.文件结构框架架构说明
