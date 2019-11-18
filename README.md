@@ -6,11 +6,11 @@
 https://gitee.com/heixiaomas/HServer
     
 ### 压测说明
-请查看 [PM.md](PM.md) 查看说明
+请查看 [PM.md](doc/PM.md) 查看说明
 
 
 ### 更新历史
-请查看 [CHANGELOG.md](CHANGELOG.md) 了解近期更新情况。
+请查看 [CHANGELOG.md](doc/CHANGELOG.md) 了解近期更新情况。
 
 
 ## 快速开始

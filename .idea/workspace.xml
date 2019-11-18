@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ec71a202-50a0-475a-9494-ae1c3a5bc82e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/util/FreemarkerUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/template/a.ftl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+    <list default="true" id="ec71a202-50a0-475a-9494-ae1c3a5bc82e" name="Default Changelist" comment="文档说明">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Response.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Response.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/action/Hello.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/test/action/Hello.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/CHANGELOG.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PM.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/PM.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -73,6 +70,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Java\HServer\doc" />
       <recent name="D:\Java\HServer\src\main\resources\template" />
       <recent name="D:\Java\HServer\src\main\resources\static\images" />
       <recent name="D:\Java\HServer\src\main\resources\static\file" />
@@ -205,7 +203,7 @@
       <workItem from="1573898778659" duration="603000" />
       <workItem from="1573926309824" duration="49000" />
       <workItem from="1573962407469" duration="686000" />
-      <workItem from="1574079600677" duration="1155000" />
+      <workItem from="1574079600677" duration="4151000" />
     </task>
     <task id="LOCAL-00001" summary="s">
       <created>1571807115577</created>
@@ -340,7 +338,70 @@
       <option name="project" value="LOCAL" />
       <updated>1573926349707</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="完成free marker集成">
+      <created>1574080986357</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1574080986358</updated>
+    </task>
+    <task id="LOCAL-00021" summary="完成free marker集成">
+      <created>1574081007071</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1574081007071</updated>
+    </task>
+    <task id="LOCAL-00022" summary="文档说明">
+      <created>1574081559681</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1574081559681</updated>
+    </task>
+    <task id="LOCAL-00023" summary="文档说明">
+      <created>1574082467884</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1574082467884</updated>
+    </task>
+    <task id="LOCAL-00024" summary="文档说明">
+      <created>1574082611849</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1574082611849</updated>
+    </task>
+    <task id="LOCAL-00025" summary="文档说明">
+      <created>1574082716497</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1574082716497</updated>
+    </task>
+    <task id="LOCAL-00026" summary="文档说明">
+      <created>1574082941909</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1574082941909</updated>
+    </task>
+    <task id="LOCAL-00027" summary="文档说明">
+      <created>1574083368779</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1574083368779</updated>
+    </task>
+    <task id="LOCAL-00028" summary="文档说明">
+      <created>1574083503930</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1574083503930</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -375,7 +436,9 @@
     <MESSAGE value="添加文件下载功能" />
     <MESSAGE value="AOP初步构想" />
     <MESSAGE value="初步完成Filter功能" />
-    <option name="LAST_COMMIT_MESSAGE" value="初步完成Filter功能" />
+    <MESSAGE value="完成free marker集成" />
+    <MESSAGE value="文档说明" />
+    <option name="LAST_COMMIT_MESSAGE" value="文档说明" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
