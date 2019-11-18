@@ -122,4 +122,20 @@ public class Hello {
         return res;
     }
 
+
+    /**
+     * httpResponse测试
+     *
+     * @return
+     */
+    @GET("/httpResponse")
+    public void httpResponse(HttpResponse httpResponse) {
+        User user = new User();
+        user.setAge(20);
+        user.setName("xx");
+        user.setSex("男");
+        httpResponse.sendJson(user);
+//        httpResponse.sendHtml("<h1>666</h1>");
+    }
+
 }

@@ -10,4 +10,9 @@ public interface HttpResponse {
     void setDownloadFile(File file);
 
     void setDownloadFile(InputStream inputStream, String fileName);
+
+    void sendJson(Object object);
+
+    void sendHtml(String html);
+
 }

@@ -1,5 +1,6 @@
 package com.hserver.core.server.context;
 
+import com.alibaba.fastjson.JSON;
 import com.hserver.core.interfaces.HttpResponse;
 
 import java.io.File;
@@ -18,6 +19,8 @@ public class Response implements HttpResponse {
     private boolean isDownload;
 
     private String fileName;
+
+    private String jsonAndHtml = null;
 
     /**
      * 设置响应头
@@ -51,6 +54,18 @@ public class Response implements HttpResponse {
         this.fileName = fileName;
     }
 
+    @Override
+    public void sendJson(Object object) {
+        this.jsonAndHtml = JSON.toJSONString(object);
+        headers.put("content-type", "application/json;charset=UTF-8");
+    }
+
+    @Override
+    public void sendHtml(String html) {
+        this.jsonAndHtml = html;
+        headers.put("content-type", "text/html;charset=UTF-8");
+    }
+
 
     //---------------系统用的Get操作
 
@@ -72,5 +87,9 @@ public class Response implements HttpResponse {
 
     public String getFileName() {
         return fileName;
+    }
+
+    public String getJsonAndHtml() {
+        return jsonAndHtml;
     }
 }
