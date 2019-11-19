@@ -78,6 +78,7 @@ public class StaticHandler {
             staticFile.setByteBuf(byteBuf);
             baos.close();
             inputStream.close();
+            input.close();
         } catch (Exception e) {
             log.error("获取文件大小异常:" + e.getMessage());
             try {
