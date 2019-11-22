@@ -17,13 +17,16 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 @Setter
 public class Request implements HttpRequest {
     private String uri;
     private HttpMethod requestType;
-    private Map<String, String> requestParams = new HashMap<>();
+    private Map<String, String> requestParams = new ConcurrentHashMap<>();
+    private Map<String, String> headers = new ConcurrentHashMap<>();
+
     /**
      * 文件处理
      */
@@ -40,6 +43,7 @@ public class Request implements HttpRequest {
         this.body = body;
     }
 
+
     @Override
     public String query(String name) {
         return requestParams.get(name);
@@ -48,6 +52,12 @@ public class Request implements HttpRequest {
     @Override
     public FileItem queryFile(String name) {
         return fileItems.get(name);
+    }
+
+
+    @Override
+    public String getHeader(String headName) {
+        return headers.get(headName);
     }
 
     public void readHttpDataChunkByChunk(HttpPostRequestDecoder decoder) {

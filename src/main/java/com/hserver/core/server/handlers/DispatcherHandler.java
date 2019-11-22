@@ -14,6 +14,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.cookie.Cookie;
+import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.handler.codec.http.multipart.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +25,7 @@ import java.lang.reflect.Parameter;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import static io.netty.handler.codec.http.HttpMethod.GET;
@@ -90,6 +93,11 @@ public class DispatcherHandler {
             request.setUri(req.uri());
         }
         request.setRequestType(req.method());
+
+        //处理Headers
+        Map<String, String> headers = new ConcurrentHashMap<>();
+        req.headers().names().forEach(a -> headers.put(a, req.headers().get(a)));
+        request.setHeaders(headers);
         webContext.setRequest(request);
         webContext.setResponse(new Response());
         return webContext;

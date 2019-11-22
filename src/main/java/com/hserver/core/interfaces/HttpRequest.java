@@ -20,4 +20,8 @@ public interface HttpRequest {
 
     FileItem queryFile(String name);
 
+    String getHeader(String headName);
+
+    Map<String, String> getHeaders();
+
 }
