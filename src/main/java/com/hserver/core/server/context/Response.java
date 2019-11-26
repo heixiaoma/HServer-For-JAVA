@@ -6,7 +6,10 @@ import com.hserver.core.server.util.FreemarkerUtil;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class Response implements HttpResponse {
@@ -68,13 +71,40 @@ public class Response implements HttpResponse {
     }
 
     @Override
-    public void sendTemplate(String htmlPath, Map<String,Object> obj) {
+    public void sendTemplate(String htmlPath, Map<String, Object> obj) {
         try {
             this.jsonAndHtml = FreemarkerUtil.getTemplate(htmlPath, obj);
         } catch (Exception e) {
             e.printStackTrace();
         }
         headers.put("content-type", "text/html;charset=UTF-8");
+    }
+
+    //添加Cookie
+    @Override
+    public void addCookie(Cookie cookie) {
+        Iterator<String> iterator = cookie.keySet().iterator();
+        StringBuilder cookieStr = new StringBuilder();
+        while (iterator.hasNext()) {
+            String k = iterator.next();
+            String v = cookie.get(k);
+            try {
+                cookieStr.append(java.net.URLEncoder.encode(k, "UTF-8") + "=" + java.net.URLEncoder.encode(v, "UTF-8") + ";");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        if (cookie.getMaxAge() != null) {
+            cookieStr.append("Max-Age=");
+            cookieStr.append(cookie.getMaxAge());
+            cookieStr.append(";");
+        }
+        if (cookie.getPath() != null) {
+            cookieStr.append("path=");
+            cookieStr.append(cookie.getPath());
+            cookieStr.append(";");
+        }
+        headers.put("Set-Cookie", cookieStr.toString());
     }
 
     //---------------系统用的Get操作

@@ -6,6 +6,7 @@ import com.hserver.core.ioc.annotation.Autowired;
 import com.hserver.core.ioc.annotation.Controller;
 import com.hserver.core.ioc.annotation.GET;
 import com.hserver.core.ioc.annotation.POST;
+import com.hserver.core.server.context.Cookie;
 import com.hserver.core.server.context.Request;
 import com.hserver.core.server.context.Response;
 import com.hserver.core.server.handlers.FileItem;
@@ -163,7 +164,11 @@ public class Hello {
 
     @GET("/headers")
     public Map<String, String> headers(HttpRequest request,HttpResponse httpResponse) {
-        httpResponse.setHeader("Set-Cookie","token=cowshield");
+//        httpResponse.setHeader("Set-Cookie","token=cowshield");
+        Cookie cookie=new Cookie().add("name","张三").add("age","20");
+        cookie.setPath("/");
+        cookie.setMaxAge(20);
+        httpResponse.addCookie(cookie);
         return request.getHeaders();
     }
 

@@ -1,5 +1,7 @@
 package com.hserver.core.interfaces;
 
+import com.hserver.core.server.context.Cookie;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.Map;
@@ -16,6 +18,7 @@ public interface HttpResponse {
 
     void sendHtml(String html);
 
-    void sendTemplate(String htmlPath, Map<String,Object> obj);
+    void sendTemplate(String htmlPath, Map<String, Object> obj);
 
+    void addCookie(Cookie cookie);
 }
