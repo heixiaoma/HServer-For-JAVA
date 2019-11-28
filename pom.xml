@@ -16,46 +16,49 @@
 
     <dependencies>
 
-        <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
+        <!-- 核心网络框架 -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.1.42.Final</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+        <!--  日志类      -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.28</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.10</version>
-        </dependency>
-
+        <!--   日志包     -->
         <dependency>
             <groupId>com.bladejava</groupId>
             <artifactId>blade-log</artifactId>
             <version>0.1.6</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+        <!--   快速操作类     -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.10</version>
+        </dependency>
+
+        <!-- JSON处理 -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.62</version>
         </dependency>
 
+        <!--   字节码处理     -->
         <dependency>
-            <groupId>org.javassist </groupId>
-            <artifactId>javassist </artifactId>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
             <version>3.18.2-GA</version>
         </dependency>
 
+        <!--   模板引擎     -->
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
@@ -67,9 +70,6 @@
     <build>
         <finalName>HServer</finalName>
         <plugins>
-            <!-- Compile -->
-
-            <!--     java8特性,可以获取方法参数名字       -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
