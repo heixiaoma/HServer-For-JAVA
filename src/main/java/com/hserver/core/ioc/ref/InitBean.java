@@ -8,6 +8,7 @@ import com.hserver.core.server.filter.FilterChain;
 import com.hserver.core.server.router.RouterInfo;
 import com.hserver.core.server.router.RouterManager;
 import com.hserver.core.server.util.ParameterUtil;
+import com.hserver.core.task.TaskManager;
 import io.netty.handler.codec.http.HttpMethod;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,8 +48,23 @@ public class InitBean {
             Bean annotation = (Bean) aClass.getAnnotation(Bean.class);
             if (annotation.value().trim().length() > 0) {
                 IocUtil.addBean(annotation.value(), aClass.newInstance());
+
             } else {
                 IocUtil.addBean(aClass.getName(), aClass.newInstance());
+            }
+
+            //检测下Bean里面是否带又Task任务洛，带了就给他安排了
+            Method[] methods = aClass.getDeclaredMethods();
+            for (Method method : methods) {
+                Task task = method.getAnnotation(Task.class);
+                if (task==null){
+                    continue;
+                }
+                if (annotation.value().trim().length() > 0) {
+                    TaskManager.initTask(task.name(), task.time(), annotation.value(), method);
+                } else {
+                    TaskManager.initTask(task.name(), task.time(), aClass.getName(), method);
+                }
             }
         }
     }
