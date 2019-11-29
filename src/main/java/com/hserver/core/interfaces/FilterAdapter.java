@@ -1,6 +1,5 @@
 package com.hserver.core.interfaces;
 
-import com.hserver.core.server.context.WebContext;
 import com.hserver.core.server.context.Webkit;
 import com.hserver.core.server.filter.FilterChain;
 

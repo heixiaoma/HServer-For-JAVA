@@ -32,10 +32,12 @@ public class TaskManager {
             TimerTask timerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    try {
-                        taskJob1.exec(args);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if (IS_OK) {
+                        try {
+                            taskJob1.exec(args);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             };
