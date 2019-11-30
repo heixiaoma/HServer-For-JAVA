@@ -2,17 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec71a202-50a0-475a-9494-ae1c3a5bc82e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/interfaces/WebSocketHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/WebSocket.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/WebSocketServerHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/Ws.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/test/websocket/WebSocketTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/IocUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/IocUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/ref/ClasspathPackageScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/ref/ClasspathPackageScanner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/ref/InitBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/ref/InitBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/ref/PackageScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/ref/PackageScanner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/HttpNettyServerInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/HttpNettyServerInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/CHANGELOG.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -217,7 +209,7 @@
       <workItem from="1574596251193" duration="57000" />
       <workItem from="1574775755242" duration="825000" />
       <workItem from="1574949228769" duration="6585000" />
-      <workItem from="1575093816900" duration="6283000" />
+      <workItem from="1575093816900" duration="12643000" />
     </task>
     <task id="LOCAL-00001" summary="s">
       <created>1571807115577</created>
@@ -457,7 +449,14 @@
       <option name="project" value="LOCAL" />
       <updated>1574955314625</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="添加了web Socket">
+      <created>1575100153420</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1575100153420</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -495,7 +494,8 @@
     <MESSAGE value="完成free marker集成" />
     <MESSAGE value="文档说明" />
     <MESSAGE value="添加了动态任务功能" />
-    <option name="LAST_COMMIT_MESSAGE" value="添加了动态任务功能" />
+    <MESSAGE value="添加了web Socket" />
+    <option name="LAST_COMMIT_MESSAGE" value="添加了web Socket" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
