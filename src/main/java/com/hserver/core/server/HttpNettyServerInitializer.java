@@ -11,10 +11,6 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 
 
-/**
- * Class for initialization ChannelPipeline
- * Created by Bess on 23.09.14.
- */
 public class HttpNettyServerInitializer extends ChannelInitializer<Channel> {
 
     @Override
@@ -22,6 +18,10 @@ public class HttpNettyServerInitializer extends ChannelInitializer<Channel> {
         ChannelPipeline pipeline = ch.pipeline();
         pipeline.addLast(new HttpServerCodec());
         pipeline.addLast(new HttpServerExpectContinueHandler());
+        //有socket才走他
+        if (WebSocketServerHandler.WebSocketRouter.size() > 0) {
+            pipeline.addLast(new WebSocketServerHandler());
+        }
         pipeline.addLast("对象合并", new ObjectHandler());
         pipeline.addLast("业务处理", new ActionHandler());
     }

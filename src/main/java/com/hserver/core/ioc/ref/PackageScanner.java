@@ -11,4 +11,7 @@ public interface PackageScanner {
     List<Class<?>> getHooksPackage() throws IOException;
 
     List<Class<?>> getFiltersPackage() throws IOException;
+
+    List<Class<?>> getWebSocketPackage() throws IOException;
+
 }

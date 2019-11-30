@@ -1,10 +1,7 @@
 package com.hserver.core.ioc.ref;
 
 
-import com.hserver.core.ioc.annotation.Bean;
-import com.hserver.core.ioc.annotation.Controller;
-import com.hserver.core.ioc.annotation.Filter;
-import com.hserver.core.ioc.annotation.Hook;
+import com.hserver.core.ioc.annotation.*;
 import com.hserver.core.ioc.util.ClassLoadUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +33,19 @@ public class ClasspathPackageScanner implements PackageScanner {
         }
         return clazzLis;
     }
+
+    @Override
+    public List<Class<?>> getWebSocketPackage() throws IOException {
+        List<Class<?>> clazzLis = new ArrayList<>();
+        List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true);
+        for (Class<?> aClass : classes) {
+            if (aClass.getAnnotation(WebSocket.class)!=null){
+                clazzLis.add(aClass);
+            }
+        }
+        return clazzLis;
+    }
+
 
     @Override
     public List<Class<?>> getControllersPackage() throws IOException {

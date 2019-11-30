@@ -5,6 +5,7 @@ import com.hserver.core.ioc.annotation.*;
 import com.hserver.core.interfaces.FilterAdapter;
 import com.hserver.core.proxy.JavassistProxyFactory;
 import com.hserver.core.server.filter.FilterChain;
+import com.hserver.core.server.handlers.WebSocketServerHandler;
 import com.hserver.core.server.router.RouterInfo;
 import com.hserver.core.server.router.RouterManager;
 import com.hserver.core.server.util.ParameterUtil;
@@ -29,12 +30,25 @@ public class InitBean {
     public static void init(Class<?> baseClass) {
         try {
             PackageScanner scan = new ClasspathPackageScanner(baseClass.getPackage().getName());
+            initWebSocket(scan);
             initBean(scan);
             initController(scan);
             initHook(scan);
             initFilter(scan);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void initWebSocket(PackageScanner scan) throws Exception {
+        List<Class<?>> classs = scan.getWebSocketPackage();
+        for (Class aClass : classs) {
+            //检查注解里面是否有值
+            WebSocket annotation = (WebSocket) aClass.getAnnotation(WebSocket.class);
+            if (annotation != null ) {
+                IocUtil.addBean(aClass.getName(), aClass.newInstance());
+                WebSocketServerHandler.WebSocketRouter.put(annotation.value(), aClass.getName());
+            }
         }
     }
 
@@ -57,7 +71,7 @@ public class InitBean {
             Method[] methods = aClass.getDeclaredMethods();
             for (Method method : methods) {
                 Task task = method.getAnnotation(Task.class);
-                if (task==null){
+                if (task == null) {
                     continue;
                 }
                 if (annotation.value().trim().length() > 0) {

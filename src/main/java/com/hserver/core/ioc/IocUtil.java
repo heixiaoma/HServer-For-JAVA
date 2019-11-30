@@ -25,11 +25,9 @@ public class IocUtil {
         return ioc.getBean(beanName, type);
     }
 
-
     public static void addBean(Object bean) {
         ioc.addBean(bean);
     }
-
 
     public static void addBean(String name, Object bean) {
         ioc.addBean(name, bean);
