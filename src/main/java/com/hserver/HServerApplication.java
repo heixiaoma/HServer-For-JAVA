@@ -23,10 +23,10 @@ public class HServerApplication {
         log.info("IOC 装配中", classz.getName());
         InitBean.injection();
         log.info("IOC 全部装配完成", classz.getName());
-        //初始化完成可以放开任务了
-        TaskManager.IS_OK = true;
         try {
             new HServer(port).run();
+            //初始化完成可以放开任务了
+            TaskManager.IS_OK = true;
         } catch (Exception e) {
             log.error(e.getMessage());
         }

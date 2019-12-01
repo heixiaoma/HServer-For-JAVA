@@ -15,7 +15,7 @@
 
 ## 快速开始
 #### 1.文件结构框架架构说明
-    待更新
+![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/架构说明.png)
 #### 2.注解认识
     以下注解基本模拟Spring的功能
     @Bean
