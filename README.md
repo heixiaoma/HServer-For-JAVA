@@ -68,19 +68,137 @@
         public class WebSocketTest implements WebSocketHandler {}
         //这样就可以完成基本的通信了
 #### 3.完成Hello World项目
-    待更新
+    #第一步搞一个主函数
+    public class WebApp {
+        public static void main(String[] args) {
+            HServerApplication.run(WebApp.class, 8888);
+        }
+    }
+    #第二步同主函数建立一个包文件夹比如controller
+    
+    @Controller
+    public class Hello {
+        @GET("/hello")
+        public Map index(HttpRequest request, String name) {
+            Map<String, Object> res = new HashMap<>();
+            res.put("code", 200);
+            res.put("res", request.getRequestParams());
+            res.put("msg", test1q.show("xx"));
+            res.put("name", name);
+            return res;
+        }
+    #就这样你就完成了一个简单得get请求定义
 #### 4.文件上传下载操作
-    待更新    
+          
+          #File类型得
+          @GET("/downFile")
+          public void downFile(HttpRequest request, HttpResponse response) {
+              response.setDownloadFile(new File("D:\\Java\\HServer\\README.md"));
+          }
+          #InputStream 类型得
+          @GET("/downInputStream")
+          public void downInputStream(HttpRequest request, HttpResponse response) throws Exception {
+              File file = new File("D:\\Java\\HServer\\README.md");
+              InputStream fileInputStream = new FileInputStream(file);
+              response.setDownloadFile(fileInputStream,"README.md");
+          }
 #### 5.Aop操作
-    待更新
+        #必须实现HookAdapter的接口
+        #同时被@Hook注解标注
+        @Slf4j
+        @Hook(value = Test.class, method = "show")
+        public class HookTest implements HookAdapter {
+        
+            @Override
+            public void before(Object[] objects) {
+                log.info("aop.-前置拦截：" + objects[0]);
+                objects[0]="666";
+            }
+        
+            @Override
+            public Object after(Object object) {
+                return object + "aop-后置拦截";
+            }
+        }
 #### 6.Filter操作
-    待更新
+        #必须实现FilterAdapter接口，同时被@Filter标注，数字越小，优先级越高，切不要重复
+        @Slf4j
+        @Filter(1)
+        public class MyFilter2 implements FilterAdapter {
+            @Override
+            public void doFilter(FilterChain chain, Webkit webkit) {
+                log.info("MyFilter->1");
+                chain.doFilter(webkit);
+            }
+        }
 #### 7.定时任务操作
-    待更新
+    
+    #需要被@Bean注解标注,可以通过TaskManager类进行定时任务的控制，动态添加和删除
+    @Bean
+    public class TaskTest {
+        
+        @Autowired
+        private TestService testService;
+    
+        private boolean flag = true;
+    
+        public void dynamicAddTimer() {
+            System.out.println("动态添加定时任务");
+            TaskManager.addTask("测试任务2", 1000 * 2, TestTask.class,"666");
+        }
+        
+        
+        @Task(name = "测试定时任务1", time = 1000 * 2)
+        public void timerTask() {
+            System.out.println("测试定时任务，注入的对象调用结果:" + testService.testa());
+            if (flag) {
+                dynamicAddTimer();
+                flag = false;
+            }
+        }
+    
+        @Task(name = "测试定时任务2", time = 1000 * 10)
+        public void removeTask() {
+            //干掉方法注解版本
+            boolean task1 = TaskManager.removeTask("测试定时任务1");
+            //干掉动态添加的
+            boolean task2 = TaskManager.removeTask("测试任务2");
+            //干掉自己
+            boolean task3 = TaskManager.removeTask("测试定时任务2");
+            //结果
+            System.out.println("任务已经被干掉了 tash1=" + task1 + ",task2=" + task2 + ",task3=" + task3);
+        }
+    
+    }
 #### 8.websocket操作
-    待更新
+    
+    #需要被@WebSocket标注同时给一个连接地址，最后实现WebSocketHandler接口，
+    #Ws类定义了简单的发送方法，如果有其他的业务操作，可以获取ChannelHandlerContext，进行操作
+
+    @WebSocket("/ws")
+    public class WebSocketTest implements WebSocketHandler {
+    
+        @Autowired
+        private TestService testService;
+    
+        @Override
+        public void onConnect(Ws ws) {
+            System.out.println("连接成功,分配的UID：" + ws.getUid());
+        }
+    
+        @Override
+        public void onMessage(Ws ws) {
+            ws.send("666" + testService.testa() + ws.getUid());
+            System.out.println("收到的消息,"+ws.getMessage()+",UID：" + ws.getUid());
+        }
+    
+        @Override
+        public void disConnect(Ws ws) {
+            System.out.println("断开连接,UID:" + ws.getUid());
+        }
+    }
 #### 9.自带监控操作
-    待更新
+    待更新，和开发
 #### 10.集群分布式监控操作
     待更新
 #### 11.技巧篇

@@ -15,6 +15,8 @@ import com.test.service.Test;
 import javassist.CtField;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -99,13 +101,16 @@ public class Hello {
      * @param response
      * @return
      */
-    @GET("/down")
-    public Map downFile(HttpRequest request, HttpResponse response) {
+    @GET("/downFile")
+    public void downFile(HttpRequest request, HttpResponse response) {
         response.setDownloadFile(new File("D:\\Java\\HServer\\README.md"));
-        Map<String, Object> res = new HashMap<>();
-        res.put("code", 200);
-        res.put("msg", test1q.show("xx"));
-        return res;
+    }
+
+    @GET("/downInputStream")
+    public void downInputStream(HttpRequest request, HttpResponse response) throws Exception {
+        File file = new File("D:\\Java\\HServer\\README.md");
+        InputStream fileInputStream = new FileInputStream(file);
+        response.setDownloadFile(fileInputStream,"README.md");
     }
 
     /**
@@ -149,6 +154,10 @@ public class Hello {
         //        拦截器会拦截的
     }
 
+    /**
+     * 模板测试
+     * @param httpResponse
+     */
     @GET("/template")
     public void template(HttpResponse httpResponse) {
         User user = new User();
@@ -157,6 +166,7 @@ public class Hello {
         user.setSex("男");
         Map<String,Object> obj=new HashMap<>();
         obj.put("user",user);
+//        httpResponse.sendTemplate("/admin/user/list.ftl", obj);
         httpResponse.sendTemplate("a.ftl", obj);
     }
 
