@@ -170,8 +170,6 @@ public class Hello {
         httpResponse.sendTemplate("a.ftl", obj);
     }
 
-
-
     @GET("/headers")
     public Map<String, String> headers(HttpRequest request,HttpResponse httpResponse) {
 //        httpResponse.setHeader("Set-Cookie","token=cowshield");

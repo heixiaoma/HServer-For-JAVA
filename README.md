@@ -79,15 +79,67 @@
     
     @Controller
     public class Hello {
+        /** HttpResponse 
+            void setHeader(String key, String value);
+        
+            void setDownloadFile(File file);
+        
+            void setDownloadFile(InputStream inputStream, String fileName);
+        
+            void sendJson(Object object);
+        
+            void sendHtml(String html);
+        
+            void sendTemplate(String htmlPath, Map<String, Object> obj);
+        
+            void addCookie(Cookie cookie);
+        */
+            
+        /** HttpRequest 
+            String getUri();
+        
+            HttpMethod getRequestType();
+        
+            Map<String, String> getRequestParams();
+        
+            String query(String name);
+        
+            Map<String, FileItem> getFileItems();
+        
+            FileItem queryFile(String name);
+        
+            String getHeader(String headName);
+        
+            Map<String, String> getHeaders();
+        */
+            
+    
+    
         @GET("/hello")
         public Map index(HttpRequest request, String name) {
             Map<String, Object> res = new HashMap<>();
             res.put("code", 200);
             res.put("res", request.getRequestParams());
-            res.put("msg", test1q.show("xx"));
-            res.put("name", name);
+            res.put("msg", "Hello");
             return res;
         }
+        
+        /**
+         * 模板测试
+         * @param httpResponse
+         */
+        @GET("/template")
+        public void template(HttpResponse httpResponse) {
+            User user = new User();
+            user.setAge(20);
+            user.setName("xx");
+            user.setSex("男");
+            Map<String,Object> obj=new HashMap<>();
+            obj.put("user",user);
+    //        httpResponse.sendTemplate("/admin/user/list.ftl", obj);
+            httpResponse.sendTemplate("a.ftl", obj);
+        }
+    }
     #就这样你就完成了一个简单得get请求定义
 #### 4.文件上传下载操作
           
