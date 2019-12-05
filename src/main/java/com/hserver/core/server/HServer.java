@@ -7,6 +7,7 @@ package com.hserver.core.server;
 import com.hserver.core.server.epoll.EpollKit;
 import com.hserver.core.server.epoll.NamedThreadFactory;
 import com.hserver.core.server.epoll.NettyServerGroup;
+import com.hserver.core.task.TaskManager;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -49,9 +50,11 @@ public class HServer {
             }
             bootstrap.childHandler(new HttpNettyServerInitializer());
             Channel ch = bootstrap.bind(port).sync().channel();
+            log.info("HServer 启动完成");
             System.out.println(getHello(typeName, port));
             System.out.println();
-            log.info("HServer 启动完成");
+            //初始化完成可以放开任务了
+            TaskManager.IS_OK = true;
             ch.closeFuture().sync();
 
         } finally {

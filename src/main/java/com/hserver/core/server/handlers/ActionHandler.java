@@ -1,7 +1,6 @@
 package com.hserver.core.server.handlers;
 
 import com.hserver.core.server.context.WebContext;
-import com.hserver.core.server.exception.BusinessException;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -12,10 +11,6 @@ import java.nio.charset.Charset;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-/**
- * for hello request
- * Created by Bess on 23.09.14.
- */
 
 @Slf4j
 public class ActionHandler extends SimpleChannelInboundHandler<WebContext> {

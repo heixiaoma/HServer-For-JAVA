@@ -10,12 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-/**
- * HTTP multipart/form-data Request
- *
- * @author <a href="mailto:biezhi.me@gmail.com" target="_blank">biezhi</a>
- * @since 1.5
- */
+
 @Data
 public class FileItem {
 

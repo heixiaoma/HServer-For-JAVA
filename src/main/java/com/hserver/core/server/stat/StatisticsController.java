@@ -9,11 +9,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicInteger;
-/**
- * instance of this class gather information about requests from ChannelHandlerContext
- * and stores it in a Thread-safe Collections
- * Created by Bess on 25.09.14.
- */
 
 public class StatisticsController {
 

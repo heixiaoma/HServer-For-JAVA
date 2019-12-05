@@ -1,6 +1,5 @@
 package com.hserver.core.server.router;
 
-import com.hserver.core.ioc.IocUtil;
 import io.netty.handler.codec.http.HttpMethod;
 import lombok.extern.slf4j.Slf4j;
 

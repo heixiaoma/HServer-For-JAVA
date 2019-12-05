@@ -1,12 +1,9 @@
 package com.hserver;
 
-import com.hserver.core.ioc.IocUtil;
 import com.hserver.core.ioc.ref.InitBean;
 import com.hserver.core.server.HServer;
-import com.hserver.core.task.TaskManager;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Map;
 
 @Slf4j
 public class HServerApplication {
@@ -25,8 +22,6 @@ public class HServerApplication {
         log.info("IOC 全部装配完成", classz.getName());
         try {
             new HServer(port).run();
-            //初始化完成可以放开任务了
-            TaskManager.IS_OK = true;
         } catch (Exception e) {
             log.error(e.getMessage());
         }

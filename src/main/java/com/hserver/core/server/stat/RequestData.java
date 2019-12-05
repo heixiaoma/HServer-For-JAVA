@@ -4,10 +4,7 @@ package com.hserver.core.server.stat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * instance of this class contains statistic information about request
- * Created by Bess on 25.09.14.
- */
+
 
 public class RequestData {
     private  String ip;
