@@ -2,9 +2,79 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec71a202-50a0-475a-9494-ae1c3a5bc82e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/doc/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/CHANGELOG.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/CHANGELOG.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/HServerApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/HServerApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/bean/TaskBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/bean/TaskBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/interfaces/FilterAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/interfaces/FilterAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/interfaces/HookAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/interfaces/HookAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/interfaces/HttpRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/interfaces/HttpRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/interfaces/HttpResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/interfaces/HttpResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/interfaces/TaskJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/interfaces/TaskJob.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/interfaces/WebSocketHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/interfaces/WebSocketHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/HServerIoc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/HServerIoc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/HookIoc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/HookIoc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/HookIocUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/HookIocUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/Ioc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/Ioc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/IocUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/IocUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/Autowired.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/Autowired.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/Bean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/Bean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/Controller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/Filter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/Filter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/GET.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/GET.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/Hook.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/Hook.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/POST.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/POST.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/Task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/WebSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/WebSocket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/ref/ClasspathPackageScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/ref/ClasspathPackageScanner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/ref/InitBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/ref/InitBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/ref/PackageScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/ref/PackageScanner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/util/ClassLoadUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/util/ClassLoadUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/proxy/JavassistProxyFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/proxy/JavassistProxyFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/HServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/HServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/HttpNettyServerInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/HttpNettyServerInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Cookie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/context/Cookie.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/MimeType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/context/MimeType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/context/Request.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Response.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/context/Response.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/StaticFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/context/StaticFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/WebContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/context/WebContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Webkit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/context/Webkit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/epoll/EpollKit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/epoll/EpollKit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/epoll/NamedThreadFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/epoll/NamedThreadFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/epoll/NettyServerGroup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/epoll/NettyServerGroup.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/exception/BusinessException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/exception/BusinessException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/filter/FilterChain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/filter/FilterChain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/ActionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/handlers/ActionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/DispatcherHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/handlers/DispatcherHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/FileItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/handlers/FileItem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/ObjectHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/handlers/ObjectHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/StaticHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/handlers/StaticHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/WebSocketServerHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/handlers/WebSocketServerHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/Ws.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/handlers/Ws.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/router/RouterInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/router/RouterInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/router/RouterManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/router/RouterManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/stat/IpData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/stat/IpData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/stat/RequestData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/stat/RequestData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/stat/StatisticsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/stat/StatisticsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/util/DownLoadUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/util/DownLoadUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/util/ExceptionUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/util/ExceptionUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/util/FreemarkerUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/util/FreemarkerUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/util/ParameterUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/util/ParameterUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/task/TaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/task/TaskManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/WebApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/WebApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/action/Hello.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/action/Hello.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/bean/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/bean/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/filter/MyFilter1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/filter/MyFilter1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/filter/MyFilter2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/filter/MyFilter2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/hook/HookTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/hook/HookTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/service/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/service/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/service/TestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/service/TestService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/task/TaskTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/task/TaskTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/task/TestTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/task/TestTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/websocket/WebSocketTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/websocket/WebSocketTest.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,15 +107,16 @@
       </list>
     </option>
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>Action</find>
-    </findStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="F:/Apache/apache-maven-3.6.2" />
+        <option name="userSettingsFile" value="F:\Apache\apache-maven-3.6.2\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
     <option name="importingSettings">
       <MavenImportingSettings>
         <option name="importAutomatically" value="true" />
@@ -65,7 +136,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15271266" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.language" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -210,6 +281,9 @@
       <workItem from="1574775755242" duration="825000" />
       <workItem from="1574949228769" duration="6585000" />
       <workItem from="1575093816900" duration="12643000" />
+      <workItem from="1575554411578" duration="960000" />
+      <workItem from="1575555386854" duration="2142000" />
+      <workItem from="1575557544389" duration="3788000" />
     </task>
     <task id="LOCAL-00001" summary="s">
       <created>1571807115577</created>
@@ -496,22 +570,6 @@
     <MESSAGE value="添加了动态任务功能" />
     <MESSAGE value="添加了web Socket" />
     <option name="LAST_COMMIT_MESSAGE" value="添加了web Socket" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/StaticHandler.java</url>
-          <line>88</line>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/StaticHandler.java</url>
-          <line>46</line>
-          <option name="timeStamp" value="42" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/HServer$WebApp.ic" NAME="WebApp Coverage Results" MODIFIED="1573749046662" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
