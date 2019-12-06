@@ -68,14 +68,23 @@
         public class WebSocketTest implements WebSocketHandler {}
         //这样就可以完成基本的通信了
 #### 3.完成Hello World项目
+     #第一步pom依赖引入
+    
+    <dependency>
+        <groupId>top.hserver</groupId>
+        <artifactId>HServer</artifactId>
+        <version>1.0</version>
+    </dependency>
 
-    #第一步搞一个主函数
+
+
+    #第二步搞一个主函数
     public class WebApp {
         public static void main(String[] args) {
             HServerApplication.run(WebApp.class, 8888);
         }
     }
-    #第二步同主函数建立一个包文件夹比如controller
+    #第三步同主函数建立一个包文件夹比如controller
     
     @Controller
     public class Hello {
