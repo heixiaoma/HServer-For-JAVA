@@ -25,8 +25,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import static io.netty.handler.codec.http.HttpHeaderNames.LOCATION;
 import static io.netty.handler.codec.http.HttpMethod.GET;
 import static io.netty.handler.codec.http.HttpMethod.POST;
+import static io.netty.handler.codec.http.HttpResponseStatus.FOUND;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 /**
  * 分发器
@@ -107,6 +110,11 @@ public class DispatcherHandler {
      * @return
      */
     public static WebContext Statistics(WebContext webContext) {
+
+        System.out.println("开启统计" + ConstConfig.isStatisticsOpen);
+        System.out.println("统计规则" + ConstConfig.StatisticalRules);
+
+
         return webContext;
     }
 
@@ -230,22 +238,22 @@ public class DispatcherHandler {
             if (webContext.isStaticFile()) {
                 //显示型的
                 response = new DefaultFullHttpResponse(
-                        HttpVersion.HTTP_1_1,
+                        HTTP_1_1,
                         HttpResponseStatus.OK,
                         Unpooled.wrappedBuffer(webContext.getStaticFile().getByteBuf()));
                 response.headers().set(HttpHeaderNames.CONTENT_TYPE, webContext.getStaticFile().getFileHead() + ";charset=UTF-8");
             } else if (webContext.getResponse().isDownload()) {
-                //控制器的
+                //控制器下载文件的
                 Response response1 = webContext.getResponse();
 
                 if (response1.getFile() == null) {
                     response = new DefaultFullHttpResponse(
-                            HttpVersion.HTTP_1_1,
+                            HTTP_1_1,
                             HttpResponseStatus.OK,
                             Unpooled.wrappedBuffer(DownLoadUtil.FileToByteBuf(response1.getInputStream())));
                 } else {
                     response = new DefaultFullHttpResponse(
-                            HttpVersion.HTTP_1_1,
+                            HTTP_1_1,
                             HttpResponseStatus.OK,
                             Unpooled.wrappedBuffer(DownLoadUtil.FileToByteBuf(response1.getFile())));
                 }
@@ -254,13 +262,13 @@ public class DispatcherHandler {
             } else if (webContext.getResponse().getJsonAndHtml() != null) {
                 //是否Response的
                 response = new DefaultFullHttpResponse(
-                        HttpVersion.HTTP_1_1,
+                        HTTP_1_1,
                         HttpResponseStatus.OK,
                         Unpooled.wrappedBuffer(webContext.getResponse().getJsonAndHtml().getBytes(Charset.forName("UTF-8"))));
             } else {
                 //是否是方法调用的
                 response = new DefaultFullHttpResponse(
-                        HttpVersion.HTTP_1_1,
+                        HTTP_1_1,
                         HttpResponseStatus.OK,
                         Unpooled.wrappedBuffer(webContext.getResult().getBytes(Charset.forName("UTF-8"))));
                 response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
@@ -270,9 +278,13 @@ public class DispatcherHandler {
             response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
             //用户自定义头头
             Map<String, String> headers = webContext.getResponse().getHeaders();
-            headers.forEach((a, b) -> response.headers().set(a, b));
+            headers.forEach((a, b) -> {
+                response.headers().set(a, b);
+                if (a.equals("location")) {
+                    response.setStatus(FOUND);
+                }
+            });
             return response;
-
         } catch (Exception e) {
             String message = ExceptionUtil.getMessage(e);
             log.error(message);
@@ -290,7 +302,7 @@ public class DispatcherHandler {
         BusinessException cause = (BusinessException) e.getCause();
         HttpResponseStatus httpResponseStatus = HttpResponseStatus.valueOf(cause.getHttpCode());
         FullHttpResponse response = new DefaultFullHttpResponse(
-                HttpVersion.HTTP_1_1,
+                HTTP_1_1,
                 httpResponseStatus,
                 Unpooled.wrappedBuffer(cause.getRespMsg().getBytes(Charset.forName("UTF-8"))));
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");

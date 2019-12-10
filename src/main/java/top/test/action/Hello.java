@@ -178,4 +178,10 @@ public class Hello {
         return request.getHeaders();
     }
 
+
+    @GET("/redirect")
+    public void redirect(HttpResponse httpResponse) {
+        httpResponse.redirect("http://baidu.com");
+    }
+
 }

@@ -1,6 +1,7 @@
 package top.hserver;
 
 import top.hserver.core.ioc.ref.InitBean;
+import top.hserver.core.properties.PropertiesInit;
 import top.hserver.core.server.HServer;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,6 +14,11 @@ public class HServerApplication {
             log.info("HServer 启动失败");
             return;
         }
+
+        log.info("初始化配置文件", classz.getName());
+        new PropertiesInit().init();
+        log.info("初始化配置完成", classz.getName());
+
         log.info("HServer 启动中....");
         log.info("Package 扫描中");
         InitBean.init(HServerApplication.class);

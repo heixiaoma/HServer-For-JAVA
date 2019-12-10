@@ -28,6 +28,7 @@ public class WebContext {
 
     /**
      * 多消息内容存起来，一会构建对象的时候编码然后取出文件或者字段或者数据
+     *
      * @param msg
      */
     public void appendContent(HttpContent msg) {

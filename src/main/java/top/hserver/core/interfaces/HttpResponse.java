@@ -21,4 +21,6 @@ public interface HttpResponse {
     void sendTemplate(String htmlPath, Map<String, Object> obj);
 
     void addCookie(Cookie cookie);
+
+    void redirect(String url);
 }

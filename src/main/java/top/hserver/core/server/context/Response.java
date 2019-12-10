@@ -7,13 +7,13 @@ import top.hserver.core.server.util.FreemarkerUtil;
 import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Response implements HttpResponse {
 
-    private Map<String, String> headers = new HashMap<>();
+    private Map<String, String> headers = new ConcurrentHashMap<>();
 
     private File file;
 
@@ -105,6 +105,12 @@ public class Response implements HttpResponse {
         }
         headers.put("Set-Cookie", cookieStr.toString());
     }
+
+    @Override
+    public void redirect(String url) {
+        headers.put("location", url);
+    }
+
 
     //---------------系统用的Get操作
 
