@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Request implements HttpRequest {
     private String uri;
     private HttpMethod requestType;
+    private String ip;
     private Map<String, String> requestParams = new ConcurrentHashMap<>();
     private Map<String, String> headers = new ConcurrentHashMap<>();
 
@@ -54,6 +55,10 @@ public class Request implements HttpRequest {
         return fileItems.get(name);
     }
 
+    @Override
+    public String getIp() {
+        return ip;
+    }
 
     @Override
     public String getHeader(String headName) {

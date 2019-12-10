@@ -24,4 +24,6 @@ public interface HttpRequest {
 
     Map<String, String> getHeaders();
 
+    String getIp();
+
 }

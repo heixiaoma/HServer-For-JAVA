@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -46,7 +47,9 @@ public class DispatcherHandler {
                                              WebContext webContext) {
 
         HttpRequest req = webContext.getHttpRequest();
+        InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
         Request request = new Request();
+        request.setIp(insocket.getAddress().getHostAddress());
         //如果GET请求
         if (req.method() == GET) {
             Map<String, String> requestParams = new HashMap<>();
@@ -110,11 +113,20 @@ public class DispatcherHandler {
      * @return
      */
     public static WebContext Statistics(WebContext webContext) {
-
-        System.out.println("开启统计" + ConstConfig.isStatisticsOpen);
-        System.out.println("统计规则" + ConstConfig.StatisticalRules);
-
-
+        if (ConstConfig.isStatisticsOpen) {
+            /*有点耗性能，就看你开不开了*/
+            synchronized (webContext) {
+                ConstConfig.IPData.add(webContext.getRequest().getIp());
+                Long uriCount = ConstConfig.URIData.get(webContext.getRequest().getUri());
+                if (uriCount == null) {
+                    ConstConfig.URIData.put(webContext.getRequest().getUri(), 1L);
+                } else {
+                    ConstConfig.URIData.put(webContext.getRequest().getUri(), uriCount + 1);
+                }
+            }
+            ConstConfig.URIData.forEach((a, b) -> log.info(a +"-->"+ b));
+            log.info("ip:"+ConstConfig.IPData.size() + "");
+        }
         return webContext;
     }
 
