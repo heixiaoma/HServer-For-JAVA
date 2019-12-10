@@ -3,6 +3,7 @@ package top.hserver.core.server.context;
 
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpRequest;
+import top.hserver.core.interfaces.TimeStatistics;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -24,7 +25,22 @@ public class WebContext {
 
     private String result;
 
+    //时间统计
+    private TimeStatistics timeStatistics;
+
     private Queue<HttpContent> contents = new LinkedList<>();
+
+
+    public void regTimeStatistics(TimeStatistics timeStatistics) {
+        this.timeStatistics = timeStatistics;
+    }
+
+    public void stopTimeStatistics(Long stopTime) {
+        if (this.timeStatistics != null) {
+            this.timeStatistics.countTime(stopTime);
+        }
+    }
+
 
     /**
      * 多消息内容存起来，一会构建对象的时候编码然后取出文件或者字段或者数据
@@ -98,4 +114,5 @@ public class WebContext {
     public void setFilter(boolean filter) {
         isFilter = filter;
     }
+
 }

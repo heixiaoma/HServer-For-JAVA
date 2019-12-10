@@ -1,6 +1,7 @@
 package top.hserver.core.server.handlers;
 
 import com.alibaba.fastjson.JSON;
+import top.hserver.core.interfaces.TimeStatistics;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.*;
 import top.hserver.core.server.exception.BusinessException;
@@ -26,7 +27,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import static io.netty.handler.codec.http.HttpHeaderNames.LOCATION;
 import static io.netty.handler.codec.http.HttpMethod.GET;
 import static io.netty.handler.codec.http.HttpMethod.POST;
 import static io.netty.handler.codec.http.HttpResponseStatus.FOUND;
@@ -115,17 +115,26 @@ public class DispatcherHandler {
     public static WebContext Statistics(WebContext webContext) {
         if (ConstConfig.isStatisticsOpen) {
             /*有点耗性能，就看你开不开了*/
-            synchronized (webContext) {
+            //统计IP数
+            synchronized (ConstConfig.URIData) {
                 ConstConfig.IPData.add(webContext.getRequest().getIp());
-                Long uriCount = ConstConfig.URIData.get(webContext.getRequest().getUri());
-                if (uriCount == null) {
-                    ConstConfig.URIData.put(webContext.getRequest().getUri(), 1L);
-                } else {
-                    ConstConfig.URIData.put(webContext.getRequest().getUri(), uriCount + 1);
-                }
             }
-            ConstConfig.URIData.forEach((a, b) -> log.info(a +"-->"+ b));
-            log.info("ip:"+ConstConfig.IPData.size() + "");
+            long startTime = System.currentTimeMillis();
+            //统计方法调用时长
+            webContext.regTimeStatistics((stopTime) -> {
+                synchronized (ConstConfig.URIData) {
+                    String uri = webContext.getRequest().getUri();
+                    Long uriCount = ConstConfig.URIData.get(uri);
+                    //统计页面数，页面总和就是总访问数
+                    if (uriCount == null) {
+                        ConstConfig.URIData.put(uri, 1L);
+                    } else {
+                        ConstConfig.URIData.put(uri, uriCount + 1);
+                    }
+                    long total = stopTime - startTime;
+//                   log.info(ConstConfig.URIData.toString());
+                }
+            });
         }
         return webContext;
     }
@@ -296,6 +305,7 @@ public class DispatcherHandler {
                     response.setStatus(FOUND);
                 }
             });
+            webContext.stopTimeStatistics(System.currentTimeMillis());
             return response;
         } catch (Exception e) {
             String message = ExceptionUtil.getMessage(e);
