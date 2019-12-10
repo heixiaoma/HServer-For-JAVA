@@ -22,7 +22,7 @@ public class PropertiesInit {
             if (statisticalRules != null && statisticalRules.trim().length() > 0) {
                 String[] split = statisticalRules.split(",");
                 for (String s : split) {
-                    if (statisticalRules != null && statisticalRules.trim().length() > 0) {
+                    if (statisticalRules.trim().length() > 0) {
                         ConstConfig.StatisticalRules.add(s);
                     }
                 }
