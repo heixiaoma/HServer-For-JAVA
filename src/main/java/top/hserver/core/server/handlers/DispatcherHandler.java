@@ -1,7 +1,6 @@
 package top.hserver.core.server.handlers;
 
 import com.alibaba.fastjson.JSON;
-import top.hserver.core.interfaces.TimeStatistics;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.*;
 import top.hserver.core.server.exception.BusinessException;
@@ -20,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -38,6 +36,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 @Slf4j
 public class DispatcherHandler {
 
+    private final static StatisticsHandler statisticsHandler=new StatisticsHandler();
     private final static StaticHandler staticHandler = new StaticHandler();
     private static final HttpDataFactory HTTP_DATA_FACTORY = new DefaultHttpDataFactory(true);
     //标识不是静态文件，这样下次使用方便直接跳过检查
@@ -47,9 +46,9 @@ public class DispatcherHandler {
                                              WebContext webContext) {
 
         HttpRequest req = webContext.getHttpRequest();
-        InetSocketAddress insocket = (InetSocketAddress) ctx.channel().remoteAddress();
         Request request = new Request();
-        request.setIp(insocket.getAddress().getHostAddress());
+        request.setIp(statisticsHandler.getClientIp(ctx));
+        webContext.setCtx(ctx);
         //如果GET请求
         if (req.method() == GET) {
             Map<String, String> requestParams = new HashMap<>();
@@ -114,26 +113,17 @@ public class DispatcherHandler {
      */
     public static WebContext Statistics(WebContext webContext) {
         if (ConstConfig.isStatisticsOpen) {
-            /*有点耗性能，就看你开不开了*/
-            //统计IP数
-            synchronized (ConstConfig.URIData) {
-                ConstConfig.IPData.add(webContext.getRequest().getIp());
-            }
             long startTime = System.currentTimeMillis();
             //统计方法调用时长
-            webContext.regTimeStatistics((stopTime) -> {
-                synchronized (ConstConfig.URIData) {
-                    String uri = webContext.getRequest().getUri();
-                    Long uriCount = ConstConfig.URIData.get(uri);
-                    //统计页面数，页面总和就是总访问数
-                    if (uriCount == null) {
-                        ConstConfig.URIData.put(uri, 1L);
-                    } else {
-                        ConstConfig.URIData.put(uri, uriCount + 1);
-                    }
-                    long total = stopTime - startTime;
-//                   log.info(ConstConfig.URIData.toString());
-                }
+            webContext.regStatistics((stopTime) -> {
+                //URI访问数
+                statisticsHandler.uriDataCount(webContext.getRequest().getUri());
+                //请求总数统计
+                statisticsHandler.increaseCount();
+                //統計IP
+                statisticsHandler.addToIpMap(webContext.getCtx());
+                //计算统计请求的，数据包大小,IP,执行时间
+                statisticsHandler.addToConnectionDeque(webContext.getCtx(),webContext.getRequest().getUri(),stopTime-startTime);
             });
         }
         return webContext;
@@ -305,7 +295,7 @@ public class DispatcherHandler {
                     response.setStatus(FOUND);
                 }
             });
-            webContext.stopTimeStatistics(System.currentTimeMillis());
+            webContext.stopStatistics(System.currentTimeMillis());
             return response;
         } catch (Exception e) {
             String message = ExceptionUtil.getMessage(e);

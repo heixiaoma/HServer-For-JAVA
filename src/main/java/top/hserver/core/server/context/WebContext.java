@@ -1,9 +1,10 @@
 package top.hserver.core.server.context;
 
 
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpRequest;
-import top.hserver.core.interfaces.TimeStatistics;
+import top.hserver.core.interfaces.Statistics;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -25,21 +26,24 @@ public class WebContext {
 
     private String result;
 
+    private ChannelHandlerContext ctx;
+
     //时间统计
-    private TimeStatistics timeStatistics;
+    private Statistics statistics;
 
     private Queue<HttpContent> contents = new LinkedList<>();
 
 
-    public void regTimeStatistics(TimeStatistics timeStatistics) {
-        this.timeStatistics = timeStatistics;
+    public void regStatistics(Statistics statistics) {
+        this.statistics = statistics;
     }
 
-    public void stopTimeStatistics(Long stopTime) {
-        if (this.timeStatistics != null) {
-            this.timeStatistics.countTime(stopTime);
+    public void stopStatistics(long stopTime) {
+        if (this.statistics != null) {
+            this.statistics.stopStatistics(stopTime);
         }
     }
+
 
 
     /**
@@ -115,4 +119,11 @@ public class WebContext {
         isFilter = filter;
     }
 
+    public ChannelHandlerContext getCtx() {
+        return ctx;
+    }
+
+    public void setCtx(ChannelHandlerContext ctx) {
+        this.ctx = ctx;
+    }
 }

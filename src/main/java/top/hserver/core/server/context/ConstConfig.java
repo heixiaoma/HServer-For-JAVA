@@ -10,10 +10,5 @@ public class ConstConfig {
     //统计规则
     public static final CopyOnWriteArraySet<String> StatisticalRules =new  CopyOnWriteArraySet<>();
 
-    //ip记录
-    public static final CopyOnWriteArraySet<String> IPData=new CopyOnWriteArraySet<>();
-    //uri记录
-    public static final ConcurrentHashMap<String,Long> URIData=new ConcurrentHashMap<>();
-    //
 
 }

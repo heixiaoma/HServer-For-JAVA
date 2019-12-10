@@ -5,25 +5,26 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-
 public class RequestData {
-    private  String ip;
-    private  String url;
+    private String ip;
+    private String url;
     private long sentBytes;
     private long receivedBytes;
     private long speed;
+    private long consumeTime;
     private String time;
 
-    public RequestData(String ip, String url, long sentBytes, long receivedBytes, long speed) {
+    public RequestData(String ip, String url, long sentBytes, long receivedBytes, long speed, long consumeTime) {
         this.ip = ip;
         this.url = url;
         this.sentBytes = sentBytes;
         this.receivedBytes = receivedBytes;
         this.speed = speed;
-        this.time=CurrentTimeStamp();
+        this.consumeTime = consumeTime;
+        this.time = CurrentTimeStamp();
     }
 
-    public  String CurrentTimeStamp() {
+    public String CurrentTimeStamp() {
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date currentTime = new Date();
         String formatCurrentTime = sdfDate.format(currentTime);
@@ -53,5 +54,9 @@ public class RequestData {
 
     public String getTime() {
         return time;
+    }
+
+    public long getConsumeTime() {
+        return consumeTime;
     }
 }

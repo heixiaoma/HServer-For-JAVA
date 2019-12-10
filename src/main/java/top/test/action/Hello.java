@@ -9,6 +9,7 @@ import top.hserver.core.ioc.annotation.POST;
 import top.hserver.core.server.context.Cookie;
 import top.hserver.core.server.context.Response;
 import top.hserver.core.server.handlers.FileItem;
+import top.hserver.core.server.handlers.StatisticsHandler;
 import top.test.bean.User;
 import top.test.service.Test;
 
@@ -38,6 +39,19 @@ public class Hello {
         res.put("res", request.getRequestParams());
         res.put("msg", test1q.show("xx"));
         res.put("name", name);
+        return res;
+    }
+
+    @GET("/stat")
+    public Map stat(String name) {
+        Map<String, Object> res = new HashMap<>();
+        res.put("code", 200);
+        res.put("name", name);
+        res.put("ipMap",StatisticsHandler.getIpMap());
+        res.put("logRequestQue",StatisticsHandler.getLogRequestQue());
+        res.put("uniqueIpCount", StatisticsHandler.getUniqueIpCount());
+        res.put("count", StatisticsHandler.getCount());
+        res.put("uriData", StatisticsHandler.getUriData());
         return res;
     }
 

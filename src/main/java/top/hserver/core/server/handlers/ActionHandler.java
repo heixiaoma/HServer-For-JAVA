@@ -1,5 +1,6 @@
 package top.hserver.core.server.handlers;
 
+import io.netty.handler.traffic.GlobalTrafficShapingHandler;
 import top.hserver.core.server.context.WebContext;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -21,6 +22,7 @@ public class ActionHandler extends SimpleChannelInboundHandler<WebContext> {
         CompletableFuture<WebContext> future = CompletableFuture.completedFuture(webContext);
 
         Executor executor = ctx.executor();
+
 
         future.thenApplyAsync(req -> DispatcherHandler.buildWebContext(ctx, webContext), executor)
                 .thenApplyAsync(DispatcherHandler::Statistics, executor)
