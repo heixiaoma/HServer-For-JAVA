@@ -36,7 +36,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 @Slf4j
 public class DispatcherHandler {
 
-    private final static StatisticsHandler statisticsHandler=new StatisticsHandler();
+    private final static StatisticsHandler statisticsHandler = new StatisticsHandler();
     private final static StaticHandler staticHandler = new StaticHandler();
     private static final HttpDataFactory HTTP_DATA_FACTORY = new DefaultHttpDataFactory(true);
     //标识不是静态文件，这样下次使用方便直接跳过检查
@@ -113,18 +113,24 @@ public class DispatcherHandler {
      */
     public static WebContext Statistics(WebContext webContext) {
         if (ConstConfig.isStatisticsOpen) {
-            long startTime = System.currentTimeMillis();
-            //统计方法调用时长
-            webContext.regStatistics((stopTime) -> {
-                //URI访问数
-                statisticsHandler.uriDataCount(webContext.getRequest().getUri());
-                //请求总数统计
-                statisticsHandler.increaseCount();
-                //統計IP
-                statisticsHandler.addToIpMap(webContext.getCtx());
-                //计算统计请求的，数据包大小,IP,执行时间
-                statisticsHandler.addToConnectionDeque(webContext.getCtx(),webContext.getRequest().getUri(),stopTime-startTime);
-            });
+
+            for (String statisticalRule : ConstConfig.StatisticalRules) {
+                if (webContext.getRequest().getUri().matches(statisticalRule)) {
+                    long startTime = System.currentTimeMillis();
+                    //统计方法调用时长
+                    webContext.regStatistics((stopTime) -> {
+                        //URI访问数
+                        statisticsHandler.uriDataCount(webContext.getRequest().getUri());
+                        //请求总数统计
+                        statisticsHandler.increaseCount();
+                        //統計IP
+                        statisticsHandler.addToIpMap(webContext.getCtx());
+                        //计算统计请求的，数据包大小,IP,执行时间
+                        statisticsHandler.addToConnectionDeque(webContext.getCtx(), webContext.getRequest().getUri(), stopTime - startTime);
+                    });
+                    break;
+                }
+            }
         }
         return webContext;
     }

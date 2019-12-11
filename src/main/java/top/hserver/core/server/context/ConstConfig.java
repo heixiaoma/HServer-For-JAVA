@@ -1,6 +1,5 @@
 package top.hserver.core.server.context;
 
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 public class ConstConfig {

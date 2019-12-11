@@ -27,7 +27,7 @@ public class PropertiesInit {
                     }
                 }
             } else {
-                ConstConfig.StatisticalRules.add("/");
+                ConstConfig.StatisticalRules.add("/.*");
             }
         } catch (Exception e) {
             e.printStackTrace();
