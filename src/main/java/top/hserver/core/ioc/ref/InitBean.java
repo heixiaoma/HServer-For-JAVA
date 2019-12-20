@@ -29,6 +29,9 @@ public class InitBean {
      */
     public static void init(Class<?> baseClass) {
         try {
+            if (baseClass == null || baseClass.getPackage() == null || baseClass.getPackage().getName() == null) {
+                return;
+            }
             PackageScanner scan = new ClasspathPackageScanner(baseClass.getPackage().getName());
             initWebSocket(scan);
             initBean(scan);
@@ -45,7 +48,7 @@ public class InitBean {
         for (Class aClass : classs) {
             //检查注解里面是否有值
             WebSocket annotation = (WebSocket) aClass.getAnnotation(WebSocket.class);
-            if (annotation != null ) {
+            if (annotation != null) {
                 IocUtil.addBean(aClass.getName(), aClass.newInstance());
                 WebSocketServerHandler.WebSocketRouter.put(annotation.value(), aClass.getName());
             }
