@@ -73,7 +73,7 @@
     <dependency>
         <groupId>top.hserver</groupId>
         <artifactId>HServer</artifactId>
-        <version>2.0</version>
+        <version>2.1</version>
     </dependency>
 
 
