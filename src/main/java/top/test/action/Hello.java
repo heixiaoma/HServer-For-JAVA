@@ -10,6 +10,7 @@ import top.hserver.core.server.context.Cookie;
 import top.hserver.core.server.context.Response;
 import top.hserver.core.server.handlers.FileItem;
 import top.hserver.core.server.handlers.StatisticsHandler;
+import top.hserver.core.server.stat.IpData;
 import top.test.bean.User;
 import top.test.service.Test;
 
@@ -54,6 +55,19 @@ public class Hello {
         res.put("uriData", StatisticsHandler.getUriData());
         return res;
     }
+
+    @GET("/removeStat")
+    public Map removeStat() {
+        Map<String, Object> res = new HashMap<>();
+        res.put("code", 200);
+        res.put("ipMap",StatisticsHandler.removeIpMap());
+        res.put("logRequestQue",StatisticsHandler.removeLogRequestQue());
+        res.put("uniqueIpCount", StatisticsHandler.removeUniqueIpCount());
+        res.put("count", StatisticsHandler.removeCount());
+        res.put("uriData", StatisticsHandler.removeUriData());
+        return res;
+    }
+
 
     /**
      * 上传文件测试

@@ -263,9 +263,27 @@
         }
     }
 #### 9.自带监控操作
-    待更新，和开发
-#### 10.集群分布式监控操作
-    待更新
-#### 11.技巧篇
+    application.properties文件配置
+        #开启访问统计
+        statistics=true
+        #统计规则:以逗号分割的正则表达式
+        statisticalRules=/hel.*,/admin/.*
+    #StatisticsHandler操作
+        #获取所有的IP地址
+        StatisticsHandler.getIpMap()
+        #最近50个请求队列（调用的URI，(发送大小，接收大小)宽带监视，耗时时间）
+        StatisticsHandler.getLogRequestQue()
+        #唯一IP请求的数量 uv
+        StatisticsHandler.getUniqueIpCount()
+        #请求总数   pv
+        StatisticsHandler.getCount()
+        #uri记录 被访问的记录（）
+        StatisticsHandler.getUriData()
+    #提示：
+    1，如果自己要做统计，完全可以自定义一个定时器，动态保存数据哦
+    2，StatisticsHandler,提供了一个remove方法,remove，用来清除，或者保存数据用，它会返回一个最新的数据同时清除自己
+    3，如果开启统计，请务必，执行Remove方法，不然，内存可能就会蹦
+        
+#### 10.技巧篇
     1.Linux上使用Epoll提高性能
     2.待更新
