@@ -2,8 +2,8 @@ package top.test;
 
 import top.hserver.HServerApplication;
 
-public class WebApp {
+public class TestWebApp {
     public static void main(String[] args) {
-        HServerApplication.run(WebApp.class, 8888);
+        HServerApplication.run(TestWebApp.class, 8888);
     }
 }

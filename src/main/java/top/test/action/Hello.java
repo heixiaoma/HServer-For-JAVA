@@ -26,6 +26,13 @@ public class Hello {
     @Autowired
     private Test test1q;
 
+
+    @GET("/")
+    public void index(HttpResponse httpResponse) {
+        httpResponse.redirect("/hserver.html");
+    }
+
+
     /**
      * json测试，依赖注入测试
      *

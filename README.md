@@ -64,7 +64,7 @@
         public void timerTask() {}
     @WebSocket
     实现websocket通信
-        @@WebSocket("/ws")
+        @WebSocket("/ws")
         public class WebSocketTest implements WebSocketHandler {}
         //这样就可以完成基本的通信了
 #### 3.完成Hello World项目
@@ -73,9 +73,16 @@
     <dependency>
         <groupId>top.hserver</groupId>
         <artifactId>HServer</artifactId>
-        <version>1.0</version>
+        <version>2.0</version>
     </dependency>
 
+
+    public class WebApp {
+        public static void main(String[] args) {
+            //运行官方例子,直接运行既可以了，默认自带了一些例子。
+            HServerApplication.run(TestWebApp.class, 8888);
+        }
+    }
 
 
     #第二步搞一个主函数
@@ -84,46 +91,11 @@
             HServerApplication.run(WebApp.class, 8888);
         }
     }
+    
     #第三步同主函数建立一个包文件夹比如controller
     
     @Controller
     public class Hello {
-    
-        /** HttpResponse 
-            void setHeader(String key, String value);
-        
-            void setDownloadFile(File file);
-        
-            void setDownloadFile(InputStream inputStream, String fileName);
-        
-            void sendJson(Object object);
-        
-            void sendHtml(String html);
-        
-            void sendTemplate(String htmlPath, Map<String, Object> obj);
-        
-            void addCookie(Cookie cookie);
-        */
-            
-        /** HttpRequest 
-            String getUri();
-        
-            HttpMethod getRequestType();
-        
-            Map<String, String> getRequestParams();
-        
-            String query(String name);
-        
-            Map<String, FileItem> getFileItems();
-        
-            FileItem queryFile(String name);
-        
-            String getHeader(String headName);
-        
-            Map<String, String> getHeaders();
-        */
-            
-    
     
         @GET("/hello")
         public Map index(HttpRequest request, String name) {
@@ -150,7 +122,8 @@
             httpResponse.sendTemplate("a.ftl", obj);
         }
     }
-    #就这样你就完成了一个简单得get请求定义
+    #就这样你就完成了一个简单得get请求定义，更多例子，可以参考包top.test下面的例子
+    
 #### 4.文件上传下载操作
           
           #File类型得
