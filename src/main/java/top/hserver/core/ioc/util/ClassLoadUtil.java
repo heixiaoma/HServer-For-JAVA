@@ -16,7 +16,6 @@ import java.util.jar.JarFile;
 /**
  * class加载工具类
  */
-@Slf4j
 public class ClassLoadUtil {
 
     /**
@@ -58,7 +57,6 @@ public class ClassLoadUtil {
                                     if (name.endsWith(".class") && !entry.isDirectory()) {
                                         String className = name.substring(packageName.length() + 1, name.length() - 6);
                                         try {
-                                            log.info(packageName + "." + className);
                                             classes.add(classLoader.loadClass(packageName + '.' + className));
                                         } catch (ClassNotFoundException e) {
                                             e.printStackTrace();
