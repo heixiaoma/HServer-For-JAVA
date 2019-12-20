@@ -41,7 +41,7 @@ public class Hello {
      * @return
      */
     @GET("/hello")
-    public Map index(HttpRequest request, String name) {
+    public Map hello(HttpRequest request, String name) {
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("res", request.getRequestParams());
@@ -49,6 +49,7 @@ public class Hello {
         res.put("name", name);
         return res;
     }
+
 
     @GET("/stat")
     public Map stat(String name) {

@@ -35,7 +35,7 @@ public class ParameterUtil {
 
         String[] strings = paramNameMap.get(cs).get(method);
         if (parameterTypes.length != strings.length) {
-            throw new Exception(method.getName() + "参数参数获取异常");
+            throw new Exception(method.getName() + "-方法参数获取异常");
         }
 
         for (int i = 0; i < parameterTypes.length; i++) {
@@ -106,7 +106,33 @@ public class ParameterUtil {
         try {
             ClassPool pool = ClassPool.getDefault();
             CtClass cc = pool.get(cs.getName());
-            CtMethod cm = cc.getDeclaredMethod(method.getName());
+            CtMethod[] methods = cc.getMethods();
+            CtMethod cm=null;
+            for (CtMethod ctMethod : methods) {
+                CtClass[] types = ctMethod.getParameterTypes();
+                Class<?>[] types1 = method.getParameterTypes();
+                //校验是否存在相关的函数
+                if (ctMethod.getName().equals(method.getName())&&types.length==types1.length){
+                    boolean flag=true;
+                    //校验参数类型对不对
+                    for (int i = 0; i < types1.length; i++) {
+                        if (!types[i].getSimpleName().equals(types1[i].getSimpleName())){
+                            flag=false;
+                        }
+                    }
+                    //校验返回类型对不对
+                    if (!method.getReturnType().getSimpleName().equals(ctMethod.getReturnType().getSimpleName())){
+                        flag=false;
+                    }
+                    if (flag){
+                        cm=ctMethod;
+                        break;
+                    }
+                }
+            }
+            if (cm==null){
+                return new String[]{};
+            }
             // 使用javaassist的反射方法获取方法的参数名
             MethodInfo methodInfo = cm.getMethodInfo();
             CodeAttribute codeAttribute = methodInfo.getCodeAttribute();
