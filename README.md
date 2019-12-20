@@ -76,7 +76,6 @@
         <version>2.1</version>
     </dependency>
 
-
     public class WebApp {
         public static void main(String[] args) {
             //运行官方例子,直接运行既可以了，默认自带了一些例子。
