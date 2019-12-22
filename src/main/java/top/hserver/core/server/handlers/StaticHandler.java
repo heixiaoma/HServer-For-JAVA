@@ -1,7 +1,10 @@
 package top.hserver.core.server.handlers;
 
 
+import top.hserver.core.interfaces.GlobalException;
+import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.StaticFile;
+import top.hserver.core.server.context.WebContext;
 import top.hserver.core.server.exception.BusinessException;
 import top.hserver.core.server.util.ExceptionUtil;
 import io.netty.buffer.ByteBuf;
@@ -19,14 +22,14 @@ public class StaticHandler {
 
     private String basePath = "/static";
 
-    public StaticFile handler(String uri) {
+    public StaticFile handler(String uri,WebContext webContext) {
         //判断一次文件是否有/index.html文件
         if ("/".equals(uri)) {
             uri = "/index.html";
         }
         InputStream input = getResourceStreamFromJar(basePath + uri);
         if (input != null) {
-            return buildStaticFile(input, uri);
+            return buildStaticFile(input, uri,webContext);
         }
         return null;
     }
@@ -43,7 +46,7 @@ public class StaticHandler {
      * @param url
      * @return
      */
-    private StaticFile buildStaticFile(InputStream input, String url) {
+    private StaticFile buildStaticFile(InputStream input, String url, WebContext webContext) {
         StaticFile staticFile = new StaticFile();
         try {
             //获取文件大小
@@ -80,14 +83,24 @@ public class StaticHandler {
             inputStream.close();
             input.close();
         } catch (Exception e) {
+            GlobalException bean1 = IocUtil.getBean(GlobalException.class);
+            if (bean1 != null) {
+                bean1.handler(e, webContext.getWebkit());
+            } else {
             log.error("获取文件大小异常:" + e.getMessage());
             try {
                 input.close();
             } catch (Exception e1) {
-                log.error("关闭文件流异常:" + e.getMessage());
-                throw new BusinessException(503, "关闭文件流异常" + ExceptionUtil.getMessage(e));
+                GlobalException bean2 = IocUtil.getBean(GlobalException.class);
+                if (bean2 != null) {
+                    bean2.handler(e1, webContext.getWebkit());
+                } else {
+                    log.error("关闭文件流异常:" + e.getMessage());
+                    throw new BusinessException(503, "关闭文件流异常" + ExceptionUtil.getMessage(e));
+                }
             }
             throw new BusinessException(503, "获取文件大小异常" + ExceptionUtil.getMessage(e));
+            }
         }
         return staticFile;
     }

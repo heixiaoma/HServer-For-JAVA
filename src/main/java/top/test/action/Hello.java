@@ -220,4 +220,10 @@ public class Hello {
         httpResponse.redirect("http://baidu.com");
     }
 
+    @GET("/error")
+    public String error(HttpResponse httpResponse) {
+        return (1/0)+"x";
+    }
+
+
 }

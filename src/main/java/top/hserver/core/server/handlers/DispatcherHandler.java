@@ -1,6 +1,7 @@
 package top.hserver.core.server.handlers;
 
 import com.alibaba.fastjson.JSON;
+import top.hserver.core.interfaces.GlobalException;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.*;
 import top.hserver.core.server.exception.BusinessException;
@@ -81,9 +82,14 @@ public class DispatcherHandler {
                     request.setBody(Unpooled.copiedBuffer(byteBuffs.toArray(new ByteBuf[0])));
                 }
             } catch (Exception e) {
-                String message = ExceptionUtil.getMessage(e);
-                log.error(message);
-                throw new BusinessException(503, "生成解码器失败" + message);
+                GlobalException bean2 = IocUtil.getBean(GlobalException.class);
+                if (bean2 != null) {
+                    bean2.handler(e, webContext.getWebkit());
+                } else {
+                    String message = ExceptionUtil.getMessage(e);
+                    log.error(message);
+                    throw new BusinessException(503, "生成解码器失败" + message);
+                }
             }
         }
         //获取URi，設置真實的URI
@@ -102,6 +108,10 @@ public class DispatcherHandler {
         request.setHeaders(headers);
         webContext.setRequest(request);
         webContext.setResponse(new Response());
+        Webkit webkit = new Webkit();
+        webkit.httpRequest = webContext.getRequest();
+        webkit.httpResponse = webContext.getResponse();
+        webContext.setWebkit(webkit);
         return webContext;
     }
 
@@ -146,7 +156,7 @@ public class DispatcherHandler {
         if (noStaticFileUri.contains(webContext.getRequest().getUri())) {
             return webContext;
         }
-        StaticFile handler = staticHandler.handler(webContext.getRequest().getUri());
+        StaticFile handler = staticHandler.handler(webContext.getRequest().getUri(),webContext);
         if (handler != null) {
             webContext.setStaticFile(true);
             webContext.setStaticFile(handler);
@@ -163,10 +173,7 @@ public class DispatcherHandler {
         if (!FilterChain.filtersIoc.isEmpty()) {
             //不是空就要进行Filter过滤洛
             webContext.setFilter(true);
-            Webkit webkit = new Webkit();
-            webkit.httpRequest = webContext.getRequest();
-            webkit.httpResponse = webContext.getResponse();
-            FilterChain.getFileChain().doFilter(webkit);
+            FilterChain.getFileChain().doFilter(webContext.getWebkit());
             //Filter走完又回来
         }
         return webContext;
@@ -189,8 +196,13 @@ public class DispatcherHandler {
 
         RouterInfo routerInfo = RouterManager.getRouterInfo(webContext.getRequest().getUri(), webContext.getRequest().getRequestType());
         if (routerInfo == null) {
-            log.error("为找到对应的控制器");
-            throw new BusinessException(404, "为找到对应的控制器");
+            GlobalException bean1 = IocUtil.getBean(GlobalException.class);
+            if (bean1 != null) {
+                bean1.handler(new NullPointerException("为找到对应的控制器"), webContext.getWebkit());
+            } else {
+                log.error("为找到对应的控制器");
+                throw new BusinessException(404, "为找到对应的控制器");
+            }
         }
         try {
             Method method = routerInfo.getMethod();
@@ -205,9 +217,19 @@ public class DispatcherHandler {
                 try {
                     methodArgs = ParameterUtil.getMethodArgs(aClass, method, webContext);
                 } catch (Exception e) {
-                    String message = ExceptionUtil.getMessage(e);
-                    log.error(message);
-                    throw new BusinessException(503, "生成控制器时参数异常" + message);
+                    GlobalException bean1 = IocUtil.getBean(GlobalException.class);
+                    if (bean1 != null) {
+                        bean1.handler(e, webContext.getWebkit());
+                    } else {
+                        GlobalException bean2 = IocUtil.getBean(GlobalException.class);
+                        if (bean2 != null) {
+                            bean2.handler(e, webContext.getWebkit());
+                        } else {
+                            String message = ExceptionUtil.getMessage(e);
+                            log.error(message);
+                            throw new BusinessException(503, "生成控制器时参数异常" + message);
+                        }
+                    }
                 }
                 if (methodArgs != null) {
                     res = method.invoke(bean, methodArgs);
@@ -224,122 +246,145 @@ public class DispatcherHandler {
                     webContext.setResult(JSON.toJSONString(res));
                 }
             } catch (IllegalAccessException | InvocationTargetException e) {
-                String message = ExceptionUtil.getMessage(e);
-                log.error(message);
-                throw new BusinessException(503, "调用方法失败" + message);
+                GlobalException bean1 = IocUtil.getBean(GlobalException.class);
+                if (bean1 != null) {
+                    bean1.handler(e, webContext.getWebkit());
+                } else {
+                    GlobalException bean2 = IocUtil.getBean(GlobalException.class);
+                    if (bean2 != null) {
+                        bean2.handler(e, webContext.getWebkit());
+                    } else {
+                        String message = ExceptionUtil.getMessage(e);
+                        log.error(message);
+                        throw new BusinessException(503, "调用方法失败" + message);
+                    }
+                }
             } catch (IllegalArgumentException e) {
-                String message = ExceptionUtil.getMessage(e);
-                log.error(message);
-                throw new BusinessException(503, "调用控制器时参数异常" + message);
+
+                GlobalException bean1 = IocUtil.getBean(GlobalException.class);
+                if (bean1 != null) {
+                    bean1.handler(e, webContext.getWebkit());
+                } else {
+                    String message = ExceptionUtil.getMessage(e);
+                    log.error(message);
+                    throw new BusinessException(503, "调用控制器时参数异常" + message);
+                }
             }
             return webContext;
         } catch (BusinessException e) {
-            String message = ExceptionUtil.getMessage(e);
-            log.error(message);
-            throw new BusinessException(e.getHttpCode(), e.getMsg() + message);
+            GlobalException bean1 = IocUtil.getBean(GlobalException.class);
+            if (bean1 != null) {
+                bean1.handler(e, webContext.getWebkit());
+            } else {
+                String message = ExceptionUtil.getMessage(e);
+                log.error(message);
+                throw new BusinessException(e.getHttpCode(), e.getMsg() + message);
+            }
         }
+        return webContext;
     }
 
-    /**
-     * 构建返回对象
-     *
-     * @param webContext
-     * @return
-     */
-    public static FullHttpResponse buildResponse(WebContext webContext) {
-        try {
-            FullHttpResponse response;
-            /**
-             * 如果是文件特殊处理下,是静态文件，同时需要下载的文件
-             */
-            if (webContext.isStaticFile()) {
-                //显示型的
-                response = new DefaultFullHttpResponse(
-                        HTTP_1_1,
-                        HttpResponseStatus.OK,
-                        Unpooled.wrappedBuffer(webContext.getStaticFile().getByteBuf()));
-                response.headers().set(HttpHeaderNames.CONTENT_TYPE, webContext.getStaticFile().getFileHead() + ";charset=UTF-8");
-            } else if (webContext.getResponse().isDownload()) {
-                //控制器下载文件的
-                Response response1 = webContext.getResponse();
+        /**
+         * 构建返回对象
+         *
+         * @param webContext
+         * @return
+         */
+        public static FullHttpResponse buildResponse (WebContext webContext){
+            try {
+                FullHttpResponse response;
+                /**
+                 * 如果是文件特殊处理下,是静态文件，同时需要下载的文件
+                 */
+                if (webContext.isStaticFile()) {
+                    //显示型的
+                    response = new DefaultFullHttpResponse(
+                            HTTP_1_1,
+                            HttpResponseStatus.OK,
+                            Unpooled.wrappedBuffer(webContext.getStaticFile().getByteBuf()));
+                    response.headers().set(HttpHeaderNames.CONTENT_TYPE, webContext.getStaticFile().getFileHead() + ";charset=UTF-8");
+                } else if (webContext.getResponse().isDownload()) {
+                    //控制器下载文件的
+                    Response response1 = webContext.getResponse();
 
-                if (response1.getFile() == null) {
+                    if (response1.getFile() == null) {
+                        response = new DefaultFullHttpResponse(
+                                HTTP_1_1,
+                                HttpResponseStatus.OK,
+                                Unpooled.wrappedBuffer(DownLoadUtil.FileToByteBuf(response1.getInputStream())));
+                    } else {
+                        response = new DefaultFullHttpResponse(
+                                HTTP_1_1,
+                                HttpResponseStatus.OK,
+                                Unpooled.wrappedBuffer(DownLoadUtil.FileToByteBuf(response1.getFile())));
+                    }
+                    response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/octet-stream;charset=UTF-8");
+                    response.headers().add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", webContext.getResponse().getFileName()));
+                } else if (webContext.getResponse().getJsonAndHtml() != null) {
+                    //是否Response的
                     response = new DefaultFullHttpResponse(
                             HTTP_1_1,
                             HttpResponseStatus.OK,
-                            Unpooled.wrappedBuffer(DownLoadUtil.FileToByteBuf(response1.getInputStream())));
+                            Unpooled.wrappedBuffer(webContext.getResponse().getJsonAndHtml().getBytes(Charset.forName("UTF-8"))));
                 } else {
+                    //是否是方法调用的
                     response = new DefaultFullHttpResponse(
                             HTTP_1_1,
                             HttpResponseStatus.OK,
-                            Unpooled.wrappedBuffer(DownLoadUtil.FileToByteBuf(response1.getFile())));
+                            Unpooled.wrappedBuffer(webContext.getResult().getBytes(Charset.forName("UTF-8"))));
+                    response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
                 }
-                response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/octet-stream;charset=UTF-8");
-                response.headers().add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", webContext.getResponse().getFileName()));
-            } else if (webContext.getResponse().getJsonAndHtml() != null) {
-                //是否Response的
-                response = new DefaultFullHttpResponse(
-                        HTTP_1_1,
-                        HttpResponseStatus.OK,
-                        Unpooled.wrappedBuffer(webContext.getResponse().getJsonAndHtml().getBytes(Charset.forName("UTF-8"))));
-            } else {
-                //是否是方法调用的
-                response = new DefaultFullHttpResponse(
-                        HTTP_1_1,
-                        HttpResponseStatus.OK,
-                        Unpooled.wrappedBuffer(webContext.getResult().getBytes(Charset.forName("UTF-8"))));
-                response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
+                response.headers().set(HttpHeaderNames.SERVER, "HServer");
+                response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
+                response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+                //用户自定义头头
+                Map<String, String> headers = webContext.getResponse().getHeaders();
+                headers.forEach((a, b) -> {
+                    response.headers().set(a, b);
+                    if (a.equals("location")) {
+                        response.setStatus(FOUND);
+                    }
+                });
+                webContext.stopStatistics(System.currentTimeMillis());
+                return response;
+            } catch (Exception e) {
+                String message = ExceptionUtil.getMessage(e);
+                log.error(message);
+                throw new BusinessException(503, "构建Response对象异常" + message);
             }
+        }
+
+        /**
+         * 构建返回对象
+         *
+         * @param e
+         * @return
+         */
+        public static FullHttpResponse handleException (Throwable e){
+            BusinessException cause = (BusinessException) e.getCause();
+            HttpResponseStatus httpResponseStatus = HttpResponseStatus.valueOf(cause.getHttpCode());
+            FullHttpResponse response = new DefaultFullHttpResponse(
+                    HTTP_1_1,
+                    httpResponseStatus,
+                    Unpooled.wrappedBuffer(cause.getRespMsg().getBytes(Charset.forName("UTF-8"))));
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
             response.headers().set(HttpHeaderNames.SERVER, "HServer");
             response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
             response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-            //用户自定义头头
-            Map<String, String> headers = webContext.getResponse().getHeaders();
-            headers.forEach((a, b) -> {
-                response.headers().set(a, b);
-                if (a.equals("location")) {
-                    response.setStatus(FOUND);
-                }
-            });
-            webContext.stopStatistics(System.currentTimeMillis());
             return response;
-        } catch (Exception e) {
-            String message = ExceptionUtil.getMessage(e);
-            log.error(message);
-            throw new BusinessException(503, "构建Response对象异常" + message);
         }
-    }
 
-    /**
-     * 构建返回对象
-     *
-     * @param e
-     * @return
-     */
-    public static FullHttpResponse handleException(Throwable e) {
-        BusinessException cause = (BusinessException) e.getCause();
-        HttpResponseStatus httpResponseStatus = HttpResponseStatus.valueOf(cause.getHttpCode());
-        FullHttpResponse response = new DefaultFullHttpResponse(
-                HTTP_1_1,
-                httpResponseStatus,
-                Unpooled.wrappedBuffer(cause.getRespMsg().getBytes(Charset.forName("UTF-8"))));
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
-        response.headers().set(HttpHeaderNames.SERVER, "HServer");
-        response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
-        response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-        return response;
-    }
+        /**
+         * 终极输出
+         *
+         * @param ctx
+         * @param future
+         * @param msg
+         */
+        public static void writeResponse (ChannelHandlerContext
+        ctx, CompletableFuture < WebContext > future, FullHttpResponse msg){
+            ctx.writeAndFlush(msg);
+            future.complete(null);
+        }
 
-    /**
-     * 终极输出
-     *
-     * @param ctx
-     * @param future
-     * @param msg
-     */
-    public static void writeResponse(ChannelHandlerContext ctx, CompletableFuture<WebContext> future, FullHttpResponse msg) {
-        ctx.writeAndFlush(msg);
-        future.complete(null);
     }
-
-}

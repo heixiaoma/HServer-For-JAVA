@@ -12,6 +12,8 @@ import java.util.Queue;
 
 public class WebContext {
 
+    private Webkit webkit;
+
     private Request request;
 
     private Response response;
@@ -125,5 +127,13 @@ public class WebContext {
 
     public void setCtx(ChannelHandlerContext ctx) {
         this.ctx = ctx;
+    }
+
+    public Webkit getWebkit() {
+        return webkit;
+    }
+
+    public void setWebkit(Webkit webkit) {
+        this.webkit = webkit;
     }
 }

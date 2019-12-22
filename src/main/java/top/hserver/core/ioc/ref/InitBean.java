@@ -1,5 +1,6 @@
 package top.hserver.core.ioc.ref;
 
+import top.hserver.core.interfaces.GlobalException;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.interfaces.FilterAdapter;
 import top.hserver.core.ioc.annotation.*;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +67,6 @@ public class InitBean {
             Bean annotation = (Bean) aClass.getAnnotation(Bean.class);
             if (annotation.value().trim().length() > 0) {
                 IocUtil.addBean(annotation.value(), aClass.newInstance());
-
             } else {
                 IocUtil.addBean(aClass.getName(), aClass.newInstance());
             }
@@ -82,6 +83,10 @@ public class InitBean {
                 } else {
                     TaskManager.initTask(task.name(), task.time(), aClass.getName(), method);
                 }
+            }
+            //检测这个Bean是否是全局异常处理的类
+            if (GlobalException.class.isAssignableFrom(aClass)){
+                IocUtil.addBean(GlobalException.class.getName(), aClass.newInstance());
             }
         }
     }
