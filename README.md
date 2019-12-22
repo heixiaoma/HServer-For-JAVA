@@ -1,7 +1,8 @@
 # HServer
 
 #### 介绍
-    基于Netty而做的一个高并发Webserver
+    HServer是一个基于Netty的一个高并发Webserver,它不仅仅是一个webserver，我们可以直接在这个基础上进行开发，它提供了相关的注解和一些方法，完全能够完成我们大大小小的项目。
+    作为一名Java程序员写web程序spring是我们项目99%会用的。spring的优点就不过多讲。Hserver是一个“tomcat”+“spring”的这样的小玩意。它的qps比tomcat更快，这个是因为Hserver使用的Netty,注解比spring更简，这是因为，它还不够强大（滑稽，我会努力让它更智能点）
     如果你是一个phper或者喜欢php，可以关注下 
 [![黑小马工作室/HServer](https://gitee.com/heixiaomas/HServer/widgets/widget_card.svg?colors=ffffff,ffffff,,e3e9ed,666666,9b9b9b)](https://gitee.com/heixiaomas/HServer)
     
