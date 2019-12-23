@@ -258,7 +258,23 @@
     1，如果自己要做统计，完全可以自定义一个定时器，动态保存数据哦
     2，StatisticsHandler,提供了一个remove方法,remove，用来清除，或者保存数据用，它会返回一个最新的数据同时清除自己
     3，如果开启统计，请务必，执行Remove方法，不然，内存可能就会蹦
+
+#### 10.全局异常处理
+    
+    类必须要被@Bean注解，同时实现GlobalException接口，
+    一个项目中最多只有一个GlobalException实现哦，可以没有.没有异常处理，同时又报错了，那么直接显示错误
+    @Bean
+    public class WebException implements GlobalException {
+    
+        @Override
+        public void handler(Exception exception, Webkit webkit) {
+            exception.printStackTrace();
+            System.out.println(webkit.httpRequest.getUri() + "--->" + exception.getMessage());
+            webkit.httpResponse.sendHtml("全局异常处理");
+        }
+    }
+    
         
-#### 10.技巧篇
+#### 11.技巧篇
     1.Linux上使用Epoll提高性能
     2.待更新
