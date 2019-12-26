@@ -245,6 +245,21 @@
     
     }
     
+    //动态添加定时任务的实现类必须要实现一个TaskJob,样才能被TaskManager管理
+    //添加任务 TaskManager.addTask("测试任务2", 1000 * 2, TestTask.class,"666");
+    //删除任务  boolean is_success = TaskManager.removeTask("测试任务2");
+    public class TestTask implements TaskJob {
+    
+        @Override
+        public void exec(Object... args) {
+            String args_ = "";
+            for (Object arg : args) {
+                args_ += arg.toString();
+            }
+            System.out.println("测试定时器动态添加任务，参数是：" + args_);
+        }
+    }
+    
 #### 8.websocket操作
     
     #需要被@WebSocket标注同时给一个连接地址，最后实现WebSocketHandler接口，

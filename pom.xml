@@ -6,7 +6,7 @@
 
     <groupId>top.hserver</groupId>
     <artifactId>HServer</artifactId>
-    <version>2.1</version>
+    <version>2.2</version>
     <packaging>jar</packaging>
     <name>hserver</name>
     <url>https://gitee.com/heixiaomas_admin/HServer</url>
@@ -60,18 +60,12 @@
             <version>1.7.28</version>
         </dependency>
 
-        <!--   日志包     -->
-        <dependency>
-            <groupId>com.bladejava</groupId>
-            <artifactId>blade-log</artifactId>
-            <version>0.1.6</version>
-        </dependency>
-
         <!--   快速操作类     -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.10</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- JSON处理 -->
@@ -99,9 +93,12 @@
 
 
     <build>
+        <finalName>HServer</finalName>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -112,9 +109,11 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
+                    <finalName>${project.build.finalName}</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
-                            <mainClass>org.slf4j.impl.Main</mainClass>
+                            <mainClass>top.test.TestWebApp</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -131,23 +130,8 @@
                     </execution>
                 </executions>
             </plugin>
-
-<!--            <plugin>-->
-<!--                <groupId>org.sonatype.plugins</groupId>-->
-<!--                <artifactId>nexus-staging-maven-plugin</artifactId>-->
-<!--                <version>1.6.8</version>-->
-<!--                <extensions>true</extensions>-->
-<!--                <configuration>-->
-<!--                    <serverId>heixiaoma</serverId>-->
-<!--                    <nexusUrl>https://oss.sonatype.org</nexusUrl>-->
-<!--                    <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-
         </plugins>
     </build>
-
-
 
     <profiles>
         <profile>
