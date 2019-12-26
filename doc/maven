@@ -8,3 +8,6 @@ gpg –-keyserver hkp://keyserver.ubuntu.com:11371 –-send-keys C6EED57A
 gpg –-keyserver hkp://pool.sks-keyservers.net:11371 -–recv-keys C6EED57A
 gpg –-keyserver hkp://pgp.mit.edu:11371 –-recv-keys C6EED57A
 gpg –-keyserver hkp://keyserver.ubuntu.com:11371 -–recv-keys C6EED57A
+
+
+deploy -P release
