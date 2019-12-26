@@ -21,3 +21,12 @@
 ![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/LinuxFile.png)
 ##### 3.模板引擎html
 ![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/LinuxTemp.png)
+
+
+
+### HServer2.2版本，环境Linux（Epoll模型）
+    配置阿里云学生机 Centos7.3（1核2G内存）
+    hello--> Requests per second:    73156.87 [#/sec] (mean)
+    reids读--> Requests per second:    44103.39 [#/sec] (mean)
+    redis写--> Requests per second:    38631.04 [#/sec] (mean) 
+文档源码地址 [点我](https://gitee.com/heixiaomas_admin/hserver-for-java-redis) 
