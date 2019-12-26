@@ -308,8 +308,21 @@
             webkit.httpResponse.sendHtml("全局异常处理");
         }
     }
-    
+
+#### 11.服务器启动完成是执行的方法
+     类必须要被@Bean注解，同时实现InitRunner接口，
+     @Bean
+     public class RunInit implements InitRunner {
+     
+         @Autowired
+         private User user;
+     
+         @Override
+         public void init() {
+             System.out.println("初始化方法：注入的User对象的名字是-->"+user.getName());
+         }
+     }
         
-#### 11.技巧篇
+#### 12.技巧篇
     1.Linux上使用Epoll提高性能
     2.待更新

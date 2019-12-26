@@ -4,6 +4,8 @@ package top.hserver.core.server;
  * Created by Bess on 23.09.14.
  */
 
+import top.hserver.core.interfaces.InitRunner;
+import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.epoll.EpollKit;
 import top.hserver.core.server.epoll.NamedThreadFactory;
 import top.hserver.core.server.epoll.NettyServerGroup;
@@ -55,6 +57,8 @@ public class HServer {
             System.out.println();
             //初始化完成可以放开任务了
             TaskManager.IS_OK = true;
+            InitRunner bean = IocUtil.getBean(InitRunner.class);
+            if (bean!=null)bean.init();
             ch.closeFuture().sync();
 
         } finally {

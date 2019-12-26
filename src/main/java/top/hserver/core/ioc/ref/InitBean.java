@@ -1,6 +1,7 @@
 package top.hserver.core.ioc.ref;
 
 import top.hserver.core.interfaces.GlobalException;
+import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.interfaces.FilterAdapter;
 import top.hserver.core.ioc.annotation.*;
@@ -16,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +91,19 @@ public class InitBean {
     private static void initBean(PackageScanner scan) throws Exception {
         List<Class<?>> classs = scan.getBeansPackage();
         for (Class aClass : classs) {
+
+            //检测这个Bean是否是全局异常处理的类
+            if (GlobalException.class.isAssignableFrom(aClass)){
+                IocUtil.addBean(GlobalException.class.getName(), aClass.newInstance());
+                continue;
+            }
+
+            //检测这个Bean是否是初始化的类
+            if (InitRunner.class.isAssignableFrom(aClass)){
+                IocUtil.addBean(InitRunner.class.getName(), aClass.newInstance());
+                continue;
+            }
+
             //检查注解里面是否有值
             Bean annotation = (Bean) aClass.getAnnotation(Bean.class);
             if (annotation.value().trim().length() > 0) {
@@ -98,7 +111,6 @@ public class InitBean {
             } else {
                 IocUtil.addBean(aClass.getName(), aClass.newInstance());
             }
-
             //检测下Bean里面是否带又Task任务洛，带了就给他安排了
             Method[] methods = aClass.getDeclaredMethods();
             for (Method method : methods) {
@@ -112,10 +124,7 @@ public class InitBean {
                     TaskManager.initTask(task.name(), task.time(), aClass.getName(), method);
                 }
             }
-            //检测这个Bean是否是全局异常处理的类
-            if (GlobalException.class.isAssignableFrom(aClass)){
-                IocUtil.addBean(GlobalException.class.getName(), aClass.newInstance());
-            }
+
         }
     }
 
