@@ -1,5 +1,6 @@
 package top.hserver.core.task;
 
+import lombok.extern.slf4j.Slf4j;
 import top.hserver.core.bean.TaskBean;
 import top.hserver.core.interfaces.TaskJob;
 import top.hserver.core.ioc.IocUtil;
@@ -10,7 +11,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
-
+@Slf4j
 public class TaskManager {
 
     public static Boolean IS_OK = false;
@@ -26,6 +27,10 @@ public class TaskManager {
      */
     public static void addTask(String name, Integer time, Class<? extends TaskJob> taskJob, Object... args) {
         try {
+            if (nameTask.containsKey(name)){
+                log.warn(name+"任务名已经存在");
+                return;
+            }
             TaskJob taskJob1 = taskJob.newInstance();
             Timer sysTimer = new Timer(name);
             TimerTask timerTask = new TimerTask() {
@@ -74,6 +79,10 @@ public class TaskManager {
      */
     public static void initTask(String name, Integer time, String className, Method method, Object... args) {
         try {
+            if (nameTask.containsKey(name)){
+                log.warn(name+"任务名已经存在");
+                return;
+            }
             Timer sysTimer = new Timer(name);
             TimerTask timerTask = new TimerTask() {
                 @Override
