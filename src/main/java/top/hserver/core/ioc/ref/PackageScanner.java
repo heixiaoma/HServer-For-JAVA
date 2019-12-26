@@ -14,4 +14,7 @@ public interface PackageScanner {
 
     List<Class<?>> getWebSocketPackage() throws IOException;
 
+    List<Class<?>> getConfigurationPackage() throws IOException;
+
+
 }

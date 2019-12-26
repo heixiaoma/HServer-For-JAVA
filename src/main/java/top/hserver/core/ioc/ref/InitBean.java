@@ -35,6 +35,8 @@ public class InitBean {
                 return;
             }
             PackageScanner scan = new ClasspathPackageScanner(baseClass.getPackage().getName());
+            //读取配置文件
+            initConfiguration(scan);
             initWebSocket(scan);
             initBean(scan);
             initController(scan);
@@ -44,6 +46,32 @@ public class InitBean {
             e.printStackTrace();
         }
     }
+
+
+    private static void initConfiguration(PackageScanner scan) throws Exception {
+        List<Class<?>> classs = scan.getConfigurationPackage();
+        for (Class aClass : classs) {
+            //检查注解里面是否有值
+            Configuration annotation = (Configuration) aClass.getAnnotation(Configuration.class);
+            if (annotation != null) {
+                Method[] methods = aClass.getDeclaredMethods();
+                Object o = aClass.newInstance();
+                for (Method method : methods) {
+                    Bean bean = method.getAnnotation(Bean.class);
+                    if (bean != null) {
+                        Object invoke = method.invoke(o);
+                        String value = bean.value();
+                        if (value.trim().length()>0){
+                            IocUtil.addBean(value, invoke);
+                        }else {
+                            IocUtil.addBean(invoke.getClass().getName(), invoke);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     private static void initWebSocket(PackageScanner scan) throws Exception {
         List<Class<?>> classs = scan.getWebSocketPackage();

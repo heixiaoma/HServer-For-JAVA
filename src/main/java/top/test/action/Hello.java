@@ -13,6 +13,7 @@ import top.hserver.core.server.handlers.StatisticsHandler;
 import top.hserver.core.server.stat.IpData;
 import top.test.bean.User;
 import top.test.service.Test;
+import top.test.service.UserService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,6 +26,10 @@ public class Hello {
 
     @Autowired
     private Test test1q;
+
+
+    @Autowired
+    private UserService userService;
 
 
     @GET("/")
@@ -225,5 +230,14 @@ public class Hello {
         return (1/0)+"x";
     }
 
+
+
+    @GET("/config")
+    public Map<String,Object> config(){
+        Map<String,Object> obj=new HashMap<>();
+        obj.put("user1",userService.getUser1());
+        obj.put("user2",userService.getUser2());
+        return obj;
+    }
 
 }

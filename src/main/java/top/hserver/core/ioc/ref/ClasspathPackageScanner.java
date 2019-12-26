@@ -48,6 +48,18 @@ public class ClasspathPackageScanner implements PackageScanner {
 
 
     @Override
+    public List<Class<?>> getConfigurationPackage() throws IOException {
+        List<Class<?>> clazzLis = new ArrayList<>();
+        List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true);
+        for (Class<?> aClass : classes) {
+            if (aClass.getAnnotation(Configuration.class)!=null){
+                clazzLis.add(aClass);
+            }
+        }
+        return clazzLis;
+    }
+
+    @Override
     public List<Class<?>> getControllersPackage() throws IOException {
         List<Class<?>> clazzLis = new ArrayList<>();
         List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true);

@@ -77,6 +77,33 @@
         @WebSocket("/ws")
         public class WebSocketTest implements WebSocketHandler {}
         //这样就可以完成基本的通信了
+    @Configuration
+    自定配置注解，需要配合@Bean注解一起使用，最后会把方法里面的返回的对象
+    存储到IOC容器中，同时可以通过Autowired注解注入
+        @Configuration
+        public class DataConfig {
+        
+            //自定义名字（用例：比如多数据源注入）
+            @Bean("createUser")
+            public User createUser(){
+                User user = new User();
+                user.setAge(999);
+                user.setName("我是配置类自定义名字的数据");
+                user.setSex("未知");
+                return user;
+            }
+        
+           //按类型存储 
+            @Bean
+            public User createUser1(){
+                User user = new User();
+                user.setAge(999);
+                user.setName("我是配置类的默认数据");
+                user.setSex("未知");
+                return user;
+            }
+        
+        }        
 #### 3.完成Hello World项目
      #第一步pom依赖引入
     
