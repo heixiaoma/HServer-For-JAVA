@@ -1,5 +1,6 @@
 package top.hserver;
 
+import top.hserver.cloud.CloudManager;
 import top.hserver.core.ioc.ref.InitBean;
 import top.hserver.core.properties.PropertiesInit;
 import top.hserver.core.server.HServer;
@@ -26,6 +27,8 @@ public class HServerApplication {
         log.info("IOC 装配中", classz.getName());
         InitBean.injection();
         log.info("IOC 全部装配完成", classz.getName());
+        //云启动
+        CloudManager.run();
         try {
             new HServer(port).run();
         } catch (Exception e) {
