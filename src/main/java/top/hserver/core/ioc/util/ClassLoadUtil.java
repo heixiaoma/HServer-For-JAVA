@@ -1,5 +1,6 @@
 package top.hserver.core.ioc.util;
 
+
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -16,6 +17,7 @@ import java.util.jar.JarFile;
 /**
  * class加载工具类
  */
+@Slf4j
 public class ClassLoadUtil {
 
     /**
@@ -59,19 +61,21 @@ public class ClassLoadUtil {
                                         try {
                                             classes.add(classLoader.loadClass(packageName + '.' + className));
                                         } catch (ClassNotFoundException e) {
-                                            e.printStackTrace();
+                                            log.error(e.getMessage());
+                                        }catch (NoClassDefFoundError e){
+                                            log.error(e.getMessage());
                                         }
                                     }
                                 }
                             }
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        log.error(e.getMessage());
                     }
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
 
         return classes;
@@ -97,7 +101,7 @@ public class ClassLoadUtil {
                 try {
                     classes.add(classLoader.loadClass(packageName + '.' + className));
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage());
                 }
             }
         }
