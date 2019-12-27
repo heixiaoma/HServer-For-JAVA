@@ -60,7 +60,7 @@ public class StaticHandler {
                 String[] split = fileName.split("\\.");
                 staticFile.setFileName(fileName);
                 //设置文件是下载还
-                staticFile.setFileType(split[1]);
+                staticFile.setFileType(split[split.length-1]);
             } else {
                 return null;
             }
