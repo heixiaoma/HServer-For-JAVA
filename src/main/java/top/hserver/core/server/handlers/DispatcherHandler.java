@@ -244,6 +244,7 @@ public class DispatcherHandler {
                 } else {
                     //非字符串类型的将对象转换Json字符串
                     webContext.setResult(JSON.toJSONString(res));
+                    webContext.getResponse().setHeader("content-type", "application/json;charset=UTF-8");
                 }
             } catch (IllegalAccessException | InvocationTargetException e) {
                 GlobalException bean1 = IocUtil.getBean(GlobalException.class);
