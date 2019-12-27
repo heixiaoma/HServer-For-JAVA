@@ -60,9 +60,7 @@ public class ClassLoadUtil {
                                         String className = name.substring(packageName.length() + 1, name.length() - 6);
                                         try {
                                             classes.add(classLoader.loadClass(packageName + '.' + className));
-                                        } catch (ClassNotFoundException e) {
-                                            log.error(e.getMessage());
-                                        }catch (NoClassDefFoundError e){
+                                        } catch (Throwable e) {
                                             log.error(e.getMessage());
                                         }
                                     }

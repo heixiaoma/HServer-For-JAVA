@@ -18,7 +18,9 @@ import top.test.service.UserService;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -204,7 +206,13 @@ public class Hello {
         user.setName("xx");
         user.setSex("男");
         Map<String,Object> obj=new HashMap<>();
-        obj.put("user",user);
+        obj.put("user2",user);
+        List<String> lists=new ArrayList<>();
+        lists.add("1");
+        lists.add("2");
+        lists.add("3");
+        lists.add("4");
+        obj.put("list",lists);
 //        httpResponse.sendTemplate("/admin/user/list.ftl", obj);
         httpResponse.sendTemplate("a.ftl", obj);
     }
