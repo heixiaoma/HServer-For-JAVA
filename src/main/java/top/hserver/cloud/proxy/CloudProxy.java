@@ -1,6 +1,7 @@
 package top.hserver.cloud.proxy;
 
 import java.lang.reflect.Method;
+import java.util.UUID;
 
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
@@ -24,9 +25,10 @@ public class CloudProxy {
                 invokeServiceData.setMethod(thismethod.getName());
                 invokeServiceData.setAClass(clazz.getName());
                 invokeServiceData.setObjects(args);
-                ServerHandler.SendInvoker(invokeServiceData);
+                invokeServiceData.setUUID(UUID.randomUUID().toString());
+                Object o = ServerHandler.SendInvoker(invokeServiceData);
                 log.info("----------------远程调用结束----------------");
-                return "result";
+                return o;
             }
         });
         return proxyFactory.createClass().newInstance();

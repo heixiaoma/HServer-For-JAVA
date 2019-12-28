@@ -11,9 +11,9 @@ public class Cloud {
     @Resource
     private RpcService rpcService;
 
-    @GET("/prc")
+    @GET("/rpc")
     public String rpc(){
-        rpcService.test("666");
-        return "0";
+        String test = rpcService.test("666");
+        return test;
     }
 }

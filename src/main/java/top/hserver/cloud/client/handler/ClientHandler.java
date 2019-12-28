@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.CloudManager;
 import top.hserver.cloud.bean.ClientData;
 import top.hserver.cloud.bean.InvokeServiceData;
+import top.hserver.cloud.bean.ResultData;
 import top.hserver.cloud.common.MSG_TYPE;
 import top.hserver.cloud.common.Msg;
 import top.hserver.core.ioc.IocUtil;
@@ -24,7 +25,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
                 Msg<InvokeServiceData> msg1 = msg;
                 InvokeServiceData data = msg1.getData();
                 log.info("调用信息--->" + data.toString());
-
                 //返回调用结果
                 ClientData clientData = CloudManager.get(data.getAClass());
                 Class aClass = clientData.getAClass();
@@ -32,9 +32,12 @@ public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
                 for (Method method : clientData.getMethods()) {
                     if (method.getName().equals(data.getMethod())){
                         Object invoke = method.invoke(bean, data.getObjects());
-                        Msg<String> msg2=new Msg<>();
+                        ResultData<String> resultData =new ResultData<>();
+                        resultData.setData(invoke.toString());
+                        resultData.setUUID(data.getUUID());
+                        Msg<ResultData> msg2=new Msg<>();
                         msg2.setMsg_type(MSG_TYPE.RESULT);
-                        msg2.setData(invoke.toString());
+                        msg2.setData(resultData);
                         channelHandlerContext.writeAndFlush(msg2);
                     }
                 }

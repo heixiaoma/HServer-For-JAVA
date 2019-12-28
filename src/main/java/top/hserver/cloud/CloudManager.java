@@ -15,9 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 public class CloudManager {
+
+    public final static ExecutorService executorService = Executors.newCachedThreadPool();
 
     public final static int port=9527;
 
