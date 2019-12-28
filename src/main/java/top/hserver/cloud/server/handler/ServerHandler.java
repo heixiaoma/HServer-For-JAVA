@@ -1,31 +1,60 @@
 package top.hserver.cloud.server.handler;
 
 import com.alibaba.fastjson.JSON;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.socket.DatagramPacket;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.bean.CloudData;
+import top.hserver.cloud.bean.InvokeServiceData;
+import top.hserver.cloud.bean.ServiceData;
+import top.hserver.cloud.common.MSG_TYPE;
+import top.hserver.cloud.common.Msg;
 
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-public class ServerHandler extends SimpleChannelInboundHandler<DatagramPacket> {
+public class ServerHandler extends SimpleChannelInboundHandler<Msg> {
 
-    private static Set<CloudData> cloudDataS=new CopyOnWriteArraySet<>();
+    private final static Map<String,ServiceData> classStringMap=new ConcurrentHashMap<>();
+
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Msg msg) throws Exception {
+
+        switch (msg.getMsg_type()){
+            case REG:
+                Msg<CloudData> cloudDataMsg=msg;
+                CloudData data = cloudDataMsg.getData();
+                ServiceData serviceData=new ServiceData();
+                serviceData.setIp(data.getIp());
+                serviceData.setName(data.getName());
+                serviceData.setCtx(channelHandlerContext);
+                data.getClasses().forEach(a->classStringMap.put(a.getName(),serviceData));
+                log.info(data.toString());
+                break ;
+            case RESULT:
+                log.info(msg.toString());
+        }
+
+    }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket packet) throws Exception {
-        ByteBuf buf = packet.copy().content();
-        byte[] req = new byte[buf.readableBytes()];
-        buf.readBytes(req);
-        String body = new String(req, "UTF-8");
-        CloudData cloudData = JSON.parseObject(body, CloudData.class);
-        cloudDataS.add(cloudData);
-        log.info("服务器端实例："+cloudDataS.size());
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        ctx.flush();
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        ctx.close();
+    }
+
+
+    public static void SendInvoker(InvokeServiceData invokeServiceData){
+        ServiceData serviceData = classStringMap.get(invokeServiceData.getAClass());
+        Msg<InvokeServiceData> msg=new Msg<>();
+        msg.setMsg_type(MSG_TYPE.INVOKER);
+        msg.setData(invokeServiceData);
+        serviceData.getCtx().writeAndFlush(msg);
     }
 
 }

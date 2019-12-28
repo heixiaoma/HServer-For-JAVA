@@ -2,10 +2,9 @@ package top.hserver.core.ioc.annotation;
 
 import java.lang.annotation.*;
 
-
-@Target({ElementType.TYPE,ElementType.METHOD})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Bean {
+public @interface RpcService {
     String value() default "";
 }

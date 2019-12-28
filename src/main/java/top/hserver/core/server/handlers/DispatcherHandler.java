@@ -199,6 +199,7 @@ public class DispatcherHandler {
             GlobalException bean1 = IocUtil.getBean(GlobalException.class);
             if (bean1 != null) {
                 bean1.handler(new NullPointerException("为找到对应的控制器"), webContext.getWebkit());
+                return webContext;
             } else {
                 log.error("为找到对应的控制器");
                 throw new BusinessException(404, "为找到对应的控制器");
@@ -224,6 +225,7 @@ public class DispatcherHandler {
                         GlobalException bean2 = IocUtil.getBean(GlobalException.class);
                         if (bean2 != null) {
                             bean2.handler(e, webContext.getWebkit());
+                            return webContext;
                         } else {
                             String message = ExceptionUtil.getMessage(e);
                             log.error(message);
@@ -254,6 +256,7 @@ public class DispatcherHandler {
                     GlobalException bean2 = IocUtil.getBean(GlobalException.class);
                     if (bean2 != null) {
                         bean2.handler(e, webContext.getWebkit());
+                        return webContext;
                     } else {
                         String message = ExceptionUtil.getMessage(e);
                         log.error(message);
@@ -265,6 +268,7 @@ public class DispatcherHandler {
                 GlobalException bean1 = IocUtil.getBean(GlobalException.class);
                 if (bean1 != null) {
                     bean1.handler(e, webContext.getWebkit());
+                    return webContext;
                 } else {
                     String message = ExceptionUtil.getMessage(e);
                     log.error(message);

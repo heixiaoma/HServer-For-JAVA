@@ -1,5 +1,8 @@
 package top.hserver.core.ioc.ref;
 
+import top.hserver.cloud.CloudManager;
+import top.hserver.cloud.bean.ClientData;
+import top.hserver.cloud.proxy.CloudProxy;
 import top.hserver.core.interfaces.GlobalException;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
@@ -61,9 +64,9 @@ public class InitBean {
                     if (bean != null) {
                         Object invoke = method.invoke(o);
                         String value = bean.value();
-                        if (value.trim().length()>0){
+                        if (value.trim().length() > 0) {
                             IocUtil.addBean(value, invoke);
-                        }else {
+                        } else {
                             IocUtil.addBean(invoke.getClass().getName(), invoke);
                         }
                     }
@@ -93,13 +96,13 @@ public class InitBean {
         for (Class aClass : classs) {
 
             //检测这个Bean是否是全局异常处理的类
-            if (GlobalException.class.isAssignableFrom(aClass)){
+            if (GlobalException.class.isAssignableFrom(aClass)) {
                 IocUtil.addBean(GlobalException.class.getName(), aClass.newInstance());
                 continue;
             }
 
             //检测这个Bean是否是初始化的类
-            if (InitRunner.class.isAssignableFrom(aClass)){
+            if (InitRunner.class.isAssignableFrom(aClass)) {
                 IocUtil.addBean(InitRunner.class.getName(), aClass.newInstance());
                 continue;
             }
@@ -111,8 +114,26 @@ public class InitBean {
             } else {
                 IocUtil.addBean(aClass.getName(), aClass.newInstance());
             }
+
             //检测下Bean里面是否带又Task任务洛，带了就给他安排了
             Method[] methods = aClass.getDeclaredMethods();
+
+            //检测当前的Bean是不是Rpc服务
+            RpcService rpcService = (RpcService) aClass.getAnnotation(RpcService.class);
+            //说明是rpc服务，单独存储一份她的数据哦
+            if (rpcService != null) {
+                ClientData clientData=new ClientData();
+                clientData.setAClass(aClass);
+                clientData.setClassName(aClass.getName());
+                clientData.setMethods(methods);
+                if (rpcService.value().trim().length() > 0) {
+                    //自定义了Rpc服务名
+                    CloudManager.add(rpcService.value(), clientData);
+                } else {
+                    //没有自定义服务名字
+                    CloudManager.add(aClass.getName(), clientData);
+                }
+            }
             for (Method method : methods) {
                 Task task = method.getAnnotation(Task.class);
                 if (task == null) {
@@ -236,21 +257,40 @@ public class InitBean {
             //获取当前类的所有字段
             Field[] declaredFields = v.getClass().getDeclaredFields();
             for (Field declaredField : declaredFields) {
-                zr(declaredField, k, v);
+                zr(declaredField, v);
+                rpczr(declaredField, v);
             }
             //aop的代理对象，检查一次
             Field[] declaredFields1 = v.getClass().getSuperclass().getDeclaredFields();
             for (Field field : declaredFields1) {
-                zr(field, k, v);
+                zr(field, v);
+                rpczr(field, v);
             }
         });
     }
 
-    private static void zr(Field declaredField, String k, Object v) {
-        declaredField.setAccessible(true);
+
+    /**
+     * Rpc 服务的代理对象生成
+     */
+    private static void rpczr(Field declaredField, Object v) {
+        Resource annotation = declaredField.getAnnotation(Resource.class);
+        if (annotation != null) {
+            try {
+                declaredField.setAccessible(true);
+                System.out.println(declaredField.getType());
+                declaredField.set(v, CloudProxy.getProxy(declaredField.getType()));
+            } catch (Exception e) {
+                log.error(v.getClass().getName() + "----->" + declaredField.getName() + "：装配错误:RPC代理生成失败");
+            }
+        }
+    }
+
+    private static void zr(Field declaredField, Object v) {
         //检查是否有注解@Autowired
         Autowired annotation = declaredField.getAnnotation(Autowired.class);
         if (annotation != null) {
+            declaredField.setAccessible(true);
             String findMsg;
             Object bean;
             if (annotation.value().trim().length() > 0) {
