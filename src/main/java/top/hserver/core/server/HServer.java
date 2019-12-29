@@ -34,7 +34,6 @@ public class HServer {
         int acceptThreadCount = 1;
         int ioThreadCount = 0;
         String typeName;
-        System.out.println();
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
             if (EpollKit.epollIsAvailable()) {
@@ -53,6 +52,7 @@ public class HServer {
             bootstrap.childHandler(new HttpNettyServerInitializer());
             Channel ch = bootstrap.bind(port).sync().channel();
             log.info("HServer 启动完成");
+            System.out.println();
             System.out.println(getHello(typeName, port));
             System.out.println();
             //初始化完成可以放开任务了

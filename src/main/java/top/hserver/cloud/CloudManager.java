@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class CloudManager {
 
-    public final static ExecutorService executorService = Executors.newCachedThreadPool();
+    public final static ExecutorService executorService = Executors.newFixedThreadPool(20);
 
     public final static int port=9527;
 

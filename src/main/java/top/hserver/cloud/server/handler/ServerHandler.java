@@ -40,7 +40,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Msg> {
             case RESULT:
                 Msg<ResultData> resultDataMsg=msg;
                 ResultData data1 = resultDataMsg.getData();
-                res.put(data1.getUUID(),data1.getData());
+//                res.put(data1.getUUID(),data1.getData());
         }
 
     }
@@ -76,9 +76,9 @@ public class ServerHandler extends SimpleChannelInboundHandler<Msg> {
             }
         });
         try {
-            Object o = submit.get(timeout, TimeUnit.MILLISECONDS);
-            res.remove(invokeServiceData.getUUID());
-            return o;
+//            Object o = submit.get(timeout, TimeUnit.MILLISECONDS);
+//            res.remove(invokeServiceData.getUUID());
+            return "o";
         } catch (Exception e) {
             return new TimeoutException("调用超时，请检测服务");
         }
