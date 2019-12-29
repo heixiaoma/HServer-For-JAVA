@@ -1,7 +1,6 @@
 package top.hserver.cloud.common;
 
 import lombok.Data;
-import top.hserver.cloud.bean.CloudData;
 
 import java.io.Serializable;
 

@@ -2,79 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec71a202-50a0-475a-9494-ae1c3a5bc82e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/doc/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/common/codec/RpcDecoder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/common/codec/RpcEncoder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/future/SyncWrite.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/future/SyncWriteFuture.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/future/SyncWriteMap.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/future/WriteFuture.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/util/SerializationUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/top/test/TestWeb2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/top/test/TestWeb3.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/HServerApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/HServerApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/bean/TaskBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/bean/TaskBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/interfaces/FilterAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/interfaces/FilterAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/interfaces/HookAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/interfaces/HookAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/interfaces/HttpRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/interfaces/HttpRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/interfaces/HttpResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/interfaces/HttpResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/interfaces/TaskJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/interfaces/TaskJob.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/interfaces/WebSocketHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/interfaces/WebSocketHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/HServerIoc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/HServerIoc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/HookIoc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/HookIoc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/HookIocUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/HookIocUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/Ioc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/Ioc.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/IocUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/IocUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/Autowired.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/Autowired.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/Bean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/Bean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/Filter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/Filter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/GET.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/GET.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/Hook.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/Hook.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/POST.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/POST.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/Task.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/annotation/WebSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/annotation/WebSocket.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/ref/ClasspathPackageScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/ref/ClasspathPackageScanner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/ref/InitBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/ref/InitBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/ref/PackageScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/ref/PackageScanner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/ioc/util/ClassLoadUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/util/ClassLoadUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/proxy/JavassistProxyFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/proxy/JavassistProxyFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/HServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/HServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/HttpNettyServerInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/HttpNettyServerInitializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Cookie.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/context/Cookie.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/MimeType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/context/MimeType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/context/Request.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Response.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/context/Response.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/StaticFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/context/StaticFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/WebContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/context/WebContext.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context/Webkit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/context/Webkit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/epoll/EpollKit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/epoll/EpollKit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/epoll/NamedThreadFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/epoll/NamedThreadFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/epoll/NettyServerGroup.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/epoll/NettyServerGroup.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/exception/BusinessException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/exception/BusinessException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/filter/FilterChain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/filter/FilterChain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/ActionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/handlers/ActionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/DispatcherHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/handlers/DispatcherHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/FileItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/handlers/FileItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/ObjectHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/handlers/ObjectHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/StaticHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/handlers/StaticHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/WebSocketServerHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/handlers/WebSocketServerHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/handlers/Ws.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/handlers/Ws.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/router/RouterInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/router/RouterInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/router/RouterManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/router/RouterManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/stat/IpData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/stat/IpData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/stat/RequestData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/stat/RequestData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/stat/StatisticsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/stat/StatisticsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/util/DownLoadUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/util/DownLoadUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/util/ExceptionUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/util/ExceptionUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/util/FreemarkerUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/util/FreemarkerUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/server/util/ParameterUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/server/util/ParameterUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hserver/core/task/TaskManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/task/TaskManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/WebApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/WebApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/action/Hello.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/action/Hello.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/bean/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/bean/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/filter/MyFilter1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/filter/MyFilter1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/filter/MyFilter2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/filter/MyFilter2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/hook/HookTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/hook/HookTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/service/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/service/Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/service/TestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/service/TestService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/task/TaskTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/task/TaskTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/task/TestTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/task/TestTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/test/websocket/WebSocketTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/websocket/WebSocketTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/CloudManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/CloudManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/client/handler/FileServerInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/client/handler/FileServerInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/common/MarshallingCodeCFactory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/common/Msg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/common/Msg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/proxy/CloudProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/proxy/CloudProxy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/server/handler/FileServerInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/server/handler/FileServerInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/server/handler/ServerHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/server/handler/ServerHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/top/test/exception/WebException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/exception/WebException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -99,10 +46,10 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Enum" />
         <option value="HTML File" />
-        <option value="Interface" />
         <option value="AnnotationType" />
+        <option value="Interface" />
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
@@ -130,9 +77,10 @@
     <property name="SearchEverywhereHistoryKey" value="rootLevel&#9;PSI&#9;JAVA://org.slf4j.impl.SimpleLogger#rootLevel" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/com/hserver/core/server/context" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/top/hserver/cloud/common" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15271266" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -146,18 +94,18 @@
       <recent name="D:\Java\HServer\src\main\resources\static\file" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="top.test" />
+      <recent name="top.hserver.cloud.util" />
+      <recent name="top.hserver.core.ioc.annotation" />
+      <recent name="top.hserver.cloud.client" />
       <recent name="com.hserver.core.ioc.annotation" />
-      <recent name="com.test.filter" />
-      <recent name="com.hserver.core.ioc.util" />
-      <recent name="com.hserver.core.ioc.interfaces" />
-      <recent name="com.hserver.core.server.handlers" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Java\HServer\src\main\java\top\hserver\cloud\common" />
+      <recent name="D:\Java\HServer\src\main\java\top\hserver\cloud" />
+      <recent name="D:\Java\HServer\src\main\java\top\hserver\cloud\client" />
+      <recent name="D:\Java\HServer\src\main\java\top\hserver\cloud\server" />
       <recent name="F:\JAVA\HServer\src\main\resources\static" />
-      <recent name="D:\Java\HServer\src\main\java\com\hserver\core\server\context" />
-      <recent name="D:\Java\HServer\src\main\resources\static\images" />
-      <recent name="D:\Java\HServer\src\main\resources\static\img" />
-      <recent name="F:\JAVA\HServer\src\main\java\com\hserver\core\server" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -172,14 +120,64 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.WebApp">
-    <configuration name="WebApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.test.WebApp" />
+  <component name="RunManager" selected="Application.TestWeb2">
+    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Test" />
+      <module name="HServer" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestWeb2" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="top.test.TestWeb2" />
       <module name="HServer" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.test.*" />
+          <option name="PATTERN" value="top.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestWeb3" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="top.test.TestWeb3" />
+      <module name="HServer" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="top.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestWebApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="top.test.TestWebApp" />
+      <module name="HServer" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="top.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WebApp (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="top.test.WebApp" />
+      <module name="HServer" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="top.test.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -189,20 +187,6 @@
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="a" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.test.a" />
-      <module name="HServer" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -227,8 +211,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.WebApp" />
-        <item itemvalue="Application.a" />
+        <item itemvalue="Application.TestWebApp" />
+        <item itemvalue="Application.TestWeb2" />
+        <item itemvalue="Application.TestWeb3" />
+        <item itemvalue="Application.Test" />
+        <item itemvalue="Application.WebApp (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -283,28 +270,31 @@
       <workItem from="1575093816900" duration="12643000" />
       <workItem from="1575554411578" duration="960000" />
       <workItem from="1575555386854" duration="2142000" />
-      <workItem from="1575557544389" duration="3788000" />
-    </task>
-    <task id="LOCAL-00001" summary="s">
-      <created>1571807115577</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1571807115578</updated>
-    </task>
-    <task id="LOCAL-00002" summary="s">
-      <created>1571807349994</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1571807349994</updated>
-    </task>
-    <task id="LOCAL-00003" summary="分发处理">
-      <created>1571812244311</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1571812244311</updated>
+      <workItem from="1575557544389" duration="5050000" />
+      <workItem from="1575563412145" duration="2119000" />
+      <workItem from="1575641319887" duration="590000" />
+      <workItem from="1575644403268" duration="17000" />
+      <workItem from="1575733067470" duration="3747000" />
+      <workItem from="1575896828971" duration="7000" />
+      <workItem from="1575977842665" duration="10763000" />
+      <workItem from="1575990045850" duration="5382000" />
+      <workItem from="1576068510713" duration="8000" />
+      <workItem from="1576160474001" duration="115000" />
+      <workItem from="1576241516553" duration="3000" />
+      <workItem from="1576313116682" duration="865000" />
+      <workItem from="1577016498087" duration="6357000" />
+      <workItem from="1577104719843" duration="857000" />
+      <workItem from="1577197014401" duration="192000" />
+      <workItem from="1577272674035" duration="28000" />
+      <workItem from="1577460715079" duration="93000" />
+      <workItem from="1577460921833" duration="1451000" />
+      <workItem from="1577502325873" duration="13910000" />
+      <workItem from="1577540804333" duration="1738000" />
+      <workItem from="1577546404803" duration="3957000" />
+      <workItem from="1577584946118" duration="1715000" />
+      <workItem from="1577587119986" duration="531000" />
+      <workItem from="1577590912539" duration="11000" />
+      <workItem from="1577591493016" duration="8506000" />
     </task>
     <task id="LOCAL-00004" summary="分发处理">
       <created>1571812298325</created>
@@ -530,7 +520,126 @@
       <option name="project" value="LOCAL" />
       <updated>1575100153420</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="修改包名，为中央仓库做准备">
+      <created>1575561374032</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1575561374033</updated>
+    </task>
+    <task id="LOCAL-00037" summary="修改包名，为中央仓库做准备">
+      <created>1575565587365</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1575565587365</updated>
+    </task>
+    <task id="LOCAL-00038" summary="添加请求耗时统计部分完成">
+      <created>1575989683556</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1575989683556</updated>
+    </task>
+    <task id="LOCAL-00039" summary="添加请求耗时统计完成">
+      <created>1575995420034</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1575995420034</updated>
+    </task>
+    <task id="LOCAL-00040" summary="0.0">
+      <created>1577018351114</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1577018351114</updated>
+    </task>
+    <task id="LOCAL-00041" summary="0.0">
+      <created>1577018411424</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1577018411424</updated>
+    </task>
+    <task id="LOCAL-00042" summary="添加全局異常處理">
+      <created>1577023074947</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1577023074947</updated>
+    </task>
+    <task id="LOCAL-00043" summary="添加全局異常處理">
+      <created>1577023103202</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1577023103202</updated>
+    </task>
+    <task id="LOCAL-00044" summary="添加全局異常處理">
+      <created>1577104962551</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1577104962552</updated>
+    </task>
+    <task id="LOCAL-00045" summary="0.0">
+      <created>1577197195711</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1577197195711</updated>
+    </task>
+    <task id="LOCAL-00046" summary="0.0">
+      <created>1577462349715</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1577462349715</updated>
+    </task>
+    <task id="LOCAL-00047" summary="修复bug,调整RPC框架">
+      <created>1577516193535</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1577516193535</updated>
+    </task>
+    <task id="LOCAL-00048" summary="修复bug,调整RPC框架">
+      <created>1577516241181</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1577516241181</updated>
+    </task>
+    <task id="LOCAL-00049" summary="轮询版本的Rpc完成">
+      <created>1577552299359</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1577552299359</updated>
+    </task>
+    <task id="LOCAL-00050" summary="轮询版本的Rpc完成">
+      <created>1577586722061</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1577586722062</updated>
+    </task>
+    <task id="LOCAL-00051" summary="轮询版本的Rpc完成">
+      <created>1577587556125</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1577587556125</updated>
+    </task>
+    <task id="LOCAL-00052" summary="轮询版本的Rpc完成">
+      <created>1577587583822</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1577587583822</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -542,6 +651,31 @@
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
+        <entry key="1">
+          <value>
+            <State>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="structure">
+                    <value>
+                      <list>
+                        <option value="dir:D:/Java/HServer/src/main/java/top" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
         <entry key="MAIN">
           <value>
             <State>
@@ -550,6 +684,11 @@
           </value>
         </entry>
       </map>
+    </option>
+    <option name="OPEN_TABS">
+      <set>
+        <option value="1" />
+      </set>
     </option>
   </component>
   <component name="VcsManagerConfiguration">
@@ -569,7 +708,30 @@
     <MESSAGE value="文档说明" />
     <MESSAGE value="添加了动态任务功能" />
     <MESSAGE value="添加了web Socket" />
-    <option name="LAST_COMMIT_MESSAGE" value="添加了web Socket" />
+    <MESSAGE value="修改包名，为中央仓库做准备" />
+    <MESSAGE value="添加请求耗时统计部分完成" />
+    <MESSAGE value="添加请求耗时统计完成" />
+    <MESSAGE value="添加全局異常處理" />
+    <MESSAGE value="0.0" />
+    <MESSAGE value="修复bug,调整RPC框架" />
+    <MESSAGE value="轮询版本的Rpc完成" />
+    <option name="LAST_COMMIT_MESSAGE" value="轮询版本的Rpc完成" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/top/hserver/core/server/handlers/StatisticsHandler.java</url>
+          <line>100</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/top/hserver/cloud/client/handler/ClientHandler.java</url>
+          <line>22</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/HServer$WebApp.ic" NAME="WebApp Coverage Results" MODIFIED="1573749046662" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

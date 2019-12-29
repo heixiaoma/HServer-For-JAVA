@@ -20,15 +20,12 @@ public class CloudProxy {
         proxyFactory.setHandler(new MethodHandler() {
             public Object invoke(Object self, Method thismethod, Method proceed, Object[] args) throws Throwable {
                 //这里实现远程调用啦！
-                log.info("----------------远程调用开始----------------");
                 InvokeServiceData invokeServiceData = new InvokeServiceData();
                 invokeServiceData.setMethod(thismethod.getName());
                 invokeServiceData.setAClass(clazz.getName());
                 invokeServiceData.setObjects(args);
                 invokeServiceData.setUUID(UUID.randomUUID().toString());
-                Object o = ServerHandler.SendInvoker(invokeServiceData);
-                log.info("----------------远程调用结束----------------");
-                return o;
+                return ServerHandler.SendInvoker(invokeServiceData);
             }
         });
         return proxyFactory.createClass().newInstance();

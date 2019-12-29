@@ -4,7 +4,7 @@ import top.hserver.core.interfaces.GlobalException;
 import top.hserver.core.ioc.annotation.Bean;
 import top.hserver.core.server.context.Webkit;
 
-@Bean
+//@Bean
 public class WebException implements GlobalException {
 
     @Override
