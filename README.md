@@ -108,7 +108,22 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
                 return user;
             }
         
-        }        
+        }
+    @RpcService
+    标注一个Bean对象是一个rpc服务
+        @Bean
+        @RpcService
+        public class RpcServiceTest {
+            public String test(String name){
+                return name+"我是RPC";
+            }
+        }  
+    @Resource
+    注入一个Rpc服务。详情，请看文档介绍    
+        @Resource
+        private RpcServiceTest rpcServiceTest;
+
+                
 #### 3.完成Hello World项目
      #第一步pom依赖引入
     
