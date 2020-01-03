@@ -115,7 +115,7 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
     <dependency>
         <groupId>top.hserver</groupId>
         <artifactId>HServer</artifactId>
-        <version>2.2</version>
+        <version>2.4</version>
     </dependency>
 
     public class WebApp {
