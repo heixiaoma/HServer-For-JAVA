@@ -299,9 +299,15 @@ public class InitBean {
                 bean = IocUtil.getBean(declaredField.getType());
             }
             if (bean == null) {
-                List<Class> allClassByInterface = ClassLoadUtil.getAllClassByInterface(declaredField.getType());
+                Map<String, Object> all = IocUtil.getAll();
+                List<Class> allClassByInterface = new ArrayList<>();
+                all.forEach((a, b) -> {
+                    if (declaredField.getType().isAssignableFrom(b.getClass())) {
+                        allClassByInterface.add(b.getClass());
+                    }
+                });
                 if (allClassByInterface.size() > 0) {
-                    if (allClassByInterface.size()>1){
+                    if (allClassByInterface.size() > 1) {
                         log.warn("装配警告，存在多个子类，建议通过Bean名字装配，避免装配错误");
                     }
                     bean = IocUtil.getBean(allClassByInterface.get(0));
@@ -315,11 +321,11 @@ public class InitBean {
                 //同类型注入
                 if (bean.getClass().getName().contains(declaredField.getType().getName())) {
                     declaredField.set(v, bean);
-                    log.info(bean.getClass().getName() + "----->" + declaredField.getName() + "：装配完成，"+findMsg);
+                    log.info(bean.getClass().getName() + "----->" + declaredField.getName() + "：装配完成，" + findMsg);
                     //父类检测注入
                 } else if (declaredField.getType().isAssignableFrom(bean.getClass())) {
                     declaredField.set(v, bean);
-                    log.info(bean.getClass().getName() + "----->" + declaredField.getName() + "：装配完成，"+findMsg);
+                    log.info(bean.getClass().getName() + "----->" + declaredField.getName() + "：装配完成，" + findMsg);
                 } else {
                     log.error(v.getClass().getName() + "----->" + declaredField.getName() + "：装配错误:类型不匹配");
                 }
