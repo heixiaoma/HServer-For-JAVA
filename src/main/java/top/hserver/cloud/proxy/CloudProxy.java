@@ -16,7 +16,11 @@ public class CloudProxy {
         // 代理工厂
         ProxyFactory proxyFactory = new ProxyFactory();
         // 设置需要创建子类的父类
-        proxyFactory.setSuperclass(clazz);
+        if (clazz.isInterface()) {
+            proxyFactory.setInterfaces(new Class[]{clazz});
+        } else {
+            proxyFactory.setSuperclass(clazz);
+        }
         proxyFactory.setHandler(new MethodHandler() {
             public Object invoke(Object self, Method thismethod, Method proceed, Object[] args) throws Throwable {
                 //这里实现远程调用啦！

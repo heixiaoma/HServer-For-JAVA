@@ -14,5 +14,5 @@ public class CloudData implements Serializable {
 
     private String ip;
 
-    private List<Class> classes;
+    private List<String> classes;
 }

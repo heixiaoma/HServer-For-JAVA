@@ -26,22 +26,44 @@ public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
                 InvokeServiceData data = msg1.getData();
                 log.info("调用信息--->" + data.toString());
                 //返回调用结果
-                ClientData clientData = CloudManager.get(data.getAClass());
-                Class aClass = clientData.getAClass();
+                String aClass = data.getAClass();
+                ClientData clientData = CloudManager.get(aClass);
                 Object bean = IocUtil.getBean(aClass);
+                System.out.println(bean);
                 for (Method method : clientData.getMethods()) {
                     if (method.getName().equals(data.getMethod())){
-                        Object invoke = method.invoke(bean, data.getObjects());
-                        ResultData<String> resultData =new ResultData<>();
-                        resultData.setData(invoke.toString());
-                        resultData.setUUID(data.getUUID());
-                        Msg<ResultData> msg2=new Msg<>();
-                        msg2.setMsg_type(MSG_TYPE.RESULT);
-                        msg2.setData(resultData);
-                        channelHandlerContext.writeAndFlush(msg2);
+                        try {
+                            Object invoke = method.invoke(bean, data.getObjects());
+                            ResultData<String> resultData = new ResultData<>();
+                            resultData.setData(invoke.toString());
+                            resultData.setUUID(data.getUUID());
+                            resultData.setCode(200);
+                            Msg<ResultData> msg2 = new Msg<>();
+                            msg2.setMsg_type(MSG_TYPE.RESULT);
+                            msg2.setData(resultData);
+                            channelHandlerContext.writeAndFlush(msg2);
+                            break;
+                        }catch (Exception e){
+                            ResultData<String> resultData = new ResultData<>();
+                            resultData.setData(e.getMessage());
+                            resultData.setUUID(data.getUUID());
+                            resultData.setCode(503);
+                            Msg<ResultData> msg2 = new Msg<>();
+                            msg2.setMsg_type(MSG_TYPE.RESULT);
+                            msg2.setData(resultData);
+                            channelHandlerContext.writeAndFlush(msg2);
+                            break;
+                        }
                     }
                 }
-
+                ResultData<String> resultData = new ResultData<>();
+                resultData.setData("not found");
+                resultData.setUUID(data.getUUID());
+                resultData.setCode(404);
+                Msg<ResultData> msg2 = new Msg<>();
+                msg2.setMsg_type(MSG_TYPE.RESULT);
+                msg2.setData(resultData);
+                channelHandlerContext.writeAndFlush(msg2);
                 break;
             default:
                 log.info(msg.toString());

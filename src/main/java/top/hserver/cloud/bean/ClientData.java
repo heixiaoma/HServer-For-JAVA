@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 
 @Data
 public class ClientData {
-    private Class aClass;
+    private String aClass;
     private String className;
     private Method[] methods;
 }

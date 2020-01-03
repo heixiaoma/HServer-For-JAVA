@@ -8,6 +8,7 @@ import top.hserver.cloud.common.Msg;
 import top.hserver.cloud.future.SyncWrite;
 import top.hserver.cloud.future.SyncWriteFuture;
 import top.hserver.cloud.future.SyncWriteMap;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,7 +27,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Msg> {
                 serviceData.setName(data.getName());
                 serviceData.setCtx(channelHandlerContext);
                 data.getClasses().forEach(a -> {
-                    classStringMap.put(a.getName(), serviceData);
+                    classStringMap.put(a, serviceData);
                 });
                 log.info(data.toString());
                 break;
@@ -52,8 +53,26 @@ public class ServerHandler extends SimpleChannelInboundHandler<Msg> {
     }
 
     public static Object SendInvoker(InvokeServiceData invokeServiceData) throws Exception {
+        String aClass = invokeServiceData.getAClass();
+        System.out.println(aClass);
         ServiceData serviceData = classStringMap.get(invokeServiceData.getAClass());
-        ResultData response = new SyncWrite().writeAndSync(serviceData.getCtx(), invokeServiceData, 5000);
-        return response.getData();
+        if (serviceData != null) {
+            ChannelHandlerContext ctx = serviceData.getCtx();
+            if (ctx != null && ctx.channel().isActive()) {
+                ResultData response = new SyncWrite().writeAndSync(ctx, invokeServiceData, 5000);
+                switch (response.getCode()) {
+                    case 200:
+                        return response.getData();
+                    case 404:
+                        return new NullPointerException("暂无服务");
+                    default:
+                        return new NullPointerException("远程调用异常");
+                }
+            } else {
+                return new NullPointerException("暂无服务");
+            }
+        } else {
+            return new NullPointerException("暂无服务");
+        }
     }
 }

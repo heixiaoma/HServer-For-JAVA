@@ -122,17 +122,27 @@ public class InitBean {
             //说明是rpc服务，单独存储一份她的数据哦
             if (rpcService != null) {
                 ClientData clientData = new ClientData();
-                clientData.setAClass(aClass);
                 clientData.setClassName(aClass.getName());
                 clientData.setMethods(methods);
                 if (rpcService.value().trim().length() > 0) {
                     //自定义了Rpc服务名
+                    clientData.setAClass(rpcService.value());
                     CloudManager.add(rpcService.value(), clientData);
+                    IocUtil.addBean(rpcService.value(), aClass.newInstance());
                 } else {
                     //没有自定义服务名字
-                    CloudManager.add(aClass.getName(), clientData);
+                    Class[] interfaces = aClass.getInterfaces();
+                    if (interfaces != null && interfaces.length > 0) {
+                        clientData.setAClass(interfaces[0].getName());
+                        IocUtil.addBean(interfaces[0].getName(), aClass.newInstance());
+                        CloudManager.add(interfaces[0].getName(), clientData);
+                    } else {
+                        log.error("RPC没有实现任何接口，预计调用过程会出现问题:" + aClass.getSimpleName());
+                    }
                 }
             }
+
+
             for (Method method : methods) {
                 Task task = method.getAnnotation(Task.class);
                 if (task == null) {

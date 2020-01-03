@@ -71,8 +71,8 @@ public class CloudManager {
         return serviceDataMap.size() > 0 ? true : false;
     }
 
-    public static List<Class> getClasses() {
-        List<Class> list=new ArrayList<>();
+    public static List<String> getClasses() {
+        List<String> list=new ArrayList<>();
         serviceDataMap.forEach((a,b)->list.add(b.getAClass()));
         return list;
     }

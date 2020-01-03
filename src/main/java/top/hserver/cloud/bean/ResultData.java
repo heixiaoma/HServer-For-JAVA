@@ -11,5 +11,7 @@ public class ResultData<T> implements Serializable {
 
     private String UUID;
 
+    private int code;
+
     private T data;
 }
