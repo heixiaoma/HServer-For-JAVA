@@ -8,6 +8,7 @@ import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.interfaces.FilterAdapter;
 import top.hserver.core.ioc.annotation.*;
+import top.hserver.core.ioc.util.ClassLoadUtil;
 import top.hserver.core.proxy.JavassistProxyFactory;
 import top.hserver.core.server.filter.FilterChain;
 import top.hserver.core.server.handlers.WebSocketServerHandler;
@@ -20,9 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 public class InitBean {
@@ -122,7 +121,7 @@ public class InitBean {
             RpcService rpcService = (RpcService) aClass.getAnnotation(RpcService.class);
             //说明是rpc服务，单独存储一份她的数据哦
             if (rpcService != null) {
-                ClientData clientData=new ClientData();
+                ClientData clientData = new ClientData();
                 clientData.setAClass(aClass);
                 clientData.setClassName(aClass.getName());
                 clientData.setMethods(methods);
@@ -300,13 +299,27 @@ public class InitBean {
                 bean = IocUtil.getBean(declaredField.getType());
             }
             if (bean == null) {
-                log.error("装配错误:容器中未找到对应的Bean对象装备配,查找说明：" + findMsg);
-                return;
+                List<Class> allClassByInterface = ClassLoadUtil.getAllClassByInterface(declaredField.getType());
+                if (allClassByInterface.size() > 0) {
+                    if (allClassByInterface.size()>1){
+                        log.warn("装配警告，存在多个子类，建议通过Bean名字装配，避免装配错误");
+                    }
+                    bean = IocUtil.getBean(allClassByInterface.get(0));
+                    findMsg = "按子类装配，" + declaredField.getType();
+                } else {
+                    log.error("装配错误:容器中未找到对应的Bean对象装备配,查找说明：" + findMsg);
+                    return;
+                }
             }
             try {
+                //同类型注入
                 if (bean.getClass().getName().contains(declaredField.getType().getName())) {
                     declaredField.set(v, bean);
-                    log.info(v.getClass().getName() + "----->" + declaredField.getName() + "：装配完成");
+                    log.info(bean.getClass().getName() + "----->" + declaredField.getName() + "：装配完成，"+findMsg);
+                    //父类检测注入
+                } else if (declaredField.getType().isAssignableFrom(bean.getClass())) {
+                    declaredField.set(v, bean);
+                    log.info(bean.getClass().getName() + "----->" + declaredField.getName() + "：装配完成，"+findMsg);
                 } else {
                     log.error(v.getClass().getName() + "----->" + declaredField.getName() + "：装配错误:类型不匹配");
                 }

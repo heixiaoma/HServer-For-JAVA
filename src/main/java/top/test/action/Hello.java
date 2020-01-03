@@ -12,6 +12,7 @@ import top.hserver.core.server.handlers.FileItem;
 import top.hserver.core.server.handlers.StatisticsHandler;
 import top.hserver.core.server.stat.IpData;
 import top.test.bean.User;
+import top.test.service.HelloService;
 import top.test.service.Test;
 import top.test.service.UserService;
 
@@ -33,12 +34,19 @@ public class Hello {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private HelloService helloService;
 
     @GET("/")
     public void index(HttpResponse httpResponse) {
         httpResponse.redirect("/hserver.html");
     }
 
+
+    @GET("/sayHello")
+    public String sayHello(){
+        return helloService.sayHello();
+    }
 
     /**
      * json测试，依赖注入测试

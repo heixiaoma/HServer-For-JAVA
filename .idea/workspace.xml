@@ -2,26 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec71a202-50a0-475a-9494-ae1c3a5bc82e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/common/codec/RpcDecoder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/common/codec/RpcEncoder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/future/SyncWrite.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/future/SyncWriteFuture.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/future/SyncWriteMap.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/future/WriteFuture.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/util/SerializationUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/top/test/TestWeb2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/top/test/TestWeb3.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/top/test/service/HelloService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/top/test/service/XXXXImp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/CloudManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/CloudManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/client/handler/FileServerInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/client/handler/FileServerInitializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/common/MarshallingCodeCFactory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/common/Msg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/common/Msg.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/proxy/CloudProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/proxy/CloudProxy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/server/handler/FileServerInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/server/handler/FileServerInitializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/server/handler/ServerHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/cloud/server/handler/ServerHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/top/test/exception/WebException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/exception/WebException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/ref/InitBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/ref/InitBean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/util/ClassLoadUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/util/ClassLoadUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/top/test/action/Hello.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/action/Hello.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -120,7 +107,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.TestWeb2">
+  <component name="RunManager" selected="Application.TestWebApp">
     <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Test" />
       <module name="HServer" />
@@ -171,22 +158,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="WebApp (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="top.test.WebApp" />
-      <module name="HServer" />
+    <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="top.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="Application" factoryName="Application">
+    <configuration name="a" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="top.hserver.a" />
+      <module name="HServer" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="top.hserver.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -212,10 +199,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.TestWebApp" />
+        <item itemvalue="Application.a" />
         <item itemvalue="Application.TestWeb2" />
         <item itemvalue="Application.TestWeb3" />
         <item itemvalue="Application.Test" />
-        <item itemvalue="Application.WebApp (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -294,21 +281,10 @@
       <workItem from="1577584946118" duration="1715000" />
       <workItem from="1577587119986" duration="531000" />
       <workItem from="1577590912539" duration="11000" />
-      <workItem from="1577591493016" duration="8506000" />
-    </task>
-    <task id="LOCAL-00004" summary="分发处理">
-      <created>1571812298325</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1571812298325</updated>
-    </task>
-    <task id="LOCAL-00005" summary="装配前先验证类型，避免装配错误">
-      <created>1571813676628</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1571813676628</updated>
+      <workItem from="1577591493016" duration="8777000" />
+      <workItem from="1577710766163" duration="15000" />
+      <workItem from="1578054535869" duration="51000" />
+      <workItem from="1578055295880" duration="3261000" />
     </task>
     <task id="LOCAL-00006" summary="装配前先验证类型，避免装配错误">
       <created>1571816104250</created>
@@ -639,7 +615,21 @@
       <option name="project" value="LOCAL" />
       <updated>1577587583822</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="轮询版本的Rpc完成">
+      <created>1577600154612</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1577600154612</updated>
+    </task>
+    <task id="LOCAL-00054" summary="轮询版本的Rpc完成">
+      <created>1577600274909</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1577600274909</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
