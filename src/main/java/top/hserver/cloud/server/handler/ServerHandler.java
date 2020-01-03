@@ -53,8 +53,6 @@ public class ServerHandler extends SimpleChannelInboundHandler<Msg> {
     }
 
     public static Object SendInvoker(InvokeServiceData invokeServiceData) throws Exception {
-        String aClass = invokeServiceData.getAClass();
-        System.out.println(aClass);
         ServiceData serviceData = classStringMap.get(invokeServiceData.getAClass());
         if (serviceData != null) {
             ChannelHandlerContext ctx = serviceData.getCtx();

@@ -8,7 +8,7 @@ import top.test.service.RpcService;
 @Controller
 public class Cloud {
 
-    @Resource
+    @Resource("Rpc")
     private RpcService rpcService;
 
     @GET("/rpc")

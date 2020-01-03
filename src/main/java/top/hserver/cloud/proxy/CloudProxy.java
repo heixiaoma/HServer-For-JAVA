@@ -8,11 +8,12 @@ import javassist.util.proxy.ProxyFactory;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.bean.InvokeServiceData;
 import top.hserver.cloud.server.handler.ServerHandler;
+import top.hserver.core.ioc.annotation.Resource;
 
 @Slf4j
 public class CloudProxy {
     @SuppressWarnings("deprecation")
-    public static Object getProxy(Class clazz) throws InstantiationException, IllegalAccessException {
+    public static Object getProxy( Class clazz,Resource resource) throws InstantiationException, IllegalAccessException {
         // 代理工厂
         ProxyFactory proxyFactory = new ProxyFactory();
         // 设置需要创建子类的父类
@@ -26,7 +27,11 @@ public class CloudProxy {
                 //这里实现远程调用啦！
                 InvokeServiceData invokeServiceData = new InvokeServiceData();
                 invokeServiceData.setMethod(thismethod.getName());
-                invokeServiceData.setAClass(clazz.getName());
+                if (resource.value().trim().length()>0) {
+                    invokeServiceData.setAClass(resource.value());
+                }else {
+                    invokeServiceData.setAClass(clazz.getName());
+                }
                 invokeServiceData.setObjects(args);
                 invokeServiceData.setUUID(UUID.randomUUID().toString());
                 return ServerHandler.SendInvoker(invokeServiceData);

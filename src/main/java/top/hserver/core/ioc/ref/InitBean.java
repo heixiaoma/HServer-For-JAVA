@@ -287,7 +287,7 @@ public class InitBean {
         if (annotation != null) {
             try {
                 declaredField.setAccessible(true);
-                declaredField.set(v, CloudProxy.getProxy(declaredField.getType()));
+                declaredField.set(v, CloudProxy.getProxy(declaredField.getType(),annotation));
             } catch (Exception e) {
                 log.error(v.getClass().getName() + "----->" + declaredField.getName() + "：装配错误:RPC代理生成失败");
             }

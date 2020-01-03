@@ -29,7 +29,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
                 String aClass = data.getAClass();
                 ClientData clientData = CloudManager.get(aClass);
                 Object bean = IocUtil.getBean(aClass);
-                System.out.println(bean);
                 for (Method method : clientData.getMethods()) {
                     if (method.getName().equals(data.getMethod())){
                         try {
@@ -56,14 +55,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
                         }
                     }
                 }
-                ResultData<String> resultData = new ResultData<>();
-                resultData.setData("not found");
-                resultData.setUUID(data.getUUID());
-                resultData.setCode(404);
-                Msg<ResultData> msg2 = new Msg<>();
-                msg2.setMsg_type(MSG_TYPE.RESULT);
-                msg2.setData(resultData);
-                channelHandlerContext.writeAndFlush(msg2);
                 break;
             default:
                 log.info(msg.toString());
