@@ -110,7 +110,7 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
         
         }
     @RpcService
-    标注一个Bean对象是一个rpc服务
+    标注一个Bean对象是一个rpc服务,也可以分配一个名字
         @Bean
         @RpcService
         public class RpcServiceTest {
@@ -119,7 +119,7 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
             }
         }  
     @Resource
-    注入一个Rpc服务。详情，请看文档介绍    
+    注入一个Rpc服务，也可以通过名字注入。详情，请看文档介绍   
         @Resource
         private RpcServiceTest rpcServiceTest;
 
@@ -130,7 +130,7 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
     <dependency>
         <groupId>top.hserver</groupId>
         <artifactId>HServer</artifactId>
-        <version>2.4</version>
+        <version>2.5</version>
     </dependency>
 
     public class WebApp {
