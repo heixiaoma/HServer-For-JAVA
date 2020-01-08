@@ -8,6 +8,14 @@
     如果你是一个phper或者喜欢php，可以关注下 
 [![黑小马工作室/HServer](https://gitee.com/heixiaomas/HServer/widgets/widget_card.svg?colors=ffffff,ffffff,,e3e9ed,666666,9b9b9b)](https://gitee.com/heixiaomas/HServer)
     
+### 最新中央仓库版本
+    <dependency>
+        <groupId>top.hserver</groupId>
+        <artifactId>HServer</artifactId>
+        <version>2.6</version>
+    </dependency>
+
+    
 ### 压测说明
 请查看 [PM.md](doc/PM.md) 查看说明
 
@@ -130,7 +138,7 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
     <dependency>
         <groupId>top.hserver</groupId>
         <artifactId>HServer</artifactId>
-        <version>2.5</version>
+        <version>最新版</version>
     </dependency>
 
     public class WebApp {
