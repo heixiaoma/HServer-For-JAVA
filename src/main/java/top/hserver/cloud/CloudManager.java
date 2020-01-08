@@ -4,6 +4,7 @@ package top.hserver.cloud;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.bean.ClientData;
 import top.hserver.cloud.client.RegClient;
+import top.hserver.cloud.proxy.CloudProxy;
 import top.hserver.cloud.server.RegServer;
 import top.hserver.cloud.task.BroadcastTask;
 import top.hserver.cloud.util.NetUtil;
@@ -24,6 +25,8 @@ public class CloudManager {
     private static Map<String, ClientData> serviceDataMap = new ConcurrentHashMap<>();
 
     public static void run() {
+        //清除启动的Map缓存
+        CloudProxy.clearCache();
         //1.读取自己是不是开启了云
         try {
             Properties pps = new Properties();

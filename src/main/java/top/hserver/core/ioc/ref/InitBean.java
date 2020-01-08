@@ -258,9 +258,11 @@ public class InitBean {
     }
 
     /**
-     * 给所有bean分配依赖(自动装配)
+     * 给所有Bean和Filter分配依赖(自动装配)
      */
     public static void injection() {
+
+        //Bean对象
         Map<String, Object> all = IocUtil.getAll();
         all.forEach((k, v) -> {
             //获取当前类的所有字段
@@ -276,6 +278,25 @@ public class InitBean {
                 rpczr(field, v);
             }
         });
+
+        //Filter注入
+        List<Map<String, FilterAdapter>> filtersIoc = FilterChain.filtersIoc;
+        filtersIoc.forEach((v) -> {
+            //获取当前类的所有字段
+            String next = v.keySet().iterator().next();
+            FilterAdapter filterAdapter = v.get(next);
+            Field[] declaredFields = filterAdapter.getClass().getDeclaredFields();
+            for (Field declaredField : declaredFields) {
+                zr(declaredField, filterAdapter);
+                rpczr(declaredField, filterAdapter);
+            }
+            //aop的代理对象，检查一次
+            Field[] declaredFields1 = filterAdapter.getClass().getSuperclass().getDeclaredFields();
+            for (Field field : declaredFields1) {
+                zr(field, filterAdapter);
+                rpczr(field, filterAdapter);
+            }
+        });
     }
 
 
@@ -287,9 +308,11 @@ public class InitBean {
         if (annotation != null) {
             try {
                 declaredField.setAccessible(true);
-                declaredField.set(v, CloudProxy.getProxy(declaredField.getType(),annotation));
+                Object proxy = CloudProxy.getProxy(declaredField.getType(), annotation);
+                declaredField.set(v, proxy);
+                log.info(proxy.getClass().getSimpleName() + "----->" + v.getClass().getSimpleName() + "：装配完成，Rpc装配");
             } catch (Exception e) {
-                log.error(v.getClass().getName() + "----->" + declaredField.getName() + "：装配错误:RPC代理生成失败");
+                log.error(v.getClass().getSimpleName() + "----->" + v.getClass().getSimpleName() + "：装配错误:RPC代理生成失败");
             }
         }
     }
@@ -303,14 +326,15 @@ public class InitBean {
             Object bean;
             if (annotation.value().trim().length() > 0) {
                 bean = IocUtil.getBean(annotation.value());
-                findMsg = "按自定义名字装配，" + declaredField.getType();
+                findMsg = "按自定义名字装配，" + declaredField.getType().getSimpleName();
             } else {
-                findMsg = "按类型装配，" + declaredField.getType();
+                findMsg = "按类型装配，" + declaredField.getType().getSimpleName();
                 bean = IocUtil.getBean(declaredField.getType());
             }
             if (bean == null) {
                 Map<String, Object> all = IocUtil.getAll();
                 List<Class> allClassByInterface = new ArrayList<>();
+                //获取是否是子类对象，如果是也可以装配
                 all.forEach((a, b) -> {
                     if (declaredField.getType().isAssignableFrom(b.getClass())) {
                         allClassByInterface.add(b.getClass());
@@ -321,7 +345,7 @@ public class InitBean {
                         log.warn("装配警告，存在多个子类，建议通过Bean名字装配，避免装配错误");
                     }
                     bean = IocUtil.getBean(allClassByInterface.get(0));
-                    findMsg = "按子类装配，" + declaredField.getType();
+                    findMsg = "按子类装配，" + declaredField.getType().getSimpleName();
                 } else {
                     log.error("装配错误:容器中未找到对应的Bean对象装备配,查找说明：" + findMsg);
                     return;
@@ -331,13 +355,13 @@ public class InitBean {
                 //同类型注入
                 if (bean.getClass().getName().contains(declaredField.getType().getName())) {
                     declaredField.set(v, bean);
-                    log.info(bean.getClass().getName() + "----->" + declaredField.getName() + "：装配完成，" + findMsg);
+                    log.info(bean.getClass().getSimpleName() + "----->" + v.getClass().getSimpleName() + "：装配完成，" + findMsg);
                     //父类检测注入
                 } else if (declaredField.getType().isAssignableFrom(bean.getClass())) {
                     declaredField.set(v, bean);
-                    log.info(bean.getClass().getName() + "----->" + declaredField.getName() + "：装配完成，" + findMsg);
+                    log.info(bean.getClass().getSimpleName() + "----->" + v.getClass().getSimpleName() + "：装配完成，" + findMsg);
                 } else {
-                    log.error(v.getClass().getName() + "----->" + declaredField.getName() + "：装配错误:类型不匹配");
+                    log.error(v.getClass().getSimpleName() + "----->" + v.getClass().getSimpleName() + "：装配错误:类型不匹配");
                 }
             } catch (Exception e) {
                 log.error("装配错误:" + e.getMessage());

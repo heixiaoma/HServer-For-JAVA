@@ -9,7 +9,6 @@ import java.lang.reflect.Method;
 
 public class JavassistProxyFactory {
 
-
     @SuppressWarnings("deprecation")
     public Object newProxyInstance(Class clazz, String hookPageName, String method) throws InstantiationException, IllegalAccessException {
         // 代理工厂

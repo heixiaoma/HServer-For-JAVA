@@ -40,7 +40,7 @@ public class FilterChain {
         this.filters = filters;
     }
 
-    public void doFilter(Webkit webkit) {
+    public void doFilter(Webkit webkit) throws Exception{
         if (pos < filters.size()) {
             filters.get(pos++).doFilter(this, webkit);
         }

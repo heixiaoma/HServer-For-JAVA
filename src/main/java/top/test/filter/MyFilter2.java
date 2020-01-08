@@ -11,10 +11,10 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Filter(2)
 @Slf4j
-public class MyFilter2 implements FilterAdapter {
+public class MyFilter2 implements FilterAdapter  {
 
     @Override
-    public void doFilter(FilterChain chain, Webkit webkit) {
+    public void doFilter(FilterChain chain, Webkit webkit) throws Exception {
 //        log.info("MyFilter->2");
         chain.doFilter(webkit);
     }

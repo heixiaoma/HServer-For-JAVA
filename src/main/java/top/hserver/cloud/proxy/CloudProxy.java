@@ -1,6 +1,8 @@
 package top.hserver.cloud.proxy;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javassist.util.proxy.MethodHandler;
@@ -12,8 +14,24 @@ import top.hserver.core.ioc.annotation.Resource;
 
 @Slf4j
 public class CloudProxy {
+
+    private static Map<String,Object> IOC=new HashMap<>();
+
+
     @SuppressWarnings("deprecation")
     public static Object getProxy( Class clazz,Resource resource) throws InstantiationException, IllegalAccessException {
+
+        String value = resource.value();
+        if (value.trim().length()>0){
+            Object o = IOC.get(value);
+            if (o!=null){
+                return o;
+            }
+        }
+        Object o = IOC.get(clazz.getName());
+        if (o!=null){
+            return o;
+        }
         // 代理工厂
         ProxyFactory proxyFactory = new ProxyFactory();
         // 设置需要创建子类的父类
@@ -37,6 +55,17 @@ public class CloudProxy {
                 return ServerHandler.SendInvoker(invokeServiceData);
             }
         });
-        return proxyFactory.createClass().newInstance();
+
+        Object o1 = proxyFactory.createClass().newInstance();
+        if (value.trim().length()>0){
+            IOC.put(value,o1);
+        }else {
+            IOC.put(clazz.getName(),o1);
+        }
+        return o1;
+    }
+
+    public static void clearCache(){
+        IOC.clear();
     }
 }

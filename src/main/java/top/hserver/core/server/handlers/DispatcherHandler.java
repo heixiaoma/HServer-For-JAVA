@@ -173,7 +173,20 @@ public class DispatcherHandler {
         if (!FilterChain.filtersIoc.isEmpty()) {
             //不是空就要进行Filter过滤洛
             webContext.setFilter(true);
-            FilterChain.getFileChain().doFilter(webContext.getWebkit());
+
+            try {
+                FilterChain.getFileChain().doFilter(webContext.getWebkit());
+            }catch (Exception e){
+                GlobalException bean2 = IocUtil.getBean(GlobalException.class);
+                if (bean2 != null) {
+                    bean2.handler(e, webContext.getWebkit());
+                    return webContext;
+                } else {
+                    String message = ExceptionUtil.getMessage(e);
+                    log.error(message);
+                    throw new BusinessException(503, "拦截器异常" + message);
+                }
+            }
             //Filter走完又回来
         }
         return webContext;
@@ -218,19 +231,14 @@ public class DispatcherHandler {
                 try {
                     methodArgs = ParameterUtil.getMethodArgs(aClass, method, webContext);
                 } catch (Exception e) {
-                    GlobalException bean1 = IocUtil.getBean(GlobalException.class);
-                    if (bean1 != null) {
-                        bean1.handler(e, webContext.getWebkit());
+                    GlobalException bean2 = IocUtil.getBean(GlobalException.class);
+                    if (bean2 != null) {
+                        bean2.handler(e, webContext.getWebkit());
+                        return webContext;
                     } else {
-                        GlobalException bean2 = IocUtil.getBean(GlobalException.class);
-                        if (bean2 != null) {
-                            bean2.handler(e, webContext.getWebkit());
-                            return webContext;
-                        } else {
-                            String message = ExceptionUtil.getMessage(e);
-                            log.error(message);
-                            throw new BusinessException(503, "生成控制器时参数异常" + message);
-                        }
+                        String message = ExceptionUtil.getMessage(e);
+                        log.error(message);
+                        throw new BusinessException(503, "生成控制器时参数异常" + message);
                     }
                 }
                 if (methodArgs != null) {
@@ -249,22 +257,16 @@ public class DispatcherHandler {
                     webContext.getResponse().setHeader("content-type", "application/json;charset=UTF-8");
                 }
             } catch (IllegalAccessException | InvocationTargetException e) {
-                GlobalException bean1 = IocUtil.getBean(GlobalException.class);
-                if (bean1 != null) {
-                    bean1.handler(e, webContext.getWebkit());
+                GlobalException bean2 = IocUtil.getBean(GlobalException.class);
+                if (bean2 != null) {
+                    bean2.handler(e, webContext.getWebkit());
+                    return webContext;
                 } else {
-                    GlobalException bean2 = IocUtil.getBean(GlobalException.class);
-                    if (bean2 != null) {
-                        bean2.handler(e, webContext.getWebkit());
-                        return webContext;
-                    } else {
-                        String message = ExceptionUtil.getMessage(e);
-                        log.error(message);
-                        throw new BusinessException(503, "调用方法失败" + message);
-                    }
+                    String message = ExceptionUtil.getMessage(e);
+                    log.error(message);
+                    throw new BusinessException(503, "调用方法失败" + message);
                 }
             } catch (IllegalArgumentException e) {
-
                 GlobalException bean1 = IocUtil.getBean(GlobalException.class);
                 if (bean1 != null) {
                     bean1.handler(e, webContext.getWebkit());

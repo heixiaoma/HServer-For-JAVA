@@ -14,5 +14,5 @@ public interface FilterAdapter {
      * @param chain
      * @param webkit
      */
-    void doFilter(FilterChain chain , Webkit webkit);
+    void doFilter(FilterChain chain , Webkit webkit) throws Exception;
 }
