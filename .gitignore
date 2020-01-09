@@ -1,5 +1,7 @@
-/.idea
+# idea ignore
+.idea/
+*.ipr
+*.iml
+*.iws
 /target
 /log
-gayg.iml
-*.iml
