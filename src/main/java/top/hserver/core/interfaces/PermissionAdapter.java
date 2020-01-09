@@ -4,6 +4,10 @@ import top.hserver.core.ioc.annotation.RequiresPermissions;
 import top.hserver.core.ioc.annotation.RequiresRoles;
 import top.hserver.core.ioc.annotation.Sign;
 import top.hserver.core.server.context.Webkit;
+import top.hserver.core.server.router.RouterManager;
+import top.hserver.core.server.router.RouterPermission;
+
+import java.util.List;
 
 /**
  * 权限验证接口
@@ -33,4 +37,13 @@ public interface PermissionAdapter {
      * @param webkit
      */
     void sign(Sign sign, Webkit webkit);
+
+
+    /**
+     * 获取所有的权限，可以用于同步后台数据库，方便操作
+     * @return
+     */
+    static List<RouterPermission> getRouterPermissions() {
+        return RouterManager.getRouterPermissions();
+    }
 }

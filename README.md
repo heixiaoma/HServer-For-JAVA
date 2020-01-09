@@ -398,6 +398,10 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
 #### 12.鉴权认证相关操作
     
     //请使用相关注解对控制器的方法做标记，这样在执行到被注解标记的方法就会执行下面的相关方法
+    //  List<RouterPermission> routerPermissions = PermissionAdapter.getRouterPermissions();
+    // 通过上面的代码可以获取到所有标记的注解，他可以干嘛？
+    // 同步后台数据库里面的权限，后台管理面里面可以动态给角色分配权限。
+    // 自己做一个下拉选择列表，创建角色分配权限时，多选即可。
 
     /**
      * 验证逻辑请自己实现哦

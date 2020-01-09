@@ -3,6 +3,8 @@ package top.hserver.core.server.router;
 import io.netty.handler.codec.http.HttpMethod;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,7 +28,7 @@ public class RouterManager {
             String url = routerInfo.getUrl();
             if (GET == routerInfo.reqMethodName) {
                 if (routerGets.containsKey(url)) {
-                    log.warn("url<" + url + ">映射已经存在，可能会影响程序使用" );
+                    log.warn("url<" + url + ">映射已经存在，可能会影响程序使用");
                 }
                 routerGets.put(url, routerInfo);
             } else {
@@ -43,7 +45,7 @@ public class RouterManager {
             String url = routerPermission.getUrl();
             if (GET == routerPermission.getReqMethodName()) {
                 if (routerPermissionGets.containsKey(url)) {
-                    log.warn("url<" + url + ">权限映射已经存在，可能会影响程序使用" );
+                    log.warn("url<" + url + ">权限映射已经存在，可能会影响程序使用");
                 }
                 routerPermissionGets.put(url, routerPermission);
             } else {
@@ -73,4 +75,10 @@ public class RouterManager {
         }
     }
 
+    public static List<RouterPermission> getRouterPermissions() {
+        List<RouterPermission> permissions = new ArrayList<>();
+        routerPermissionGets.forEach((a, b) -> permissions.add(b));
+        routerPermissionPosts.forEach((a, b) -> permissions.add(b));
+        return permissions;
+    }
 }
