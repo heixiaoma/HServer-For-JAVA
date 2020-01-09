@@ -342,6 +342,7 @@ public class DispatcherHandler {
                     response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
                 }
                 response.headers().set(HttpHeaderNames.SERVER, "HServer");
+                response.headers().set("HServer", ConstConfig.version);
                 response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
                 response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
                 //用户自定义头头
@@ -375,7 +376,7 @@ public class DispatcherHandler {
                     httpResponseStatus,
                     Unpooled.wrappedBuffer(cause.getRespMsg().getBytes(Charset.forName("UTF-8"))));
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
-            response.headers().set(HttpHeaderNames.SERVER, "HServer");
+            response.headers().set("HServer",  ConstConfig.version);
             response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
             response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
             return response;
