@@ -41,6 +41,8 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
 ![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/架构说明.png)
 #### 2.注解认识
     以下注解基本模拟Spring的功能
+    
+    
     @Bean
     将Bean对象加入IOC容器中比如
         //按默名字加入IOC容器
@@ -49,6 +51,8 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
         //指定名字加入容器，装配的时候就只能通过名字装配了
         @Bean("testService")
         class Test{}
+        
+        
     @Autowired
     自动装配注解
         //按类型注入
@@ -56,40 +60,54 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
         private TestService testService;
         //按Bean名字注入
         @Autowired("testServer1")
-        private TestService testService;    
+        private TestService testService; 
+        
+           
     @Controller
     控制器注解，将控制器加入IOC容器中，类似Spring mvc
     注解在类上面直接加上即可比如
         //Index控制器
         @Controller
-        class IndexController{}   
+        class IndexController{}
+        
+           
     @GET,@POST
     方法注解，在@Controller注解类类中使用，标注一个方法为GET或者POST方法，例如
         @GET("/index")
         public void index(){}  
         @POST("/index")
         public void index(){}  
+        
+        
     @Filter
     拦截器注解，标注一个类为拦截器，和JavaEE的Filter类似
         @Filter(1)//1表示拦截优先级，越小越优先
         public class MyFilter1 implements FilterAdapter {}
         //需要实现FilterAdapter接口
+        
+        
     @Hook
     hook注解就是Aop
         @Hook(value = Test.class, method = "show")
         public class HookTest implements HookAdapter {}
         //value表示aop的类,method要hook的方法，必须实现HookAdapter
+        
+        
     @Task
      定时任务
         @Task(name = "测试定时任务", time = 1000 * 2)
         //标记在方法上，同时该类需要被@Bean 标记
         @Task(name = "测试定时任务1", time = 1000 * 2)
         public void timerTask() {}
+        
+        
     @WebSocket
     实现websocket通信
         @WebSocket("/ws")
         public class WebSocketTest implements WebSocketHandler {}
         //这样就可以完成基本的通信了
+        
+        
     @Configuration
     自定配置注解，需要配合@Bean注解一起使用，最后会把方法里面的返回的对象
     存储到IOC容器中，同时可以通过Autowired注解注入
@@ -117,6 +135,8 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
             }
         
         }
+        
+        
     @RpcService
     标注一个Bean对象是一个rpc服务,也可以分配一个名字
         @Bean
@@ -126,11 +146,20 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
                 return name+"我是RPC";
             }
         }  
+        
+        
     @Resource
     注入一个Rpc服务，也可以通过名字注入。详情，请看文档介绍   
         @Resource
         private RpcServiceTest rpcServiceTest;
-
+        
+        
+    @Sign("MD5")
+    @RequiresRoles("角色")
+    @RequiresPermissions(value = {"/权限1","/权限2"}, logical=Logical.OR)
+    该注解用于标注控制器里面的方法，方便自己实现sign签名算法，
+    角色检查，权限检查，实现token等，详情下面的对应接口。
+    
                 
 #### 3.完成Hello World项目
      #第一步pom依赖引入
@@ -365,7 +394,41 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
              System.out.println("初始化方法：注入的User对象的名字是-->"+user.getName());
          }
      }
-        
-#### 12.技巧篇
+
+#### 12.鉴权认证相关操作
+    
+    //请使用相关注解对控制器的方法做标记，这样在执行到被注解标记的方法就会执行下面的相关方法
+
+    /**
+     * 验证逻辑请自己实现哦
+     */
+    @Bean
+    public class TestPermission implements PermissionAdapter {
+    
+        @Override
+        public void requiresPermissions(RequiresPermissions requiresPermissions, Webkit webkit) {
+            //这里你可以实现一套自己的权限检查算法逻辑，判断，
+            //如果满足权限，不用其他操作，如果不满足权限，那么你可以通过，Webkit里面的方法直接输出相关内容
+            //或者自定义一个异常类，在全局异常类做相关操作
+            System.out.println(requiresPermissions.value()[0]);
+        }
+    
+        @Override
+        public void requiresRoles(RequiresRoles requiresRoles, Webkit webkit) {
+            //这里你可以实现一套自己的角色检查算法逻辑，判断，
+            //其他逻辑同上
+            System.out.println(requiresRoles.value()[0]);
+        }
+    
+        @Override
+        public void sign(Sign sign, Webkit webkit) {
+           //这里你可以实现一套自己的接口签名算法检查算法逻辑，判断，
+           //其他逻辑同上
+           Map<String, String> requestParams = webkit.httpRequest.getRequestParams();
+           String sign1 = webkit.httpRequest.getHeader("sign");
+           System.out.println(sign.value());
+        }
+    }       
+#### 13.技巧篇
     1.Linux上使用Epoll提高性能
     2.待更新
