@@ -5,6 +5,7 @@ import top.hserver.cloud.bean.ClientData;
 import top.hserver.cloud.proxy.CloudProxy;
 import top.hserver.core.interfaces.GlobalException;
 import top.hserver.core.interfaces.InitRunner;
+import top.hserver.core.interfaces.PermissionAdapter;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.interfaces.FilterAdapter;
 import top.hserver.core.ioc.annotation.*;
@@ -14,6 +15,7 @@ import top.hserver.core.server.filter.FilterChain;
 import top.hserver.core.server.handlers.WebSocketServerHandler;
 import top.hserver.core.server.router.RouterInfo;
 import top.hserver.core.server.router.RouterManager;
+import top.hserver.core.server.router.RouterPermission;
 import top.hserver.core.server.util.ParameterUtil;
 import top.hserver.core.task.TaskManager;
 import io.netty.handler.codec.http.HttpMethod;
@@ -106,6 +108,12 @@ public class InitBean {
                 continue;
             }
 
+            //检测这个Bean是否是权限认证的
+            if (PermissionAdapter.class.isAssignableFrom(aClass)) {
+                IocUtil.addBean(PermissionAdapter.class.getName(), aClass.newInstance());
+                continue;
+            }
+
             //检查注解里面是否有值
             Bean annotation = (Bean) aClass.getAnnotation(Bean.class);
             if (annotation.value().trim().length() > 0) {
@@ -180,17 +188,45 @@ public class InitBean {
                     RouterInfo routerInfo = new RouterInfo();
                     routerInfo.setMethod(method);
                     routerInfo.setUrl(get.value());
-                    routerInfo.setaClass(aClass);
+                    routerInfo.setAClass(aClass);
                     routerInfo.setReqMethodName(HttpMethod.GET);
                     RouterManager.addRouter(routerInfo);
+                    //检查权限
+                    Sign sign = method.getAnnotation(Sign.class);
+                    RequiresRoles requiresRoles = method.getAnnotation(RequiresRoles.class);
+                    RequiresPermissions requiresPermissions = method.getAnnotation(RequiresPermissions.class);
+                    //有一个不为空都存一次
+                    if (sign!=null||requiresRoles!=null||requiresPermissions!=null){
+                        RouterPermission routerPermission =new RouterPermission();
+                        routerPermission.setUrl(get.value());
+                        routerPermission.setReqMethodName(HttpMethod.GET);
+                        routerPermission.setSign(sign);
+                        routerPermission.setRequiresRoles(requiresRoles);
+                        routerPermission.setRequiresPermissions(requiresPermissions);
+                        RouterManager.addPermission(routerPermission);
+                    }
                 }
                 if (post != null) {
                     RouterInfo routerInfo = new RouterInfo();
                     routerInfo.setMethod(method);
                     routerInfo.setUrl(post.value());
-                    routerInfo.setaClass(aClass);
+                    routerInfo.setAClass(aClass);
                     routerInfo.setReqMethodName(HttpMethod.POST);
                     RouterManager.addRouter(routerInfo);
+                    //检查权限
+                    Sign sign = method.getAnnotation(Sign.class);
+                    RequiresRoles requiresRoles = method.getAnnotation(RequiresRoles.class);
+                    RequiresPermissions requiresPermissions = method.getAnnotation(RequiresPermissions.class);
+                    //有一个不为空都存一次
+                    if (sign!=null||requiresRoles!=null||requiresPermissions!=null){
+                        RouterPermission routerPermission =new RouterPermission();
+                        routerPermission.setUrl(post.value());
+                        routerPermission.setReqMethodName(HttpMethod.POST);
+                        routerPermission.setSign(sign);
+                        routerPermission.setRequiresRoles(requiresRoles);
+                        routerPermission.setRequiresPermissions(requiresPermissions);
+                        RouterManager.addPermission(routerPermission);
+                    }
                 }
             }
             IocUtil.addBean(aClass.getName(), aClass.newInstance());

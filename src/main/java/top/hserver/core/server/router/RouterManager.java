@@ -17,6 +17,9 @@ public class RouterManager {
     private final static Map<String, RouterInfo> routerGets = new ConcurrentHashMap<>();
     private final static Map<String, RouterInfo> routerPosts = new ConcurrentHashMap<>();
 
+    private final static Map<String, RouterPermission> routerPermissionGets = new ConcurrentHashMap<>();
+    private final static Map<String, RouterPermission> routerPermissionPosts = new ConcurrentHashMap<>();
+
 
     public static void addRouter(RouterInfo routerInfo) {
         if (routerInfo != null) {
@@ -35,11 +38,38 @@ public class RouterManager {
         }
     }
 
+    public static void addPermission(RouterPermission routerPermission) {
+        if (routerPermission != null) {
+            String url = routerPermission.getUrl();
+            if (GET == routerPermission.getReqMethodName()) {
+                if (routerPermissionGets.containsKey(url)) {
+                    log.warn("url<" + url + ">权限映射已经存在，可能会影响程序使用" );
+                }
+                routerPermissionGets.put(url, routerPermission);
+            } else {
+                if (routerPermissionPosts.containsKey(url)) {
+                    log.warn("url<" + url + ">权限映射已经存在，可能会影响程序使用");
+                }
+                routerPermissionPosts.put(url, routerPermission);
+            }
+        }
+    }
+
+
     public static RouterInfo getRouterInfo(String url, HttpMethod requestType) {
         if (GET == requestType) {
             return routerGets.get(url);
         } else {
             return routerPosts.get(url);
+        }
+    }
+
+
+    public static RouterPermission getRouterPermission(String url, HttpMethod requestType) {
+        if (GET == requestType) {
+            return routerPermissionGets.get(url);
+        } else {
+            return routerPermissionPosts.get(url);
         }
     }
 

@@ -1,13 +1,18 @@
 package top.test.hook;
 
 import top.hserver.core.interfaces.HookAdapter;
+import top.hserver.core.ioc.annotation.Autowired;
 import top.hserver.core.ioc.annotation.Hook;
+import top.test.service.HelloService;
 import top.test.service.Test;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Hook(value = Test.class, method = "show")
 public class HookTest implements HookAdapter {
+
+    @Autowired
+    private HelloService helloService;
 
     @Override
     public void before(Object[] objects) {
@@ -17,6 +22,6 @@ public class HookTest implements HookAdapter {
 
     @Override
     public Object after(Object object) {
-        return object + "aop-后置拦截";
+        return object + "aop-后置拦截"+helloService.sayHello();
     }
 }
