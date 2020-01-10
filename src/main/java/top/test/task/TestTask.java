@@ -1,7 +1,9 @@
 package top.test.task;
 
+import lombok.extern.slf4j.Slf4j;
 import top.hserver.core.interfaces.TaskJob;
 
+@Slf4j
 public class TestTask implements TaskJob {
 
     @Override
@@ -10,6 +12,6 @@ public class TestTask implements TaskJob {
         for (Object arg : args) {
             args_ += arg.toString();
         }
-        System.out.println("测试定时器动态添加任务，参数是：" + args_);
+        log.info("测试定时器动态添加任务，参数是：{}",args_);
     }
 }

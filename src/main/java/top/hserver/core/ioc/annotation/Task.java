@@ -9,5 +9,5 @@ import java.lang.annotation.*;
 public @interface Task {
     String name();
 
-    int time();
+    String time();
 }

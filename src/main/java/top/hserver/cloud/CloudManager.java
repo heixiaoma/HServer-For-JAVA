@@ -53,7 +53,7 @@ public class CloudManager {
                         cloud_name = cloud_name + "-->" + NetUtil.getIpAddress();
                     }
                     new RegClient().start();
-                    TaskManager.addTask(cloud_name.toString(), 5000, BroadcastTask.class, cloud_name.toString());
+                    TaskManager.addTask(cloud_name.toString(), "5000", BroadcastTask.class, cloud_name.toString());
                 }
             }
         } catch (Exception e) {

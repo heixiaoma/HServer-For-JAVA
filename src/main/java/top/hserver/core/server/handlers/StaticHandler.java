@@ -87,7 +87,7 @@ public class StaticHandler {
             if (bean1 != null) {
                 bean1.handler(e, webContext.getWebkit());
             } else {
-            log.error("获取文件大小异常:" + e.getMessage());
+            log.error("获取文件大小异常:{}" , e.getMessage());
             try {
                 input.close();
             } catch (Exception e1) {
@@ -95,7 +95,7 @@ public class StaticHandler {
                 if (bean2 != null) {
                     bean2.handler(e1, webContext.getWebkit());
                 } else {
-                    log.error("关闭文件流异常:" + e.getMessage());
+                    log.error("关闭文件流异常:{}" , e.getMessage());
                     throw new BusinessException(503, "关闭文件流异常" + ExceptionUtil.getMessage(e));
                 }
             }

@@ -145,7 +145,7 @@ public class InitBean {
                         IocUtil.addBean(interfaces[0].getName(), aClass.newInstance());
                         CloudManager.add(interfaces[0].getName(), clientData);
                     } else {
-                        log.error("RPC没有实现任何接口，预计调用过程会出现问题:" + aClass.getSimpleName());
+                        log.error("RPC没有实现任何接口，预计调用过程会出现问题:{}", aClass.getSimpleName());
                     }
                 }
             }
@@ -196,8 +196,8 @@ public class InitBean {
                     RequiresRoles requiresRoles = method.getAnnotation(RequiresRoles.class);
                     RequiresPermissions requiresPermissions = method.getAnnotation(RequiresPermissions.class);
                     //有一个不为空都存一次
-                    if (sign!=null||requiresRoles!=null||requiresPermissions!=null){
-                        RouterPermission routerPermission =new RouterPermission();
+                    if (sign != null || requiresRoles != null || requiresPermissions != null) {
+                        RouterPermission routerPermission = new RouterPermission();
                         routerPermission.setUrl(get.value());
                         routerPermission.setReqMethodName(HttpMethod.GET);
                         routerPermission.setSign(sign);
@@ -218,8 +218,8 @@ public class InitBean {
                     RequiresRoles requiresRoles = method.getAnnotation(RequiresRoles.class);
                     RequiresPermissions requiresPermissions = method.getAnnotation(RequiresPermissions.class);
                     //有一个不为空都存一次
-                    if (sign!=null||requiresRoles!=null||requiresPermissions!=null){
-                        RouterPermission routerPermission =new RouterPermission();
+                    if (sign != null || requiresRoles != null || requiresPermissions != null) {
+                        RouterPermission routerPermission = new RouterPermission();
                         routerPermission.setUrl(post.value());
                         routerPermission.setReqMethodName(HttpMethod.POST);
                         routerPermission.setSign(sign);
@@ -253,7 +253,7 @@ public class InitBean {
             try {
                 obj = (FilterAdapter) clazz.newInstance();
             } catch (Exception e) {
-                log.error("初始化 " + clazz.getSimpleName() + " 错误", e);
+                log.error("初始化 {} 错误:{}", clazz.getSimpleName(), e);
                 continue;
             }
             if (obj != null) {
@@ -346,9 +346,9 @@ public class InitBean {
                 declaredField.setAccessible(true);
                 Object proxy = CloudProxy.getProxy(declaredField.getType(), annotation);
                 declaredField.set(v, proxy);
-                log.info(proxy.getClass().getSimpleName() + "----->" + v.getClass().getSimpleName() + "：装配完成，Rpc装配");
+                log.info("{}----->{}：装配完成，Rpc装配", proxy.getClass().getSimpleName(), v.getClass().getSimpleName());
             } catch (Exception e) {
-                log.error(v.getClass().getSimpleName() + "----->" + v.getClass().getSimpleName() + "：装配错误:RPC代理生成失败");
+                log.error("{}----->{}：装配错误:RPC代理生成失败", v.getClass().getSimpleName(), v.getClass().getSimpleName());
             }
         }
     }
@@ -383,7 +383,7 @@ public class InitBean {
                     bean = IocUtil.getBean(allClassByInterface.get(0));
                     findMsg = "按子类装配，" + declaredField.getType().getSimpleName();
                 } else {
-                    log.error("装配错误:容器中未找到对应的Bean对象装备配,查找说明：" + findMsg);
+                    log.error("装配错误:容器中未找到对应的Bean对象装备配,查找说明：{}", findMsg);
                     return;
                 }
             }
@@ -391,16 +391,16 @@ public class InitBean {
                 //同类型注入
                 if (bean.getClass().getName().contains(declaredField.getType().getName())) {
                     declaredField.set(v, bean);
-                    log.info(bean.getClass().getSimpleName() + "----->" + v.getClass().getSimpleName() + "：装配完成，" + findMsg);
+                    log.info("{}----->{}：装配完成，{}", bean.getClass().getSimpleName(), v.getClass().getSimpleName(), findMsg);
                     //父类检测注入
                 } else if (declaredField.getType().isAssignableFrom(bean.getClass())) {
                     declaredField.set(v, bean);
-                    log.info(bean.getClass().getSimpleName() + "----->" + v.getClass().getSimpleName() + "：装配完成，" + findMsg);
+                    log.info("{}----->{}：装配完成，{}", bean.getClass().getSimpleName(), v.getClass().getSimpleName(), findMsg);
                 } else {
-                    log.error(v.getClass().getSimpleName() + "----->" + v.getClass().getSimpleName() + "：装配错误:类型不匹配");
+                    log.error("{}----->{}：装配错误:类型不匹配", v.getClass().getSimpleName(), v.getClass().getSimpleName());
                 }
             } catch (Exception e) {
-                log.error("装配错误:" + e.getMessage());
+                log.error("装配错误:{}", e.getMessage());
             }
         }
     }

@@ -7,8 +7,8 @@ import lombok.var;
 public class EpollKit {
 
     public static NettyServerGroup group(int threadCount, int workers) {
-        var bossGroup   = new EpollEventLoopGroup(threadCount, new NamedThreadFactory("epoll-接收器@"));
-        var workerGroup = new EpollEventLoopGroup(workers, new NamedThreadFactory("epoll-工作器@"));
+        var bossGroup   = new EpollEventLoopGroup(threadCount, new NamedThreadFactory("hserver_epoll_boss@"));
+        var workerGroup = new EpollEventLoopGroup(workers, new NamedThreadFactory("hserver_epoll_worker@"));
         return NettyServerGroup.builder().boosGroup(bossGroup).workerGroup(workerGroup).socketChannel(EpollServerSocketChannel.class).build();
     }
 

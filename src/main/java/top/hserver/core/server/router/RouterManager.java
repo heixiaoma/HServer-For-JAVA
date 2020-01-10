@@ -28,12 +28,12 @@ public class RouterManager {
             String url = routerInfo.getUrl();
             if (GET == routerInfo.reqMethodName) {
                 if (routerGets.containsKey(url)) {
-                    log.warn("url<" + url + ">映射已经存在，可能会影响程序使用");
+                    log.warn("url< {} >映射已经存在，可能会影响程序使用",url);
                 }
                 routerGets.put(url, routerInfo);
             } else {
                 if (routerPosts.containsKey(url)) {
-                    log.warn("url<" + url + ">映射已经存在，可能会影响程序使用");
+                    log.warn("url< {} >映射已经存在，可能会影响程序使用",url);
                 }
                 routerPosts.put(url, routerInfo);
             }
@@ -45,12 +45,12 @@ public class RouterManager {
             String url = routerPermission.getUrl();
             if (GET == routerPermission.getReqMethodName()) {
                 if (routerPermissionGets.containsKey(url)) {
-                    log.warn("url<" + url + ">权限映射已经存在，可能会影响程序使用");
+                    log.warn("url< {} >权限映射已经存在，可能会影响程序使用",url);
                 }
                 routerPermissionGets.put(url, routerPermission);
             } else {
                 if (routerPermissionPosts.containsKey(url)) {
-                    log.warn("url<" + url + ">权限映射已经存在，可能会影响程序使用");
+                    log.warn("url< {} >权限映射已经存在，可能会影响程序使用",url);
                 }
                 routerPermissionPosts.put(url, routerPermission);
             }
