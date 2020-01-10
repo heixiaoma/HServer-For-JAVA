@@ -95,9 +95,9 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
         
     @Task
      定时任务
-        @Task(name = "测试定时任务", time = 1000 * 2)
+        @Task(name = "测试定时任务Cron", time ="*/5 * * * * ?")
         //标记在方法上，同时该类需要被@Bean 标记
-        @Task(name = "测试定时任务1", time = 1000 * 2)
+        @Task(name = "测试定时任务1", time ="2000")
         public void timerTask() {}
         
         
@@ -275,11 +275,11 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
     
         public void dynamicAddTimer() {
             System.out.println("动态添加定时任务");
-            TaskManager.addTask("测试任务2", 1000 * 2, TestTask.class,"666");
+            TaskManager.addTask("测试任务2", "2000", TestTask.class,"666");
         }
         
         
-        @Task(name = "测试定时任务1", time = 1000 * 2)
+        @Task(name = "测试定时任务1", time ="*/5 * * * * ?")
         public void timerTask() {
             System.out.println("测试定时任务，注入的对象调用结果:" + testService.testa());
             if (flag) {
@@ -288,7 +288,7 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
             }
         }
     
-        @Task(name = "测试定时任务2", time = 1000 * 10)
+        @Task(name = "测试定时任务2", time = "2000")
         public void removeTask() {
             //干掉方法注解版本
             boolean task1 = TaskManager.removeTask("测试定时任务1");
@@ -303,7 +303,7 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
     }
     
     //动态添加定时任务的实现类必须要实现一个TaskJob,样才能被TaskManager管理
-    //添加任务 TaskManager.addTask("测试任务2", 1000 * 2, TestTask.class,"666");
+    //添加任务 TaskManager.addTask("测试任务2", "2000", TestTask.class,"666");
     //删除任务  boolean is_success = TaskManager.removeTask("测试任务2");
     public class TestTask implements TaskJob {
     
