@@ -41,7 +41,7 @@ public class HookIoc implements Ioc {
                 return type.cast(o);
             }
         } catch (Exception e) {
-            log.warn(beanName + "转换异常" + e.getMessage());
+            log.warn("{}转换异常{}", beanName, e.getMessage());
         }
         return null;
     }

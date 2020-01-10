@@ -16,17 +16,17 @@ public class HServerApplication {
             return;
         }
 
-        log.info("初始化配置文件", classz.getName());
+        log.info("初始化配置文件：{}", classz.getName());
         new PropertiesInit().init();
-        log.info("初始化配置完成", classz.getName());
+        log.info("初始化配置完成：{}", classz.getName());
 
         log.info("HServer 启动中....");
         log.info("Package 扫描中");
         InitBean.init(HServerApplication.class);
         InitBean.init(classz);
-        log.info("IOC 装配中", classz.getName());
+        log.info("IOC 装配中：{}", classz.getName());
         InitBean.injection();
-        log.info("IOC 全部装配完成", classz.getName());
+        log.info("IOC 全部装配完成：{}", classz.getName());
         //云启动
         CloudManager.run();
         try {

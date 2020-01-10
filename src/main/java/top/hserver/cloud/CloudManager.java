@@ -64,7 +64,7 @@ public class CloudManager {
     public static void add(String name, ClientData classs) {
 
         if (serviceDataMap.containsKey(name)) {
-            log.warn("已经存在：" + name + "Rpc服务");
+            log.warn("已经存在：{}Rpc服务",name);
             return;
         }
         serviceDataMap.put(name, classs);

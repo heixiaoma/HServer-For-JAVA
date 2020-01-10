@@ -24,7 +24,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
             case INVOKER:
                 Msg<InvokeServiceData> msg1 = msg;
                 InvokeServiceData data = msg1.getData();
-                log.info("调用信息--->" + data.toString());
+                log.info("调用信息--->{}" , data.toString());
                 //返回调用结果
                 String aClass = data.getAClass();
                 ClientData clientData = CloudManager.get(aClass);

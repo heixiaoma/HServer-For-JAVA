@@ -248,7 +248,7 @@ public class InitBean {
             if (handlerAnno == null) {
                 continue;
             }
-            log.info(clazz.getCanonicalName() + "优先级：" + handlerAnno.value());
+            log.info("{}优先级：{}",clazz.getCanonicalName(), handlerAnno.value());
             FilterAdapter obj = null;
             try {
                 obj = (FilterAdapter) clazz.newInstance();
