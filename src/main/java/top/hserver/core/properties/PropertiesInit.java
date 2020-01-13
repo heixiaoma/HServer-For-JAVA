@@ -12,6 +12,11 @@ public class PropertiesInit {
             Properties pps = new Properties();
             InputStream resourceAsStream = PropertiesInit.class.getResourceAsStream("/application.properties");
             pps.load(resourceAsStream);
+
+            Object taskPool = pps.get("taskPool");
+            if (taskPool != null && taskPool.toString().trim().length() > 0) {
+                ConstConfig.taskPool = Integer.parseInt(taskPool.toString());
+            }
             //开启匹配
             Object statistics = pps.get("statistics");
             if (statistics != null) {

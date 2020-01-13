@@ -2,6 +2,7 @@ package top.hserver.core.task;
 
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.core.interfaces.TaskJob;
+import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.epoll.NamedThreadFactory;
 
 import java.lang.reflect.Method;
@@ -15,7 +16,7 @@ public class TaskManager {
 
     private static final Map<String, ScheduledFuture<?>> cronTask = new ConcurrentHashMap<>();
 
-    private static final ScheduledThreadPoolExecutorPro scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutorPro(Runtime.getRuntime().availableProcessors()+1, new NamedThreadFactory("hserver_task@"));
+    private static final ScheduledThreadPoolExecutorPro scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutorPro(ConstConfig.taskPool, new NamedThreadFactory("hserver_task@"));
 
     /**
      * 动态添加任务
@@ -26,6 +27,7 @@ public class TaskManager {
      * @param args
      */
     public static void addTask(String name, String time, Class<? extends TaskJob> taskJob, Object... args) {
+
         try {
             if (cronTask.containsKey(name)) {
                 log.warn("{}任务名已经存在",name);
