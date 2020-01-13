@@ -83,7 +83,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
                     }
                 }
         };
-        return this.schedule(scheduleTask, expression, TimeUnit.MILLISECONDS);
+        return this.scheduleAtFixedRate(scheduleTask,expression,expression, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -97,6 +97,6 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
                 }
             }
         };
-        return this.schedule(scheduleTask, expression, TimeUnit.MILLISECONDS);
+        return this.scheduleAtFixedRate(scheduleTask, expression,expression, TimeUnit.MILLISECONDS);
     }
 }
