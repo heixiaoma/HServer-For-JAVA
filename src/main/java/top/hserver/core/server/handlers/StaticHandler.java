@@ -65,22 +65,9 @@ public class StaticHandler {
                 return null;
             }
             //input转ByteBuf
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            int size = 0;
-            InputStream inputStream;
             ByteBuf byteBuf = Unpooled.buffer();
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = input.read(buffer)) > -1) {
-                size += len;
-                baos.write(buffer, 0, len);
-            }
-            baos.flush();
-            inputStream = new ByteArrayInputStream(baos.toByteArray());
-            byteBuf.writeBytes(inputStream, size);
+            byteBuf.writeBytes(input, input.available());
             staticFile.setByteBuf(byteBuf);
-            baos.close();
-            inputStream.close();
             input.close();
         } catch (Exception e) {
             GlobalException bean1 = IocUtil.getBean(GlobalException.class);
