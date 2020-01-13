@@ -10,5 +10,4 @@ public class ConstConfig {
     public static final CopyOnWriteArraySet<String> StatisticalRules = new CopyOnWriteArraySet<>();
     //版本号
     public static final String version = "2.9";
-
 }
