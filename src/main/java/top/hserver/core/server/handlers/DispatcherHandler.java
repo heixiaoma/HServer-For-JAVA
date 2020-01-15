@@ -248,6 +248,13 @@ public class DispatcherHandler {
             return webContext;
         }
 
+        /**
+         * 检查下Filter是否有值了
+         */
+        if (webContext.getResponse().getJsonAndHtml() != null||webContext.getResponse().isDownload()) {
+            return webContext;
+        }
+
         RouterInfo routerInfo = RouterManager.getRouterInfo(webContext.getRequest().getUri(), webContext.getRequest().getRequestType());
         if (routerInfo == null) {
             GlobalException bean1 = IocUtil.getBean(GlobalException.class);

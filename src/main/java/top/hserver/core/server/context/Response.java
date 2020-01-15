@@ -19,7 +19,7 @@ public class Response implements HttpResponse {
 
     private InputStream inputStream;
 
-    private boolean isDownload;
+    private boolean isDownload = false;
 
     private String fileName;
 
