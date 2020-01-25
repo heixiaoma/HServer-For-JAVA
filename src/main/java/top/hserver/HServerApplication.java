@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HServerApplication {
 
-    public static void run(Class classz, Integer port) {
+    public static void run(Class classz, Integer port, String ...args) {
         if (classz == null || port == null) {
             log.info("HServer 启动失败");
             return;
@@ -30,7 +30,7 @@ public class HServerApplication {
         //云启动
         CloudManager.run();
         try {
-            new HServer(port).run();
+            new HServer(port,args).run();
         } catch (Exception e) {
             log.error(e.getMessage());
         }

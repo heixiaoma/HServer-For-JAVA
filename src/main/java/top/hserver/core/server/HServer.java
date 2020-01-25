@@ -23,8 +23,10 @@ public class HServer {
 
     private final int port;
 
-    public HServer(int port) {
+    private final String[] args;
+    public HServer(int port,String[] args) {
         this.port = port;
+        this.args=args;
     }
 
     public void run() throws Exception {
@@ -58,7 +60,7 @@ public class HServer {
             //初始化完成可以放开任务了
             TaskManager.IS_OK = true;
             InitRunner bean = IocUtil.getBean(InitRunner.class);
-            if (bean!=null)bean.init();
+            if (bean!=null)bean.init(args);
             ch.closeFuture().sync();
 
         } finally {
