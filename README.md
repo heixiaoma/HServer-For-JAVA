@@ -390,7 +390,7 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
          private User user;
      
          @Override
-         public void init() {
+         public void init(String[] args) {
              System.out.println("初始化方法：注入的User对象的名字是-->"+user.getName());
          }
      }
