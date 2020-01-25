@@ -434,5 +434,5 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
         }
     }       
 #### 13.技巧篇
-    1.Linux上使用Epoll提高性能
+    1. Linux 内核版本大于 2.5.44，(目前云服务器都有了，没有的话自己升级内核)的Linux默认使用epoll
     2.待更新
