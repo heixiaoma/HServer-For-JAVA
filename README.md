@@ -76,7 +76,25 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
         @GET("/index")
         public void index(){}  
         @POST("/index")
-        public void index(){}  
+        public void index(){}
+        
+        //url规则匹配
+        @GET("/url1/{url}")
+        public String url(HttpRequest httpRequest){
+            String url = httpRequest.query("url");
+            System.out.println(url);
+            return url;
+        }
+    
+        @GET("/url/{url}")
+        public String url(String url){
+            return "匹配到的URL:"+url;
+        }
+    
+        @POST("/a/{url}/bb")
+        public String ab(String url){
+            return "匹配到的URL:"+url;
+        }  
         
         
     @Filter

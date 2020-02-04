@@ -255,7 +255,7 @@ public class DispatcherHandler {
             return webContext;
         }
 
-        RouterInfo routerInfo = RouterManager.getRouterInfo(webContext.getRequest().getUri(), webContext.getRequest().getRequestType());
+        RouterInfo routerInfo = RouterManager.getRouterInfo(webContext.getRequest().getUri(), webContext.getRequest().getRequestType(),webContext);
         if (routerInfo == null) {
             GlobalException bean1 = IocUtil.getBean(GlobalException.class);
             if (bean1 != null) {
