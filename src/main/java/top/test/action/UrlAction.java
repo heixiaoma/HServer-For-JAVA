@@ -1,9 +1,7 @@
 package top.test.action;
 
 import top.hserver.core.interfaces.HttpRequest;
-import top.hserver.core.ioc.annotation.Controller;
-import top.hserver.core.ioc.annotation.GET;
-import top.hserver.core.ioc.annotation.POST;
+import top.hserver.core.ioc.annotation.*;
 
 @Controller
 public class UrlAction {
@@ -15,6 +13,9 @@ public class UrlAction {
         return url;
     }
 
+    @Sign("签名验证")
+    @RequiresRoles("角色")
+    @RequiresPermissions(value = {"/权限1","/权限2"}, logical=Logical.OR)
     @GET("/url/{url}")
     public String url(String url){
         return "匹配到的URL:"+url;

@@ -174,10 +174,27 @@ public class RouterManager {
 
     public static RouterPermission getRouterPermission(String url, HttpMethod requestType) {
         if (GET == requestType) {
-            return routerPermissionGets.get(url);
+            RouterPermission routerPermission = routerPermissionGets.get(url);
+            if(routerPermission!=null){
+                return routerPermission;
+            }else {
+                PatternUri pattern = isPattern(url, requestType);
+                if (pattern!=null){
+                    return routerPermissionGets.get(pattern.getOrgUrl());
+                }
+            }
         } else {
-            return routerPermissionPosts.get(url);
+            RouterPermission routerPermission = routerPermissionPosts.get(url);
+            if(routerPermission!=null){
+                return routerPermission;
+            }else {
+                PatternUri pattern = isPattern(url, requestType);
+                if (pattern!=null){
+                    return routerPermissionPosts.get(pattern.getOrgUrl());
+                }
+            }
         }
+        return null;
     }
 
     public static List<RouterPermission> getRouterPermissions() {
