@@ -181,19 +181,54 @@ public class DispatcherHandler {
         if (webContext.isStaticFile()) {
             return webContext;
         }
-
         PermissionAdapter permissionAdapter = IocUtil.getBean(PermissionAdapter.class);
         if (permissionAdapter != null) {
             RouterPermission routerPermission = RouterManager.getRouterPermission(webContext.getRequest().getUri(), webContext.getRequest().getRequestType());
             if (routerPermission != null) {
                 if (routerPermission.getRequiresPermissions() != null) {
-                    permissionAdapter.requiresPermissions(routerPermission.getRequiresPermissions(), webContext.getWebkit());
+                    try {
+                        permissionAdapter.requiresPermissions(routerPermission.getRequiresPermissions(), webContext.getWebkit());
+                    } catch (Exception e) {
+                        GlobalException bean2 = IocUtil.getBean(GlobalException.class);
+                        if (bean2 != null) {
+                            bean2.handler(e, webContext.getWebkit());
+                            return webContext;
+                        } else {
+                            String message = ExceptionUtil.getMessage(e);
+                            log.error(message);
+                            throw new BusinessException(503, "权限验证" + message);
+                        }
+                    }
                 }
                 if (routerPermission.getRequiresRoles() != null) {
-                    permissionAdapter.requiresRoles(routerPermission.getRequiresRoles(), webContext.getWebkit());
+                    try {
+                        permissionAdapter.requiresRoles(routerPermission.getRequiresRoles(), webContext.getWebkit());
+                    } catch (Exception e) {
+                        GlobalException bean2 = IocUtil.getBean(GlobalException.class);
+                        if (bean2 != null) {
+                            bean2.handler(e, webContext.getWebkit());
+                            return webContext;
+                        } else {
+                            String message = ExceptionUtil.getMessage(e);
+                            log.error(message);
+                            throw new BusinessException(503, "角色验证" + message);
+                        }
+                    }
                 }
                 if (routerPermission.getSign() != null) {
-                    permissionAdapter.sign(routerPermission.getSign(), webContext.getWebkit());
+                    try {
+                        permissionAdapter.sign(routerPermission.getSign(), webContext.getWebkit());
+                    } catch (Exception e) {
+                        GlobalException bean2 = IocUtil.getBean(GlobalException.class);
+                        if (bean2 != null) {
+                            bean2.handler(e, webContext.getWebkit());
+                            return webContext;
+                        } else {
+                            String message = ExceptionUtil.getMessage(e);
+                            log.error(message);
+                            throw new BusinessException(503, "Sign验证" + message);
+                        }
+                    }
                 }
             }
         }
@@ -251,11 +286,11 @@ public class DispatcherHandler {
         /**
          * 检查下Filter是否有值了
          */
-        if (webContext.getResponse().getJsonAndHtml() != null||webContext.getResponse().isDownload()) {
+        if (webContext.getResponse().getJsonAndHtml() != null || webContext.getResponse().isDownload()) {
             return webContext;
         }
 
-        RouterInfo routerInfo = RouterManager.getRouterInfo(webContext.getRequest().getUri(), webContext.getRequest().getRequestType(),webContext);
+        RouterInfo routerInfo = RouterManager.getRouterInfo(webContext.getRequest().getUri(), webContext.getRequest().getRequestType(), webContext);
         if (routerInfo == null) {
             GlobalException bean1 = IocUtil.getBean(GlobalException.class);
             if (bean1 != null) {

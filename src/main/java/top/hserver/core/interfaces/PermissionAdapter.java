@@ -20,7 +20,7 @@ public interface PermissionAdapter {
      * @param requiresPermissions
      * @param webkit
      */
-    void requiresPermissions(RequiresPermissions requiresPermissions, Webkit webkit);
+    void requiresPermissions(RequiresPermissions requiresPermissions, Webkit webkit) throws Exception;
 
     /**
      * 自定义实现角色检查
@@ -28,7 +28,7 @@ public interface PermissionAdapter {
      * @param requiresRoles
      * @param webkit
      */
-    void requiresRoles(RequiresRoles requiresRoles, Webkit webkit);
+    void requiresRoles(RequiresRoles requiresRoles, Webkit webkit) throws Exception;
 
     /**
      * 自定义实现sign检查
@@ -36,11 +36,12 @@ public interface PermissionAdapter {
      * @param sign
      * @param webkit
      */
-    void sign(Sign sign, Webkit webkit);
+    void sign(Sign sign, Webkit webkit) throws Exception;
 
 
     /**
      * 获取所有的权限，可以用于同步后台数据库，方便操作
+     *
      * @return
      */
     static List<RouterPermission> getRouterPermissions() {
