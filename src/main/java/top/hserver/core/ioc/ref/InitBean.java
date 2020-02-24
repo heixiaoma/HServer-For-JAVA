@@ -203,6 +203,7 @@ public class InitBean {
                         routerPermission.setSign(sign);
                         routerPermission.setRequiresRoles(requiresRoles);
                         routerPermission.setRequiresPermissions(requiresPermissions);
+                        routerPermission.setControllerPackageName(aClass.getName());
                         RouterManager.addPermission(routerPermission);
                     }
                 }
