@@ -371,7 +371,7 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
     #StatisticsHandler操作
         #获取所有的IP地址
         StatisticsHandler.getIpMap()
-        #最近50个请求队列（调用的URI，(发送大小，接收大小)宽带监视，耗时时间）
+        #请求队列（调用的URI，(发送大小，接收大小)宽带监视，耗时时间）
         StatisticsHandler.getLogRequestQue()
         #唯一IP请求的数量 uv
         StatisticsHandler.getUniqueIpCount()
