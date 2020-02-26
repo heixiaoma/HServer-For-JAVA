@@ -15,6 +15,6 @@ public class RunInit implements InitRunner {
 
     @Override
     public void init(String[] args) {
-        log.info("初始化方法：注入的User对象的名字是-->{}",user.getName());
+        log.debug("初始化方法：注入的User对象的名字是-->{}",user.getName());
     }
 }

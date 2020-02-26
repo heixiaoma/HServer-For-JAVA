@@ -36,9 +36,9 @@ public class ChatClient {
             @Override
             public void operationComplete(ChannelFuture arg0) throws Exception {
                 if (future.isSuccess()) {
-                    log.info("连接服务器成功");
+                    log.debug("连接服务器成功");
                 } else {
-                    log.info("连接服务器失败");
+                    log.debug("连接服务器失败");
                     future.cause().printStackTrace();
                     group.shutdownGracefully(); //关闭线程组
                 }

@@ -29,7 +29,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Msg> {
                 data.getClasses().forEach(a -> {
                     classStringMap.put(a, serviceData);
                 });
-                log.info(data.toString());
+                log.debug(data.toString());
                 break;
             case RESULT:
                 ResultData resultData = ((Msg<ResultData>) msg).getData();

@@ -33,17 +33,17 @@ public class CloudManager {
             InputStream resourceAsStream = CloudManager.class.getResourceAsStream("/application.properties");
             pps.load(resourceAsStream);
             Object open = pps.get("app.cloud.open");
-            if (open != null && Boolean.valueOf(open.toString())) {
+            if (open != null && Boolean.parseBoolean(open.toString())) {
                 //2.自己是不是主机
                 Object master_open = pps.get("app.cloud.master.open");
-                if (master_open != null && Boolean.valueOf(master_open.toString())) {
+                if (master_open != null && Boolean.parseBoolean(master_open.toString())) {
                     //开启监听从机动态
                     new RegServer().start();
                 }
 
                 //自己是不是从机
                 Object slave_open = pps.get("app.cloud.slave.open");
-                if (slave_open != null && Boolean.valueOf(slave_open.toString())) {
+                if (slave_open != null && Boolean.parseBoolean(slave_open.toString())) {
                     //上报给主机自己的状态
                     Object cloud_name = pps.get("app.cloud.name");
                     if (cloud_name == null) {
@@ -71,7 +71,7 @@ public class CloudManager {
     }
 
     public static boolean isRpcService() {
-        return serviceDataMap.size() > 0 ? true : false;
+        return serviceDataMap.size() > 0;
     }
 
     public static List<String> getClasses() {

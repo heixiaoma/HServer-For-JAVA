@@ -16,7 +16,7 @@ public class HookTest implements HookAdapter {
 
     @Override
     public void before(Object[] objects) {
-        log.info("aop.-前置拦截：{}",objects[0]);
+        log.debug("aop.-前置拦截：{}",objects[0]);
         objects[0]="666";
     }
 

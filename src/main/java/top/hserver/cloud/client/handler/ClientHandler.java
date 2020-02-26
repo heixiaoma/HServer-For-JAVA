@@ -20,44 +20,41 @@ public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Msg msg) throws Exception {
-        switch (msg.getMsg_type()) {
-            case INVOKER:
-                Msg<InvokeServiceData> msg1 = msg;
-                InvokeServiceData data = msg1.getData();
-                log.info("调用信息--->{}" , data.toString());
-                //返回调用结果
-                String aClass = data.getAClass();
-                ClientData clientData = CloudManager.get(aClass);
-                Object bean = IocUtil.getBean(aClass);
-                for (Method method : clientData.getMethods()) {
-                    if (method.getName().equals(data.getMethod())){
-                        try {
-                            Object invoke = method.invoke(bean, data.getObjects());
-                            ResultData<String> resultData = new ResultData<>();
-                            resultData.setData(invoke.toString());
-                            resultData.setUUID(data.getUUID());
-                            resultData.setCode(200);
-                            Msg<ResultData> msg2 = new Msg<>();
-                            msg2.setMsg_type(MSG_TYPE.RESULT);
-                            msg2.setData(resultData);
-                            channelHandlerContext.writeAndFlush(msg2);
-                            break;
-                        }catch (Exception e){
-                            ResultData<String> resultData = new ResultData<>();
-                            resultData.setData(e.getMessage());
-                            resultData.setUUID(data.getUUID());
-                            resultData.setCode(503);
-                            Msg<ResultData> msg2 = new Msg<>();
-                            msg2.setMsg_type(MSG_TYPE.RESULT);
-                            msg2.setData(resultData);
-                            channelHandlerContext.writeAndFlush(msg2);
-                            break;
-                        }
+        if (msg.getMsg_type() == MSG_TYPE.INVOKER) {
+            InvokeServiceData data = ((Msg<InvokeServiceData>) msg).getData();
+            log.debug("调用信息--->{}", data.toString());
+            //返回调用结果
+            String aClass = data.getAClass();
+            ClientData clientData = CloudManager.get(aClass);
+            Object bean = IocUtil.getBean(aClass);
+            for (Method method : clientData.getMethods()) {
+                if (method.getName().equals(data.getMethod())) {
+                    try {
+                        Object invoke = method.invoke(bean, data.getObjects());
+                        ResultData<String> resultData = new ResultData<>();
+                        resultData.setData(invoke.toString());
+                        resultData.setUUID(data.getUUID());
+                        resultData.setCode(200);
+                        Msg<ResultData> msg2 = new Msg<>();
+                        msg2.setMsg_type(MSG_TYPE.RESULT);
+                        msg2.setData(resultData);
+                        channelHandlerContext.writeAndFlush(msg2);
+                        break;
+                    } catch (Exception e) {
+                        ResultData<String> resultData = new ResultData<>();
+                        resultData.setData(e.getMessage());
+                        resultData.setUUID(data.getUUID());
+                        resultData.setCode(503);
+                        Msg<ResultData> msg2 = new Msg<>();
+                        msg2.setMsg_type(MSG_TYPE.RESULT);
+                        msg2.setData(resultData);
+                        channelHandlerContext.writeAndFlush(msg2);
+                        break;
                     }
                 }
-                break;
-            default:
-                log.info(msg.toString());
+            }
+        } else {
+            log.debug(msg.toString());
         }
 
     }
