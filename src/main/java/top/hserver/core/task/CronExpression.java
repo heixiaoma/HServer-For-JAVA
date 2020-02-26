@@ -187,20 +187,20 @@ public final class CronExpression implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 12423409423L;
 
-    protected static final int     SECOND       = 0;
-    protected static final int     MINUTE       = 1;
-    protected static final int     HOUR         = 2;
-    protected static final int     DAY_OF_MONTH = 3;
-    protected static final int     MONTH        = 4;
-    protected static final int     DAY_OF_WEEK  = 5;
-    protected static final int     YEAR         = 6;
-    protected static final int     ALL_SPEC_INT = 99; // '*'
-    protected static final int     NO_SPEC_INT  = 98; // '?'
-    protected static final Integer ALL_SPEC     = ALL_SPEC_INT;
-    protected static final Integer NO_SPEC      = NO_SPEC_INT;
+    private static final int     SECOND       = 0;
+    private static final int     MINUTE       = 1;
+    private static final int     HOUR         = 2;
+    private static final int     DAY_OF_MONTH = 3;
+    private static final int     MONTH        = 4;
+    private static final int     DAY_OF_WEEK  = 5;
+    private static final int     YEAR         = 6;
+    private static final int     ALL_SPEC_INT = 99; // '*'
+    private static final int     NO_SPEC_INT  = 98; // '?'
+    private static final Integer ALL_SPEC     = ALL_SPEC_INT;
+    private static final Integer NO_SPEC      = NO_SPEC_INT;
 
-    protected static final Map<String, Integer> monthMap = new HashMap<>(20);
-    protected static final Map<String, Integer> dayMap   = new HashMap<>(60);
+    private static final Map<String, Integer> monthMap = new HashMap<>(20);
+    private static final Map<String, Integer> dayMap   = new HashMap<>(60);
 
     static {
         monthMap.put("JAN", 0);
@@ -227,22 +227,22 @@ public final class CronExpression implements Serializable, Cloneable {
 
     private final       String           cronExpression;
     private             TimeZone         timeZone = null;
-    protected transient TreeSet<Integer> seconds;
-    protected transient TreeSet<Integer> minutes;
-    protected transient TreeSet<Integer> hours;
-    protected transient TreeSet<Integer> daysOfMonth;
-    protected transient TreeSet<Integer> months;
-    protected transient TreeSet<Integer> daysOfWeek;
-    protected transient TreeSet<Integer> years;
+    private transient TreeSet<Integer> seconds;
+    private transient TreeSet<Integer> minutes;
+    private transient TreeSet<Integer> hours;
+    private transient TreeSet<Integer> daysOfMonth;
+    private transient TreeSet<Integer> months;
+    private transient TreeSet<Integer> daysOfWeek;
+    private transient TreeSet<Integer> years;
 
-    protected transient boolean lastdayOfWeek    = false;
-    protected transient int     nthdayOfWeek     = 0;
-    protected transient boolean lastdayOfMonth   = false;
-    protected transient boolean nearestWeekday   = false;
-    protected transient int     lastdayOffset    = 0;
-    protected transient boolean expressionParsed = false;
+    private transient boolean lastdayOfWeek    = false;
+    private transient int     nthdayOfWeek     = 0;
+    private transient boolean lastdayOfMonth   = false;
+    private transient boolean nearestWeekday   = false;
+    private transient int     lastdayOffset    = 0;
+    private transient boolean expressionParsed = false;
 
-    public static final int MAX_YEAR = LocalDateTime.now().getYear() + 100;
+    private static final int MAX_YEAR = LocalDateTime.now().getYear() + 100;
 
     /**
      * Constructs a new <CODE>CronExpression</CODE> based on the specified
@@ -253,7 +253,7 @@ public final class CronExpression implements Serializable, Cloneable {
      * @throws ParseException if the string expression cannot be parsed into a valid
      *                                  <CODE>CronExpression</CODE>
      */
-    public CronExpression(String cronExpression) throws ParseException {
+    CronExpression(String cronExpression) throws ParseException {
         if (cronExpression == null) {
             throw new IllegalArgumentException("cronExpression cannot be null");
         }
@@ -267,7 +267,7 @@ public final class CronExpression implements Serializable, Cloneable {
      *
      * @param expression The existing cron expression to be copied
      */
-    public CronExpression(CronExpression expression) {
+    CronExpression(CronExpression expression) {
         /*
          * We don't call the other constructor here since we need to swallow the
          * ParseException. We also elide some of the sanity checking as it is
@@ -314,7 +314,7 @@ public final class CronExpression implements Serializable, Cloneable {
      *             date/time
      * @return the next valid date/time
      */
-    public Date getNextValidTimeAfter(Date date) {
+    Date getNextValidTimeAfter(Date date) {
         return getTimeAfter(date);
     }
 
@@ -360,7 +360,7 @@ public final class CronExpression implements Serializable, Cloneable {
      * Returns the time zone for which this <code>CronExpression</code>
      * will be resolved.
      */
-    public TimeZone getTimeZone() {
+    private TimeZone getTimeZone() {
         if (timeZone == null) {
             timeZone = TimeZone.getDefault();
         }
@@ -371,7 +371,7 @@ public final class CronExpression implements Serializable, Cloneable {
      * Sets the time zone for which  this <code>CronExpression</code>
      * will be resolved.
      */
-    public void setTimeZone(TimeZone timeZone) {
+    private void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
     }
 
@@ -416,7 +416,7 @@ public final class CronExpression implements Serializable, Cloneable {
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    protected void buildExpression(String expression) throws ParseException {
+    private void buildExpression(String expression) throws ParseException {
         expressionParsed = true;
         try {
             if (seconds == null) {

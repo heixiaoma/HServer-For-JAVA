@@ -9,7 +9,6 @@ import top.hserver.core.interfaces.PermissionAdapter;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.interfaces.FilterAdapter;
 import top.hserver.core.ioc.annotation.*;
-import top.hserver.core.ioc.util.ClassLoadUtil;
 import top.hserver.core.proxy.JavassistProxyFactory;
 import top.hserver.core.server.filter.FilterChain;
 import top.hserver.core.server.handlers.WebSocketServerHandler;
@@ -53,23 +52,19 @@ public class InitBean {
 
 
     private static void initConfiguration(PackageScanner scan) throws Exception {
-        List<Class<?>> classs = scan.getConfigurationPackage();
+        List<Class<?>> classs = scan.getAnnotationList(Configuration.class);
         for (Class aClass : classs) {
-            //检查注解里面是否有值
-            Configuration annotation = (Configuration) aClass.getAnnotation(Configuration.class);
-            if (annotation != null) {
-                Method[] methods = aClass.getDeclaredMethods();
-                Object o = aClass.newInstance();
-                for (Method method : methods) {
-                    Bean bean = method.getAnnotation(Bean.class);
-                    if (bean != null) {
-                        Object invoke = method.invoke(o);
-                        String value = bean.value();
-                        if (value.trim().length() > 0) {
-                            IocUtil.addBean(value, invoke);
-                        } else {
-                            IocUtil.addBean(invoke.getClass().getName(), invoke);
-                        }
+            Method[] methods = aClass.getDeclaredMethods();
+            Object o = aClass.newInstance();
+            for (Method method : methods) {
+                Bean bean = method.getAnnotation(Bean.class);
+                if (bean != null) {
+                    Object invoke = method.invoke(o);
+                    String value = bean.value();
+                    if (value.trim().length() > 0) {
+                        IocUtil.addBean(value, invoke);
+                    } else {
+                        IocUtil.addBean(invoke.getClass().getName(), invoke);
                     }
                 }
             }
@@ -78,14 +73,12 @@ public class InitBean {
 
 
     private static void initWebSocket(PackageScanner scan) throws Exception {
-        List<Class<?>> classs = scan.getWebSocketPackage();
+        List<Class<?>> classs = scan.getAnnotationList(WebSocket.class);
         for (Class aClass : classs) {
             //检查注解里面是否有值
             WebSocket annotation = (WebSocket) aClass.getAnnotation(WebSocket.class);
-            if (annotation != null) {
-                IocUtil.addBean(aClass.getName(), aClass.newInstance());
-                WebSocketServerHandler.WebSocketRouter.put(annotation.value(), aClass.getName());
-            }
+            IocUtil.addBean(aClass.getName(), aClass.newInstance());
+            WebSocketServerHandler.WebSocketRouter.put(annotation.value(), aClass.getName());
         }
     }
 
@@ -93,9 +86,8 @@ public class InitBean {
      * 初始化Bean
      */
     private static void initBean(PackageScanner scan) throws Exception {
-        List<Class<?>> classs = scan.getBeansPackage();
+        List<Class<?>> classs = scan.getAnnotationList(Bean.class);
         for (Class aClass : classs) {
-
             //检测这个Bean是否是全局异常处理的类
             if (GlobalException.class.isAssignableFrom(aClass)) {
                 IocUtil.addBean(GlobalException.class.getName(), aClass.newInstance());
@@ -173,7 +165,7 @@ public class InitBean {
         /**
          * 检查是否有方法注解
          */
-        List<Class<?>> classs = scan.getControllersPackage();
+        List<Class<?>> classs = scan.getAnnotationList(Controller.class);
         for (Class aClass : classs) {
             //检查注解里面是否有值
             Method[] methods = aClass.getDeclaredMethods();
@@ -240,7 +232,7 @@ public class InitBean {
      * 处理下Filter的加载，放在Ioc容器
      */
     private static void initFilter(PackageScanner scan) throws Exception {
-        List<Class<?>> classes = scan.getFiltersPackage();
+        List<Class<?>> classes = scan.getAnnotationList(Filter.class);
         // 载入事件处理类
         Map<Integer, Map<String, FilterAdapter>> map = new HashMap<>();
         int tempMax = 0;
@@ -250,7 +242,7 @@ public class InitBean {
             if (handlerAnno == null) {
                 continue;
             }
-            log.info("{}优先级：{}",clazz.getCanonicalName(), handlerAnno.value());
+            log.info("{}优先级：{}", clazz.getCanonicalName(), handlerAnno.value());
             FilterAdapter obj = null;
             try {
                 obj = (FilterAdapter) clazz.newInstance();
@@ -282,7 +274,7 @@ public class InitBean {
 
     private static void initHook(PackageScanner scan) throws Exception {
         JavassistProxyFactory javassistProxyFactory = new JavassistProxyFactory();
-        List<Class<?>> classs = scan.getHooksPackage();
+        List<Class<?>> classs = scan.getAnnotationList(Hook.class);
         for (Class aClass : classs) {
             Hook hook = (Hook) aClass.getAnnotation(Hook.class);
             Class value = hook.value();

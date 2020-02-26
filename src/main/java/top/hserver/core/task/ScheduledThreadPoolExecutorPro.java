@@ -12,7 +12,7 @@ import static top.hserver.core.task.TaskManager.IS_OK;
 
 public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor implements CronExecutorService {
 
-    public  ScheduledThreadPoolExecutorPro(int corePoolSize, ThreadFactory threadFactory) {
+    ScheduledThreadPoolExecutorPro(int corePoolSize, ThreadFactory threadFactory) {
         super(corePoolSize, threadFactory);
     }
 
@@ -36,7 +36,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
                         }
                     }
                 }
-            } catch (RejectedExecutionException | CancellationException e) {
+            } catch (RejectedExecutionException | CancellationException ignored) {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -64,7 +64,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
                         }
                     }
                 }
-            } catch (RejectedExecutionException | CancellationException e) {
+            } catch (RejectedExecutionException | CancellationException ignored) {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }

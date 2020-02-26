@@ -20,13 +20,12 @@ import java.io.*;
 @Slf4j
 public class StaticHandler {
 
-    private String basePath = "/static";
-
     public StaticFile handler(String uri,WebContext webContext) {
         //判断一次文件是否有/index.html文件
         if ("/".equals(uri)) {
             uri = "/index.html";
         }
+        String basePath = "/static";
         InputStream input = getResourceStreamFromJar(basePath + uri);
         if (input != null) {
             return buildStaticFile(input, uri,webContext);

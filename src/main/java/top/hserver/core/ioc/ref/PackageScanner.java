@@ -1,20 +1,9 @@
 package top.hserver.core.ioc.ref;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.List;
 
 public interface PackageScanner {
-    List<Class<?>> getBeansPackage() throws IOException;
-
-    List<Class<?>> getControllersPackage() throws IOException;
-
-    List<Class<?>> getHooksPackage() throws IOException;
-
-    List<Class<?>> getFiltersPackage() throws IOException;
-
-    List<Class<?>> getWebSocketPackage() throws IOException;
-
-    List<Class<?>> getConfigurationPackage() throws IOException;
-
-
+    <A extends Annotation> List<Class<?>> getAnnotationList( Class<A> annotation) throws IOException;
 }

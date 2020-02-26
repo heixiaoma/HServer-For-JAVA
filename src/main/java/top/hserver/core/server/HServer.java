@@ -70,7 +70,7 @@ public class HServer {
     }
 
 
-    public String getHello(String typeName, int port) {
+    private String getHello(String typeName, int port) {
 
         return "  ___ ___  _________ \t方式运行：" + typeName + "\t端口：" + port + "\n" +
                 " /   |   \\/   _____/ ______________  __ ___________ \n" +

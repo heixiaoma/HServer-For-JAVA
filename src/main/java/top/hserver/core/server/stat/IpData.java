@@ -24,11 +24,10 @@ public class IpData {
         time=CurrentTimeStamp();
     }
 
-    public  String CurrentTimeStamp() {
+    private String CurrentTimeStamp() {
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date currentTime = new Date();
-        String formatCurrentTime = sdfDate.format(currentTime);
-        return formatCurrentTime;
+        return sdfDate.format(currentTime);
     }
 
     public AtomicInteger getCount() {

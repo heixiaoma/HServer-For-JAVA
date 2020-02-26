@@ -21,13 +21,13 @@ public class ExceptionUtil {
     }
 
     public static String getMessage(Exception e) {
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuilder = new StringBuilder();
 //        stringBuffer.append("\nat " + ExceptionUtil.getExceptionType(e));
-        stringBuffer.append("\n" + ExceptionUtil.getExceptionSrintStackTrace(e));
+        stringBuilder.append("\n").append(ExceptionUtil.getExceptionSrintStackTrace(e));
         if (e.getMessage() != null) {
-            stringBuffer.append("\nat " + ExceptionUtil.getExceptionMessage(e));
+            stringBuilder.append("\nat ").append(ExceptionUtil.getExceptionMessage(e));
         }
-        return stringBuffer.toString();
+        return stringBuilder.toString();
     }
 
 }

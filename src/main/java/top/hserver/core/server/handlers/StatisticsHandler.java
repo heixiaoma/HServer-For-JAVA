@@ -25,7 +25,7 @@ public class StatisticsHandler {
     private static final ConcurrentHashMap<String, Long> uriData = new ConcurrentHashMap<>();     //uri记录
 
 
-    public void addToConnectionDeque(ChannelHandlerContext ctx, String url, long consumeTime) {
+    void addToConnectionDeque(ChannelHandlerContext ctx, String url, long consumeTime) {
         //获取ChannelTrafficShapingHandler的实例以进行带宽监视
         ChannelTrafficShapingHandler ch = (ChannelTrafficShapingHandler) ctx.channel().pipeline().get("统计");
         ch.trafficCounter().stop();  //Stop the monitoring process
@@ -44,12 +44,12 @@ public class StatisticsHandler {
     }
 
     //总连接数的原子增量
-    public void increaseCount() {
+    void increaseCount() {
         count.incrementAndGet();
     }
 
     //统计URI访问数
-    public void uriDataCount(String uri) {
+    void uriDataCount(String uri) {
         synchronized (uriData) {
             Long uriCount = uriData.get(uri);
             //统计页面数，页面总和就是总访问数
@@ -63,7 +63,7 @@ public class StatisticsHandler {
 
 
     //调用此方法以计算每个请求
-    public void addToIpMap(ChannelHandlerContext ctx) {
+    void addToIpMap(ChannelHandlerContext ctx) {
         String clientIP = ((InetSocketAddress) ctx.channel().remoteAddress()).getHostString();
         synchronized (ipMap) {
             if (!ipMap.containsKey(clientIP)) {//如果IP是新的->将其放在地图中，默认计数为1，当前时间为
@@ -76,7 +76,7 @@ public class StatisticsHandler {
         }
     }
 
-    public String getClientIp(ChannelHandlerContext ctx) {
+    String getClientIp(ChannelHandlerContext ctx) {
         return ((InetSocketAddress) ctx.channel().remoteAddress()).getHostString();
     }
 
@@ -105,16 +105,14 @@ public class StatisticsHandler {
     //----remove---
     public static Map<String, IpData> removeIpMap() {
         synchronized (ipMap) {
-            Map<String, IpData> tmpIpMap = new ConcurrentHashMap<>();
-            tmpIpMap.putAll(ipMap);
+            Map<String, IpData> tmpIpMap = new ConcurrentHashMap<>(ipMap);
             ipMap.clear();
             return tmpIpMap;
         }
     }
     public static Deque<RequestData> removeLogRequestQue() {
         synchronized (logRequestQue) {
-            Deque<RequestData> tmpLogRequestQue = new ConcurrentLinkedDeque<>();
-            tmpLogRequestQue.addAll(logRequestQue);
+            Deque<RequestData> tmpLogRequestQue = new ConcurrentLinkedDeque<>(logRequestQue);
             logRequestQue.clear();
             return tmpLogRequestQue;
         }
@@ -135,8 +133,7 @@ public class StatisticsHandler {
     }
     public static ConcurrentHashMap<String, Long> removeUriData() {
         synchronized (uriData) {
-            ConcurrentHashMap<String, Long> tmpIpMap = new ConcurrentHashMap<>();
-            tmpIpMap.putAll(uriData);
+            ConcurrentHashMap<String, Long> tmpIpMap = new ConcurrentHashMap<>(uriData);
             uriData.clear();
             return tmpIpMap;
         }

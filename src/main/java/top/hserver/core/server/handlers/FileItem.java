@@ -60,7 +60,7 @@ public class FileItem {
         this.moveTo(Paths.get(newFile.getPath()));
     }
 
-    public void moveTo(Path newFile) throws IOException {
+    private void moveTo(Path newFile) throws IOException {
         Files.move(Paths.get(file.getPath()), newFile, StandardCopyOption.REPLACE_EXISTING);
     }
 

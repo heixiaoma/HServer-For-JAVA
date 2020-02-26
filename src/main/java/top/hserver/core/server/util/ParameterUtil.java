@@ -157,10 +157,12 @@ public class ParameterUtil {
         String[] paramNames = getParamNames(cs, method);
         if (paramNameMap.containsKey(cs)) {
             ConcurrentHashMap<Method, String[]> concurrentHashMap = paramNameMap.get(cs);
+            assert paramNames != null;
             concurrentHashMap.put(method, paramNames);
             paramNameMap.put(cs, concurrentHashMap);
         } else {
             ConcurrentHashMap<Method, String[]> concurrentHashMap = new ConcurrentHashMap<>();
+            assert paramNames != null;
             concurrentHashMap.put(method, paramNames);
             paramNameMap.put(cs, concurrentHashMap);
         }

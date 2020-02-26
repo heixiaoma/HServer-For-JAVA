@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,8 +45,8 @@ public class DispatcherHandler {
     //标识不是静态文件，这样下次使用方便直接跳过检查
     private final static CopyOnWriteArraySet<String> noStaticFileUri = new CopyOnWriteArraySet<>();
 
-    public static WebContext buildWebContext(ChannelHandlerContext ctx,
-                                             WebContext webContext) {
+    static WebContext buildWebContext(ChannelHandlerContext ctx,
+                                      WebContext webContext) {
 
         HttpRequest req = webContext.getHttpRequest();
         Request request = new Request();
@@ -57,9 +57,7 @@ public class DispatcherHandler {
             Map<String, String> requestParams = new HashMap<>();
             QueryStringDecoder decoder = new QueryStringDecoder(req.uri());
             Map<String, List<String>> parame = decoder.parameters();
-            Iterator<Map.Entry<String, List<String>>> iterator = parame.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<String, List<String>> next = iterator.next();
+            for (Map.Entry<String, List<String>> next : parame.entrySet()) {
                 requestParams.put(next.getKey(), next.getValue().get(0));
             }
             request.setRequestParams(requestParams);
@@ -123,7 +121,7 @@ public class DispatcherHandler {
      * @param webContext
      * @return
      */
-    public static WebContext Statistics(WebContext webContext) {
+    static WebContext Statistics(WebContext webContext) {
         if (ConstConfig.isStatisticsOpen) {
             for (String statisticalRule : ConstConfig.StatisticalRules) {
                 if (webContext.getRequest().getUri().matches(statisticalRule)) {
@@ -153,7 +151,7 @@ public class DispatcherHandler {
      * @param webContext
      * @return
      */
-    public static WebContext staticFile(WebContext webContext) {
+    static WebContext staticFile(WebContext webContext) {
         //检查是不是静态文件，如果是封装下请求，然后跳过控制器的方法
         if (noStaticFileUri.contains(webContext.getRequest().getUri())) {
             return webContext;
@@ -175,7 +173,7 @@ public class DispatcherHandler {
      * @param webContext
      * @return
      */
-    public static WebContext Permission(WebContext webContext) {
+    static WebContext Permission(WebContext webContext) {
 
         //如果是静态文件就不进行权限验证了
         if (webContext.isStaticFile()) {
@@ -274,7 +272,7 @@ public class DispatcherHandler {
      * @param webContext
      * @return
      */
-    public static WebContext findController(WebContext webContext) {
+    static WebContext findController(WebContext webContext) {
 
         /**
          * 如果静态文件就跳过当前的处理，否则就去执行控制器的方法
@@ -324,11 +322,7 @@ public class DispatcherHandler {
                         throw new BusinessException(503, "生成控制器时参数异常" + message);
                     }
                 }
-                if (methodArgs != null) {
-                    res = method.invoke(bean, methodArgs);
-                } else {
-                    res = method.invoke(bean);
-                }
+                res = method.invoke(bean, methodArgs);
                 //调用结果进行设置
                 if (res == null) {
                     webContext.setResult("");
@@ -380,7 +374,7 @@ public class DispatcherHandler {
      * @param webContext
      * @return
      */
-    public static FullHttpResponse buildResponse(WebContext webContext) {
+    static FullHttpResponse buildResponse(WebContext webContext) {
         try {
             FullHttpResponse response;
             /**
@@ -401,12 +395,12 @@ public class DispatcherHandler {
                     response = new DefaultFullHttpResponse(
                             HTTP_1_1,
                             HttpResponseStatus.OK,
-                            Unpooled.wrappedBuffer(DownLoadUtil.FileToByteBuf(response1.getInputStream())));
+                            Unpooled.wrappedBuffer(Objects.requireNonNull(DownLoadUtil.FileToByteBuf(response1.getInputStream()))));
                 } else {
                     response = new DefaultFullHttpResponse(
                             HTTP_1_1,
                             HttpResponseStatus.OK,
-                            Unpooled.wrappedBuffer(DownLoadUtil.FileToByteBuf(response1.getFile())));
+                            Unpooled.wrappedBuffer(Objects.requireNonNull(DownLoadUtil.FileToByteBuf(response1.getFile()))));
                 }
                 response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/octet-stream;charset=UTF-8");
                 response.headers().add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", webContext.getResponse().getFileName()));
@@ -415,13 +409,13 @@ public class DispatcherHandler {
                 response = new DefaultFullHttpResponse(
                         HTTP_1_1,
                         HttpResponseStatus.OK,
-                        Unpooled.wrappedBuffer(webContext.getResponse().getJsonAndHtml().getBytes(Charset.forName("UTF-8"))));
+                        Unpooled.wrappedBuffer(webContext.getResponse().getJsonAndHtml().getBytes(StandardCharsets.UTF_8)));
             } else {
                 //是否是方法调用的
                 response = new DefaultFullHttpResponse(
                         HTTP_1_1,
                         HttpResponseStatus.OK,
-                        Unpooled.wrappedBuffer(webContext.getResult().getBytes(Charset.forName("UTF-8"))));
+                        Unpooled.wrappedBuffer(webContext.getResult().getBytes(StandardCharsets.UTF_8)));
                 response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
             }
             response.headers().set(HttpHeaderNames.SERVER, "HServer");
@@ -451,13 +445,13 @@ public class DispatcherHandler {
      * @param e
      * @return
      */
-    public static FullHttpResponse handleException(Throwable e) {
+    static FullHttpResponse handleException(Throwable e) {
         BusinessException cause = (BusinessException) e.getCause();
         HttpResponseStatus httpResponseStatus = HttpResponseStatus.valueOf(cause.getHttpCode());
         FullHttpResponse response = new DefaultFullHttpResponse(
                 HTTP_1_1,
                 httpResponseStatus,
-                Unpooled.wrappedBuffer(cause.getRespMsg().getBytes(Charset.forName("UTF-8"))));
+                Unpooled.wrappedBuffer(cause.getRespMsg().getBytes(StandardCharsets.UTF_8)));
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
         response.headers().set("HServer", ConstConfig.version);
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
@@ -472,8 +466,8 @@ public class DispatcherHandler {
      * @param future
      * @param msg
      */
-    public static void writeResponse(ChannelHandlerContext
-                                             ctx, CompletableFuture<WebContext> future, FullHttpResponse msg) {
+    static void writeResponse(ChannelHandlerContext
+                                      ctx, CompletableFuture<WebContext> future, FullHttpResponse msg) {
         ctx.writeAndFlush(msg);
         future.complete(null);
     }

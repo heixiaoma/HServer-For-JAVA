@@ -36,7 +36,7 @@ public class FilterChain {
         filters = new LinkedList<>();
     }
 
-    public void setFilters(List<FilterAdapter> filters) {
+    private void setFilters(List<FilterAdapter> filters) {
         this.filters = filters;
     }
 

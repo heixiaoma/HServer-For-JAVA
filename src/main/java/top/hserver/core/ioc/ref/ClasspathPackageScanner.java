@@ -1,17 +1,17 @@
 package top.hserver.core.ioc.ref;
 
-
 import top.hserver.core.ioc.annotation.*;
 import top.hserver.core.ioc.util.ClassLoadUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.*;
 
 @Slf4j
 public class ClasspathPackageScanner implements PackageScanner {
 
-    private String basePackage;
+    private Map<Class, List<Class<?>>> annotationClass = new HashMap<>();
 
     /**
      * 初始化
@@ -19,82 +19,47 @@ public class ClasspathPackageScanner implements PackageScanner {
      * @param basePackage
      */
     public ClasspathPackageScanner(String basePackage) {
-        this.basePackage = basePackage;
+        List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true);
+        for (Class<?> aClass : classes) {
+            if (aClass.getAnnotation(Bean.class) != null) {
+                add(aClass, Bean.class);
+            }
+            if (aClass.getAnnotation(WebSocket.class) != null) {
+                add(aClass, WebSocket.class);
+            }
+            if (aClass.getAnnotation(Configuration.class) != null) {
+                add(aClass, Configuration.class);
+            }
+            if (aClass.getAnnotation(Controller.class) != null) {
+                add(aClass, Controller.class);
+            }
+            if (aClass.getAnnotation(Hook.class) != null) {
+                add(aClass, Hook.class);
+            }
+            if (aClass.getAnnotation(Filter.class) != null) {
+                add(aClass, Filter.class);
+            }
+        }
+    }
+
+    private <A extends Annotation> void add(Class<?> aClass, Class<A> annotation) {
+        List<Class<?>> classes = annotationClass.get(annotation);
+        if (classes == null) {
+            classes = new ArrayList<>();
+            classes.add(aClass);
+            annotationClass.put(annotation, classes);
+        } else {
+            classes.add(aClass);
+            annotationClass.put(annotation, classes);
+        }
     }
 
     @Override
-    public List<Class<?>> getBeansPackage() throws IOException {
-        List<Class<?>> clazzLis = new ArrayList<>();
-        List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true);
-        for (Class<?> aClass : classes) {
-            if (aClass.getAnnotation(Bean.class)!=null){
-                clazzLis.add(aClass);
-            }
+    public <A extends Annotation> List<Class<?>> getAnnotationList(Class<A> annotation) throws IOException {
+        List<Class<?>> classes = annotationClass.get(annotation);
+        if (classes == null) {
+            return new ArrayList<>();
         }
-        return clazzLis;
+        return classes;
     }
-
-    @Override
-    public List<Class<?>> getWebSocketPackage() throws IOException {
-        List<Class<?>> clazzLis = new ArrayList<>();
-        List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true);
-        for (Class<?> aClass : classes) {
-            if (aClass.getAnnotation(WebSocket.class)!=null){
-                clazzLis.add(aClass);
-            }
-        }
-        return clazzLis;
-    }
-
-
-    @Override
-    public List<Class<?>> getConfigurationPackage() throws IOException {
-        List<Class<?>> clazzLis = new ArrayList<>();
-        List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true);
-        for (Class<?> aClass : classes) {
-            if (aClass.getAnnotation(Configuration.class)!=null){
-                clazzLis.add(aClass);
-            }
-        }
-        return clazzLis;
-    }
-
-    @Override
-    public List<Class<?>> getControllersPackage() throws IOException {
-        List<Class<?>> clazzLis = new ArrayList<>();
-        List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true);
-        for (Class<?> aClass : classes) {
-            if (aClass.getAnnotation(Controller.class)!=null){
-                clazzLis.add(aClass);
-            }
-        }
-        return clazzLis;
-    }
-
-    @Override
-    public List<Class<?>> getHooksPackage() throws IOException {
-        List<Class<?>> clazzLis = new ArrayList<>();
-        List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true);
-        for (Class<?> aClass : classes) {
-            if (aClass.getAnnotation(Hook.class)!=null){
-                clazzLis.add(aClass);
-            }
-        }
-        return clazzLis;
-    }
-
-
-    @Override
-    public List<Class<?>> getFiltersPackage() throws IOException {
-        List<Class<?>> clazzLis = new ArrayList<>();
-        List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true);
-        for (Class<?> aClass : classes) {
-            if (aClass.getAnnotation(Filter.class)!=null){
-                clazzLis.add(aClass);
-            }
-        }
-        return clazzLis;
-    }
-
-
 }
