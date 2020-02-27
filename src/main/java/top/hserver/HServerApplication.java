@@ -26,6 +26,8 @@ public class HServerApplication {
         InitBean.init(classz);
         log.info("IOC 装配中：{}", classz.getName());
         InitBean.injection();
+        //Beetlsql注入
+        InitBean.BeetlSqlinit();
         log.info("IOC 全部装配完成：{}", classz.getName());
         //云启动
         CloudManager.run();

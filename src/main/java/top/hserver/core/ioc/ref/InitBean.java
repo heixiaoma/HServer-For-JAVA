@@ -331,6 +331,40 @@ public class InitBean {
 
 
     /**
+     * 对BeetlSql兼容
+     */
+    public static void BeetlSqlinit() {
+
+        //检查下是否有Beetlsql的管理器
+        Object sqlManager = IocUtil.getBean("org.beetl.sql.core.SQLManager");
+        if (sqlManager == null) {
+            return;
+        }
+        //Bean对象
+        Map<String, Object> all = IocUtil.getAll();
+        all.forEach((k, v) -> {
+            //获取当前类的所有字段
+            Field[] declaredFields = v.getClass().getDeclaredFields();
+            for (Field declaredField : declaredFields) {
+                beetlsqlzr(declaredField, v, sqlManager);
+            }
+        });
+
+        //Filter注入
+        List<Map<String, FilterAdapter>> filtersIoc = FilterChain.filtersIoc;
+        filtersIoc.forEach((v) -> {
+            //获取当前类的所有字段
+            String next = v.keySet().iterator().next();
+            FilterAdapter filterAdapter = v.get(next);
+            Field[] declaredFields = filterAdapter.getClass().getDeclaredFields();
+            for (Field declaredField : declaredFields) {
+                beetlsqlzr(declaredField, filterAdapter, sqlManager);
+            }
+        });
+    }
+
+
+    /**
      * Rpc 服务的代理对象生成
      */
     private static void rpczr(Field declaredField, Object v) {
@@ -377,6 +411,11 @@ public class InitBean {
                     bean = IocUtil.getBean(allClassByInterface.get(0));
                     findMsg = "按子类装配，" + declaredField.getType().getSimpleName();
                 } else {
+                    //Beetlsql，是动态获取，ioc不存在，所以就取消注入
+                    BeetlSQL beetlSQL = declaredField.getType().getAnnotation(BeetlSQL.class);
+                    if (beetlSQL!=null){
+                        return;
+                    }
                     log.error("装配错误:容器中未找到对应的Bean对象装备配,查找说明：{}", findMsg);
                     return;
                 }
@@ -398,5 +437,50 @@ public class InitBean {
             }
         }
     }
+
+
+    /**
+     * Beetlsql注入
+     *
+     * @param declaredField
+     * @param v
+     */
+    private static void beetlsqlzr(Field declaredField, Object v, Object sqlManager) {
+        //检查是否有注解@Autowired
+        Autowired annotation = declaredField.getAnnotation(Autowired.class);
+        if (annotation != null) {
+            declaredField.setAccessible(true);
+            //检查字段是类型是否被@Beetlsql标注
+            BeetlSQL beetlSQL = declaredField.getType().getAnnotation(BeetlSQL.class);
+            try {
+                if (beetlSQL != null) {
+                    Class<?> aClass = sqlManager.getClass();
+                    Method[] methods = aClass.getMethods();
+                    Method getMapper=null;
+                    for (Method method : methods) {
+                        if (method.getName().equals("getMapper")){
+                            getMapper=method;
+                            break;
+                        }
+                    }
+                    if (getMapper==null){
+                        return;
+                    }
+                    //这个就是Dao的接口的实现类，将他进行注入到其他地方
+                    Object bean = getMapper.invoke(sqlManager, declaredField.getType());
+                    //同类型注入
+                    if (declaredField.getType().isAssignableFrom(bean.getClass())) {
+                        declaredField.set(v, bean);
+                        log.info("{}----->{}：装配完成，{}", new Object[]{bean.getClass().getSimpleName(), v.getClass().getSimpleName(), "BeetlSql注入"});
+                    }else {
+                        log.error("{}----->{}：装配错误:类型不匹配", v.getClass().getSimpleName(), v.getClass().getSimpleName());
+                    }
+                }
+            } catch (Exception e) {
+                log.error("装配错误:{}", e.getMessage());
+            }
+        }
+    }
+
 
 }
