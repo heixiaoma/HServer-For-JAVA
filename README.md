@@ -34,6 +34,8 @@ Redis操作源码案例地址(Jedis) [点我](https://gitee.com/heixiaomas_admin
 
 MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/hserver-for-java-mysql)
 
+MYSQL操作源码案例地址(BeetlSQL) [点我](https://gitee.com/heixiaomas_admin/hserver-for-java-beetlsql)
+
 
 
 
