@@ -1,6 +1,7 @@
 # HServer
 
 #### 介绍
+    QQ交流群：1065301527
     HServer是一个基于Netty的一个高并发Webserver,它不仅仅是一个webserver，我们可以直接在这个基础上进行开发
     它提供了相关的注解和一些方法，完全能够完成我们大大小小的项目。作为一名Java程序员写web程序spring是我们项目99%会用的。
     spring的优点就不过多讲。Hserver是一个“tomcat”+“spring”的这样的小玩意。
