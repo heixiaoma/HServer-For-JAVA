@@ -2,6 +2,7 @@ package top.hserver.core.server.router;
 
 import io.netty.handler.codec.http.HttpMethod;
 import lombok.extern.slf4j.Slf4j;
+import top.hserver.core.ioc.annotation.RequestMethod;
 import top.hserver.core.server.context.PatternUri;
 import top.hserver.core.server.context.WebContext;
 
@@ -15,192 +16,170 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.netty.handler.codec.http.HttpMethod.GET;
-
 @Slf4j
 public class RouterManager {
 
-    /**
-     * 路由线程池，关系映射
-     */
-    private final static Map<String, RouterInfo> routerGets = new ConcurrentHashMap<>();
-    private final static Map<String, RouterInfo> routerPosts = new ConcurrentHashMap<>();
+  /**
+   * 路由线程池，关系映射
+   */
+  private final static Map<HttpMethod, Map<String, RouterInfo>> router = new ConcurrentHashMap<>();
 
-    private final static Map<String, RouterPermission> routerPermissionGets = new ConcurrentHashMap<>();
-    private final static Map<String, RouterPermission> routerPermissionPosts = new ConcurrentHashMap<>();
+  private final static Map<HttpMethod, Map<String, RouterPermission>> routerPermission = new ConcurrentHashMap<>();
 
-    /**
-     * 记录url是否是需要url正则匹配的
-     */
+  /**
+   * 记录url是否是需要url正则匹配的
+   */
+  private final static Map<HttpMethod, Map<String, PatternUri>> ISPAURI = new ConcurrentHashMap<>();
 
-    private final static Map<String, PatternUri> ISPAURI_GET = new ConcurrentHashMap<>();
-    private final static Map<String, PatternUri> ISPAURI_POST = new ConcurrentHashMap<>();
-
-    public static void addRouter(RouterInfo routerInfo) {
-        if (routerInfo != null) {
-            String url = routerInfo.getUrl();
-            if (GET == routerInfo.reqMethodName) {
-
-                /**
-                 * 检查是否是需要匹配的那种URL
-                 */
-                String pattern = isPattern(url);
-                if (pattern != null) {
-                    String s = url.replaceAll("\\{" + pattern + "\\}", "(.*)");
-                    ISPAURI_GET.put(s, new PatternUri(pattern, url,s));
-                }
-
-                if (routerGets.containsKey(url)) {
-                    log.warn("url< {} >映射已经存在，可能会影响程序使用", url);
-                }
-                routerGets.put(url, routerInfo);
-            } else {
-                /**
-                 * 检查是否是需要匹配的那种URL
-                 */
-                String pattern = isPattern(url);
-                if (pattern != null) {
-                    String s = url.replaceAll("\\{" + pattern + "\\}", "(.*)");
-                    ISPAURI_POST.put(s, new PatternUri(pattern, url,s));
-                }
-
-                if (routerPosts.containsKey(url)) {
-                    log.warn("url< {} >映射已经存在，可能会影响程序使用", url);
-                }
-                routerPosts.put(url, routerInfo);
-            }
-        }
+  private static Map<String, PatternUri> ISPAURI(HttpMethod method) {
+    Map<String, PatternUri> stringPatternUriMap = ISPAURI.get(method);
+    if (stringPatternUriMap == null) {
+      stringPatternUriMap = new ConcurrentHashMap<>();
+      ISPAURI.put(method, stringPatternUriMap);
     }
+    return stringPatternUriMap;
+  }
+
+  private static Map<String, RouterPermission> routerPermission(HttpMethod method) {
+    Map<String, RouterPermission> stringRouterPermissionMap = routerPermission.get(method);
+    if (stringRouterPermissionMap == null) {
+      stringRouterPermissionMap = new ConcurrentHashMap<>();
+      routerPermission.put(method, stringRouterPermissionMap);
+    }
+    return stringRouterPermissionMap;
+  }
+
+  private static Map<String, RouterInfo> router(HttpMethod method) {
+    Map<String, RouterInfo> stringRouterInfoMap = router.get(method);
+    if (stringRouterInfoMap == null) {
+      stringRouterInfoMap = new ConcurrentHashMap<>();
+      router.put(method, stringRouterInfoMap);
+    }
+    return stringRouterInfoMap;
+  }
+
+  public static void addRouter(RouterInfo routerInfo) {
+    if (routerInfo != null) {
+      String url = routerInfo.getUrl();
+      /**
+       * 检查是否是需要匹配的那种URL
+       */
+      String pattern = isPattern(url);
+      if (pattern != null) {
+        String s = url.replaceAll("\\{" + pattern + "\\}", "(.*)");
+        Map<String, PatternUri> ispauri = ISPAURI(routerInfo.reqMethodName);
+        if (ispauri != null) {
+          ispauri.put(s, new PatternUri(pattern, url, s));
+        }
+      }
+      Map<String, RouterInfo> router = router(routerInfo.reqMethodName);
+      if (router != null) {
+        if (router.containsKey(url)) {
+          log.warn("url< {} >映射已经存在，可能会影响程序使用", url);
+        }
+        router.put(url, routerInfo);
+      }
+    }
+  }
 
 
-    private static String isPattern(String url) {
-        String regex = "(\\{.*\\})";
-        Matcher matcher = Pattern.compile(regex).matcher(url);
+  private static String isPattern(String url) {
+    String regex = "(\\{.*\\})";
+    Matcher matcher = Pattern.compile(regex).matcher(url);
+    if (matcher.find()) {
+      String group = matcher.group(1);
+      if (group != null) {
+        return group.substring(1, group.length() - 1);
+      }
+    }
+    return null;
+  }
+
+  private static PatternUri isPattern(String url, HttpMethod method) {
+    Map<String, PatternUri> ispauri = ISPAURI(method);
+    if (ispauri == null) {
+      return null;
+    }
+    Iterator<String> iterator = ispauri.keySet().iterator();
+    while (iterator.hasNext()) {
+      String next = iterator.next();
+      if (Pattern.compile(next).matcher(url).find()) {
+        return ispauri.get(next);
+      }
+    }
+    return null;
+  }
+
+  public static void addPermission(RouterPermission routerPermission) {
+    if (routerPermission != null) {
+      String url = routerPermission.getUrl();
+      Map<String, RouterPermission> stringRouterPermissionMap = routerPermission(routerPermission.getReqMethodName());
+      if (stringRouterPermissionMap != null) {
+        if (stringRouterPermissionMap.containsKey(url)) {
+          log.warn("url< {} >权限映射已经存在，可能会影响程序使用", url);
+        }
+        stringRouterPermissionMap.put(url, routerPermission);
+      }
+    }
+  }
+
+
+  public static RouterInfo getRouterInfo(String url, HttpMethod requestType, WebContext webContext) {
+    Map<String, String> requestParams = webContext.getRequest().getRequestParams();
+    Map<String, RouterInfo> router = router(requestType);
+    if (router == null) {
+      return null;
+    }
+    RouterInfo routerInfo = router.get(url);
+    //默认检查一次正常URl
+    if (routerInfo != null) {
+      return routerInfo;
+    } else {
+      //二次检查匹配规则的URL;
+      PatternUri pattern = isPattern(url, requestType);
+      if (pattern != null) {
+        Matcher matcher = Pattern.compile(pattern.getPatternUrl()).matcher(url);
         if (matcher.find()) {
-            String group = matcher.group(1);
-            if (group!=null){
-                return group.substring(1,group.length()-1);
-            }
+          try {
+            requestParams.put(pattern.getKey(), URLDecoder.decode(matcher.group(1), "UTF-8"));
+          } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+          }
         }
-        return null;
+        return router.get(pattern.getOrgUrl());
+      }
     }
+    return null;
+  }
 
-    private static PatternUri isPattern(String url, HttpMethod method) {
 
-        if (method == GET) {
-            Iterator<String> iterator = ISPAURI_GET.keySet().iterator();
-            while (iterator.hasNext()) {
-                String next = iterator.next();
-                if (Pattern.compile(next).matcher(url).find()) {
-                    return ISPAURI_GET.get(next);
-                }
-            }
-        } else {
-            Iterator<String> iterator = ISPAURI_POST.keySet().iterator();
-            while (iterator.hasNext()) {
-                String next = iterator.next();
-                if (Pattern.compile(next).matcher(url).find()) {
-                    return ISPAURI_POST.get(next);
-                }
-            }
-        }
-        return null;
+  public static RouterPermission getRouterPermission(String url, HttpMethod requestType) {
+    Map<String, RouterPermission> stringRouterPermissionMap = routerPermission(requestType);
+    if (stringRouterPermissionMap == null) {
+      return null;
     }
-
-    public static void addPermission(RouterPermission routerPermission) {
-        if (routerPermission != null) {
-            String url = routerPermission.getUrl();
-            if (GET == routerPermission.getReqMethodName()) {
-                if (routerPermissionGets.containsKey(url)) {
-                    log.warn("url< {} >权限映射已经存在，可能会影响程序使用", url);
-                }
-                routerPermissionGets.put(url, routerPermission);
-            } else {
-                if (routerPermissionPosts.containsKey(url)) {
-                    log.warn("url< {} >权限映射已经存在，可能会影响程序使用", url);
-                }
-                routerPermissionPosts.put(url, routerPermission);
-            }
-        }
+    RouterPermission routerPermission = stringRouterPermissionMap.get(url);
+    if (routerPermission != null) {
+      return routerPermission;
+    } else {
+      PatternUri pattern = isPattern(url, requestType);
+      if (pattern != null) {
+        return stringRouterPermissionMap.get(pattern.getOrgUrl());
+      }
     }
+    return null;
+  }
 
-
-    public static RouterInfo getRouterInfo(String url, HttpMethod requestType, WebContext webContext) {
-        Map<String, String> requestParams = webContext.getRequest().getRequestParams();
-        if (GET == requestType) {
-            RouterInfo routerInfo = routerGets.get(url);
-            //默认检查一次正常URl
-            if (routerInfo != null) {
-                return routerInfo;
-            } else {
-                //二次检查匹配规则的URL;
-                PatternUri pattern = isPattern(url, requestType);
-                if (pattern != null) {
-                    Matcher matcher = Pattern.compile(pattern.getPatternUrl()).matcher(url);
-                    if (matcher.find()){
-                        try {
-                            requestParams.put(pattern.getKey(),URLDecoder.decode(matcher.group(1), "UTF-8"));
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    return routerGets.get(pattern.getOrgUrl());
-                }
-            }
-        } else {
-            RouterInfo routerInfo = routerPosts.get(url);
-            //默认检查一次正常URl
-            if (routerInfo != null) {
-                return routerInfo;
-            } else {
-                //二次检查匹配规则的URL;
-                PatternUri pattern = isPattern(url, requestType);
-                if (pattern != null) {
-                    Matcher matcher = Pattern.compile(pattern.getPatternUrl()).matcher(url);
-                    if (matcher.find()){
-                        try {
-                            requestParams.put(pattern.getKey(),URLDecoder.decode(matcher.group(1), "UTF-8"));
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    return routerPosts.get(pattern.getOrgUrl());
-                }
-            }
-        }
-        return null;
+  public static List<RouterPermission> getRouterPermissions() {
+    List<RouterPermission> permissions = new ArrayList<>();
+    String[] requestMethodAll = RequestMethod.getRequestMethodAll();
+    for (String s : requestMethodAll) {
+      HttpMethod httpMethod = HttpMethod.valueOf(s);
+      Map<String, RouterPermission> stringRouterPermissionMap = routerPermission(httpMethod);
+      if (stringRouterPermissionMap != null) {
+        stringRouterPermissionMap.forEach((a, b) -> permissions.add(b));
+      }
     }
-
-
-    public static RouterPermission getRouterPermission(String url, HttpMethod requestType) {
-        if (GET == requestType) {
-            RouterPermission routerPermission = routerPermissionGets.get(url);
-            if(routerPermission!=null){
-                return routerPermission;
-            }else {
-                PatternUri pattern = isPattern(url, requestType);
-                if (pattern!=null){
-                    return routerPermissionGets.get(pattern.getOrgUrl());
-                }
-            }
-        } else {
-            RouterPermission routerPermission = routerPermissionPosts.get(url);
-            if(routerPermission!=null){
-                return routerPermission;
-            }else {
-                PatternUri pattern = isPattern(url, requestType);
-                if (pattern!=null){
-                    return routerPermissionPosts.get(pattern.getOrgUrl());
-                }
-            }
-        }
-        return null;
-    }
-
-    public static List<RouterPermission> getRouterPermissions() {
-        List<RouterPermission> permissions = new ArrayList<>();
-        routerPermissionGets.forEach((a, b) -> permissions.add(b));
-        routerPermissionPosts.forEach((a, b) -> permissions.add(b));
-        return permissions;
-    }
+    return permissions;
+  }
 }

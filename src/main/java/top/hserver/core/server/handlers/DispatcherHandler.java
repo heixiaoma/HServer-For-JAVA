@@ -61,36 +61,33 @@ public class DispatcherHandler {
                 requestParams.put(next.getKey(), next.getValue().get(0));
             }
             request.setRequestParams(requestParams);
-        }
-
-        //如果POST请求
-        if (req.method() == POST) {
-            //檢查是否有文件上传
-            try {
-                HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(HTTP_DATA_FACTORY, req);
-                boolean isMultipart = decoder.isMultipart();
-                List<ByteBuf> byteBuffs = new ArrayList<>(webContext.getContents().size());
-                for (HttpContent content : webContext.getContents()) {
-                    if (!isMultipart) {
-                        byteBuffs.add(content.content().copy());
-                    }
-                    decoder.offer(content);
-                    request.readHttpDataChunkByChunk(decoder);
-                    content.release();
-                }
-                if (!byteBuffs.isEmpty()) {
-                    request.setBody(Unpooled.copiedBuffer(byteBuffs.toArray(new ByteBuf[0])));
-                }
-            } catch (Exception e) {
-                GlobalException bean2 = IocUtil.getBean(GlobalException.class);
-                if (bean2 != null) {
-                    bean2.handler(e, webContext.getWebkit());
-                } else {
-                    String message = ExceptionUtil.getMessage(e);
-                    log.error(message);
-                    throw new BusinessException(503, "生成解码器失败" + message);
-                }
+        }else {
+          //檢查是否有文件上传
+          try {
+            HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(HTTP_DATA_FACTORY, req);
+            boolean isMultipart = decoder.isMultipart();
+            List<ByteBuf> byteBuffs = new ArrayList<>(webContext.getContents().size());
+            for (HttpContent content : webContext.getContents()) {
+              if (!isMultipart) {
+                byteBuffs.add(content.content().copy());
+              }
+              decoder.offer(content);
+              request.readHttpDataChunkByChunk(decoder);
+              content.release();
             }
+            if (!byteBuffs.isEmpty()) {
+              request.setBody(Unpooled.copiedBuffer(byteBuffs.toArray(new ByteBuf[0])));
+            }
+          } catch (Exception e) {
+            GlobalException bean2 = IocUtil.getBean(GlobalException.class);
+            if (bean2 != null) {
+              bean2.handler(e, webContext.getWebkit());
+            } else {
+              String message = ExceptionUtil.getMessage(e);
+              log.error(message);
+              throw new BusinessException(503, "生成解码器失败" + message);
+            }
+          }
         }
         //获取URi，設置真實的URI
         int i = req.uri().indexOf("?");
@@ -101,7 +98,6 @@ public class DispatcherHandler {
             request.setUri(req.uri());
         }
         request.setRequestType(req.method());
-
         //处理Headers
         Map<String, String> headers = new ConcurrentHashMap<>();
         req.headers().names().forEach(a -> headers.put(a, req.headers().get(a)));

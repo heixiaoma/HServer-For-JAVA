@@ -74,7 +74,7 @@ MYSQL操作源码案例地址(BeetlSQL) [点我](https://gitee.com/heixiaomas_ad
         class IndexController{}
         
            
-    @GET,@POST
+    @GET,@POST,@RequestMapping
     方法注解，在@Controller注解类类中使用，标注一个方法为GET或者POST方法，例如
         @GET("/index")
         public void index(){}  
@@ -97,8 +97,26 @@ MYSQL操作源码案例地址(BeetlSQL) [点我](https://gitee.com/heixiaomas_ad
         @POST("/a/{url}/bb")
         public String ab(String url){
             return "匹配到的URL:"+url;
-        }  
+        } 
+         
+        //2.9.4+以上支持
+        @RequestMapping(value = "/PUT", method = RequestMethod.PUT)
+        public JsonResult PUT() {
+          return JsonResult.ok();
+        }
+        //2.9.4+以上支持
+        @RequestMapping(value = "/get_post", method = {RequestMethod.POST,RequestMethod.GET})
+        public JsonResult get_post() {
+          return JsonResult.ok();
+        }
         
+        //2.9.4+以上支持
+        //全类型
+        @RequestMapping(value = "/all")
+        public JsonResult all() {
+          return JsonResult.ok();
+        }
+  
         
     @Filter
     拦截器注解，标注一个类为拦截器，和JavaEE的Filter类似
