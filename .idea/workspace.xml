@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="SPLITTER_PROPORTION" value="0.22064202" />
+    <option name="GROUP_BY_SEVERITY" value="true" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="ec71a202-50a0-475a-9494-ae1c3a5bc82e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/top/test/service/HelloService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/top/test/service/XXXXImp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/ref/InitBean.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/ref/InitBean.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/util/ClassLoadUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/hserver/core/ioc/util/ClassLoadUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/top/test/action/Hello.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/top/test/action/Hello.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -71,28 +69,28 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15271266" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\Java\HServer\doc" />
-      <recent name="D:\Java\HServer\src\main\resources\template" />
-      <recent name="D:\Java\HServer\src\main\resources\static\images" />
-      <recent name="D:\Java\HServer\src\main\resources\static\file" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="top.test" />
-      <recent name="top.hserver.cloud.util" />
-      <recent name="top.hserver.core.ioc.annotation" />
-      <recent name="top.hserver.cloud.client" />
-      <recent name="com.hserver.core.ioc.annotation" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Java\HServer\src\main\java\top\hserver\cloud\common" />
       <recent name="D:\Java\HServer\src\main\java\top\hserver\cloud" />
       <recent name="D:\Java\HServer\src\main\java\top\hserver\cloud\client" />
       <recent name="D:\Java\HServer\src\main\java\top\hserver\cloud\server" />
       <recent name="F:\JAVA\HServer\src\main\resources\static" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="top.hserver.core.ioc.annotation" />
+      <recent name="top.hserver.core.server.exception" />
+      <recent name="top.test" />
+      <recent name="top.hserver.cloud.util" />
+      <recent name="top.hserver.cloud.client" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Java\HServer\doc" />
+      <recent name="D:\Java\HServer\src\main\resources\template" />
+      <recent name="D:\Java\HServer\src\main\resources\static\images" />
+      <recent name="D:\Java\HServer\src\main\resources\static\file" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -284,189 +282,37 @@
       <workItem from="1577591493016" duration="8777000" />
       <workItem from="1577710766163" duration="15000" />
       <workItem from="1578054535869" duration="51000" />
-      <workItem from="1578055295880" duration="3261000" />
-    </task>
-    <task id="LOCAL-00006" summary="装配前先验证类型，避免装配错误">
-      <created>1571816104250</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1571816104251</updated>
-    </task>
-    <task id="LOCAL-00007" summary="装配前先验证类型，避免装配错误">
-      <created>1571816137891</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1571816137891</updated>
-    </task>
-    <task id="LOCAL-00008" summary="更新日志">
-      <created>1571816193983</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1571816193983</updated>
-    </task>
-    <task id="LOCAL-00009" summary="静态文件的处理">
-      <created>1571904608427</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1571904608427</updated>
-    </task>
-    <task id="LOCAL-00010" summary="静态文件的处理">
-      <created>1572939637957</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1572939637958</updated>
-    </task>
-    <task id="LOCAL-00011" summary="修复文件异常">
-      <created>1573192516666</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1573192516666</updated>
-    </task>
-    <task id="LOCAL-00012" summary="说明">
-      <created>1573192645820</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1573192645820</updated>
-    </task>
-    <task id="LOCAL-00013" summary="get的uri处理和环绕注入测试">
-      <created>1573194808646</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1573194808646</updated>
-    </task>
-    <task id="LOCAL-00014" summary="html处理">
-      <created>1573566367090</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1573566367090</updated>
-    </task>
-    <task id="LOCAL-00015" summary="添加文件下载功能">
-      <created>1573659831061</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1573659831061</updated>
-    </task>
-    <task id="LOCAL-00016" summary="AOP初步构想">
-      <created>1573750213493</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1573750213493</updated>
-    </task>
-    <task id="LOCAL-00017" summary="初步完成Filter功能">
-      <created>1573892375302</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1573892375302</updated>
-    </task>
-    <task id="LOCAL-00018" summary="初步完成Filter功能">
-      <created>1573892469510</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1573892469510</updated>
-    </task>
-    <task id="LOCAL-00019" summary="初步完成Filter功能">
-      <created>1573926349707</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1573926349707</updated>
-    </task>
-    <task id="LOCAL-00020" summary="完成free marker集成">
-      <created>1574080986357</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1574080986358</updated>
-    </task>
-    <task id="LOCAL-00021" summary="完成free marker集成">
-      <created>1574081007071</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1574081007071</updated>
-    </task>
-    <task id="LOCAL-00022" summary="文档说明">
-      <created>1574081559681</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1574081559681</updated>
-    </task>
-    <task id="LOCAL-00023" summary="文档说明">
-      <created>1574082467884</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1574082467884</updated>
-    </task>
-    <task id="LOCAL-00024" summary="文档说明">
-      <created>1574082611849</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1574082611849</updated>
-    </task>
-    <task id="LOCAL-00025" summary="文档说明">
-      <created>1574082716497</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1574082716497</updated>
-    </task>
-    <task id="LOCAL-00026" summary="文档说明">
-      <created>1574082941909</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1574082941909</updated>
-    </task>
-    <task id="LOCAL-00027" summary="文档说明">
-      <created>1574083368779</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1574083368779</updated>
-    </task>
-    <task id="LOCAL-00028" summary="文档说明">
-      <created>1574083503930</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1574083503930</updated>
-    </task>
-    <task id="LOCAL-00029" summary="文档说明">
-      <created>1574083759873</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1574083759873</updated>
-    </task>
-    <task id="LOCAL-00030" summary="文档说明">
-      <created>1574084374168</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1574084374168</updated>
-    </task>
-    <task id="LOCAL-00031" summary="文档说明">
-      <created>1574084519478</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1574084519478</updated>
+      <workItem from="1578055295880" duration="3950000" />
+      <workItem from="1578059634340" duration="4804000" />
+      <workItem from="1578105911440" duration="1587000" />
+      <workItem from="1578312753319" duration="43000" />
+      <workItem from="1578314464465" duration="4000" />
+      <workItem from="1578484618044" duration="1770000" />
+      <workItem from="1578487209216" duration="58000" />
+      <workItem from="1578487278401" duration="4748000" />
+      <workItem from="1578570282364" duration="72000" />
+      <workItem from="1578571723603" duration="3359000" />
+      <workItem from="1578576286023" duration="368000" />
+      <workItem from="1578581644910" duration="38000" />
+      <workItem from="1578659649300" duration="2860000" />
+      <workItem from="1578714348205" duration="88000" />
+      <workItem from="1578715180957" duration="16000" />
+      <workItem from="1578728461044" duration="64000" />
+      <workItem from="1578925808653" duration="1326000" />
+      <workItem from="1582385558944" duration="34000" />
+      <workItem from="1582538597289" duration="989000" />
+      <workItem from="1582546662405" duration="2372000" />
+      <workItem from="1582556332184" duration="3877000" />
+      <workItem from="1582593873912" duration="6000" />
+      <workItem from="1582624854693" duration="2477000" />
+      <workItem from="1582689767165" duration="7500000" />
+      <workItem from="1582769018374" duration="4000" />
+      <workItem from="1582773165340" duration="6717000" />
+      <workItem from="1582787887071" duration="303000" />
+      <workItem from="1582794994925" duration="1038000" />
+      <workItem from="1582798298529" duration="48000" />
+      <workItem from="1582798359305" duration="167000" />
+      <workItem from="1582809394378" duration="5000" />
     </task>
     <task id="LOCAL-00032" summary="添加了动态任务功能">
       <created>1574954913515</created>
@@ -629,7 +475,189 @@
       <option name="project" value="LOCAL" />
       <updated>1577600274909</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="修复Bug子类装配问题">
+      <created>1578058712479</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1578058712480</updated>
+    </task>
+    <task id="LOCAL-00056" summary="修复Bug子类装配问题">
+      <created>1578059240709</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1578059240709</updated>
+    </task>
+    <task id="LOCAL-00057" summary="修复Bug子类装配问题">
+      <created>1578059283821</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1578059283821</updated>
+    </task>
+    <task id="LOCAL-00058" summary="Rpc修复Bug子类装配问题">
+      <created>1578062453194</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1578062453194</updated>
+    </task>
+    <task id="LOCAL-00059" summary="Rpc修复Bug子类装配问题">
+      <created>1578063472026</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1578063472026</updated>
+    </task>
+    <task id="LOCAL-00060" summary="Rpc修复Bug子类装配问题">
+      <created>1578063521407</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1578063521407</updated>
+    </task>
+    <task id="LOCAL-00061" summary="Rpc修复Bug子类装配问题">
+      <created>1578107725746</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1578107725747</updated>
+    </task>
+    <task id="LOCAL-00062" summary="添加Filter可以注入Bean对象或者Rpc对象">
+      <created>1578490382143</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1578490382144</updated>
+    </task>
+    <task id="LOCAL-00063" summary="添加Filter可以注入Bean对象或者Rpc对象">
+      <created>1578490496975</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1578490496975</updated>
+    </task>
+    <task id="LOCAL-00064" summary="未来2.7的权限认证相关操作说明">
+      <created>1578572939741</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1578572939741</updated>
+    </task>
+    <task id="LOCAL-00065" summary="未来2.7的权限认证相关操作说明">
+      <created>1578574581135</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1578574581135</updated>
+    </task>
+    <task id="LOCAL-00066" summary="未来2.7的权限认证相关操作说明">
+      <created>1578576303759</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1578576303760</updated>
+    </task>
+    <task id="LOCAL-00067" summary="2.7发布">
+      <created>1578659707247</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1578659707247</updated>
+    </task>
+    <task id="LOCAL-00068" summary="2.7发布">
+      <created>1578714423413</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1578714423413</updated>
+    </task>
+    <task id="LOCAL-00069" summary="优化文件读写">
+      <created>1578926878087</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1578926878088</updated>
+    </task>
+    <task id="LOCAL-00070" summary="修复Bug权限验证过程中抛出的异常">
+      <created>1582539565778</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1582539565778</updated>
+    </task>
+    <task id="LOCAL-00071" summary="对框架进行完善2.9.2版本">
+      <created>1582546848432</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1582546848433</updated>
+    </task>
+    <task id="LOCAL-00072" summary="对框架进行完善2.9.2版本">
+      <created>1582552226982</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1582552226982</updated>
+    </task>
+    <task id="LOCAL-00073" summary="2.9.2发布，2020-2-25生效">
+      <created>1582557758055</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1582557758055</updated>
+    </task>
+    <task id="LOCAL-00074" summary="2.9.2发布，2020-2-25生效">
+      <created>1582624875113</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1582624875114</updated>
+    </task>
+    <task id="LOCAL-00075" summary="优化代码，让代码更规范，更稳定">
+      <created>1582699536361</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1582699536361</updated>
+    </task>
+    <task id="LOCAL-00076" summary="优化代码，让代码更规范，更稳定">
+      <created>1582700217967</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1582700217967</updated>
+    </task>
+    <task id="LOCAL-00077" summary="优化代码，让代码更规范，更稳定">
+      <created>1582773676213</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1582773676213</updated>
+    </task>
+    <task id="LOCAL-00078" summary="2.9.3版本对BeetlSql做了支持">
+      <created>1582787760669</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1582787760669</updated>
+    </task>
+    <task id="LOCAL-00079" summary="2.9.3版本对BeetlSql做了支持">
+      <created>1582787802878</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1582787802878</updated>
+    </task>
+    <task id="LOCAL-00080" summary="2.9.3版本发布 2020-2-27晚上生效">
+      <created>1582795024208</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1582795024208</updated>
+    </task>
+    <option name="localTasksCounter" value="81" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -682,16 +710,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="s" />
-    <MESSAGE value="分发处理" />
-    <MESSAGE value="装配前先验证类型，避免装配错误" />
-    <MESSAGE value="更新日志" />
-    <MESSAGE value="静态文件的处理" />
-    <MESSAGE value="修复文件异常" />
-    <MESSAGE value="说明" />
-    <MESSAGE value="get的uri处理和环绕注入测试" />
-    <MESSAGE value="html处理" />
-    <MESSAGE value="添加文件下载功能" />
     <MESSAGE value="AOP初步构想" />
     <MESSAGE value="初步完成Filter功能" />
     <MESSAGE value="完成free marker集成" />
@@ -705,7 +723,19 @@
     <MESSAGE value="0.0" />
     <MESSAGE value="修复bug,调整RPC框架" />
     <MESSAGE value="轮询版本的Rpc完成" />
-    <option name="LAST_COMMIT_MESSAGE" value="轮询版本的Rpc完成" />
+    <MESSAGE value="修复Bug子类装配问题" />
+    <MESSAGE value="Rpc修复Bug子类装配问题" />
+    <MESSAGE value="添加Filter可以注入Bean对象或者Rpc对象" />
+    <MESSAGE value="未来2.7的权限认证相关操作说明" />
+    <MESSAGE value="2.7发布" />
+    <MESSAGE value="优化文件读写" />
+    <MESSAGE value="修复Bug权限验证过程中抛出的异常" />
+    <MESSAGE value="对框架进行完善2.9.2版本" />
+    <MESSAGE value="2.9.2发布，2020-2-25生效" />
+    <MESSAGE value="优化代码，让代码更规范，更稳定" />
+    <MESSAGE value="2.9.3版本对BeetlSql做了支持" />
+    <MESSAGE value="2.9.3版本发布 2020-2-27晚上生效" />
+    <option name="LAST_COMMIT_MESSAGE" value="2.9.3版本发布 2020-2-27晚上生效" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -716,9 +746,9 @@
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/top/hserver/cloud/client/handler/ClientHandler.java</url>
-          <line>22</line>
-          <option name="timeStamp" value="23" />
+          <url>file://$PROJECT_DIR$/src/main/java/top/hserver/core/server/handlers/DispatcherHandler.java</url>
+          <line>187</line>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
