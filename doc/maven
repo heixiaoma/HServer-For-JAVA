@@ -13,3 +13,4 @@ gpg –-keyserver hkp://keyserver.ubuntu.com:11371 -–recv-keys C6EED57A
 mvn clean deploy -P release
 https://oss.sonatype.org
 git push -u origin HServer-2.9.4
+
