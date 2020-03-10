@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.client.handler.FileServerInitializer;
 
 @Slf4j
-public class ChatClient {
+public class ChatClient extends Thread{
 
     private final String host;
     private final int port;
@@ -23,7 +23,8 @@ public class ChatClient {
         this.port = port;
     }
 
-    public void start() throws Exception {
+    public void run()  {
+      try {
         final EventLoopGroup group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
         b.group(group).channel(NioSocketChannel.class);
@@ -33,17 +34,20 @@ public class ChatClient {
 
         future.addListener(new ChannelFutureListener() {
 
-            @Override
-            public void operationComplete(ChannelFuture arg0) throws Exception {
-                if (future.isSuccess()) {
-                    log.debug("连接服务器成功");
-                } else {
-                    log.debug("连接服务器失败");
-                    future.cause().printStackTrace();
-                    group.shutdownGracefully(); //关闭线程组
-                }
+          @Override
+          public void operationComplete(ChannelFuture arg0) throws Exception {
+            if (future.isSuccess()) {
+              log.debug("连接服务器成功");
+            } else {
+              log.debug("连接服务器失败");
+              future.cause().printStackTrace();
+              group.shutdownGracefully(); //关闭线程组
             }
+          }
         });
         ChatClient.channel = future.channel();
+      }catch (Exception e){
+        log.error(e.getMessage());
+      }
     }
 }

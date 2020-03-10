@@ -33,7 +33,7 @@ public class SimpleLoggerConfiguration {
     void init() {
         loadProperties();
 
-        String defaultLogLevelString = getStringProp(Constant.ROOT_LEVEL_KEY, null);
+        String defaultLogLevelString = getStringProp(Constant.ROOT_LEVEL_KEY, "debug");
         if (defaultLogLevelString != null) {
             defaultLogLevel = stringToLevel(defaultLogLevelString);
         }

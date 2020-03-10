@@ -1,5 +1,5 @@
 log.name=app
-log.rootLevel=debug
+log.rootLevel=info
 log.dir=./log
 log.console=true
 #taskPool定时任务线程池子配置，默认大小是cpu核心数+1

@@ -30,8 +30,8 @@ public class HServer {
     }
 
     public void run() throws Exception {
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        EventLoopGroup bossGroup = null;
+        EventLoopGroup workerGroup = null;
 
         int acceptThreadCount = 1;
         int ioThreadCount = 0;
@@ -40,7 +40,7 @@ public class HServer {
             ServerBootstrap bootstrap = new ServerBootstrap();
             if (EpollKit.epollIsAvailable()) {
                 bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
-                NettyServerGroup nettyServerGroup = EpollKit.group(acceptThreadCount, ioThreadCount);
+                NettyServerGroup nettyServerGroup = EpollKit.group(acceptThreadCount, ioThreadCount,"hserver");
                 bossGroup = nettyServerGroup.getBoosGroup();
                 workerGroup = nettyServerGroup.getWorkerGroup();
                 bootstrap.group(bossGroup, workerGroup).channel(nettyServerGroup.getSocketChannel());

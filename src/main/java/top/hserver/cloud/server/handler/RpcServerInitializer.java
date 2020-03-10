@@ -7,7 +7,7 @@ import top.hserver.cloud.common.Msg;
 import top.hserver.cloud.common.codec.RpcDecoder;
 import top.hserver.cloud.common.codec.RpcEncoder;
 
-public class FileServerInitializer extends ChannelInitializer<Channel> {
+public class RpcServerInitializer extends ChannelInitializer<Channel> {
 
     @Override
     protected void initChannel(Channel ch){
