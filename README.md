@@ -36,6 +36,8 @@ MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/h
 
 MYSQL操作源码案例地址(BeetlSQL) [点我](https://gitee.com/heixiaomas_admin/hserver-for-java-beetlsql)
 
+RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hserver-for-java-rpc)
+
 
 
 
