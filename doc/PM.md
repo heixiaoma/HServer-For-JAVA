@@ -75,3 +75,13 @@
         10000个连接，收发消息正常，理论应该可以更难高，压测时间太久了
         测试环境，腾讯云服务器压测阿里云服务器，配置都为1核2G.
     */
+    
+    
+### HServer2.9.4版本，环境Linux（2核4G）
+    #服务器同时器了其他程序，一个java项目，activeMq，redis，mysql（基本处于未访问状态，但是对测试肯定还是有一些的影响）
+    RPC远程调用测试：Requests per second:    16709.09 [#/sec] (mean)
+    Json测试：Requests per second:    65711.15 [#/sec] (mean)
+    Json+AOP测试：Requests per second:    61054.15 [#/sec] (mean)
+    静态文件测试：Requests per second:    35843.15 [#/sec] (mean)
+    模板文件测试：Requests per second:    51492.05 [#/sec] (mean)
+ 
