@@ -150,11 +150,13 @@
                     <div class="api-sub-content">
                       <div class="simpleline"><strong>接口地址：</strong><span
                         class="url"> ${api.url}</span></div>
-                      <div class="simpleline"><strong>请求方式：</strong><span class="url">http
+                      <div class="simpleline"><strong>请求方式：</strong><span class="url">
                         <#list api.requestMethod as req>
                           ${req}
                         </#list>
                         </span></div>
+                      <div class="simpleline"><strong>描述：</strong><span
+                                class="url"> ${api.note}</span></div>
                     </div>
                     <div class="simpleTable">
                       <table class="table table-bordered">
