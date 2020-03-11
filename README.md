@@ -473,7 +473,14 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
            String sign1 = webkit.httpRequest.getHeader("sign");
            System.out.println(sign.value());
         }
-    }       
-#### 13.技巧篇
+    }
+    
+#### 13.RPC调用请看gitee的WIKi
+
+#### 14.HServer2.9.4+后添加APIDOC生成功能
+    详情请看WIKi
+![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/apidoc.jpg)
+           
+#### 15.技巧篇
     1. Linux 内核版本大于 2.5.44，(目前云服务器都有了，没有的话自己升级内核)的Linux默认使用epoll
     2.待更新

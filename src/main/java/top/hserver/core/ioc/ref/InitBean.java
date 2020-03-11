@@ -171,17 +171,19 @@ public class InitBean {
       //检查注解里面是否有值
       Method[] methods = aClass.getDeclaredMethods();
       for (Method method : methods) {
+        Controller controller = (Controller) aClass.getAnnotation(Controller.class);
+        String controllerPath = controller.value().trim();
         /**
          * 这里对方法控制器的注解的方法参数，进行初始化
          */
         ParameterUtil.addParam(aClass, method);
         //细化后的注解
-        Class[] classes=new Class[]{GET.class,POST.class,HEAD.class,POST.class,PUT.class,PATCH.class,DELETE.class,OPTIONS.class,CONNECT.class,TRACE.class};
+        Class[] classes = new Class[]{GET.class, POST.class, HEAD.class, POST.class, PUT.class, PATCH.class, DELETE.class, OPTIONS.class, CONNECT.class, TRACE.class};
         for (Class aClass1 : classes) {
           Annotation annotation = method.getAnnotation(aClass1);
-          if (annotation!=null){
+          if (annotation != null) {
             Method value = aClass1.getMethod("value");
-            String path = value.invoke(annotation).toString();
+            String path = controllerPath + value.invoke(annotation).toString();
             RouterInfo routerInfo = new RouterInfo();
             routerInfo.setMethod(method);
             routerInfo.setUrl(path);
@@ -201,6 +203,7 @@ public class InitBean {
               routerPermission.setRequiresRoles(requiresRoles);
               routerPermission.setRequiresPermissions(requiresPermissions);
               routerPermission.setControllerPackageName(aClass.getName());
+              routerPermission.setControllerName(controller.name().trim());
               RouterManager.addPermission(routerPermission);
             }
           }
@@ -220,9 +223,10 @@ public class InitBean {
             requestMethod = rm;
           }
           for (String s : requestMethod) {
+            String path=controllerPath+requestMapping.value();
             RouterInfo routerInfo = new RouterInfo();
             routerInfo.setMethod(method);
-            routerInfo.setUrl(requestMapping.value());
+            routerInfo.setUrl(path);
             routerInfo.setAClass(aClass);
             routerInfo.setReqMethodName(HttpMethod.valueOf(s));
             RouterManager.addRouter(routerInfo);
@@ -233,16 +237,16 @@ public class InitBean {
             //有一个不为空都存一次
             if (sign != null || requiresRoles != null || requiresPermissions != null) {
               RouterPermission routerPermission = new RouterPermission();
-              routerPermission.setUrl(requestMapping.value());
+              routerPermission.setUrl(path);
               routerPermission.setReqMethodName(HttpMethod.valueOf(s));
               routerPermission.setSign(sign);
               routerPermission.setRequiresRoles(requiresRoles);
               routerPermission.setRequiresPermissions(requiresPermissions);
               routerPermission.setControllerPackageName(aClass.getName());
+              routerPermission.setControllerName(controller.name().trim());
               RouterManager.addPermission(routerPermission);
             }
           }
-
         }
       }
       IocUtil.addBean(aClass.getName(), aClass.newInstance());

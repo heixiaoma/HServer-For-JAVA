@@ -15,7 +15,6 @@ public class HServerApplication {
             log.info("HServer 启动失败");
             return;
         }
-
         log.info("初始化配置文件：{}", classz.getName());
         new PropertiesInit().init();
         log.info("初始化配置完成：{}", classz.getName());

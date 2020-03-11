@@ -14,5 +14,6 @@ public class RouterPermission {
     private Sign sign;
     private HttpMethod reqMethodName;
     private String controllerPackageName;
+    private String controllerName;
 
 }
