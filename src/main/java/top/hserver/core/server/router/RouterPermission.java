@@ -2,7 +2,6 @@ package top.hserver.core.server.router;
 
 import io.netty.handler.codec.http.HttpMethod;
 import lombok.Data;
-import top.hserver.core.ioc.annotation.Controller;
 import top.hserver.core.ioc.annotation.RequiresPermissions;
 import top.hserver.core.ioc.annotation.RequiresRoles;
 import top.hserver.core.ioc.annotation.Sign;

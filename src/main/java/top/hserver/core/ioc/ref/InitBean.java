@@ -20,6 +20,7 @@ import top.hserver.core.task.TaskManager;
 import io.netty.handler.codec.http.HttpMethod;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -174,57 +175,38 @@ public class InitBean {
          * 这里对方法控制器的注解的方法参数，进行初始化
          */
         ParameterUtil.addParam(aClass, method);
-        GET get = method.getAnnotation(GET.class);
-        POST post = method.getAnnotation(POST.class);
+        //细化后的注解
+        Class[] classes=new Class[]{GET.class,POST.class,HEAD.class,POST.class,PUT.class,PATCH.class,DELETE.class,OPTIONS.class,CONNECT.class,TRACE.class};
+        for (Class aClass1 : classes) {
+          Annotation annotation = method.getAnnotation(aClass1);
+          if (annotation!=null){
+            Method value = aClass1.getMethod("value");
+            String path = value.invoke(annotation).toString();
+            RouterInfo routerInfo = new RouterInfo();
+            routerInfo.setMethod(method);
+            routerInfo.setUrl(path);
+            routerInfo.setAClass(aClass);
+            routerInfo.setReqMethodName(HttpMethod.valueOf(aClass1.getSimpleName()));
+            RouterManager.addRouter(routerInfo);
+            //检查权限
+            Sign sign = method.getAnnotation(Sign.class);
+            RequiresRoles requiresRoles = method.getAnnotation(RequiresRoles.class);
+            RequiresPermissions requiresPermissions = method.getAnnotation(RequiresPermissions.class);
+            //有一个不为空都存一次
+            if (sign != null || requiresRoles != null || requiresPermissions != null) {
+              RouterPermission routerPermission = new RouterPermission();
+              routerPermission.setUrl(path);
+              routerPermission.setReqMethodName(HttpMethod.valueOf(aClass1.getSimpleName()));
+              routerPermission.setSign(sign);
+              routerPermission.setRequiresRoles(requiresRoles);
+              routerPermission.setRequiresPermissions(requiresPermissions);
+              routerPermission.setControllerPackageName(aClass.getName());
+              RouterManager.addPermission(routerPermission);
+            }
+          }
+        }
+        //通用版注解
         RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
-        if (get != null) {
-          RouterInfo routerInfo = new RouterInfo();
-          routerInfo.setMethod(method);
-          routerInfo.setUrl(get.value());
-          routerInfo.setAClass(aClass);
-          routerInfo.setReqMethodName(HttpMethod.GET);
-          RouterManager.addRouter(routerInfo);
-          //检查权限
-          Sign sign = method.getAnnotation(Sign.class);
-          RequiresRoles requiresRoles = method.getAnnotation(RequiresRoles.class);
-          RequiresPermissions requiresPermissions = method.getAnnotation(RequiresPermissions.class);
-          //有一个不为空都存一次
-          if (sign != null || requiresRoles != null || requiresPermissions != null) {
-            RouterPermission routerPermission = new RouterPermission();
-            routerPermission.setUrl(get.value());
-            routerPermission.setReqMethodName(HttpMethod.GET);
-            routerPermission.setSign(sign);
-            routerPermission.setRequiresRoles(requiresRoles);
-            routerPermission.setRequiresPermissions(requiresPermissions);
-            routerPermission.setControllerPackageName(aClass.getName());
-            RouterManager.addPermission(routerPermission);
-          }
-        }
-        if (post != null) {
-          RouterInfo routerInfo = new RouterInfo();
-          routerInfo.setMethod(method);
-          routerInfo.setUrl(post.value());
-          routerInfo.setAClass(aClass);
-          routerInfo.setReqMethodName(HttpMethod.POST);
-          RouterManager.addRouter(routerInfo);
-          //检查权限
-          Sign sign = method.getAnnotation(Sign.class);
-          RequiresRoles requiresRoles = method.getAnnotation(RequiresRoles.class);
-          RequiresPermissions requiresPermissions = method.getAnnotation(RequiresPermissions.class);
-          //有一个不为空都存一次
-          if (sign != null || requiresRoles != null || requiresPermissions != null) {
-            RouterPermission routerPermission = new RouterPermission();
-            routerPermission.setUrl(post.value());
-            routerPermission.setReqMethodName(HttpMethod.POST);
-            routerPermission.setSign(sign);
-            routerPermission.setRequiresRoles(requiresRoles);
-            routerPermission.setRequiresPermissions(requiresPermissions);
-            routerPermission.setControllerPackageName(aClass.getName());
-            RouterManager.addPermission(routerPermission);
-          }
-        }
-
-
         if (requestMapping != null) {
           RequestMethod[] requestMethods = requestMapping.method();
           String[] requestMethod;

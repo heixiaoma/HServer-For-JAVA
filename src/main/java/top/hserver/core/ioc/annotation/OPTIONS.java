@@ -2,13 +2,10 @@ package top.hserver.core.ioc.annotation;
 
 import java.lang.annotation.*;
 
-@Target(ElementType.TYPE)
+
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Controller {
-
-    String value() default "";
-
-    String name() default "";
-
+public @interface OPTIONS {
+    String value();
 }
