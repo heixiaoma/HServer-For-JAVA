@@ -9,7 +9,7 @@ import top.hserver.core.ioc.annotation.apidoc.DataType;
 import top.hserver.core.server.util.JsonResult;
 import top.test.bean.User;
 
-@Controller(value = "/v1/Api2", name = "Api接口3")
+@Controller(value = "/v1/Api3", name = "Api接口3")
 public class ApiDocAction2 {
 
   /**

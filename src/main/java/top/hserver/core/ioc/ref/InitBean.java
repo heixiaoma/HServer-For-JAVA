@@ -178,7 +178,7 @@ public class InitBean {
          */
         ParameterUtil.addParam(aClass, method);
         //细化后的注解
-        Class[] classes = new Class[]{GET.class, POST.class, HEAD.class, POST.class, PUT.class, PATCH.class, DELETE.class, OPTIONS.class, CONNECT.class, TRACE.class};
+        Class[] classes = new Class[]{GET.class, POST.class, HEAD.class, PUT.class, PATCH.class, DELETE.class, OPTIONS.class, CONNECT.class, TRACE.class};
         for (Class aClass1 : classes) {
           Annotation annotation = method.getAnnotation(aClass1);
           if (annotation != null) {
