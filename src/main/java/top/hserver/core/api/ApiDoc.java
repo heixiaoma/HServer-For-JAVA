@@ -9,9 +9,7 @@ import top.hserver.core.ioc.ref.PackageScanner;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Api 数据操作对象
@@ -82,7 +80,7 @@ public class ApiDoc {
 
 
   private ApiData getReqMethods(Method method, String controllerPath) {
-    Class[] classes = new Class[]{GET.class, POST.class, HEAD.class, POST.class, PUT.class, PATCH.class, DELETE.class, OPTIONS.class, CONNECT.class, TRACE.class, RequestMapping.class};
+    Class[] classes = new Class[]{GET.class,HEAD.class, POST.class, PUT.class, PATCH.class, DELETE.class, OPTIONS.class, CONNECT.class, TRACE.class, RequestMapping.class};
     List<String> reqNames = new ArrayList<>();
     ApiData apiData = new ApiData();
     for (Class aClass1 : classes) {
