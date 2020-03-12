@@ -2,6 +2,8 @@ package top.hserver.core.server.context;
 
 import io.netty.buffer.ByteBuf;
 
+import java.io.InputStream;
+
 public class StaticFile {
 
     //文件大小
@@ -11,7 +13,7 @@ public class StaticFile {
     //文件后缀
     private String fileSuffix;
     //文件流
-    private ByteBuf byteBuf;
+    private InputStream inputStream;
 
     public long getSize() {
         return size;
@@ -37,12 +39,12 @@ public class StaticFile {
         this.fileSuffix = type;
     }
 
-    public ByteBuf getByteBuf() {
-        return byteBuf;
-    }
+  public InputStream getInputStream() {
+    return inputStream;
+  }
 
-    public void setByteBuf(ByteBuf byteBuf) {
-        this.byteBuf = byteBuf;
-    }
+  public void setInputStream(InputStream inputStream) {
+    this.inputStream = inputStream;
+  }
 }
 
