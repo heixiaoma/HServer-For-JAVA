@@ -1,4 +1,4 @@
-package top.hserver.core.ioc.util;
+package top.hserver.core.server.util;
 
 
 import lombok.extern.slf4j.Slf4j;

@@ -3,6 +3,7 @@ package top.hserver.core.ioc.ref;
 import top.hserver.cloud.CloudManager;
 import top.hserver.cloud.bean.ClientData;
 import top.hserver.cloud.proxy.CloudProxy;
+import top.hserver.core.eventx.EventDispatcher;
 import top.hserver.core.interfaces.GlobalException;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.interfaces.PermissionAdapter;
@@ -46,6 +47,8 @@ public class InitBean {
       initController(scan);
       initHook(scan);
       initFilter(scan);
+      //初始化异步事件
+      EventDispatcher.init(scan);
     } catch (Exception e) {
       e.printStackTrace();
     }

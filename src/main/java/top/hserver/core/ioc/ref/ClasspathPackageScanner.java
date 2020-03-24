@@ -1,7 +1,8 @@
 package top.hserver.core.ioc.ref;
 
 import top.hserver.core.ioc.annotation.*;
-import top.hserver.core.ioc.util.ClassLoadUtil;
+import top.hserver.core.ioc.annotation.event.EventHandler;
+import top.hserver.core.server.util.ClassLoadUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -38,6 +39,9 @@ public class ClasspathPackageScanner implements PackageScanner {
             }
             if (aClass.getAnnotation(Filter.class) != null) {
                 add(aClass, Filter.class);
+            }
+            if (aClass.getAnnotation(EventHandler.class) != null) {
+                add(aClass, EventHandler.class);
             }
         }
     }
