@@ -496,7 +496,7 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
 
 #### 14.HServer2.9.4+后添加APIDOC生成功能
     详情请看WIKi
-![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/apidoc.jpg)
+![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/apidoc.png)
 
 
 ### 15.HServer2.9.9版本后添EventBus(订阅与发布，mq那种感觉)
