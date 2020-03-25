@@ -9,6 +9,9 @@
         <img src="https://img.shields.io/badge/Build-Java8-red.svg?style=flat" />
     </a>
     <a >
+        <img src="https://img.shields.io/badge/Netty-4.1.42.Final-blue.svg" alt="Downloads">
+    </a>
+    <a >
         <img src="https://img.shields.io/badge/Licence-Apache2.0-green.svg?style=flat" />
     </a>
     
