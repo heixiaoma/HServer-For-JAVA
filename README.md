@@ -497,7 +497,54 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
 #### 14.HServer2.9.4+后添加APIDOC生成功能
     详情请看WIKi
 ![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/apidoc.jpg)
-           
-#### 15.技巧篇
+
+
+### 15.HServer2.9.9版本后添EventBus(订阅与发布，mq那种感觉)
+    //有时候需要这样的一个简单功能，又不想导包，那就用这个盘他吧！
+    //定义消费者
+    @EventHandler("/aa/aa")
+    public class EventTest{
+    
+        @Event("aa")
+        public void aa(Map params) {
+            try {
+                System.out.println(Thread.currentThread().getName());
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    
+        @Event("bb")
+        public void bb(Map params) {
+            try {
+                System.out.println(Thread.currentThread().getName());
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+       //定义生产者
+        @GET("/event")
+        public JsonResult event(){
+            Map params = new HashMap();
+            params.put("a", "aaaaaaaaaa");
+            params.put("b", 1234);
+            params.put("c", 0);
+            params.put("d", true);
+            HServerEvent.sendEvent("/aa/aa/aa", params);
+            return JsonResult.ok();
+        }
+        
+        @GET("/queueSize")
+        public JsonResult getQueueSize(){
+            int size = HServerEvent.queueSize();
+            return JsonResult.ok().put("size",size);
+        }
+    
+    注意：队列不易过大，过大会导致内存急剧上升，当然几十万没得问题，还需要过大的话，请调整jvm启动参数,队列最大值是int的最大值，Integer.MAX_VALUE
+         反正几十万，几万的，没啥问题，放心用       
+#### 16.技巧篇
     1. Linux 内核版本大于 2.5.44，(目前云服务器都有了，没有的话自己升级内核)的Linux默认使用epoll
     2.待更新

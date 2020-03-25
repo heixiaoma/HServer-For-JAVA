@@ -1,6 +1,5 @@
 package top.hserver.core.ioc.annotation.event;
 
-import top.hserver.core.eventx.EventPriority;
 
 import java.lang.annotation.*;
 
@@ -14,6 +13,4 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 public @interface Event {
 	String value() default "";
-
-	int priority() default EventPriority.HIGH;
 }

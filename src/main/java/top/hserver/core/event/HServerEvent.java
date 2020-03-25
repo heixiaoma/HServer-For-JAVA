@@ -1,11 +1,11 @@
-package top.hserver.core.eventx;
+package top.hserver.core.event;
 
 import java.util.Map;
 
 /**
  * 异步事件处理入口类
  */
-public class EventX {
+public class HServerEvent{
 
     /**
      * 发送事件
@@ -15,5 +15,9 @@ public class EventX {
      */
     public static void sendEvent(String eventUri, Map<String, Object> eventParams) {
         EventDispatcher.dispartchEvent(eventUri, eventParams);
+    }
+
+    public static int queueSize(){
+        return EventDispatcher.queue.size();
     }
 }

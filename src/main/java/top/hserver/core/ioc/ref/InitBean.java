@@ -3,7 +3,7 @@ package top.hserver.core.ioc.ref;
 import top.hserver.cloud.CloudManager;
 import top.hserver.cloud.bean.ClientData;
 import top.hserver.cloud.proxy.CloudProxy;
-import top.hserver.core.eventx.EventDispatcher;
+import top.hserver.core.event.EventDispatcher;
 import top.hserver.core.interfaces.GlobalException;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.interfaces.PermissionAdapter;
