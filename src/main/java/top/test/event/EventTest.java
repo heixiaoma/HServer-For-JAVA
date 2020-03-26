@@ -1,30 +1,35 @@
 package top.test.event;
 
+import top.hserver.core.ioc.annotation.Autowired;
 import top.hserver.core.ioc.annotation.event.Event;
 import top.hserver.core.ioc.annotation.event.EventHandler;
+import top.test.service.HelloService;
 
 import java.util.Map;
 
 @EventHandler("/aa/aa")
-public class EventTest{
+public class EventTest {
 
-    @Event("aa")
-    public void aa(Map params) {
-        try {
-            System.out.println(Thread.currentThread().getName());
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+  @Autowired
+  private HelloService helloService;
 
-    @Event("bb")
-    public void bb(Map params) {
-        try {
-            System.out.println(Thread.currentThread().getName());
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+  @Event("aa")
+  public void aa(Map params) {
+    try {
+      System.out.println(Thread.currentThread().getName() + helloService.sayHello());
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
     }
+  }
+
+  @Event("bb")
+  public void bb(Map params) {
+    try {
+      System.out.println(Thread.currentThread().getName());
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
 }

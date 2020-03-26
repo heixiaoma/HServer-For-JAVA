@@ -1,5 +1,7 @@
 package top.hserver.core.event;
 
+import top.hserver.core.ioc.IocUtil;
+
 import java.lang.reflect.Method;
 
 /**
@@ -8,26 +10,20 @@ import java.lang.reflect.Method;
  */
 public class EventHandleMethod {
 
-	private Object handler;
 	private Method method;
 	private String uri;
+  private String className;
 
-	public EventHandleMethod() {
-	}
-
-	public EventHandleMethod(Object handler, Method method, String uri) {
-		this.handler = handler;
+	public EventHandleMethod(String className,Method method, String uri) {
 		this.method = method;
 		this.uri = uri;
+		this.className=className;
 	}
 
 	public Object getHandler() {
-		return handler;
+    return IocUtil.getBean(this.className);
 	}
 
-	public void setHandler(Object handler) {
-		this.handler = handler;
-	}
 
 	public Method getMethod() {
 		return method;
