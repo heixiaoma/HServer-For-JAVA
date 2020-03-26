@@ -43,7 +43,9 @@ public class SyncWrite {
         Msg<InvokeServiceData> msg = new Msg<>();
         msg.setMsg_type(MSG_TYPE.INVOKER);
         msg.setData(invokeServiceData);
+
         channel.writeAndFlush(msg).addListener(new ChannelFutureListener() {
+            @Override
             public void operationComplete(ChannelFuture future) {
                 writeFuture.setWriteResult(future.isSuccess());
                 writeFuture.setCause(future.cause());

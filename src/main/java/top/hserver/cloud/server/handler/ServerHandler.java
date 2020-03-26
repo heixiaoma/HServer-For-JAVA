@@ -17,6 +17,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Msg> {
 
     private final static Map<String, ServiceData> classStringMap = new ConcurrentHashMap<>();
 
+    @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Msg msg) throws Exception {
 
         switch (msg.getMsg_type()) {
@@ -54,6 +55,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Msg> {
 
     public static Object SendInvoker(InvokeServiceData invokeServiceData) throws Exception {
         ServiceData serviceData = classStringMap.get(invokeServiceData.getAClass());
+
         if (serviceData != null) {
             ChannelHandlerContext ctx = serviceData.getCtx();
             if (ctx != null && ctx.channel().isActive()) {

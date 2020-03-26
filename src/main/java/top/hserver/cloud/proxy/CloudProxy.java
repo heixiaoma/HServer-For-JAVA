@@ -15,21 +15,21 @@ import top.hserver.core.ioc.annotation.Resource;
 @Slf4j
 public class CloudProxy {
 
-    private static Map<String,Object> IOC=new HashMap<>();
+    private static Map<String, Object> IOC = new HashMap<>();
 
 
     @SuppressWarnings("deprecation")
-    public static Object getProxy( Class clazz,Resource resource) throws InstantiationException, IllegalAccessException {
+    public static Object getProxy(Class clazz, Resource resource) throws InstantiationException, IllegalAccessException {
 
         String value = resource.value();
-        if (value.trim().length()>0){
+        if (value.trim().length() > 0) {
             Object o = IOC.get(value);
-            if (o!=null){
+            if (o != null) {
                 return o;
             }
         }
         Object o = IOC.get(clazz.getName());
-        if (o!=null){
+        if (o != null) {
             return o;
         }
         // 代理工厂
@@ -41,13 +41,14 @@ public class CloudProxy {
             proxyFactory.setSuperclass(clazz);
         }
         proxyFactory.setHandler(new MethodHandler() {
+            @Override
             public Object invoke(Object self, Method thismethod, Method proceed, Object[] args) throws Throwable {
                 //这里实现远程调用啦！
                 InvokeServiceData invokeServiceData = new InvokeServiceData();
                 invokeServiceData.setMethod(thismethod.getName());
-                if (resource.value().trim().length()>0) {
+                if (resource.value().trim().length() > 0) {
                     invokeServiceData.setAClass(resource.value());
-                }else {
+                } else {
                     invokeServiceData.setAClass(clazz.getName());
                 }
                 invokeServiceData.setObjects(args);
@@ -57,15 +58,15 @@ public class CloudProxy {
         });
 
         Object o1 = proxyFactory.createClass().newInstance();
-        if (value.trim().length()>0){
-            IOC.put(value,o1);
-        }else {
-            IOC.put(clazz.getName(),o1);
+        if (value.trim().length() > 0) {
+            IOC.put(value, o1);
+        } else {
+            IOC.put(clazz.getName(), o1);
         }
         return o1;
     }
 
-    public static void clearCache(){
+    public static void clearCache() {
         IOC.clear();
     }
 }
