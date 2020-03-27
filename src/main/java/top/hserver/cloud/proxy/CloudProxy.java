@@ -9,6 +9,7 @@ import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.bean.InvokeServiceData;
+import top.hserver.cloud.server.handler.RpcServerHandler;
 import top.hserver.cloud.server.handler.ServerHandler;
 import top.hserver.core.ioc.annotation.Resource;
 
@@ -16,7 +17,6 @@ import top.hserver.core.ioc.annotation.Resource;
 public class CloudProxy {
 
     private static Map<String, Object> IOC = new HashMap<>();
-
 
     @SuppressWarnings("deprecation")
     public static Object getProxy(Class clazz, Resource resource) throws InstantiationException, IllegalAccessException {
@@ -53,7 +53,7 @@ public class CloudProxy {
                 }
                 invokeServiceData.setObjects(args);
                 invokeServiceData.setUUID(UUID.randomUUID().toString());
-                return ServerHandler.SendInvoker(invokeServiceData);
+                return RpcServerHandler.SendInvoker(invokeServiceData);
             }
         });
 

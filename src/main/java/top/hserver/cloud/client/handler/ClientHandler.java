@@ -4,69 +4,32 @@ package top.hserver.cloud.client.handler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
-import top.hserver.cloud.CloudManager;
-import top.hserver.cloud.bean.ClientData;
-import top.hserver.cloud.bean.InvokeServiceData;
-import top.hserver.cloud.bean.ResultData;
-import top.hserver.cloud.common.MSG_TYPE;
 import top.hserver.cloud.common.Msg;
-import top.hserver.core.ioc.IocUtil;
-
-import java.lang.reflect.Method;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 
 @Slf4j
 public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
 
-    @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Msg msg) throws Exception {
-        if (msg.getMsg_type() == MSG_TYPE.INVOKER) {
-            InvokeServiceData data = ((Msg<InvokeServiceData>) msg).getData();
-            log.debug("调用信息--->{}", data.toString());
-            //返回调用结果
-            String aClass = data.getAClass();
-            ClientData clientData = CloudManager.get(aClass);
-            Object bean = IocUtil.getBean(aClass);
-            for (Method method : clientData.getMethods()) {
-                if (method.getName().equals(data.getMethod())) {
-                    try {
-                        Object invoke = method.invoke(bean, data.getObjects());
-                        ResultData<String> resultData = new ResultData<>();
-                        resultData.setData(invoke.toString());
-                        resultData.setUUID(data.getUUID());
-                        resultData.setCode(200);
-                        Msg<ResultData> msg2 = new Msg<>();
-                        msg2.setMsg_type(MSG_TYPE.RESULT);
-                        msg2.setData(resultData);
-                        channelHandlerContext.writeAndFlush(msg2);
-                        break;
-                    } catch (Exception e) {
-                        ResultData<String> resultData = new ResultData<>();
-                        resultData.setData(e.getMessage());
-                        resultData.setUUID(data.getUUID());
-                        resultData.setCode(503);
-                        Msg<ResultData> msg2 = new Msg<>();
-                        msg2.setMsg_type(MSG_TYPE.RESULT);
-                        msg2.setData(resultData);
-                        channelHandlerContext.writeAndFlush(msg2);
-                        break;
-                    }
-                }
-            }
-        } else {
-            log.debug(msg.toString());
-        }
+  @Override
+  protected void channelRead0(ChannelHandlerContext channelHandlerContext, Msg msg) throws Exception {
+    CompletableFuture<Msg> futures = CompletableFuture.completedFuture(msg);
+    Executor executor = channelHandlerContext.executor();
+    futures.thenApplyAsync(req -> InvokerHandler.buildContext(channelHandlerContext, msg), executor)
+      .thenApplyAsync(InvokerHandler::Invoker, executor)
+      .exceptionally(InvokerHandler::handleException)
+      .thenAcceptAsync(msgs -> InvokerHandler.writeResponse(channelHandlerContext, futures, msgs), channelHandlerContext.channel().eventLoop());
+  }
 
-    }
+  @Override
+  public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+    ctx.flush();
+  }
 
-    @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        ctx.flush();
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        ctx.close();
-    }
+  @Override
+  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    ctx.close();
+  }
 
 }
