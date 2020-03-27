@@ -10,7 +10,7 @@
         <img src="https://img.shields.io/badge/Build-Java8-red.svg?style=flat" />
     </a>
      <a >
-          <img src="https://img.shields.io/badge/当前最新版-2.9.8-yeoll.svg?style=flat" />
+          <img src="https://img.shields.io/badge/HServer-2.9.8-yeoll.svg?style=flat" />
       </a>
     <a >
         <img src="https://img.shields.io/badge/Netty-4.1.42.Final-blue.svg" alt="Downloads">
