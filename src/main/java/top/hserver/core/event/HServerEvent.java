@@ -1,5 +1,7 @@
 package top.hserver.core.event;
 
+import top.hserver.core.event.queue.SpongeThreadPoolExecutor;
+
 import java.util.Map;
 
 /**
@@ -18,6 +20,6 @@ public class HServerEvent{
     }
 
     public static int queueSize(){
-        return EventDispatcher.queue.size();
+        return SpongeThreadPoolExecutor.tmpMyArrayBlockingQueue.size();
     }
 }
