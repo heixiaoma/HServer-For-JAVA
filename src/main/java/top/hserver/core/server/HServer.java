@@ -18,6 +18,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
+import static top.hserver.core.event.EventDispatcher.startTaskThread;
+
 @Slf4j
 public class HServer {
 
@@ -57,16 +59,23 @@ public class HServer {
             System.out.println();
             System.out.println(getHello(typeName, port));
             System.out.println();
-            //初始化完成可以放开任务了
-            TaskManager.IS_OK = true;
-            InitRunner bean = IocUtil.getBean(InitRunner.class);
-            if (bean!=null)bean.init(args);
+            initOK();
             ch.closeFuture().sync();
 
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
+    }
+
+    private void initOK(){
+        //初始化完成可以放开任务了
+        TaskManager.IS_OK = true;
+        InitRunner bean = IocUtil.getBean(InitRunner.class);
+        if (bean!=null){
+            bean.init(args);
+        }
+        startTaskThread();
     }
 
 

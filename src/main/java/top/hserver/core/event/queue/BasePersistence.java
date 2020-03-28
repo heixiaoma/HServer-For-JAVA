@@ -107,7 +107,6 @@ public abstract class BasePersistence implements PersistenceIntf
                         	{
                         		tmpThisTimeSaveCnt = tmpListSz;
                         	}
-                        	
                         	for (int i = 0; i < tmpThisTimeSaveCnt; i++)
                         	{
                         		tmpBytes = inMemoryDataList.remove(0);
@@ -204,6 +203,7 @@ public abstract class BasePersistence implements PersistenceIntf
 	public abstract void destroy() throws Exception;
 	public abstract void canReleaseRes() throws Exception;
 
+	@Override
 	public boolean isHaveDataInPersistence()
 	{
 		return isHaveDataInPersistence;

@@ -2,10 +2,7 @@ package top.hserver.core.event.queue.util;
 
 
 
-/**
- * @author netcomm
- * @version $Revision: 1.2 $ $Date: 2007/05/14 05:35:18 $
- */
+
 public class Utilities extends Object
 {
 	private static Utilities service = new Utilities();

@@ -6,6 +6,8 @@ import top.hserver.core.properties.PropertiesInit;
 import top.hserver.core.server.HServer;
 import lombok.extern.slf4j.Slf4j;
 
+import static top.hserver.core.event.EventDispatcher.startTaskThread;
+
 
 @Slf4j
 public class HServerApplication {

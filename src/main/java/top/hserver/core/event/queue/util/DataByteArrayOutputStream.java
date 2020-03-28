@@ -22,11 +22,7 @@ import java.io.OutputStream;
 import java.io.UTFDataFormatException;
 
 
-/**
- * Optimized ByteArrayOutputStream
- *
- *
- */
+
 public class DataByteArrayOutputStream extends OutputStream implements DataOutput {
     private static final int DEFAULT_SIZE = 1024 * 4;
     protected byte buf[];

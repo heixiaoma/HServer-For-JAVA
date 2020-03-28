@@ -43,7 +43,7 @@ public class SpongeThreadPoolExecutor {
     TimeUnit timeUnit, HashMap parmHMap)
     throws SpongeException {
     String tmpDirectory = null;
-    int tmpCapacity = 500;
+    int tmpCapacity = 1000;
     int tmpOnePersistLimit = 100;
     long tmpMaxByteArray_Sz = 50 * 1024 * 1024;
     int tmpOneBatchWriteCnt = 20;

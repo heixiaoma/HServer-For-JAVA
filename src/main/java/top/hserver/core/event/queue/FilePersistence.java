@@ -1,12 +1,15 @@
 package top.hserver.core.event.queue;
 
 
+import lombok.extern.slf4j.Slf4j;
 import top.hserver.core.event.queue.util.RAcsFile;
 import top.hserver.core.event.queue.util.Utilities;
 
 import java.io.File;
 import java.io.RandomAccessFile;
 
+
+@Slf4j
 public class FilePersistence extends BasePersistence
 {
 	private String directory;
@@ -102,7 +105,7 @@ public class FilePersistence extends BasePersistence
             file.getFD().sync();
         }
         
-        System.out.println("一次写入耗时 "+(System.currentTimeMillis() - tmpStartTime));
+        log.debug("一次写入耗时 {}",(System.currentTimeMillis() - tmpStartTime));
 	}
 
 	@Override
