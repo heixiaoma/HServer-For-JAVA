@@ -35,8 +35,8 @@ public class HServer {
         EventLoopGroup bossGroup = null;
         EventLoopGroup workerGroup = null;
 
-        int acceptThreadCount = 1;
-        int ioThreadCount = 0;
+        int acceptThreadCount =2;
+        int ioThreadCount = 4;
         String typeName;
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
