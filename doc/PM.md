@@ -86,4 +86,4 @@
     模板文件测试：Requests per second:    51492.05 [#/sec] (mean)
 
 ###  HServer2.9.9版本，环境Linux（8核2G虚拟机）
-![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/a8.png)
+![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/8.png)
