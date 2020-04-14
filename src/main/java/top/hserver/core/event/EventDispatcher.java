@@ -13,12 +13,14 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.*;
 
 /**
  * 事件分发器<br>
  * <br>
  * 在代码中初始化（只需初始化一次），参数为事件处理器类的包名：<br>
+ *
  * @author hxm
  */
 @Slf4j
@@ -74,14 +76,14 @@ public class EventDispatcher {
     public static void startTaskThread() {
         if (handleMethodMap.size() > 0) {
             try {
-                String path=System.getProperty("user.dir")+ File.separator+"queue";
-                File file=new File(path);
-                if (!file.exists()){
+                String path = System.getProperty("user.dir") + File.separator + "queue";
+                File file = new File(path);
+                if (!file.exists()) {
                     file.mkdirs();
                 }
                 int nThreads = Runtime.getRuntime().availableProcessors();
                 HashMap tmpParmHMap = new HashMap();
-                tmpParmHMap.put(SpongeThreadPoolExecutor.FilePersistence_Dir,path);
+                tmpParmHMap.put(SpongeThreadPoolExecutor.FilePersistence_Dir, path);
                 handlePool = SpongeThreadPoolExecutor.generateThreadPoolExecutor(
                         nThreads, nThreads * 2, 60L, TimeUnit.SECONDS, tmpParmHMap);
             } catch (Exception e) {
@@ -89,10 +91,10 @@ public class EventDispatcher {
         }
     }
 
-    public static void clearFile(){
-        String path=System.getProperty("user.dir")+ File.separator+"queue";
-        File file=new File(path);
-        if (file.exists()){
+    public static void clearFile() {
+        String path = System.getProperty("user.dir") + File.separator + "queue";
+        File file = new File(path);
+        if (file.exists()) {
             file.delete();
         }
     }
@@ -104,7 +106,13 @@ public class EventDispatcher {
      * @param eventParams 事件参数
      */
     protected static void dispartchEvent(String eventUri, Map<String, Object> eventParams) {
-        EventHandleMethod task=handleMethodMap.get(eventUri);
-        handlePool.execute(new EventHandleTask(task.getClassName(),eventParams,task.getMethod().getName(),task.getParameterTypes()));
+        EventHandleMethod task = handleMethodMap.get(eventUri);
+        if (task == null) {
+            log.error("不存在,{},url映射", eventUri);
+            Set<String> strings = handleMethodMap.keySet();
+            log.warn("当前存在的 URL， {}", strings);
+            return;
+        }
+        handlePool.execute(new EventHandleTask(task.getClassName(), eventParams, task.getMethod().getName(), task.getParameterTypes()));
     }
 }
