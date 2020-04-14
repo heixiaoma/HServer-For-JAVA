@@ -13,6 +13,7 @@ import javassist.bytecode.CodeAttribute;
 import javassist.bytecode.LocalVariableAttribute;
 import javassist.bytecode.MethodInfo;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
@@ -144,5 +145,47 @@ public class ParameterUtil {
 
   }
 
+
+  public static Object convert(Field field, String res) {
+    if (res == null) {
+      return null;
+    }
+    Object object = null;
+    switch (field.getType().getName()) {
+      case "int":
+      case "java.lang.Integer":
+        object = Integer.parseInt(res);
+        break;
+
+      case "double":
+      case "java.lang.Double":
+        object = Double.parseDouble(res);
+        break;
+
+      case "long":
+      case "java.lang.Long":
+        object = Long.parseLong(res);
+        break;
+
+      case "short":
+      case "java.lang.java.lang.Short":
+        object = Short.parseShort(res);
+        break;
+
+      case "float":
+      case "java.lang.Float":
+        object = Float.parseFloat(res);
+        break;
+
+      case "boolean":
+      case "java.lang.Boolean":
+        object = Boolean.valueOf(res);
+        break;
+      case "java.lang.String":
+        object = res;
+        break;
+    }
+    return object;
+  }
 
 }

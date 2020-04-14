@@ -17,6 +17,7 @@ import top.hserver.core.server.router.RouterInfo;
 import top.hserver.core.server.router.RouterManager;
 import top.hserver.core.server.router.RouterPermission;
 import top.hserver.core.server.util.ParameterUtil;
+import top.hserver.core.server.util.PropUtil;
 import top.hserver.core.task.TaskManager;
 import io.netty.handler.codec.http.HttpMethod;
 import lombok.extern.slf4j.Slf4j;
@@ -320,19 +321,20 @@ public class InitBean {
    * 给所有Bean和Filter分配依赖(自动装配)
    */
   public static void injection() {
-
     //Bean对象
     Map<String, Object> all = IocUtil.getAll();
     all.forEach((k, v) -> {
       //获取当前类的所有字段
       Field[] declaredFields = v.getClass().getDeclaredFields();
       for (Field declaredField : declaredFields) {
+        valuezr(declaredField,v);
         zr(declaredField, v);
         rpczr(declaredField, v);
       }
       //aop的代理对象，检查一次
       Field[] declaredFields1 = v.getClass().getSuperclass().getDeclaredFields();
       for (Field field : declaredFields1) {
+        valuezr(field,v);
         zr(field, v);
         rpczr(field, v);
       }
@@ -346,18 +348,19 @@ public class InitBean {
       FilterAdapter filterAdapter = v.get(next);
       Field[] declaredFields = filterAdapter.getClass().getDeclaredFields();
       for (Field declaredField : declaredFields) {
+        valuezr(declaredField,filterAdapter);
         zr(declaredField, filterAdapter);
         rpczr(declaredField, filterAdapter);
       }
       //aop的代理对象，检查一次
       Field[] declaredFields1 = filterAdapter.getClass().getSuperclass().getDeclaredFields();
       for (Field field : declaredFields1) {
+        valuezr(field,filterAdapter);
         zr(field, filterAdapter);
         rpczr(field, filterAdapter);
       }
     });
   }
-
 
   /**
    * 对BeetlSql兼容
@@ -409,6 +412,22 @@ public class InitBean {
       }
     }
   }
+
+  private static void valuezr(Field declaredField,Object v) {
+    Value annotation = declaredField.getAnnotation(Value.class);
+    if (annotation != null) {
+      try {
+        declaredField.setAccessible(true);
+        PropUtil instance = PropUtil.getInstance();
+        String s = instance.get(annotation.value());
+        Object convert = ParameterUtil.convert(declaredField, s);
+        declaredField.set(v,convert);
+      } catch (Exception e) {
+        log.error("{}----->{}：@Value装配错误", v.getClass().getSimpleName(), v.getClass().getSimpleName());
+      }
+    }
+  }
+
 
   private static void zr(Field declaredField, Object v) {
     //检查是否有注解@Autowired

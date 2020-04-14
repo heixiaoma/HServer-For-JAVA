@@ -5,15 +5,26 @@ import java.util.Properties;
 
 public class PropUtil {
 
+  private static PropUtil propUtil;
+
   private String name = "/application.properties";
 
   public PropUtil() {
-
   }
 
   public PropUtil(String fileName) {
     this.name = fileName;
   }
+
+  public static PropUtil getInstance() {
+    if (propUtil != null) {
+      return propUtil;
+    } else {
+      propUtil = new PropUtil();
+      return propUtil;
+    }
+  }
+
 
   public String get(String key) {
     String value = "";
@@ -50,48 +61,4 @@ public class PropUtil {
     }
   }
 
-  public Properties getProperties() {
-    Properties p = new Properties();
-    try (InputStream is = PropUtil.class.getClassLoader().getResourceAsStream(name)) {
-      p.load(is);
-    } catch (IOException ignored) {
-    }
-    return p;
-  }
-
-  /**
-   * 往properties文件中写入key-value键值对
-   *
-   * @param key
-   * @param value
-   */
-  public void set(String key, String value) {
-    InputStream is = null;
-    OutputStream os = null;
-    Properties p = new Properties();
-    try {
-      is = new FileInputStream(PropUtil.class.getClassLoader().getResource(name).getFile());
-      p.load(is);
-      os = new FileOutputStream(PropUtil.class.getClassLoader().getResource(name).getFile());
-
-      p.setProperty(key, value);
-      p.store(os, key);
-      os.flush();
-      os.close();
-    } catch (Exception e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        if (null != is) {
-          is.close();
-        }
-        if (null != os) {
-          os.close();
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-
-  }
 }
