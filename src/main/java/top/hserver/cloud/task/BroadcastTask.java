@@ -21,8 +21,7 @@ public class BroadcastTask implements TaskJob {
       if (ChatClient.channel != null && ChatClient.channel.isActive()) {
         //上报服务器
         CloudData cloudData = new CloudData();
-        cloudData.setIp(NetUtil.getIpAddress());
-        cloudData.setName("ServerA");
+        cloudData.setName(args[0].toString());
         cloudData.setClasses(CloudManager.getClasses());
         Msg<CloudData> msg = new Msg<>();
         msg.setMsg_type(MSG_TYPE.REG);
@@ -34,11 +33,7 @@ public class BroadcastTask implements TaskJob {
           if (ChatClient.channel != null) {
             ChatClient.channel.close();
           }
-          PropUtil propUtil = new PropUtil();
-          Object host = propUtil.get("app.cloud.slave.master.host");
-          if (host != null) {
-            new ChatClient(host.toString(), CloudManager.port).start();
-          }
+          new ChatClient(args[1].toString(), CloudManager.port).start();
         } catch (Exception e) {
           log.error(e.getMessage());
         }

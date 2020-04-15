@@ -7,5 +7,4 @@ import lombok.Data;
 public class ServiceData {
     private ChannelHandlerContext ctx;
     private String name;
-    private String ip;
 }

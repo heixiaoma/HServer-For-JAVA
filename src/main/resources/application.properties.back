@@ -11,11 +11,13 @@ statisticalRules=/hel.*,/admin/.*
 #-----------------集群-------------
 #是否开启集群模式
 app.cloud.open=false
-#集群名字
-app.cloud.name=HServer
+#注册中心端口
+app.cloud.port=9527
 #是否是主机
 app.cloud.master.open=false
 #是否是从机
 app.cloud.slave.open=false
 #从机连接主机的IP地址
 app.cloud.slave.master.host=127.0.0.1
+#从机的名字
+app.cloud.slave.name=ServerA

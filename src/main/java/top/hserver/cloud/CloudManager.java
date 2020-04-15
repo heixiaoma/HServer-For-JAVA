@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class CloudManager {
 
-  public final static int port = 9527;
+  public static int port = 9527;
 
   private static Map<String, ClientData> serviceDataMap = new ConcurrentHashMap<>();
 
@@ -37,11 +37,12 @@ public class CloudManager {
           //开启监听从机动态
           new RegServer(port).start();
         }
+        port=Integer.parseInt(propKit.get("app.cloud.port","9527"));
         //自己是不是从机
         Object slave_open = propKit.get("app.cloud.slave.open");
         if (slave_open != null && Boolean.parseBoolean(slave_open.toString())) {
           //上报给主机自己的状态
-          Object cloud_name = propKit.get("app.cloud.name");
+          Object cloud_name = propKit.get("app.cloud.slave.name");
           if (cloud_name == null) {
             //获取内网IP
             cloud_name = NetUtil.getIpAddress();
@@ -49,15 +50,16 @@ public class CloudManager {
             cloud_name = cloud_name + "-->" + NetUtil.getIpAddress();
           }
           //启动聊天服务器
+          Object host = null;
           try {
-            Object host = propKit.get("app.cloud.slave.master.host");
+            host = propKit.get("app.cloud.slave.master.host");
             if (host != null) {
               new ChatClient(host.toString(), CloudManager.port).start();
             }
           } catch (Exception e) {
             log.error(e.getMessage());
           }
-          TaskManager.addTask(cloud_name.toString(), "5000", BroadcastTask.class, cloud_name.toString());
+          TaskManager.addTask(cloud_name.toString(), "5000", BroadcastTask.class, cloud_name.toString(), host);
         }
       }
     } catch (Exception e) {
