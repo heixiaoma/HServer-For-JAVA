@@ -6,7 +6,7 @@ import top.hserver.core.server.util.PropUtil;
 
 public class PropertiesInit {
 
-  public void init() {
+  public static void  init() {
     try {
       PropUtil propKit = new PropUtil();
       Object taskPool = propKit.get("taskPool");

@@ -107,6 +107,8 @@ public class ParameterUtil {
       Class<?> clazz = method.getDeclaringClass();
       ClassPool pool = ClassPool.getDefault();
       CtClass clz = pool.get(clazz.getName());
+      clz.freeze();
+      clz.defrost();
       CtClass[] params = new CtClass[method.getParameterTypes().length];
       for (int i = 0; i < method.getParameterTypes().length; i++) {
         params[i] = pool.getCtClass(method.getParameterTypes()[i].getName());

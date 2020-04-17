@@ -18,7 +18,7 @@ public class HServerApplication {
             return;
         }
         log.info("初始化配置文件：{}", classz.getName());
-        new PropertiesInit().init();
+        PropertiesInit.init();
         log.info("初始化配置完成：{}", classz.getName());
         log.info("HServer 启动中....");
         log.info("Package 扫描中");

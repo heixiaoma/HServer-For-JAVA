@@ -2,10 +2,7 @@ package top.test.action;
 
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.interfaces.HttpResponse;
-import top.hserver.core.ioc.annotation.Autowired;
-import top.hserver.core.ioc.annotation.Controller;
-import top.hserver.core.ioc.annotation.GET;
-import top.hserver.core.ioc.annotation.POST;
+import top.hserver.core.ioc.annotation.*;
 import top.hserver.core.server.context.Cookie;
 import top.hserver.core.server.context.Response;
 import top.hserver.core.server.handlers.FileItem;
@@ -30,7 +27,6 @@ public class Hello {
 
   @Autowired
   private Test test1q;
-
 
   @Autowired
   private UserService userService;
@@ -84,6 +80,7 @@ public class Hello {
     return res;
   }
 
+  @Track
   @GET("/removeStat")
   public Map removeStat() {
     Map<String, Object> res = new HashMap<>();

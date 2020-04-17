@@ -1,14 +1,14 @@
 package top.hserver.core.ioc.ref;
 
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
 import top.hserver.cloud.CloudManager;
 import top.hserver.cloud.bean.ClientData;
 import top.hserver.cloud.proxy.CloudProxy;
 import top.hserver.core.event.EventDispatcher;
-import top.hserver.core.interfaces.GlobalException;
-import top.hserver.core.interfaces.InitRunner;
-import top.hserver.core.interfaces.PermissionAdapter;
+import top.hserver.core.interfaces.*;
 import top.hserver.core.ioc.IocUtil;
-import top.hserver.core.interfaces.FilterAdapter;
 import top.hserver.core.ioc.annotation.*;
 import top.hserver.core.proxy.JavassistProxyFactory;
 import top.hserver.core.server.filter.FilterChain;
@@ -16,11 +16,14 @@ import top.hserver.core.server.handlers.WebSocketServerHandler;
 import top.hserver.core.server.router.RouterInfo;
 import top.hserver.core.server.router.RouterManager;
 import top.hserver.core.server.router.RouterPermission;
+import top.hserver.core.server.util.ClassLoadUtil;
 import top.hserver.core.server.util.ParameterUtil;
 import top.hserver.core.server.util.PropUtil;
 import top.hserver.core.task.TaskManager;
 import io.netty.handler.codec.http.HttpMethod;
 import lombok.extern.slf4j.Slf4j;
+import top.test.action.Hello;
+import top.test.utils.A;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -41,6 +44,7 @@ public class InitBean {
         return;
       }
       PackageScanner scan = new ClasspathPackageScanner(baseClass.getPackage().getName());
+      initTrack(scan);
       //读取配置文件
       initConfiguration(scan);
       initWebSocket(scan);
@@ -76,6 +80,53 @@ public class InitBean {
     }
   }
 
+  private static void initTrack(PackageScanner scan) throws Exception {
+    List<Class<?>> classs = scan.getAnnotationList(Track.class);
+    for (Class aClass : classs) {
+      //为这些跟踪重新执行一次类加载
+      try {
+        ClassPool cp = ClassPool.getDefault();
+        System.out.println(aClass.getName());
+        CtClass cc = cp.get(aClass.getName());
+        for (Method method : aClass.getMethods()) {
+          if (method.getAnnotation(Track.class) != null) {
+            name:
+            for (CtMethod ctMethod : cc.getMethods()) {
+              if (ctMethod.getName().equals(method.getName())) {
+
+                //有参数的方法，校验下方法参数和类型是否一样
+                if (ctMethod.getParameterTypes().length == method.getParameterTypes().length) {
+                  int size = ctMethod.getParameterTypes().length;
+                  if (size > 0) {
+                    for (int i = 0; i < size; i++) {
+                      if (!ctMethod.getParameterTypes()[i].getSimpleName().equals(method.getParameterTypes()[i])) {
+                        break name;
+                      }
+                    }
+                  }
+//                  cc.toClass();
+//                  System.out.println(method.getName());
+//                  ctMethod.addLocalVariable("begin", CtClass.longType);
+//                  ctMethod.addLocalVariable("end", CtClass.longType);
+//                  ctMethod.insertBefore("begin=System.currentTimeMillis();");
+//                  ctMethod.insertAfter("end=System.currentTimeMillis();");
+//                  ctMethod.insertAfter("System.out.println(\"类：" + cc.getSimpleName() + "方法：" + ctMethod.getName() + ",耗时:\"+(end-begin)+\"毫秒\");\n");
+//                  ClassLoadUtil.LoadClasses(aClass.getName(), true);
+//                  Hello hello = (Hello) aClass.newInstance();
+//                  hello.removeStat();
+
+                }
+              }
+            }
+          }
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+    }
+  }
+
 
   private static void initWebSocket(PackageScanner scan) throws Exception {
     List<Class<?>> classs = scan.getAnnotationList(WebSocket.class);
@@ -108,6 +159,12 @@ public class InitBean {
       //检测这个Bean是否是权限认证的
       if (PermissionAdapter.class.isAssignableFrom(aClass)) {
         IocUtil.addBean(PermissionAdapter.class.getName(), aClass.newInstance());
+        continue;
+      }
+
+      //检测这个Bean是否是track的
+      if (TrackAdapter.class.isAssignableFrom(aClass)) {
+        IocUtil.addBean(TrackAdapter.class.getName(), aClass.newInstance());
         continue;
       }
 
@@ -227,7 +284,7 @@ public class InitBean {
             requestMethod = rm;
           }
           for (String s : requestMethod) {
-            String path=controllerPath+requestMapping.value();
+            String path = controllerPath + requestMapping.value();
             RouterInfo routerInfo = new RouterInfo();
             routerInfo.setMethod(method);
             routerInfo.setUrl(path);
@@ -327,14 +384,14 @@ public class InitBean {
       //获取当前类的所有字段
       Field[] declaredFields = v.getClass().getDeclaredFields();
       for (Field declaredField : declaredFields) {
-        valuezr(declaredField,v);
+        valuezr(declaredField, v);
         zr(declaredField, v);
         rpczr(declaredField, v);
       }
       //aop的代理对象，检查一次
       Field[] declaredFields1 = v.getClass().getSuperclass().getDeclaredFields();
       for (Field field : declaredFields1) {
-        valuezr(field,v);
+        valuezr(field, v);
         zr(field, v);
         rpczr(field, v);
       }
@@ -348,14 +405,14 @@ public class InitBean {
       FilterAdapter filterAdapter = v.get(next);
       Field[] declaredFields = filterAdapter.getClass().getDeclaredFields();
       for (Field declaredField : declaredFields) {
-        valuezr(declaredField,filterAdapter);
+        valuezr(declaredField, filterAdapter);
         zr(declaredField, filterAdapter);
         rpczr(declaredField, filterAdapter);
       }
       //aop的代理对象，检查一次
       Field[] declaredFields1 = filterAdapter.getClass().getSuperclass().getDeclaredFields();
       for (Field field : declaredFields1) {
-        valuezr(field,filterAdapter);
+        valuezr(field, filterAdapter);
         zr(field, filterAdapter);
         rpczr(field, filterAdapter);
       }
@@ -413,7 +470,7 @@ public class InitBean {
     }
   }
 
-  private static void valuezr(Field declaredField,Object v) {
+  private static void valuezr(Field declaredField, Object v) {
     Value annotation = declaredField.getAnnotation(Value.class);
     if (annotation != null) {
       try {
@@ -421,7 +478,7 @@ public class InitBean {
         PropUtil instance = PropUtil.getInstance();
         String s = instance.get(annotation.value());
         Object convert = ParameterUtil.convert(declaredField, s);
-        declaredField.set(v,convert);
+        declaredField.set(v, convert);
       } catch (Exception e) {
         log.error("{}----->{}：@Value装配错误", v.getClass().getSimpleName(), v.getClass().getSimpleName());
       }
