@@ -23,7 +23,6 @@ public class ClasspathPackageScanner implements PackageScanner {
   public ClasspathPackageScanner(String basePackage) {
     List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true);
     for (Class<?> aClass : classes) {
-
       //类级别的注解
       if (aClass.getAnnotation(Bean.class) != null) {
         add(aClass, Bean.class);
@@ -45,14 +44,6 @@ public class ClasspathPackageScanner implements PackageScanner {
       }
       if (aClass.getAnnotation(EventHandler.class) != null) {
         add(aClass, EventHandler.class);
-      }
-
-
-      //方法级别的注解
-      for (Method method : aClass.getMethods()) {
-        if (method.getAnnotation(Track.class) != null) {
-          add(aClass, Track.class);
-        }
       }
     }
 

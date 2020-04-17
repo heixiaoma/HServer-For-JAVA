@@ -2,6 +2,7 @@ package top.hserver;
 
 import top.hserver.cloud.CloudManager;
 import top.hserver.core.ioc.ref.InitBean;
+import top.hserver.core.ioc.ref.MemoryInitClass;
 import top.hserver.core.properties.PropertiesInit;
 import top.hserver.core.server.HServer;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,10 @@ public class HServerApplication {
             log.info("HServer 启动失败");
             return;
         }
+
+        MemoryInitClass.init(classz);
+        MemoryInitClass.init(HServerApplication.class);
+
         log.info("初始化配置文件：{}", classz.getName());
         PropertiesInit.init();
         log.info("初始化配置完成：{}", classz.getName());

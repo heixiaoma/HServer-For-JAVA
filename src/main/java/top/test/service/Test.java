@@ -2,6 +2,7 @@ package top.test.service;
 
 import top.hserver.core.ioc.annotation.Autowired;
 import top.hserver.core.ioc.annotation.Bean;
+import top.hserver.core.ioc.annotation.Track;
 
 @Bean
 public class Test {

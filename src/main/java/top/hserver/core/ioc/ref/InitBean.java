@@ -41,7 +41,6 @@ public class InitBean {
         return;
       }
       PackageScanner scan = new ClasspathPackageScanner(baseClass.getPackage().getName());
-      initTrack(scan);
       //读取配置文件
       initConfiguration(scan);
       initWebSocket(scan);
@@ -76,55 +75,6 @@ public class InitBean {
       }
     }
   }
-
-  private static void initTrack(PackageScanner scan) throws Exception {
-    List<Class<?>> classs = scan.getAnnotationList(Track.class);
-    for (Class aClass : classs) {
-      //为这些跟踪重新执行一次类加载
-      try {
-        ClassPool cp = ClassPool.getDefault();
-        System.out.println(aClass.getName());
-        CtClass cc = cp.get(aClass.getName());
-        for (Method method : aClass.getMethods()) {
-          if (method.getAnnotation(Track.class) != null) {
-            name:
-            for (CtMethod ctMethod : cc.getMethods()) {
-              if (ctMethod.getName().equals(method.getName())) {
-
-                //有参数的方法，校验下方法参数和类型是否一样
-                if (ctMethod.getParameterTypes().length == method.getParameterTypes().length) {
-                  int size = ctMethod.getParameterTypes().length;
-                  if (size > 0) {
-                    for (int i = 0; i < size; i++) {
-                      if (!ctMethod.getParameterTypes()[i].getSimpleName().equals(method.getParameterTypes()[i])) {
-                        break name;
-                      }
-                    }
-                  }
-//                  cc.toClass();
-//                  System.out.println(method.getName());
-//                  ctMethod.addLocalVariable("begin", CtClass.longType);
-//                  ctMethod.addLocalVariable("end", CtClass.longType);
-//                  ctMethod.insertBefore("begin=System.currentTimeMillis();");
-//                  ctMethod.insertAfter("end=System.currentTimeMillis();");
-//                  ctMethod.insertAfter("System.out.println(\"类：" + cc.getSimpleName() + "方法：" + ctMethod.getName() + ",耗时:\"+(end-begin)+\"毫秒\");\n");
-//                  ClassLoadUtil.LoadClasses(aClass.getName(), true);
-//                  Hello hello = (Hello) aClass.newInstance();
-//                  hello.removeStat();
-
-                }
-              }
-            }
-          }
-        }
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-
-    }
-  }
-
-
   private static void initWebSocket(PackageScanner scan) throws Exception {
     List<Class<?>> classs = scan.getAnnotationList(WebSocket.class);
     for (Class aClass : classs) {

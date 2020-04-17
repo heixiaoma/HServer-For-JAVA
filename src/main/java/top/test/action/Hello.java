@@ -62,6 +62,7 @@ public class Hello {
     return res;
   }
 
+  @Track
   @GET("/test")
   public JsonResult test() {
     return JsonResult.ok();
@@ -80,7 +81,6 @@ public class Hello {
     return res;
   }
 
-  @Track
   @GET("/removeStat")
   public Map removeStat() {
     Map<String, Object> res = new HashMap<>();
