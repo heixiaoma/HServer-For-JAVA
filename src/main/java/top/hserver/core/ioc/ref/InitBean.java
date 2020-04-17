@@ -16,14 +16,11 @@ import top.hserver.core.server.handlers.WebSocketServerHandler;
 import top.hserver.core.server.router.RouterInfo;
 import top.hserver.core.server.router.RouterManager;
 import top.hserver.core.server.router.RouterPermission;
-import top.hserver.core.server.util.ClassLoadUtil;
 import top.hserver.core.server.util.ParameterUtil;
 import top.hserver.core.server.util.PropUtil;
 import top.hserver.core.task.TaskManager;
 import io.netty.handler.codec.http.HttpMethod;
 import lombok.extern.slf4j.Slf4j;
-import top.test.action.Hello;
-import top.test.utils.A;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
