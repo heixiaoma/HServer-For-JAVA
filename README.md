@@ -43,7 +43,7 @@
     </dependency>
     
     全部版本查询 https://repo1.maven.org/maven2/top/hserver/HServer/
-    
+    2020-4-18发布，通常需要2小时仓库自动同步
 ### 压测说明
 请查看 [PM.md](doc/PM.md) 查看说明
 
