@@ -62,9 +62,14 @@ public class Hello {
     return res;
   }
 
-  @Track
   @GET("/test")
   public JsonResult test() {
+    return JsonResult.ok();
+  }
+
+  @Track
+  @GET("/track")
+  public JsonResult track() {
     return JsonResult.ok();
   }
 

@@ -10,7 +10,7 @@
         <img src="https://img.shields.io/badge/Build-Java8-red.svg?style=flat" />
     </a>
      <a >
-          <img src="https://img.shields.io/badge/HServer-2.9.9-yeoll.svg?style=flat" />
+          <img src="https://img.shields.io/badge/HServer-2.9.10-yeoll.svg?style=flat" />
       </a>
     <a >
         <img src="https://img.shields.io/badge/Netty-4.1.42.Final-blue.svg" alt="flat">
@@ -39,7 +39,7 @@
     <dependency>
         <groupId>top.hserver</groupId>
         <artifactId>HServer</artifactId>
-        <version>2.9.9</version>
+        <version>2.9.10</version>
     </dependency>
     
     全部版本查询 https://repo1.maven.org/maven2/top/hserver/HServer/
@@ -555,6 +555,27 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
     
     注意：队列不易过大，过大会导致内存急剧上升，当然几十万没得问题，还需要过大的话，请调整jvm启动参数,队列最大值是int的最大值，Integer.MAX_VALUE
          反正几十万，几万的，没啥问题，放心用       
-#### 16.技巧篇
+#### 16.Track跟踪
+    使用动态字节码技术，在初始化对需要跟踪的方法进行，字节码处理，
+    使用方法：
+            1.在任意方法上添加，@Track 注解:例如
+              @Track
+              @GET("/track")
+              public JsonResult track() {
+                return JsonResult.ok();
+              }
+            
+            
+            2.实现TrackAdapter接口，并在类上用 @Bean标识
+            @Bean
+            @Slf4j
+            public class TrackImpl implements TrackAdapter {
+                @Override
+                public void track(Class clazz,StackTraceElement[] stackTraceElements, long start, long end) throws Exception {
+                    log.info("当前类：{},当前方法：{},耗时：{}", clazz.getName(), stackTraceElements[1].getMethodName(), (end - start) + "ms");
+                }
+            }
+
+#### 17.技巧篇
     1. Linux 内核版本大于 2.5.44，(目前云服务器都有了，没有的话自己升级内核)的Linux默认使用epoll
     2.待更新

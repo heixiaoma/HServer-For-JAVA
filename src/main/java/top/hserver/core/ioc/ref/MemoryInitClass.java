@@ -1,16 +1,11 @@
 package top.hserver.core.ioc.ref;
 
-import javassist.ClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import top.hserver.core.interfaces.TrackAdapter;
 import top.hserver.core.ioc.annotation.Track;
 import top.hserver.core.server.util.JavassistClassLoadUtil;
-import top.hserver.core.server.util.JsonResult;
-import top.test.action.Hello;
-
-import java.io.ByteArrayInputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -55,35 +50,40 @@ public class MemoryInitClass {
                     //参数长度相同
                     if (declaredMethod.getParameterTypes().length == method.getParameterTypes().length) {
                         //每一位类型也一样
-                            int size = declaredMethod.getParameterTypes().length;
-                                for (int i = 0; i < size; i++) {
-                                    if (!declaredMethod.getParameterTypes()[i].getSimpleName().equals(method.getParameterTypes()[i])) {
-                                        break name;
-                                    }
-                                }
-                                declaredMethod.addLocalVariable("begin_hserver", CtClass.longType);
-                                declaredMethod.addLocalVariable("end_hserver", CtClass.longType);
-                                declaredMethod.addLocalVariable("trackAdapter_hserver",  cp.get(TrackAdapter.class.getCanonicalName()));
-                                declaredMethod.addLocalVariable("clazz_hserver",  cp.get(Class.class.getCanonicalName()));
-                                declaredMethod.addLocalVariable("stackTraceElement_hserver",  cp.get(StackTraceElement.class.getCanonicalName()));
-//                                declaredMethod.addLocalVariable("method_hserver",  cp.get(StackTraceElement.class.getCanonicalName()));
-                                declaredMethod.insertBefore("begin_hserver=System.currentTimeMillis();");
-                                declaredMethod.insertAfter("end_hserver=System.currentTimeMillis();");
-                                declaredMethod.insertAfter("trackAdapter_hserver = top.hserver.core.ioc.IocUtil.getBean(top.hserver.core.interfaces.TrackAdapter.class);");
-                                if (!Modifier.isStatic(method.getModifiers())) {
-                                    //非静态
-                                    declaredMethod.insertAfter("clazz_hserver = this.getClass();");
-                                }else {
-                                    //静态
-                                    declaredMethod.insertAfter("clazz_hserver = "+aClass.getName()+".class;");
-                                }
+                        int size = declaredMethod.getParameterTypes().length;
+                        for (int i = 0; i < size; i++) {
+                            if (!declaredMethod.getParameterTypes()[i].getSimpleName().equals(method.getParameterTypes()[i])) {
+                                break name;
+                            }
+                        }
+                        declaredMethod.addLocalVariable("begin_hserver", CtClass.longType);
+                        declaredMethod.addLocalVariable("end_hserver", CtClass.longType);
+                        declaredMethod.addLocalVariable("trackAdapter_hserver", cp.get(TrackAdapter.class.getCanonicalName()));
+                        declaredMethod.addLocalVariable("clazz_hserver", cp.get(Class.class.getCanonicalName()));
+                        declaredMethod.addLocalVariable("method_hserver", cp.get(Method.class.getCanonicalName()));
+                        declaredMethod.insertBefore("begin_hserver=System.currentTimeMillis();");
 
-                                declaredMethod.insertAfter("stackTraceElement_hserver =Thread.currentThread().getStackTrace()[1];");
-//                                declaredMethod.insertAfter("method_hserver = new Object(){}.getClass().getEnclosingMethod();");
-                                declaredMethod.insertAfter("if (trackAdapter_hserver!=null){\n" +
-                                        "                                    trackAdapter_hserver.track(clazz_hserver,stackTraceElement_hserver, begin_hserver,end_hserver);\n" +
-                                        "                                }else{System.out.println(\"请实现，TrackAdapter接口，并用@Bean标注\");\n}");
-                                cc.toClass();
+
+                        StringBuilder src = new StringBuilder();
+                        src.append("end_hserver=System.currentTimeMillis();");
+                        src.append("trackAdapter_hserver = top.hserver.core.ioc.IocUtil.getBean(top.hserver.core.interfaces.TrackAdapter.class);");
+                        if (!Modifier.isStatic(method.getModifiers())) {
+                            //非静态
+                            src.append("clazz_hserver = this.getClass();");
+                        } else {
+                            //静态
+                            src.append("clazz_hserver = " + aClass.getName() + ".class;");
+                        }
+                        src.append("if (trackAdapter_hserver!=null)");
+                        src.append("{");
+                        src.append(" trackAdapter_hserver.track(clazz_hserver,Thread.currentThread().getStackTrace(), begin_hserver,end_hserver);");
+                        src.append("}");
+                        src.append("else");
+                        src.append("{");
+                        src.append("System.out.println(\"请实现，TrackAdapter接口，并用@Bean标注\");");
+                        src.append("}");
+                        declaredMethod.insertAfter(src.toString());
+                        cc.toClass();
                     }
                 }
             }

@@ -17,7 +17,6 @@ public class JsonResult extends HashMap<String, Object> {
     /**
      * 返回成功
      */
-    @Track
     public static JsonResult ok() {
         return ok("操作成功");
     }
