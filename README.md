@@ -298,6 +298,16 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
               InputStream fileInputStream = new FileInputStream(file);
               response.setDownloadFile(fileInputStream,"README.md");
           }
+          
+        @POST("/file")
+        public Map file(HttpRequest request) {
+            //单个文件
+          FileItem file = request.queryFile("file");
+          //多个文件上传
+          Map<String, FileItem> fileItems = request.getFileItems();
+          //然后对FileItem 进行保存，就可以了
+          }
+          
 #### 5.Aop操作
 
         #必须实现HookAdapter的接口
