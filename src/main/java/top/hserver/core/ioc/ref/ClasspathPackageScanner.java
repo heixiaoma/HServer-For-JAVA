@@ -1,5 +1,6 @@
 package top.hserver.core.ioc.ref;
 
+import org.junit.runner.RunWith;
 import top.hserver.core.ioc.annotation.*;
 import top.hserver.core.ioc.annotation.event.EventHandler;
 import top.hserver.core.server.util.ClassLoadUtil;
@@ -44,6 +45,9 @@ public class ClasspathPackageScanner implements PackageScanner {
       }
       if (aClass.getAnnotation(EventHandler.class) != null) {
         add(aClass, EventHandler.class);
+      }
+      if (aClass.getAnnotation(RunWith.class) != null) {
+        add(aClass, RunWith.class);
       }
     }
 

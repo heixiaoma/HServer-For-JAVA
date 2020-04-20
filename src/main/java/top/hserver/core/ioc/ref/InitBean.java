@@ -1,8 +1,6 @@
 package top.hserver.core.ioc.ref;
 
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
+import org.junit.runner.RunWith;
 import top.hserver.cloud.CloudManager;
 import top.hserver.cloud.bean.ClientData;
 import top.hserver.cloud.proxy.CloudProxy;
@@ -44,6 +42,7 @@ public class InitBean {
       //读取配置文件
       initConfiguration(scan);
       initWebSocket(scan);
+      initTest(scan);
       initBean(scan);
       initController(scan);
       initHook(scan);
@@ -82,6 +81,14 @@ public class InitBean {
       WebSocket annotation = (WebSocket) aClass.getAnnotation(WebSocket.class);
       IocUtil.addBean(aClass.getName(), aClass.newInstance());
       WebSocketServerHandler.WebSocketRouter.put(annotation.value(), aClass.getName());
+    }
+  }
+
+  private static void initTest(PackageScanner scan) throws Exception {
+    List<Class<?>> classs = scan.getAnnotationList(RunWith.class);
+    for (Class aClass : classs) {
+      //检查注解里面是否有值
+      IocUtil.addBean(aClass.getName(), aClass.newInstance());
     }
   }
 

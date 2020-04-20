@@ -18,6 +18,9 @@ import java.util.List;
 public class MemoryInitClass {
 
     public static void init(Class clazz) {
+        if (clazz == null || clazz.getPackage() == null || clazz.getPackage().getName() == null) {
+            return;
+        }
         try {
             List<Class<?>> classes = JavassistClassLoadUtil.LoadClasses(clazz.getPackage().getName(), true);
             for (Class<?> aClass : classes) {
