@@ -584,6 +584,21 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
                     log.info("当前类：{},当前方法：{},耗时：{}", clazz.getName(), stackTraceElements[1].getMethodName(), (end - start) + "ms");
                 }
             }
+#### 17.单元测试技巧
+        
+        @RunWith(HServerTest.class)
+        //指定一个外部的类，他会更具这个类递归扫描子类，并放入容器
+        //@HServerBootTest(TestWebApp.class)
+        public class test {
+        
+            @Autowired
+            private User user;
+        
+            @Test
+            public void main(){
+                System.out.println(user.getName());;
+            }
+        }
 
 #### 17.技巧篇
     1. Linux 内核版本大于 2.5.44，(目前云服务器都有了，没有的话自己升级内核)的Linux默认使用epoll
