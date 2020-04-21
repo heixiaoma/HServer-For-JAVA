@@ -45,7 +45,7 @@
     全部版本查询 https://repo1.maven.org/maven2/top/hserver/HServer/
 ### 压测结果，8核Linux 虚拟机 23w qps 恐怖至极（做api最适合了）
 ![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/23.png)
-详情请查看 [PM.md](doc/PM.md) 查看说明
+    详情请查看 [PM.md](doc/PM.md) 查看说明
 
 
 ### 更新历史
