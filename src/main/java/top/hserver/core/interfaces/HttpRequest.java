@@ -1,6 +1,7 @@
 package top.hserver.core.interfaces;
 
 
+import io.netty.channel.ChannelHandlerContext;
 import top.hserver.core.server.handlers.FileItem;
 import io.netty.handler.codec.http.HttpMethod;
 
@@ -27,5 +28,10 @@ public interface HttpRequest {
     String getRawData();
 
     String getIp();
+
+    int getPort();
+
+    ChannelHandlerContext getCtx();
+
 
 }

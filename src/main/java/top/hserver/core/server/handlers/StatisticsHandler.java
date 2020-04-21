@@ -80,6 +80,10 @@ public class StatisticsHandler {
         return ((InetSocketAddress) ctx.channel().remoteAddress()).getHostString();
     }
 
+    int getClientPort(ChannelHandlerContext ctx) {
+      return ((InetSocketAddress) ctx.channel().remoteAddress()).getPort();
+    }
+
     // ---- getters ----
     public static Map<String, IpData> getIpMap() {
         return ipMap;

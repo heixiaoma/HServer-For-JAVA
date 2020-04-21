@@ -1,5 +1,6 @@
 package top.hserver.core.server.context;
 
+import io.netty.channel.ChannelHandlerContext;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.server.handlers.FileItem;
 import io.netty.buffer.ByteBuf;
@@ -25,6 +26,8 @@ public class Request implements HttpRequest {
   private String uri;
   private HttpMethod requestType;
   private String ip;
+  private int port;
+  private ChannelHandlerContext ctx;
   private Map<String, String> requestParams = new ConcurrentHashMap<>();
   private Map<String, String> headers = new ConcurrentHashMap<>();
 
@@ -58,6 +61,16 @@ public class Request implements HttpRequest {
   @Override
   public String getIp() {
     return ip;
+  }
+
+  @Override
+  public int getPort() {
+    return port;
+  }
+
+  @Override
+  public ChannelHandlerContext getCtx() {
+    return ctx;
   }
 
   @Override

@@ -41,10 +41,11 @@ public class DispatcherHandler {
 
   static WebContext buildWebContext(ChannelHandlerContext ctx,
                                     WebContext webContext) {
-
     HttpRequest req = webContext.getHttpRequest();
     Request request = new Request();
     request.setIp(statisticsHandler.getClientIp(ctx));
+    request.setPort(statisticsHandler.getClientPort(ctx));
+    request.setCtx(ctx);
     webContext.setCtx(ctx);
     //如果GET请求
     if (req.method() == GET) {
