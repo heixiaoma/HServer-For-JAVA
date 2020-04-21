@@ -17,6 +17,7 @@ public class test {
 
     @Test
     public void main(){
-        System.out.println(user.getName());;
+        System.out.println();
+        System.out.println(user.getName());
     }
 }
