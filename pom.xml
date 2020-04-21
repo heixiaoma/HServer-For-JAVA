@@ -51,6 +51,7 @@
         <freemarker.version>2.3.28</freemarker.version>
         <protostuff.version>1.0.10</protostuff.version>
         <objenesis.version>3.1</objenesis.version>
+        <junit.version>4.12</junit.version>
     </properties>
 
     <dependencies>
@@ -120,7 +121,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>${junit.version}</version>
         </dependency>
 
     </dependencies>
