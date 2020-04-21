@@ -11,6 +11,8 @@ public interface HttpRequest {
 
     String getUri();
 
+    String getNettyUri();
+
     HttpMethod getRequestType();
 
     Map<String, String> getRequestParams();

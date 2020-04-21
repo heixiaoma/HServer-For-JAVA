@@ -46,6 +46,7 @@ public class DispatcherHandler {
     request.setIp(statisticsHandler.getClientIp(ctx));
     request.setPort(statisticsHandler.getClientPort(ctx));
     request.setCtx(ctx);
+    request.setNettyUri(req.uri());
     webContext.setCtx(ctx);
     //如果GET请求
     if (req.method() == GET) {

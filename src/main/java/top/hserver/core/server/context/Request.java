@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Setter
 public class Request implements HttpRequest {
   private String uri;
+  private String nettyUri;
   private HttpMethod requestType;
   private String ip;
   private int port;
@@ -71,6 +72,11 @@ public class Request implements HttpRequest {
   @Override
   public ChannelHandlerContext getCtx() {
     return ctx;
+  }
+
+  @Override
+  public String getNettyUri() {
+    return nettyUri;
   }
 
   @Override
