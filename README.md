@@ -43,8 +43,9 @@
     </dependency>
     
     全部版本查询 https://repo1.maven.org/maven2/top/hserver/HServer/
-### 压测说明
-请查看 [PM.md](doc/PM.md) 查看说明
+### 压测结果，8核Linux 虚拟机 23w qps 恐怖至极（做api最适合了）
+![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/23.png)
+详情请查看 [PM.md](doc/PM.md) 查看说明
 
 
 ### 更新历史
@@ -52,9 +53,7 @@
 
 
 ### 文档地址
-文档说明请查看 [点我](https://hserver.top) 
-
-文档源码地址 [点我](https://gitee.com/heixiaomas_admin/hserver-for-java-doc) 
+文档说明请查看 [点我](https://gitee.com/heixiaomas_admin/HServer/wikis/pages) 
 
 Redis操作源码案例地址(Jedis) [点我](https://gitee.com/heixiaomas_admin/hserver-for-java-redis)
 
