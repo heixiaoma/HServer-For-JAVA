@@ -1,7 +1,10 @@
 # idea ignore
-.idea/
+.idea/*
+.idea*
+\.idea*
 *.ipr
 *.iml
 *.iws
 /target
 /log
+/queue
