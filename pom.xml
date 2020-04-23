@@ -6,7 +6,7 @@
 
     <groupId>top.hserver</groupId>
     <artifactId>HServer</artifactId>
-    <version>2.9.13</version>
+    <version>2.9.14</version>
     <packaging>jar</packaging>
     <name>hserver</name>
     <url>https://gitee.com/heixiaomas_admin/HServer</url>
@@ -122,6 +122,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>
