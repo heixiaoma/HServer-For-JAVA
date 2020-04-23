@@ -64,7 +64,9 @@ public class JavassistClassLoadUtil {
                                         try {
                                             classes.add(classLoader.loadClass(packageName + '.' + className));
                                         } catch (Throwable e) {
-                                            log.error(e.getMessage());
+                                            if (!"HServerTest".equals(className)) {
+                                                log.error(e.getMessage());
+                                            }
                                         }
                                     }
                                 }
