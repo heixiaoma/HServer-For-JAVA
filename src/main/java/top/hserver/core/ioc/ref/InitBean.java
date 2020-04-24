@@ -59,15 +59,22 @@ public class InitBean {
         for (Class aClass : classs) {
             Method[] methods = aClass.getDeclaredMethods();
             Object o = aClass.newInstance();
+            for (Field field : aClass.getDeclaredFields()) {
+              valuezr(field,o);
+            }
             for (Method method : methods) {
                 Bean bean = method.getAnnotation(Bean.class);
                 if (bean != null) {
                     Object invoke = method.invoke(o);
-                    String value = bean.value();
-                    if (value.trim().length() > 0) {
+                    if (invoke!=null){
+                      String value = bean.value();
+                      if (value.trim().length() > 0) {
                         IocUtil.addBean(value, invoke);
-                    } else {
+                      } else {
                         IocUtil.addBean(invoke.getClass().getName(), invoke);
+                      }
+                    }else {
+                      log.warn("{},方法返回空值，不进入容器",method.getName());
                     }
                 }
             }
