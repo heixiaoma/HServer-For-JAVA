@@ -72,9 +72,7 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
 ![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/架构说明.png)
 #### 2.注解认识
     以下注解基本模拟Spring的功能
-
-
-​    
+    
     @Bean
     将Bean对象加入IOC容器中比如
         //按默名字加入IOC容器
@@ -83,9 +81,7 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
         //指定名字加入容器，装配的时候就只能通过名字装配了
         @Bean("testService")
         class Test{}
-
-
-​        
+        
     @Autowired
     自动装配注解
         //按类型注入
@@ -94,18 +90,14 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
         //按Bean名字注入
         @Autowired("testServer1")
         private TestService testService; 
-
-
-​           
+        
     @Controller
     控制器注解，将控制器加入IOC容器中，类似Spring mvc
     注解在类上面直接加上即可比如
         //Index控制器
         @Controller
-        class IndexController{}
-
-
-​           
+        class IndexController{}、
+        
     @GET,@POST,@RequestMapping
     方法注解，在@Controller注解类类中使用，标注一个方法为GET或者POST方法，例如
         @GET("/index")
@@ -148,25 +140,21 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
         public JsonResult all() {
           return JsonResult.ok();
         }
-
-
-​        
-    @Filter
-    拦截器注解，标注一个类为拦截器，和JavaEE的Filter类似
-        @Filter(1)//1表示拦截优先级，越小越优先
-        public class MyFilter1 implements FilterAdapter {}
-        //需要实现FilterAdapter接口
-
-
-​        
-    @Hook
-    hook注解就是Aop
-        @Hook(value = Test.class, method = "show")
-        public class HookTest implements HookAdapter {}
-        //value表示aop的类,method要hook的方法，必须实现HookAdapter
-
-
-​        
+        
+        
+      @Filter
+      拦截器注解，标注一个类为拦截器，和JavaEE的Filter类似
+          @Filter(1)//1表示拦截优先级，越小越优先
+          public class MyFilter1 implements FilterAdapter {}
+          //需要实现FilterAdapter接口
+          
+      @Hook
+      hook注解就是Aop
+          @Hook(value = Test.class, method = "show")
+          public class HookTest implements HookAdapter {}
+          //value表示aop的类,method要hook的方法，必须实现HookAdapter
+  
+  
     @Task
      定时任务
         @Task(name = "测试定时任务Cron", time ="*/5 * * * * ?")
@@ -175,7 +163,6 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
         public void timerTask() {}
 
 
-​        
     @WebSocket
     实现websocket通信
         @WebSocket("/ws")
@@ -183,7 +170,6 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
         //这样就可以完成基本的通信了
 
 
-​        
     @Configuration
     自定配置注解，需要配合@Bean注解一起使用，最后会把方法里面的返回的对象
     存储到IOC容器中，同时可以通过Autowired注解注入
@@ -213,7 +199,6 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
         }
 
 
-​        
     @RpcService
     标注一个Bean对象是一个rpc服务,也可以分配一个名字
         @Bean
@@ -225,14 +210,13 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
         }  
 
 
-​        
     @Resource
     注入一个Rpc服务，也可以通过名字注入。详情，请看文档介绍   
         @Resource
         private RpcServiceTest rpcServiceTest;
 
 
-​        
+
     @Sign("MD5")
     @RequiresRoles("角色")
     @RequiresPermissions(value = {"/权限1","/权限2"}, logical=Logical.OR)
