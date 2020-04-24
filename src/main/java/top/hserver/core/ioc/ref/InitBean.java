@@ -65,16 +65,20 @@ public class InitBean {
             for (Method method : methods) {
                 Bean bean = method.getAnnotation(Bean.class);
                 if (bean != null) {
-                    Object invoke = method.invoke(o);
-                    if (invoke!=null){
-                      String value = bean.value();
-                      if (value.trim().length() > 0) {
-                        IocUtil.addBean(value, invoke);
-                      } else {
-                        IocUtil.addBean(invoke.getClass().getName(), invoke);
+                    try {
+                      Object invoke = method.invoke(o);
+                      if (invoke!=null){
+                        String value = bean.value();
+                        if (value.trim().length() > 0) {
+                          IocUtil.addBean(value, invoke);
+                        } else {
+                          IocUtil.addBean(invoke.getClass().getName(), invoke);
+                        }
+                      }else {
+                        log.warn("{},方法返回空值，不进入容器",method.getName());
                       }
-                    }else {
-                      log.warn("{},方法返回空值，不进入容器",method.getName());
+                    }catch (Exception e){
+                      log.warn("{},方法不能有入参",method.getName());
                     }
                 }
             }
