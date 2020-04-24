@@ -18,7 +18,7 @@
     <a >
         <img src="https://img.shields.io/badge/Licence-Apache2.0-green.svg?style=flat" />
     </a>
-    
+
 </p>
 <p align="center">    
     <b>如果对您有帮助，您可以点右上角 "Star" 支持一下 谢谢！</b>
@@ -72,8 +72,9 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
 ![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/架构说明.png)
 #### 2.注解认识
     以下注解基本模拟Spring的功能
-    
-    
+
+
+​    
     @Bean
     将Bean对象加入IOC容器中比如
         //按默名字加入IOC容器
@@ -82,8 +83,9 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
         //指定名字加入容器，装配的时候就只能通过名字装配了
         @Bean("testService")
         class Test{}
-        
-        
+
+
+​        
     @Autowired
     自动装配注解
         //按类型注入
@@ -92,16 +94,18 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
         //按Bean名字注入
         @Autowired("testServer1")
         private TestService testService; 
-        
-           
+
+
+​           
     @Controller
     控制器注解，将控制器加入IOC容器中，类似Spring mvc
     注解在类上面直接加上即可比如
         //Index控制器
         @Controller
         class IndexController{}
-        
-           
+
+
+​           
     @GET,@POST,@RequestMapping
     方法注解，在@Controller注解类类中使用，标注一个方法为GET或者POST方法，例如
         @GET("/index")
@@ -144,37 +148,42 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
         public JsonResult all() {
           return JsonResult.ok();
         }
-  
-        
+
+
+​        
     @Filter
     拦截器注解，标注一个类为拦截器，和JavaEE的Filter类似
         @Filter(1)//1表示拦截优先级，越小越优先
         public class MyFilter1 implements FilterAdapter {}
         //需要实现FilterAdapter接口
-        
-        
+
+
+​        
     @Hook
     hook注解就是Aop
         @Hook(value = Test.class, method = "show")
         public class HookTest implements HookAdapter {}
         //value表示aop的类,method要hook的方法，必须实现HookAdapter
-        
-        
+
+
+​        
     @Task
      定时任务
         @Task(name = "测试定时任务Cron", time ="*/5 * * * * ?")
         //标记在方法上，同时该类需要被@Bean 标记
         @Task(name = "测试定时任务1", time ="2000")
         public void timerTask() {}
-        
-        
+
+
+​        
     @WebSocket
     实现websocket通信
         @WebSocket("/ws")
         public class WebSocketTest implements WebSocketHandler {}
         //这样就可以完成基本的通信了
-        
-        
+
+
+​        
     @Configuration
     自定配置注解，需要配合@Bean注解一起使用，最后会把方法里面的返回的对象
     存储到IOC容器中，同时可以通过Autowired注解注入
@@ -202,8 +211,9 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
             }
         
         }
-        
-        
+
+
+​        
     @RpcService
     标注一个Bean对象是一个rpc服务,也可以分配一个名字
         @Bean
@@ -213,21 +223,24 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
                 return name+"我是RPC";
             }
         }  
-        
-        
+
+
+​        
     @Resource
     注入一个Rpc服务，也可以通过名字注入。详情，请看文档介绍   
         @Resource
         private RpcServiceTest rpcServiceTest;
-        
-        
+
+
+​        
     @Sign("MD5")
     @RequiresRoles("角色")
     @RequiresPermissions(value = {"/权限1","/权限2"}, logical=Logical.OR)
     该注解用于标注控制器里面的方法，方便自己实现sign签名算法，
     角色检查，权限检查，实现token等，详情下面的对应接口。
-    
-                
+
+
+​                
 #### 3.完成Hello World项目
      #第一步pom依赖引入
     
@@ -236,7 +249,7 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
         <artifactId>HServer</artifactId>
         <version>最新版</version>
     </dependency>
-
+    
     public class WebApp {
         public static void main(String[] args) {
             //运行官方例子,直接运行既可以了，默认自带了一些例子。
@@ -283,9 +296,9 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
         }
     }
     #就这样你就完成了一个简单得get请求定义，更多例子，可以参考包top.test下面的例子
-    
+
 #### 4.文件上传下载操作
-          
+
           #File类型得
           @GET("/downFile")
           public void downFile(HttpRequest request, HttpResponse response) {
@@ -307,7 +320,7 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
           Map<String, FileItem> fileItems = request.getFileItems();
           //然后对FileItem 进行保存，就可以了
           }
-          
+
 #### 5.Aop操作
 
         #必须实现HookAdapter的接口
@@ -340,7 +353,7 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
             }
         }
 #### 7.定时任务操作
-    
+
     #需要被@Bean注解标注,可以通过TaskManager类进行定时任务的控制，动态添加和删除
     @Bean
     public class TaskTest {
@@ -354,8 +367,9 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
             System.out.println("动态添加定时任务");
             TaskManager.addTask("测试任务2", "2000", TestTask.class,"666");
         }
-        
-        
+
+
+​        
         @Task(name = "测试定时任务1", time ="*/5 * * * * ?")
         public void timerTask() {
             System.out.println("测试定时任务，注入的对象调用结果:" + testService.testa());
@@ -393,12 +407,12 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
             System.out.println("测试定时器动态添加任务，参数是：" + args_);
         }
     }
-    
+
 #### 8.websocket操作
-    
+
     #需要被@WebSocket标注同时给一个连接地址，最后实现WebSocketHandler接口，
     #Ws类定义了简单的发送方法，如果有其他的业务操作，可以获取ChannelHandlerContext，进行操作
-
+    
     @WebSocket("/ws")
     public class WebSocketTest implements WebSocketHandler {
     
@@ -444,7 +458,7 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
     3，如果开启统计，请务必，执行Remove方法，不然，内存可能就会蹦
 
 #### 10.全局异常处理
-    
+
     类必须要被@Bean注解，同时实现GlobalException接口，
     一个项目中最多只有一个GlobalException实现哦，可以没有.没有异常处理，同时又报错了，那么直接显示错误
     @Bean
@@ -473,13 +487,13 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
      }
 
 #### 12.鉴权认证相关操作
-    
+
     //请使用相关注解对控制器的方法做标记，这样在执行到被注解标记的方法就会执行下面的相关方法
     //  List<RouterPermission> routerPermissions = PermissionAdapter.getRouterPermissions();
     // 通过上面的代码可以获取到所有标记的注解，他可以干嘛？
     // 同步后台数据库里面的权限，后台管理面里面可以动态给角色分配权限。
     // 自己做一个下拉选择列表，创建角色分配权限时，多选即可。
-
+    
     /**
      * 验证逻辑请自己实现哦
      */
@@ -510,7 +524,7 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
            System.out.println(sign.value());
         }
     }
-    
+
 #### 13.RPC调用请看gitee的WIKi
 
 #### 14.HServer2.9.4+后添加APIDOC生成功能
@@ -572,8 +586,9 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
               public JsonResult track() {
                 return JsonResult.ok();
               }
-            
-            
+
+
+​            
             2.实现TrackAdapter接口，并在类上用 @Bean标识
             @Bean
             @Slf4j
@@ -584,7 +599,7 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
                 }
             }
 #### 17.单元测试技巧
-        
+
         @RunWith(HServerTest.class)
         //指定一个外部的类，他会更具这个类递归扫描子类，并放入容器
         //@HServerBootTest(TestWebApp.class)
@@ -601,4 +616,4 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
 
 #### 17.技巧篇
     1. Linux 内核版本大于 2.5.44，(目前云服务器都有了，没有的话自己升级内核)的Linux默认使用epoll
-    2.待更新
+    2.待更新 
