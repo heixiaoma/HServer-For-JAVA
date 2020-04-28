@@ -89,5 +89,5 @@
 ![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/8.png)
 
 ###  HServer2.9.10版本，环境Linux（8核2G虚拟机）
-    数据只做参考，这玩意悬乎得很，一切都应该以实际业务为准，
+    数据只做参考，这玩意悬乎得很，一切都应该以实际业务为准，如有问题可以及时联系作者反馈
 ![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/23.png)
