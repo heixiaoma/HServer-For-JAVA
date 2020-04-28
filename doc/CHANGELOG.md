@@ -98,4 +98,6 @@
     Javassist 获取控制器中的方法参数名不正确 修复
 
 ### 2020-3-25
-    HServer2.9.9版本后添加EventBus(订阅与发布，mq那种感觉)          
+    HServer2.9.9版本后添加EventBus(订阅与发布，mq那种感觉)      
+
+        
