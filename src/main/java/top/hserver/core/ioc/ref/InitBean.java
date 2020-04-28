@@ -215,6 +215,7 @@ public class InitBean {
                         Method value = aClass1.getMethod("value");
                         String path = controllerPath + value.invoke(annotation).toString();
                         RouterInfo routerInfo = new RouterInfo();
+                        method.setAccessible(true);
                         routerInfo.setMethod(method);
                         routerInfo.setUrl(path);
                         routerInfo.setAClass(aClass);
@@ -255,6 +256,7 @@ public class InitBean {
                     for (String s : requestMethod) {
                         String path = controllerPath + requestMapping.value();
                         RouterInfo routerInfo = new RouterInfo();
+                        method.setAccessible(true);
                         routerInfo.setMethod(method);
                         routerInfo.setUrl(path);
                         routerInfo.setAClass(aClass);
