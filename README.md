@@ -572,16 +572,16 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hse
               }
 
 
-​            
-            2.实现TrackAdapter接口，并在类上用 @Bean标识
-            @Bean
-            @Slf4j
-            public class TrackImpl implements TrackAdapter {
-                @Override
-                public void track(Class clazz,StackTraceElement[] stackTraceElements, long start, long end) throws Exception {
-                    log.info("当前类：{},当前方法：{},耗时：{}", clazz.getName(), stackTraceElements[1].getMethodName(), (end - start) + "ms");
-                }
+        ​            
+    2.实现TrackAdapter接口，并在类上用 @Bean标识
+        @Bean
+        @Slf4j
+        public class TrackImpl implements TrackAdapter {
+            @Override
+            public void track(Class clazz,StackTraceElement[] stackTraceElements, long start, long end) throws Exception {
+                log.info("当前类：{},当前方法：{},耗时：{}", clazz.getName(), stackTraceElements[1].getMethodName(), (end - start) + "ms");
             }
+        }
 #### 17.单元测试技巧
 
         @RunWith(HServerTest.class)
