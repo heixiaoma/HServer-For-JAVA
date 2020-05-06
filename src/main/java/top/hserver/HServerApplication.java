@@ -29,7 +29,7 @@ public class HServerApplication {
         try {
             new HServer(port, args).run();
         } catch (Exception e) {
-            log.error(e.getMessage());
+            e.printStackTrace();
         }
     }
 

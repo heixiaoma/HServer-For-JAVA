@@ -106,19 +106,18 @@ public class HServer {
   private void initSSl() {
 
     PropUtil instance = PropUtil.getInstance();
-    String certFilePath = instance.get("certPath", null);
-    String privateKeyPath = instance.get("privateKeyPath", null);
-    if (privateKeyPath == null || certFilePath == null) {
+    String certFilePath = instance.get("certPath");
+    String privateKeyPath = instance.get("privateKeyPath");
+    String privateKeyPwd = instance.get("privateKeyPwd");
+    if (privateKeyPath == null || certFilePath == null ||privateKeyPath.trim().length()==0||certFilePath.trim().length()==0) {
       return;
     }
-
-
     try {
       //检查下是不是外部路径。
       File cfile = new File(certFilePath);
       File pfile = new File(privateKeyPath);
       if (cfile.isFile() && pfile.isFile()) {
-        ConstConfig.sslContext = SslContextBuilder.forServer(cfile, pfile).build();
+        ConstConfig.sslContext = SslContextBuilder.forServer(cfile, pfile,privateKeyPwd).build();
         return;
       }
 
@@ -127,7 +126,7 @@ public class HServer {
       InputStream pinput = HServer.class.getResourceAsStream("/ssl/"+privateKeyPath);
 
       if (cinput != null && pinput != null) {
-        ConstConfig.sslContext = SslContextBuilder.forServer(cinput, pinput).build();
+        ConstConfig.sslContext = SslContextBuilder.forServer(cinput, pinput,privateKeyPwd).build();
         return;
       }
     }catch (SSLException s){
