@@ -106,7 +106,7 @@ public class HServer {
   private void initSSl() {
 
     PropUtil instance = PropUtil.getInstance();
-    String certFilePath = instance.get("certFilePath", null);
+    String certFilePath = instance.get("certPath", null);
     String privateKeyPath = instance.get("privateKeyPath", null);
     if (privateKeyPath == null || certFilePath == null) {
       return;
