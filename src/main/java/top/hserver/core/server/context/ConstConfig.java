@@ -1,5 +1,7 @@
 package top.hserver.core.server.context;
 
+import io.netty.handler.ssl.SslContext;
+
 import java.util.concurrent.CopyOnWriteArraySet;
 
 public class ConstConfig {
@@ -12,4 +14,7 @@ public class ConstConfig {
   public static final String version = "2.9.16";
   //定时任务线程数配置
   public static Integer taskPool = Runtime.getRuntime().availableProcessors() + 1;
+  //SSL 配置
+  public static SslContext sslContext=null;
+
 }

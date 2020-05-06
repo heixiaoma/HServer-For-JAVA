@@ -14,11 +14,15 @@ import top.hserver.core.server.handlers.WebSocketServerHandler;
 public class HttpNettyServerInitializer extends ChannelInitializer<Channel> {
 
 
+
     @Override
     protected void initChannel(Channel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
         if (ConstConfig.isStatisticsOpen) {
             pipeline.addLast("统计", new ChannelTrafficShapingHandler(1000));
+        }
+        if (ConstConfig.sslContext!=null){
+          pipeline.addLast(ConstConfig.sslContext.newHandler(ch.alloc()));
         }
         pipeline.addLast(new HttpServerCodec());
         pipeline.addLast(new HttpServerExpectContinueHandler());

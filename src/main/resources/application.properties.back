@@ -8,6 +8,9 @@ taskPool=20
 statistics=false
 #统计规则
 statisticalRules=/hel.*,/admin/.*
+#-----------------ssl-------------
+certPath=a.pem
+privateKeyPath=a.key
 #-----------------集群-------------
 #是否开启集群模式
 app.cloud.open=false
