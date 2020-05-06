@@ -56,13 +56,13 @@
 ### 文档地址
 文档说明请查看 [点我](https://gitee.com/heixiaomas_admin/HServer/wikis/pages) 
 
-Redis操作源码案例地址(Jedis) [点我](https://gitee.com/heixiaomas_admin/hserver-for-java-redis)
+Redis操作源码案例地址(Jedis) [点我](https://gitee.com/HServer/hserver-for-java-redis)
 
-MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/heixiaomas_admin/hserver-for-java-mysql)
+MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/HServer/hserver-for-java-mysql)
 
-MYSQL操作源码案例地址(BeetlSQL) [点我](https://gitee.com/heixiaomas_admin/hserver-for-java-beetlsql)
+MYSQL操作源码案例地址(BeetlSQL) [点我](https://gitee.com/HServer/hserver-for-java-beetlsql)
 
-RPC操作源码案例地址(RPC) [点我](https://gitee.com/heixiaomas_admin/hserver-for-java-rpc)
+RPC操作源码案例地址(RPC) [点我](https://gitee.com/HServer/hserver-for-java-rpc)
 
 
 
