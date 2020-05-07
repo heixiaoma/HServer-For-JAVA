@@ -5,14 +5,12 @@ package top.hserver.core.server;
  */
 
 import io.netty.handler.ssl.SslContextBuilder;
-import jdk.nashorn.internal.ir.IfNode;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.epoll.EpollKit;
 import top.hserver.core.server.epoll.NamedThreadFactory;
 import top.hserver.core.server.epoll.NettyServerGroup;
-import top.hserver.core.server.handlers.StaticHandler;
 import top.hserver.core.server.util.PropUtil;
 import top.hserver.core.task.TaskManager;
 import io.netty.bootstrap.ServerBootstrap;

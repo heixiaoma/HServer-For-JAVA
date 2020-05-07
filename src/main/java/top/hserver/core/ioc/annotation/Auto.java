@@ -2,10 +2,8 @@ package top.hserver.core.ioc.annotation;
 
 import java.lang.annotation.*;
 
-
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Auto
-public @interface Track {
+public @interface Auto {
 }

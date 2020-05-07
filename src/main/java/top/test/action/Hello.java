@@ -9,6 +9,8 @@ import top.hserver.core.server.handlers.FileItem;
 import top.hserver.core.server.handlers.StatisticsHandler;
 import top.hserver.core.server.stat.IpData;
 import top.hserver.core.server.util.JsonResult;
+import top.test.annotation.Aa;
+import top.test.annotation.Log;
 import top.test.bean.User;
 import top.test.service.HelloService;
 import top.test.service.Test;
@@ -65,6 +67,12 @@ public class Hello {
   @GET("/test")
   public JsonResult test() {
     return JsonResult.ok();
+  }
+
+  @GET("/log")
+  public String log() {
+    new Aa().loga("牛哦UI");
+    return "0";
   }
 
   @Track

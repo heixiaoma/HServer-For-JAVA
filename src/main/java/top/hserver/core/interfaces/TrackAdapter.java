@@ -16,6 +16,6 @@ public interface TrackAdapter {
      * @param end
      * @throws Exception
      */
-    void track(Class clazz, StackTraceElement[] stackTraceElements, long start, long end) throws Exception;
+    void track(Class clazz,Method method, StackTraceElement[] stackTraceElements, long start, long end) throws Exception;
 
 }

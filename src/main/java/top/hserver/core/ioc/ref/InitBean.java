@@ -137,6 +137,12 @@ public class InitBean {
                 continue;
             }
 
+            //检测这个Bean是否是自定义注解的
+            if (AnnotationAdapter.class.isAssignableFrom(aClass)) {
+                IocUtil.addBean(AnnotationAdapter.class.getName(), aClass.newInstance());
+                continue;
+            }
+
             //检查注解里面是否有值
             Bean annotation = (Bean) aClass.getAnnotation(Bean.class);
             if (annotation.value().trim().length() > 0) {
