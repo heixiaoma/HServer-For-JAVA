@@ -352,15 +352,14 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/HServer/hserver-for-
             TaskManager.addTask("测试任务2", "2000", TestTask.class,"666");
         }
 
-
-​        
+    ​        
         @Task(name = "测试定时任务1", time ="*/5 * * * * ?")
         public void timerTask() {
-            System.out.println("测试定时任务，注入的对象调用结果:" + testService.testa());
-            if (flag) {
-                dynamicAddTimer();
-                flag = false;
-            }
+          System.out.println("测试定时任务，注入的对象调用结果:" + testService.testa());
+          if (flag) {
+              dynamicAddTimer();
+              flag = false;
+          }
         }
     
         @Task(name = "测试定时任务2", time = "2000")
