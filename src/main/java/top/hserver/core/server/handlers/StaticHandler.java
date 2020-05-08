@@ -1,15 +1,12 @@
 package top.hserver.core.server.handlers;
 
 
-import io.netty.handler.codec.http.HttpMethod;
 import top.hserver.core.interfaces.GlobalException;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.StaticFile;
 import top.hserver.core.server.context.WebContext;
 import top.hserver.core.server.exception.BusinessException;
 import top.hserver.core.server.util.ExceptionUtil;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -28,7 +25,7 @@ public class StaticHandler {
     }
     String basePath = "/static";
     InputStream input = getResourceStreamFromJar(basePath + uri);
-    if (input != null && webContext.getRequest().getRequestType() == HttpMethod.GET) {
+    if (input != null) {
       return buildStaticFile(input, uri, webContext);
     }
     return null;

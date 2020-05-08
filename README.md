@@ -578,7 +578,7 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/HServer/hserver-for-
         @Slf4j
         public class TrackImpl implements TrackAdapter {
             @Override
-            public void track(Class clazz,StackTraceElement[] stackTraceElements, long start, long end) throws Exception {
+            public void track(Class clazz, Method method,StackTraceElement[] stackTraceElements, long start, long end) throws Exception {
                 log.info("当前类：{},当前方法：{},耗时：{}", clazz.getName(), stackTraceElements[1].getMethodName(), (end - start) + "ms");
             }
         }
@@ -598,6 +598,67 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/HServer/hserver-for-
             }
         }
 
-#### 17.技巧篇
+#### 18.SSL配置
+      
+      在application.properties配置文件添加
+      
+      #举栗子：nginx版本的证书下载可能会得到 (xxx.pem或者xxx.cert) xxx.key
+      #注意下载的证书中 key文件需要转换成 pk8 文件
+      #因为netty4不支持pkcs12格式的私钥, 所以需要将私钥转换成pkcs8格式.
+      #openssl pkcs8 -in my.key -topk8 -out my.pk8
+      #转换过程需要你设置一个密码.
+      
+      方案一：
+      #jar路径，证书文件应该放在\src\main\resources\ssl\ 目录里，打包会一起打包
+      certPath=hserver.pem
+      privateKeyPath=hserver.pk8
+      privateKeyPwd=123
+      
+      方案二：
+      #外置路径，指定一个绝对路径即可
+      certPath=/home/ssl/hserver.pem
+      privateKeyPath=/home/ssl/hserver.pk8
+      privateKeyPwd=123
+
+      然后监听443端口，你就能https 访问了。
+
+#### 19.自定义方法级别注解
+
+      //创建一个@Log 注解，该注解必须继承@Auto注解。例如下面.
+      
+      @Target(ElementType.METHOD)
+      @Retention(RetentionPolicy.RUNTIME)
+      @Documented
+      @Auto
+      public @interface Log {
+      }
+  
+      
+      //自己实现AnnotationAdapter接口同时使用@Bean标注 .例如
+      @Bean
+      public class MyAutoAnnotationAdapter implements AnnotationAdapter {
+      
+        @Override
+        public void before(Annotation annotation, Object[] args, Class clazz, Method method) {
+      
+          System.out.println(annotation);
+          System.out.println(args.length);
+          if (args.length > 0) {
+            System.out.println(args[0]);
+          }
+          System.out.println(clazz);
+        }
+        
+        @Override
+        public void after(Annotation annotation, Object object, Class clazz, Method method) {
+          System.out.println(object);
+        }
+      }
+
+      
+      //然后你就能这个自己实现的接口中获取到.进行前置后置的处理.
+      //通过参数Annotation 来判断是哪一个注解然后进行相关逻辑处理.
+
+#### 20.技巧篇
     1. Linux 内核版本大于 2.5.44，(目前云服务器都有了，没有的话自己升级内核)的Linux默认使用epoll
     2.待更新 

@@ -125,10 +125,12 @@ public class MemoryInitClass {
                 log.debug("被注解的方法：{}", declaredMethod.getName());
                 declaredMethod.addLocalVariable("annAdapter_hserver", cp.get(AnnotationAdapter.class.getCanonicalName()));
                 declaredMethod.addLocalVariable("annObj", cp.get(Annotation.class.getCanonicalName()));
+                declaredMethod.addLocalVariable("annMethod", cp.get(Method.class.getCanonicalName()));
                 declaredMethod.addLocalVariable("clazz_hserver_x", cp.get(Class.class.getCanonicalName()));
                 StringBuilder insertBefore = new StringBuilder();
                 insertBefore.append("annAdapter_hserver = top.hserver.core.ioc.IocUtil.getBean(top.hserver.core.interfaces.AnnotationAdapter.class);");
                 insertBefore.append("annObj = (java.lang.annotation.Annotation)top.hserver.core.ioc.ref.MemoryInitClass.annMapObject.get(\""+uuid+"\");");
+                insertBefore.append("annMethod = (java.lang.reflect.Method)top.hserver.core.ioc.ref.MemoryInitClass.annMapMethod.get(\""+uuid+"\");");
                 if (!Modifier.isStatic(declaredMethod.getModifiers())) {
                     //非静态
                     insertBefore.append("clazz_hserver_x = this.getClass();");
@@ -138,7 +140,7 @@ public class MemoryInitClass {
                 }
                 insertBefore.append("if (annAdapter_hserver!=null)");
                 insertBefore.append("{");
-                insertBefore.append(" annAdapter_hserver.before(annObj,$args,clazz_hserver_x);");
+                insertBefore.append(" annAdapter_hserver.before(annObj,$args,clazz_hserver_x,annMethod);");
                 insertBefore.append("}");
                 insertBefore.append("else");
                 insertBefore.append("{");
@@ -149,7 +151,7 @@ public class MemoryInitClass {
                 StringBuilder insertAfter = new StringBuilder();
                 insertAfter.append("if (annAdapter_hserver!=null)");
                 insertAfter.append("{");
-                insertAfter.append("annAdapter_hserver.after(annObj,$_,clazz_hserver_x);");
+                insertAfter.append("annAdapter_hserver.after(annObj,$_,clazz_hserver_x,annMethod);");
                 insertAfter.append("}");
                 insertAfter.append("else");
                 insertAfter.append("{");
