@@ -145,7 +145,7 @@ public class DispatcherHandler {
    */
   static WebContext staticFile(WebContext webContext) {
     //检查是不是静态文件，如果是封装下请求，然后跳过控制器的方法
-    if (noStaticFileUri.contains(webContext.getRequest().getUri())) {
+    if (noStaticFileUri.contains(webContext.getRequest().getUri())|| webContext.getRequest().getRequestType() != HttpMethod.GET) {
       return webContext;
     }
     StaticFile handler = staticHandler.handler(webContext.getRequest().getUri(), webContext);

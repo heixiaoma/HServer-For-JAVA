@@ -5,14 +5,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.epoll.EpollChannelOption;
-import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.client.handler.FileServerInitializer;
-import top.hserver.core.server.epoll.EpollKit;
-import top.hserver.core.server.epoll.NettyServerGroup;
 
 @Slf4j
 public class ChatClient extends Thread {
