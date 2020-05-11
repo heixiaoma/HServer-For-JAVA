@@ -223,8 +223,8 @@ public class InitBean {
                         RouterInfo routerInfo = new RouterInfo();
                         method.setAccessible(true);
                         routerInfo.setMethod(method);
-                        routerInfo.setUrl(path);
                         routerInfo.setAClass(aClass);
+                        routerInfo.setUrl(path);
                         routerInfo.setReqMethodName(HttpMethod.valueOf(aClass1.getSimpleName()));
                         RouterManager.addRouter(routerInfo);
                         //检查权限
@@ -360,18 +360,10 @@ public class InitBean {
         all.forEach((k, v) -> {
             //获取当前类的所有字段
             Field[] declaredFields = v.getClass().getDeclaredFields();
-            for (Field declaredField : declaredFields) {
-                valuezr(declaredField, v);
-                zr(declaredField, v);
-                rpczr(declaredField, v);
-            }
+            autoZr(declaredFields,v);
             //aop的代理对象，检查一次
             Field[] declaredFields1 = v.getClass().getSuperclass().getDeclaredFields();
-            for (Field field : declaredFields1) {
-                valuezr(field, v);
-                zr(field, v);
-                rpczr(field, v);
-            }
+            autoZr(declaredFields1,v);
         });
 
         //Filter注入
@@ -381,19 +373,20 @@ public class InitBean {
             String next = v.keySet().iterator().next();
             FilterAdapter filterAdapter = v.get(next);
             Field[] declaredFields = filterAdapter.getClass().getDeclaredFields();
-            for (Field declaredField : declaredFields) {
-                valuezr(declaredField, filterAdapter);
-                zr(declaredField, filterAdapter);
-                rpczr(declaredField, filterAdapter);
-            }
+            autoZr(declaredFields,filterAdapter);
             //aop的代理对象，检查一次
             Field[] declaredFields1 = filterAdapter.getClass().getSuperclass().getDeclaredFields();
-            for (Field field : declaredFields1) {
-                valuezr(field, filterAdapter);
-                zr(field, filterAdapter);
-                rpczr(field, filterAdapter);
-            }
+            autoZr(declaredFields1,filterAdapter);
         });
+    }
+
+
+    private static void autoZr( Field[] declaredFields1,Object v){
+        for (Field field : declaredFields1) {
+            valuezr(field, v);
+            zr(field, v);
+            rpczr(field, v);
+        }
     }
 
     /**
