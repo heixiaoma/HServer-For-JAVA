@@ -32,9 +32,9 @@ public class UrlAction {
     }
 
 
-    @GET("/a/{url}/{a}")
-    public String d(String url,String a){
-        return "匹配到的URL:"+url+"---"+a;
+    @GET("/a/{url}/{a}/cc{c}")
+    public String d(String url,String a,String c){
+        return "匹配到的URL:"+url+"---"+a+"---"+c;
     }
 
 }
