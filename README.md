@@ -75,11 +75,11 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/HServer/hserver-for-
     
     @Bean
     将Bean对象加入IOC容器中比如
-        //按默名字加入IOC容器
+        //默认按类型加入IOC容器
         @Bean
         class TestService{}
         //指定名字加入容器，装配的时候就只能通过名字装配了
-        @Bean("testService")
+        @Bean("testService1")
         class Test{}
         
     @Autowired

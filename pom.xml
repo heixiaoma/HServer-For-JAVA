@@ -47,7 +47,7 @@
         <slf4j.version>1.7.28</slf4j.version>
         <fastjson.version>1.2.62</fastjson.version>
         <projectlombok.version>1.18.10</projectlombok.version>
-        <javassist.version>3.18.2-GA</javassist.version>
+        <javassist.version>3.27.0-GA</javassist.version>
         <freemarker.version>2.3.28</freemarker.version>
         <protostuff.version>1.0.10</protostuff.version>
         <objenesis.version>3.1</objenesis.version>
