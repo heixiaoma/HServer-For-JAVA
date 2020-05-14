@@ -64,9 +64,13 @@ public class RouterManager {
       /**
        * 检查是否是需要匹配的那种URL
        */
-      String pattern = isPattern(url);
-      if (pattern != null) {
-        String s = url.replaceAll("\\{" + pattern + "\\}", "(.*)");
+      List<String> pattern = isPattern(url);
+      if (pattern .size()>0) {
+        String s = url;
+        for (String s1 : pattern) {
+          s=s.replaceAll("\\{" + s1 + "\\}", "(.*?)");
+        }
+
         Map<String, PatternUri> ispauri = ISPAURI(routerInfo.reqMethodName);
         if (ispauri != null) {
           ispauri.put(s, new PatternUri(pattern, url, s));
@@ -83,16 +87,17 @@ public class RouterManager {
   }
 
 
-  private static String isPattern(String url) {
-    String regex = "(\\{.*\\})";
+  private static List<String> isPattern(String url) {
+    String regex = "(\\{.*?\\})";
     Matcher matcher = Pattern.compile(regex).matcher(url);
-    if (matcher.find()) {
+    List<String> patterns=new ArrayList<>();
+    while (matcher.find()) {
       String group = matcher.group(1);
       if (group != null) {
-        return group.substring(1, group.length() - 1);
+        patterns.add(group.substring(1, group.length() - 1));
       }
     }
-    return null;
+    return patterns;
   }
 
   private static PatternUri isPattern(String url, HttpMethod method) {
@@ -138,12 +143,16 @@ public class RouterManager {
       //二次检查匹配规则的URL;
       PatternUri pattern = isPattern(url, requestType);
       if (pattern != null) {
+        //用初始的规则匹配现在的key 值，
         Matcher matcher = Pattern.compile(pattern.getPatternUrl()).matcher(url);
-        if (matcher.find()) {
-          try {
-            requestParams.put(pattern.getKey(), URLDecoder.decode(matcher.group(1), "UTF-8"));
-          } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        for (String key : pattern.getKeys()) {
+          if (matcher.find()) {
+            try {
+              //对控制器的参数进行拼装。这个里的这个拼装类似指针调用，这里put webContent也put了。
+              requestParams.put(key, URLDecoder.decode(matcher.group(1), "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+              e.printStackTrace();
+            }
           }
         }
         return router.get(pattern.getOrgUrl());

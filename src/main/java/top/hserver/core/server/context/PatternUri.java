@@ -2,17 +2,19 @@ package top.hserver.core.server.context;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class PatternUri {
 
-    private String key;
+    private List<String> keys;
 
     private String orgUrl;
 
     private String patternUrl;
 
-    public PatternUri(String key, String orgUrl, String patternUrl) {
-        this.key = key;
+    public PatternUri(List<String> keys, String orgUrl, String patternUrl) {
+        this.keys = keys;
         this.orgUrl = orgUrl;
         this.patternUrl = patternUrl;
     }
