@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class ResultData<T> implements Serializable {
+public class ResultData implements Serializable {
 
     private static final long SerialVersionUID = 1L;
 
@@ -13,5 +13,5 @@ public class ResultData<T> implements Serializable {
 
     private int code;
 
-    private T data;
+    private Object data;
 }

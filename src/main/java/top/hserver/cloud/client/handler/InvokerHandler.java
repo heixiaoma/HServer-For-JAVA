@@ -30,8 +30,8 @@ public class InvokerHandler {
         if (method.getName().equals(data.getMethod())) {
           try {
             Object invoke = method.invoke(bean, data.getObjects());
-            ResultData<String> resultData = new ResultData<>();
-            resultData.setData(invoke.toString());
+            ResultData resultData = new ResultData();
+            resultData.setData(invoke);
             resultData.setUUID(data.getUUID());
             resultData.setCode(200);
             Msg<ResultData> msg2 = new Msg<>();
@@ -39,7 +39,7 @@ public class InvokerHandler {
             msg2.setData(resultData);
             return msg2;
           } catch (Exception e) {
-            ResultData<String> resultData = new ResultData<>();
+            ResultData resultData = new ResultData();
             resultData.setData(e.getMessage());
             resultData.setUUID(data.getUUID());
             resultData.setCode(503);
@@ -51,7 +51,7 @@ public class InvokerHandler {
         }
       }
     }
-    ResultData<String> resultData = new ResultData<>();
+    ResultData resultData = new ResultData();
     resultData.setData("空调用");
     resultData.setCode(503);
     Msg<ResultData> msg2 = new Msg<>();
@@ -69,7 +69,7 @@ public class InvokerHandler {
   }
 
   public static Msg<ResultData> handleException(Throwable e) {
-    ResultData<String> resultData = new ResultData<>();
+    ResultData resultData = new ResultData();
     resultData.setData(e.getMessage());
     resultData.setCode(503);
     Msg<ResultData> msg2 = new Msg<>();
