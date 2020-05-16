@@ -284,11 +284,11 @@ public class DispatcherHandler {
     if (routerInfo == null) {
       GlobalException bean1 = IocUtil.getBean(GlobalException.class);
       if (bean1 != null) {
-        bean1.handler(new NullPointerException("为找到对应的控制器"), webContext.getWebkit());
+        bean1.handler(new NullPointerException("未找到对应的控制器，请求方式："+webContext.getRequest().getRequestType().toString()), webContext.getWebkit());
         return webContext;
       } else {
-        log.error("为找到对应的控制器");
-        throw new BusinessException(404, "为找到对应的控制器");
+        log.error("未找到对应的控制器，请求方式："+webContext.getRequest().getRequestType().toString());
+        throw new BusinessException(404, "未找到对应的控制器，请求方式："+webContext.getRequest().getRequestType().toString());
       }
     }
     try {
