@@ -410,8 +410,7 @@ public class DispatcherHandler {
    * @param future
    * @param msg
    */
-  static void writeResponse(ChannelHandlerContext
-                              ctx, CompletableFuture<WebContext> future, FullHttpResponse msg) {
+  static void writeResponse(ChannelHandlerContext ctx, CompletableFuture<WebContext> future, FullHttpResponse msg) {
     ctx.writeAndFlush(msg);
     future.complete(null);
   }
