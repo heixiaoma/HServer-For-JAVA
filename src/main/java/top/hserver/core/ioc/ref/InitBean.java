@@ -395,8 +395,16 @@ public class InitBean {
     public static void BeetlSqlinit() {
 
         //检查下是否有Beetlsql的管理器
-        Object sqlManager = IocUtil.getBean("org.beetl.sql.core.SQLManager");
-        if (sqlManager == null) {
+      final Map<String,Object> sqlManagers=new HashMap<>();
+      Map<String, Object> all1 = IocUtil.getAll();
+      all1.forEach((k,v)->{
+        //存在sqlManager.那就搞事情；
+        if ("org.beetl.sql.core.SQLManager".equals(v.getClass().getName())){
+          sqlManagers.put(k,v);
+        }
+      });
+
+      if (sqlManagers == null) {
             return;
         }
         //Bean对象
@@ -405,7 +413,7 @@ public class InitBean {
             //获取当前类的所有字段
             Field[] declaredFields = v.getClass().getDeclaredFields();
             for (Field declaredField : declaredFields) {
-                beetlsqlzr(declaredField, v, sqlManager);
+                beetlsqlzr(declaredField, v, sqlManagers);
             }
         });
 
@@ -417,7 +425,7 @@ public class InitBean {
             FilterAdapter filterAdapter = v.get(next);
             Field[] declaredFields = filterAdapter.getClass().getDeclaredFields();
             for (Field declaredField : declaredFields) {
-                beetlsqlzr(declaredField, filterAdapter, sqlManager);
+                beetlsqlzr(declaredField, filterAdapter, sqlManagers);
             }
         });
     }
@@ -508,7 +516,7 @@ public class InitBean {
                     log.error("{}----->{}：装配错误:类型不匹配", v.getClass().getSimpleName(), v.getClass().getSimpleName());
                 }
             } catch (Exception e) {
-                log.error("装配错误:{}", e.getMessage());
+                log.error("装配错误:{},{}", declaredField.getName(),e.getMessage());
             }
         }
     }
@@ -520,7 +528,7 @@ public class InitBean {
      * @param declaredField
      * @param v
      */
-    private static void beetlsqlzr(Field declaredField, Object v, Object sqlManager) {
+    private static void beetlsqlzr(Field declaredField, Object v, Map sqlManagers) {
         //检查是否有注解@Autowired
         Autowired annotation = declaredField.getAnnotation(Autowired.class);
         if (annotation != null) {
@@ -529,16 +537,19 @@ public class InitBean {
             BeetlSQL beetlSQL = declaredField.getType().getAnnotation(BeetlSQL.class);
             try {
                 if (beetlSQL != null) {
-                    Class<?> aClass = sqlManager.getClass();
-                    Method[] methods = aClass.getMethods();
-                    Method getMapper = null;
-                    for (Method method : methods) {
-                        if (method.getName().equals("getMapper")) {
-                            getMapper = method;
-                            break;
-                        }
-                    }
-                    if (getMapper == null) {
+                  Object sqlManager;
+                  if (beetlSQL.value().trim().length()==0){
+                    sqlManager=sqlManagers.get("org.beetl.sql.core.SQLManager");
+                  }else {
+                    sqlManager=sqlManagers.get(beetlSQL.value());
+                  }
+
+                  if (sqlManager==null){
+                    throw new NullPointerException("空指针，sqlManager-bean存在，但是BeetlSQL的注解的Value值（"+beetlSQL.value()+"） 类型不匹配,请检查配置类的Bean 名字和BeetlSQL 的是否一致.");
+                  }
+                  Class<?> aClass = sqlManager.getClass();
+                  Method getMapper = aClass.getMethod("getMapper", Class.class);
+                  if (getMapper == null) {
                         return;
                     }
                     //这个就是Dao的接口的实现类，将他进行注入到其他地方
