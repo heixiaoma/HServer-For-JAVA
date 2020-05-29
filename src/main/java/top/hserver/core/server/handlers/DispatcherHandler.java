@@ -35,7 +35,7 @@ public class DispatcherHandler {
 
   private final static StatisticsHandler statisticsHandler = new StatisticsHandler();
   private final static StaticHandler staticHandler = new StaticHandler();
-  private static final HttpDataFactory HTTP_DATA_FACTORY = new DefaultHttpDataFactory(true);
+  private static final HttpDataFactory HTTP_DATA_FACTORY = new DefaultHttpDataFactory(false);
   //标识不是静态文件，这样下次使用方便直接跳过检查
   private final static CopyOnWriteArraySet<String> noStaticFileUri = new CopyOnWriteArraySet<>();
 
@@ -71,6 +71,7 @@ public class DispatcherHandler {
           request.readHttpDataChunkByChunk(decoder);
           content.release();
         }
+        decoder.destroy();
         if (!byteBuffs.isEmpty()) {
           request.setBody(Unpooled.copiedBuffer(byteBuffs.toArray(new ByteBuf[0])));
         }

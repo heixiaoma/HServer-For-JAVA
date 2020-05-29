@@ -8,6 +8,7 @@ import top.hserver.core.interfaces.Statistics;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 
 public class WebContext {
@@ -33,7 +34,7 @@ public class WebContext {
     //时间统计
     private Statistics statistics;
 
-    private Queue<HttpContent> contents = new LinkedList<>();
+    private Queue<HttpContent> contents = new ConcurrentLinkedDeque<>();
 
 
     public void regStatistics(Statistics statistics) {
