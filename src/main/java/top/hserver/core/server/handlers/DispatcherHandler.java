@@ -71,10 +71,13 @@ public class DispatcherHandler {
           request.readHttpDataChunkByChunk(decoder);
           content.release();
         }
-        decoder.destroy();
         if (!byteBuffs.isEmpty()) {
           request.setBody(Unpooled.copiedBuffer(byteBuffs.toArray(new ByteBuf[0])));
         }
+        //消除掉
+        decoder.destroy();
+        //ByteBuf 不释放会带来内存泄漏
+        byteBuffs.forEach(b->b.release());
       } catch (Exception e) {
         GlobalException bean2 = IocUtil.getBean(GlobalException.class);
         if (bean2 != null) {
