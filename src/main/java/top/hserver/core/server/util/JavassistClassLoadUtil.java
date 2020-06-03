@@ -65,7 +65,7 @@ public class JavassistClassLoadUtil {
                                             classes.add(classLoader.loadClass(packageName + '.' + className));
                                         } catch (Throwable e) {
                                             if (!"HServerTest".equals(className)) {
-                                                log.error(e.getMessage());
+//                                                log.error(e.getMessage());
                                             }
                                         }
                                     }
@@ -73,12 +73,12 @@ public class JavassistClassLoadUtil {
                             }
                         }
                     } catch (IOException e) {
-                        log.error(e.getMessage());
+//                        log.error(e.getMessage());
                     }
                 }
             }
         } catch (IOException e) {
-            log.error(e.getMessage());
+//            log.error(e.getMessage());
         }
 
         return classes;
@@ -104,7 +104,7 @@ public class JavassistClassLoadUtil {
                 try {
                     classes.add(classLoader.loadClass(packageName + '.' + className));
                 } catch (ClassNotFoundException e) {
-                    log.error(e.getMessage());
+//                    log.error(e.getMessage());
                 }
             }
         }

@@ -37,7 +37,12 @@ public class MemoryInitClass {
             ClassPool cp = ClassPool.getDefault();
             for (Class<?> aClass : classes) {
                 CtClass cc = null;
-                Method[] methods = aClass.getMethods();
+                Method[] methods;
+                try {
+                  methods = aClass.getMethods();
+                }catch (NoClassDefFoundError error){
+                  continue;
+                }
                 bname:
                 for (Method method : methods) {
                     Annotation[] annotations = method.getAnnotations();

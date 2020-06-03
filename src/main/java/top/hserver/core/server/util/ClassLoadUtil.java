@@ -62,7 +62,7 @@ public class ClassLoadUtil {
                                             classes.add(classLoader.loadClass(packageName + '.' + className));
                                         } catch (Throwable e) {
                                             if (!"HServerTest".equals(className)) {
-                                                log.error(e.getMessage());
+//                                                log.error(e.getMessage());
                                             }
                                         }
                                     }
@@ -70,12 +70,12 @@ public class ClassLoadUtil {
                             }
                         }
                     } catch (IOException e) {
-                        log.error(e.getMessage());
+//                        log.error(e.getMessage());
                     }
                 }
             }
         } catch (IOException e) {
-            log.error(e.getMessage());
+//            log.error(e.getMessage());
         }
 
         return classes;
@@ -101,7 +101,7 @@ public class ClassLoadUtil {
                 try {
                     classes.add(classLoader.loadClass(packageName + '.' + className));
                 } catch (ClassNotFoundException e) {
-                    log.error(e.getMessage());
+//                    log.error(e.getMessage());
                 }
             }
         }
