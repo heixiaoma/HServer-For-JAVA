@@ -1,6 +1,8 @@
 package top.hserver.core.server.util;
 
 
+import javassist.ClassPool;
+import javassist.Loader;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -27,13 +29,19 @@ public class ClassLoadUtil {
      * @param recursive   是否要递归加载子包下的class
      * @return Class列表
      */
-    public static List<Class<?>> LoadClasses(String packageName, boolean recursive) {
+    public static List<Class<?>> LoadClasses(String packageName, boolean recursive,boolean isJavassist) {
         List<Class<?>> classes = new ArrayList<Class<?>>();
         String packageDirName = packageName.replace('.', '/');
         try {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            Enumeration<URL> dirs = classLoader.getResources(packageDirName);
-            while (dirs.hasMoreElements()) {
+            ClassLoader classLoader=null;
+            if (isJavassist){
+              ClassPool cp = ClassPool.getDefault();
+              classLoader = new Loader(cp);
+            }else {
+               classLoader = Thread.currentThread().getContextClassLoader();
+            }
+          Enumeration<URL> dirs = classLoader.getResources(packageDirName);
+          while (dirs.hasMoreElements()) {
                 URL url = dirs.nextElement();
                 String protocol = url.getProtocol();
                 if ("file".equals(protocol)) {
@@ -88,6 +96,7 @@ public class ClassLoadUtil {
             return;
         }
         File[] dirfiles = dir.listFiles(new FileFilter() {
+            @Override
             public boolean accept(File file) {
                 return (recursive && file.isDirectory()) || (file.getName().endsWith(".class"));
             }

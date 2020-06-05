@@ -21,7 +21,7 @@ public class ClasspathPackageScanner implements PackageScanner {
      * @param basePackage
      */
     public ClasspathPackageScanner(String basePackage) {
-        List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true);
+        List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, true,false);
         for (Class<?> aClass : classes) {
             //类级别的注解
             if (aClass.getAnnotation(Bean.class) != null) {

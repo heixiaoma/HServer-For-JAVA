@@ -8,7 +8,7 @@ import top.hserver.core.interfaces.AnnotationAdapter;
 import top.hserver.core.interfaces.TrackAdapter;
 import top.hserver.core.ioc.annotation.Auto;
 import top.hserver.core.ioc.annotation.Track;
-import top.hserver.core.server.util.JavassistClassLoadUtil;
+import top.hserver.core.server.util.ClassLoadUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -33,7 +33,7 @@ public class MemoryInitClass {
             return;
         }
         try {
-            List<Class<?>> classes = JavassistClassLoadUtil.LoadClasses(clazz.getPackage().getName(), true);
+            List<Class<?>> classes =ClassLoadUtil.LoadClasses(clazz.getPackage().getName(), true,true);
             ClassPool cp = ClassPool.getDefault();
             for (Class<?> aClass : classes) {
                 CtClass cc = null;
