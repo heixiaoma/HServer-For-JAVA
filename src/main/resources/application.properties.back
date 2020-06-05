@@ -1,7 +1,3 @@
-log.name=app
-log.rootLevel=info
-log.dir=./log
-log.console=true
 #taskPool定时任务线程池子配置，默认大小是cpu核心数+1
 taskPool=20
 #开启访问统计
