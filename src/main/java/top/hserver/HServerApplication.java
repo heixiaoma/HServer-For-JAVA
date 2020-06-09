@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+import static top.hserver.core.event.EventDispatcher.startTaskThread;
 
 
 @Slf4j
@@ -56,6 +57,8 @@ public class HServerApplication {
 
     public static void runTest(List<Class> list) {
         iocInit(list.toArray(new Class[list.size()]));
+        //Event Task 问题
+        startTaskThread();
     }
 
 }

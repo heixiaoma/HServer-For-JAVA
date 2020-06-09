@@ -93,7 +93,7 @@ public class HServer {
 
   private String getHello(String typeName, int port) {
 
-    return "  ___ ___  _________ \t方式运行：" + typeName + "\t端口：" + port + "\n" +
+    return "  ___ ___  _________ \t运行方式：" + typeName + "\t端口：" + port + "\n" +
       " /   |   \\/   _____/ ______________  __ ___________ \n" +
       "/    ~    \\_____  \\_/ __ \\_  __ \\  \\/ // __ \\_  __ \\\n" +
       "\\    Y    /        \\  ___/|  | \\/\\   /\\  ___/|  | \\/\n" +
