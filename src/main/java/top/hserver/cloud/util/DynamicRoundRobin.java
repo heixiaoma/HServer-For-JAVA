@@ -24,19 +24,14 @@ public class DynamicRoundRobin<T> {
 
   public T choose() {
     while (true) {
-      int size = list.size();
-      if (size == 0) {
+      if (list.size()==0){
         return null;
       }
-      int p = pos.getAndIncrement();
-      if (p > size - 1) {
-        pos.set(0);
-        continue;
-      }
-      try {
-        return list.get(p);
-      } catch (IndexOutOfBoundsException e) {
-        //有可能在取的过程中，list被删除元素了，所以重置一下，重新轮询。
+      if (pos.intValue() < list.size()) {
+        synchronized (list){
+          return list.get(pos.getAndIncrement());
+        }
+      } else {
         pos.set(0);
       }
     }
