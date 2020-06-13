@@ -22,8 +22,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.net.ssl.SSLException;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 
 import static top.hserver.core.event.EventDispatcher.startTaskThread;
 
@@ -92,7 +95,13 @@ public class HServer {
 
 
   private String getHello(String typeName, int port) {
-
+    InputStream banner = HServer.class.getResourceAsStream("/banner.txt");
+    if (banner!=null) {
+      String result = new BufferedReader(new InputStreamReader(banner))
+              .lines().collect(Collectors.joining(System.lineSeparator()));
+      return result;
+    }
+    //GRAFFtit 字体
     return "  ___ ___  _________ \t运行方式：" + typeName + "\t端口：" + port + "\n" +
       " /   |   \\/   _____/ ______________  __ ___________ \n" +
       "/    ~    \\_____  \\_/ __ \\_  __ \\  \\/ // __ \\_  __ \\\n" +

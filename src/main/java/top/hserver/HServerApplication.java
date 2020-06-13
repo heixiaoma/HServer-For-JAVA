@@ -24,6 +24,11 @@ public class HServerApplication {
         startServer(port, args);
     }
 
+    public static void run(Integer port, String... args) {
+        iocInit();
+        startServer(port, args);
+    }
+
     private static void startServer(int port, String[] args) {
         //云启动
         CloudManager.run();
