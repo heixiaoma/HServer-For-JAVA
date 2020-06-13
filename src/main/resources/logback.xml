@@ -11,12 +11,13 @@
 
   <!--文件存储地址-->
   <property name="LOGGINE_FILE_HOME" value="log"/>
+  <property name="LOGGINE_FILE_HOME_SAVE" value="log/log"/>
 
   <!--控制台的显示-->
   <appender name="STDOUT"
             class="ch.qos.logback.core.ConsoleAppender">
     <encoder
-      class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
       <layout class="top.hserver.core.log.HServerPatternLayout">
         <pattern>
           ${logging.console.pattern:-${STDOUT_PATTERN}}
@@ -31,8 +32,8 @@
     <file>${logging.file.path:-${LOGGINE_FILE_HOME}}/${logging.file.name:-hserver}-view.log
     </file>
     <rollingPolicy
-      class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <fileNamePattern>${logging.file.name:-hserver}-view-%d{yyyy-MM-dd}.%i.log
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>${logging.file.path:-${LOGGINE_FILE_HOME_SAVE}}/${logging.file.name:-hserver}-view-%d{yyyy-MM-dd}.%i.log
       </fileNamePattern>
       <maxFileSize>${logging.file.max.size:-100MB}</maxFileSize>
       <maxHistory>${logging.file.max.history:-60}</maxHistory>
@@ -40,7 +41,7 @@
     </rollingPolicy>
 
     <encoder
-      class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
       <layout class="top.hserver.core.log.HServerPatternLayout">
         <pattern>
           ${logging.console.pattern:-${STDOUT_PATTERN}}
@@ -55,8 +56,8 @@
     <file>${logging.file.path:-${LOGGINE_FILE_HOME}}/${logging.file.name:-hserver}.log
     </file>
     <rollingPolicy
-      class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <fileNamePattern>${logging.file.name:-hserver}-%d{yyyy-MM-dd}.%i.log
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>${logging.file.path:-${LOGGINE_FILE_HOME_SAVE}}/${logging.file.name:-hserver}-%d{yyyy-MM-dd}.%i.log
       </fileNamePattern>
       <maxFileSize>${logging.file.max.size:-100MB}</maxFileSize>
       <maxHistory>${logging.file.max.history:-60}</maxHistory>
@@ -64,7 +65,7 @@
     </rollingPolicy>
 
     <encoder
-      class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
       <layout class="top.hserver.core.log.HServerPatternLayout">
         <pattern>
           ${logging.file.pattern:-${FILE_PATTERN}}
@@ -84,8 +85,8 @@
       <onMismatch>DENY</onMismatch>
     </filter>
     <rollingPolicy
-      class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <fileNamePattern>${logging.file.name:-hserver}-error-view-%d{yyyy-MM-dd}.%i.log
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>${logging.file.path:-${LOGGINE_FILE_HOME_SAVE}}/${logging.file.name:-hserver}-error-view-%d{yyyy-MM-dd}.%i.log
       </fileNamePattern>
       <maxFileSize>${logging.file.max.size:-100MB}</maxFileSize>
       <maxHistory>${logging.file.max.history:-60}</maxHistory>
@@ -93,7 +94,7 @@
     </rollingPolicy>
 
     <encoder
-      class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
       <layout class="top.hserver.core.log.HServerPatternLayout">
         <pattern>
           ${logging.console.pattern:-${STDOUT_PATTERN}}
@@ -113,8 +114,8 @@
       <onMismatch>DENY</onMismatch>
     </filter>
     <rollingPolicy
-      class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <fileNamePattern>${logging.file.name:-hserver}-error-%d{yyyy-MM-dd}.%i.log
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>${logging.file.path:-${LOGGINE_FILE_HOME_SAVE}}/${logging.file.name:-hserver}-error-%d{yyyy-MM-dd}.%i.log
       </fileNamePattern>
       <maxFileSize>${logging.file.max.size:-100MB}</maxFileSize>
       <maxHistory>${logging.file.max.history:-60}</maxHistory>
@@ -122,7 +123,7 @@
     </rollingPolicy>
 
     <encoder
-      class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
       <layout class="top.hserver.core.log.HServerPatternLayout">
         <pattern>
           ${logging.file.pattern:-${FILE_PATTERN}}
