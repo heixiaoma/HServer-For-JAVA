@@ -4,6 +4,7 @@ import io.netty.handler.codec.http.*;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
+import io.netty.handler.ssl.OptionalSslHandler;
 import io.netty.handler.traffic.ChannelTrafficShapingHandler;
 import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.handlers.ActionHandler;
@@ -22,7 +23,7 @@ public class HttpNettyServerInitializer extends ChannelInitializer<Channel> {
             pipeline.addLast("统计", new ChannelTrafficShapingHandler(1000));
         }
         if (ConstConfig.sslContext!=null){
-          pipeline.addLast(ConstConfig.sslContext.newHandler(ch.alloc()));
+          pipeline.addLast(new OptionalSslHandler(ConstConfig.sslContext));
         }
         pipeline.addLast(new HttpServerCodec());
         pipeline.addLast(new HttpServerExpectContinueHandler());
