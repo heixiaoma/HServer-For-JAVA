@@ -22,10 +22,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.net.ssl.SSLException;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.stream.Collectors;
 
 import static top.hserver.core.event.EventDispatcher.startTaskThread;
@@ -96,11 +93,20 @@ public class HServer {
 
   private String getHello(String typeName, int port) {
     InputStream banner = HServer.class.getResourceAsStream("/banner.txt");
-    if (banner!=null) {
-      String result = new BufferedReader(new InputStreamReader(banner))
-              .lines().collect(Collectors.joining(System.lineSeparator()));
-      return result;
+    try {
+
+      if (banner != null) {
+        InputStreamReader inputStreamReader = new InputStreamReader(banner);
+        String result = new BufferedReader(inputStreamReader)
+          .lines().collect(Collectors.joining(System.lineSeparator()));
+        inputStreamReader.close();
+        banner.close();
+        return result;
+      }
+    } catch (IOException e) {
+      log.error("banner.txt 流关闭错误{}", e.getMessage());
     }
+
     //GRAFFtit 字体
     return "  ___ ___  _________ \t运行方式：" + typeName + "\t端口：" + port + "\n" +
       " /   |   \\/   _____/ ______________  __ ___________ \n" +
@@ -116,7 +122,7 @@ public class HServer {
     String certFilePath = instance.get("certPath");
     String privateKeyPath = instance.get("privateKeyPath");
     String privateKeyPwd = instance.get("privateKeyPwd");
-    if (privateKeyPath == null || certFilePath == null ||privateKeyPath.trim().length()==0||certFilePath.trim().length()==0) {
+    if (privateKeyPath == null || certFilePath == null || privateKeyPath.trim().length() == 0 || certFilePath.trim().length() == 0) {
       return;
     }
     try {
@@ -124,19 +130,19 @@ public class HServer {
       File cfile = new File(certFilePath);
       File pfile = new File(privateKeyPath);
       if (cfile.isFile() && pfile.isFile()) {
-        ConstConfig.sslContext = SslContextBuilder.forServer(cfile, pfile,privateKeyPwd).build();
+        ConstConfig.sslContext = SslContextBuilder.forServer(cfile, pfile, privateKeyPwd).build();
         return;
       }
 
       //看看是不是resources里面的
-      InputStream cinput = HServer.class.getResourceAsStream("/ssl/"+certFilePath);
-      InputStream pinput = HServer.class.getResourceAsStream("/ssl/"+privateKeyPath);
+      InputStream cinput = HServer.class.getResourceAsStream("/ssl/" + certFilePath);
+      InputStream pinput = HServer.class.getResourceAsStream("/ssl/" + privateKeyPath);
 
       if (cinput != null && pinput != null) {
-        ConstConfig.sslContext = SslContextBuilder.forServer(cinput, pinput,privateKeyPwd).build();
+        ConstConfig.sslContext = SslContextBuilder.forServer(cinput, pinput, privateKeyPwd).build();
         return;
       }
-    }catch (SSLException s){
+    } catch (SSLException s) {
       log.error(s.getMessage());
       s.printStackTrace();
     }
