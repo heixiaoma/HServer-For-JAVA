@@ -76,6 +76,7 @@ public class RouterManager {
                 }
                 Map<String, PatternUri> ispauri = ISPAURI(routerInfo.reqMethodName);
                 if (ispauri != null) {
+                    s="^"+s;
                     ispauri.put(s, new PatternUri(pattern, url, s));
                 }
             }
