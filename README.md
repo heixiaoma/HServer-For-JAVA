@@ -13,7 +13,7 @@
           <img src="https://img.shields.io/badge/HServer-2.9.23-yeoll.svg?style=flat" />
       </a>
     <a >
-        <img src="https://img.shields.io/badge/Netty-4.1.49.Final-blue.svg" alt="flat">
+        <img src="https://img.shields.io/badge/Netty-4.1.50.Final-blue.svg" alt="flat">
     </a>
     <a >
         <img src="https://img.shields.io/badge/Licence-Apache2.0-green.svg?style=flat" />
@@ -39,7 +39,7 @@
     <dependency>
         <groupId>top.hserver</groupId>
         <artifactId>HServer</artifactId>
-        <version>2.9.23</version>
+        <version>2.9.24</version>
     </dependency>
     
     全部版本查询 https://repo1.maven.org/maven2/top/hserver/HServer/
