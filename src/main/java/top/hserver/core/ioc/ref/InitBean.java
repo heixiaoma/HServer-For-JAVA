@@ -357,14 +357,7 @@ public class InitBean {
   public static void injection() {
     //Bean对象
     Map<String, Object> all = IocUtil.getAll();
-    all.forEach((k, v) -> {
-      //获取当前类的所有字段
-      Field[] declaredFields = v.getClass().getDeclaredFields();
-      autoZr(declaredFields, v);
-      //aop的代理对象，检查一次
-      Field[] declaredFields1 = v.getClass().getSuperclass().getDeclaredFields();
-      autoZr(declaredFields1, v);
-    });
+    all.forEach((k, v) -> autoZr(v));
 
     //Filter注入
     List<Map<String, FilterAdapter>> filtersIoc = FilterChain.filtersIoc;
@@ -372,20 +365,22 @@ public class InitBean {
       //获取当前类的所有字段
       String next = v.keySet().iterator().next();
       FilterAdapter filterAdapter = v.get(next);
-      Field[] declaredFields = filterAdapter.getClass().getDeclaredFields();
-      autoZr(declaredFields, filterAdapter);
-      //aop的代理对象，检查一次
-      Field[] declaredFields1 = filterAdapter.getClass().getSuperclass().getDeclaredFields();
-      autoZr(declaredFields1, filterAdapter);
+      autoZr(filterAdapter);
     });
   }
 
 
-  private static void autoZr(Field[] declaredFields1, Object v) {
-    for (Field field : declaredFields1) {
-      valuezr(field, v);
-      zr(field, v);
-      rpczr(field, v);
+  private static void autoZr(Object v) {
+    Class par = v.getClass();
+    while (!par.equals(Object.class)) {
+      //获取当前类的所有字段
+      Field[] declaredFields = par.getDeclaredFields();
+      for (Field field : declaredFields) {
+        valuezr(field, v);
+        zr(field, v);
+        rpczr(field, v);
+      }
+      par = par.getSuperclass();
     }
   }
 
