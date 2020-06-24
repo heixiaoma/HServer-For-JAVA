@@ -11,16 +11,25 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 
+/**
+ * @author hxm
+ */
 @Data
 public class FileItem {
 
     /**
-     * Upload file field, e.g: "file", "img"
+     * 注意如果你是通过File 去炒作的文件，请自己删除临时文件哦，不然会垃圾文件很多
+     * moveTo();
+     * getData();
+     */
+
+    /**
+     *上传的表单字段
      */
     private String name;
 
     /**
-     * Upload file name, e.g: "hello.png"
+     * 上传的文件名
      */
     private String fileName;
 
@@ -41,8 +50,12 @@ public class FileItem {
 
     private File file;
 
+    /**
+     * 扩展名字
+     * @return
+     */
     public String extName() {
-        return fileName.substring(fileName.lastIndexOf("."));
+        return fileName.substring(fileName.lastIndexOf(".")+1);
     }
 
     @Override
@@ -70,6 +83,8 @@ public class FileItem {
             fileContent = Files.readAllBytes(file.toPath());
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }finally {
+            file.delete();
         }
         return fileContent;
     }

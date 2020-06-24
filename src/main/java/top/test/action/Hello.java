@@ -115,10 +115,13 @@ public class Hello {
    */
   @POST("/file")
   public Map file(HttpRequest request) {
+
     Map<String, FileItem> fileItems = request.getFileItems();
     fileItems.forEach((k, v) -> {
       System.out.println(k);
       System.out.println(v);
+      byte[] data = v.getData();
+      System.out.println(data);
     });
     Map<String, Object> res = new HashMap<>();
     res.put("code", 200);
