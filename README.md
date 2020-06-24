@@ -10,7 +10,7 @@
         <img src="https://img.shields.io/badge/Build-Java8-red.svg?style=flat" />
     </a>
      <a >
-          <img src="https://img.shields.io/badge/HServer-2.9.23-yeoll.svg?style=flat" />
+          <img src="https://img.shields.io/badge/HServer-2.9.24-yeoll.svg?style=flat" />
       </a>
     <a >
         <img src="https://img.shields.io/badge/Netty-4.1.50.Final-blue.svg" alt="flat">
