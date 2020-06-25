@@ -6,11 +6,8 @@ import top.hserver.core.ioc.annotation.*;
 import top.hserver.core.server.context.Cookie;
 import top.hserver.core.server.context.Response;
 import top.hserver.core.server.handlers.FileItem;
-import top.hserver.core.server.handlers.StatisticsHandler;
-import top.hserver.core.server.stat.IpData;
 import top.hserver.core.server.util.JsonResult;
 import top.test.annotation.Aa;
-import top.test.annotation.Log;
 import top.test.bean.User;
 import top.test.service.HelloService;
 import top.test.service.Test;
@@ -79,31 +76,6 @@ public class Hello {
   @GET("/track")
   public JsonResult track() {
     return JsonResult.ok();
-  }
-
-  @GET("/stat")
-  public Map stat(String name) {
-    Map<String, Object> res = new HashMap<>();
-    res.put("code", 200);
-    res.put("name", name);
-    res.put("ipMap", StatisticsHandler.getIpMap());
-    res.put("logRequestQue", StatisticsHandler.getLogRequestQue());
-    res.put("uniqueIpCount", StatisticsHandler.getUniqueIpCount());
-    res.put("count", StatisticsHandler.getCount());
-    res.put("uriData", StatisticsHandler.getUriData());
-    return res;
-  }
-
-  @GET("/removeStat")
-  public Map removeStat() {
-    Map<String, Object> res = new HashMap<>();
-    res.put("code", 200);
-    res.put("ipMap", StatisticsHandler.removeIpMap());
-    res.put("logRequestQue", StatisticsHandler.removeLogRequestQue());
-    res.put("uniqueIpCount", StatisticsHandler.removeUniqueIpCount());
-    res.put("count", StatisticsHandler.removeCount());
-    res.put("uriData", StatisticsHandler.removeUriData());
-    return res;
   }
 
 

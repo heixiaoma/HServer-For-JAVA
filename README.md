@@ -10,7 +10,7 @@
         <img src="https://img.shields.io/badge/Build-Java8-red.svg?style=flat" />
     </a>
      <a >
-          <img src="https://img.shields.io/badge/HServer-2.9.24-yeoll.svg?style=flat" />
+          <img src="https://img.shields.io/badge/HServer-2.9.25-yeoll.svg?style=flat" />
       </a>
     <a >
         <img src="https://img.shields.io/badge/Netty-4.1.50.Final-blue.svg" alt="flat">
@@ -418,7 +418,7 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/HServer/hserver-for-
             System.out.println("断开连接,UID:" + ws.getUid());
         }
     }
-#### 9.自带监控操作
+#### 9.自带监控操作(2.9.25开始废除)
     application.properties文件配置
         #开启访问统计
         statistics=true

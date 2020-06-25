@@ -1,6 +1,6 @@
 package top.hserver.core.server.handlers;
 
-import top.hserver.core.server.context.WebContext;
+import top.hserver.core.server.context.HServerContext;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -13,13 +13,13 @@ import java.util.concurrent.Executor;
 
 
 @Slf4j
-public class ActionHandler extends SimpleChannelInboundHandler<WebContext> {
+public class ActionHandler extends SimpleChannelInboundHandler<HServerContext> {
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, WebContext webContext) throws Exception {
-        CompletableFuture<WebContext> future = CompletableFuture.completedFuture(webContext);
+    public void channelRead0(ChannelHandlerContext ctx, HServerContext hServerContext) throws Exception {
+        CompletableFuture<HServerContext> future = CompletableFuture.completedFuture(hServerContext);
         Executor executor = ctx.executor();
-        future.thenApplyAsync(req -> DispatcherHandler.buildWebContext(ctx, webContext), executor)
+        future.thenApplyAsync(req -> DispatcherHandler.buildHServerContext(ctx, hServerContext), executor)
                 .thenApplyAsync(DispatcherHandler::Statistics, executor)
                 .thenApplyAsync(DispatcherHandler::staticFile, executor)
                 .thenApplyAsync(DispatcherHandler::Permission, executor)

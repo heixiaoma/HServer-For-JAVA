@@ -4,14 +4,14 @@ package top.hserver.core.server.context;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpRequest;
-import top.hserver.core.interfaces.Statistics;
-
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 
-public class WebContext {
+/**
+ * @author hxm
+ */
+public class HServerContext {
 
     private Webkit webkit;
 
@@ -31,21 +31,8 @@ public class WebContext {
 
     private ChannelHandlerContext ctx;
 
-    //时间统计
-    private Statistics statistics;
 
     private Queue<HttpContent> contents = new ConcurrentLinkedDeque<>();
-
-
-    public void regStatistics(Statistics statistics) {
-        this.statistics = statistics;
-    }
-
-    public void stopStatistics(long stopTime) {
-        if (this.statistics != null) {
-            this.statistics.stopStatistics(stopTime);
-        }
-    }
 
 
 

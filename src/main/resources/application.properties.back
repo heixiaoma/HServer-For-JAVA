@@ -1,9 +1,5 @@
 #taskPool定时任务线程池子配置，默认大小是cpu核心数+1
 taskPool=20
-#开启访问统计
-statistics=false
-#统计规则
-statisticalRules=/hel.*,/admin/.*
 #-----------------ssl-------------
 #注意下载的证书中 key文件需要转换成 pk8 文件
 #因为netty4不支持pkcs12格式的私钥, 所以需要将私钥转换成pkcs8格式.

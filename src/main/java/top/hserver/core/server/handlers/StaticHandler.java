@@ -1,12 +1,10 @@
 package top.hserver.core.server.handlers;
 
 
-import top.hserver.core.interfaces.GlobalException;
-import top.hserver.core.ioc.IocUtil;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import top.hserver.core.server.context.StaticFile;
-import top.hserver.core.server.context.WebContext;
+import top.hserver.core.server.context.HServerContext;
 import top.hserver.core.server.exception.BusinessException;
-import top.hserver.core.server.util.ExceptionUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -18,7 +16,7 @@ import java.io.*;
 @Slf4j
 public class StaticHandler {
 
-  public StaticFile handler(String uri, WebContext webContext) {
+  public StaticFile handler(String uri, HServerContext hServerContext) {
     //判断一次文件是否有/index.html文件
     if ("/".equals(uri)) {
       uri = "/index.html";
@@ -26,7 +24,7 @@ public class StaticHandler {
     String basePath = "/static";
     InputStream input = getResourceStreamFromJar(basePath + uri);
     if (input != null) {
-      return buildStaticFile(input, uri, webContext);
+      return buildStaticFile(input, uri, hServerContext);
     }
     return null;
   }
@@ -43,7 +41,7 @@ public class StaticHandler {
    * @param url
    * @return
    */
-  private StaticFile buildStaticFile(InputStream input, String url, WebContext webContext) {
+  private StaticFile buildStaticFile(InputStream input, String url, HServerContext hServerContext) {
     StaticFile staticFile = null;
     try {
       //获取文件大小
@@ -64,13 +62,7 @@ public class StaticHandler {
       }
       staticFile.setInputStream(input);
     } catch (Exception e) {
-      GlobalException bean1 = IocUtil.getBean(GlobalException.class);
-      if (bean1 != null) {
-        bean1.handler(e, webContext.getWebkit());
-      } else {
-        log.error("获取文件大小异常:{}", e.getMessage());
-        throw new BusinessException(503, "获取文件大小异常" + ExceptionUtil.getMessage(e));
-      }
+      throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "获取文件大小异常",e,hServerContext.getWebkit());
     }
     return staticFile;
   }

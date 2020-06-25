@@ -1,6 +1,7 @@
 package top.hserver.cloud.client.handler;
 
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.CloudManager;
 import top.hserver.cloud.bean.ClientData;
@@ -33,7 +34,7 @@ public class InvokerHandler {
             ResultData resultData = new ResultData();
             resultData.setData(invoke);
             resultData.setUUID(data.getUUID());
-            resultData.setCode(200);
+            resultData.setCode(HttpResponseStatus.OK.code());
             Msg<ResultData> msg2 = new Msg<>();
             msg2.setMsg_type(MSG_TYPE.RESULT);
             msg2.setData(resultData);
@@ -42,7 +43,7 @@ public class InvokerHandler {
             ResultData resultData = new ResultData();
             resultData.setData(e.getMessage());
             resultData.setUUID(data.getUUID());
-            resultData.setCode(503);
+            resultData.setCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
             Msg<ResultData> msg2 = new Msg<>();
             msg2.setMsg_type(MSG_TYPE.RESULT);
             msg2.setData(resultData);
@@ -53,7 +54,7 @@ public class InvokerHandler {
     }
     ResultData resultData = new ResultData();
     resultData.setData("空调用");
-    resultData.setCode(503);
+    resultData.setCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
     Msg<ResultData> msg2 = new Msg<>();
     msg2.setMsg_type(MSG_TYPE.RESULT);
     msg2.setData(resultData);
@@ -71,7 +72,7 @@ public class InvokerHandler {
   public static Msg<ResultData> handleException(Throwable e) {
     ResultData resultData = new ResultData();
     resultData.setData(e.getMessage());
-    resultData.setCode(503);
+    resultData.setCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
     Msg<ResultData> msg2 = new Msg<>();
     msg2.setMsg_type(MSG_TYPE.RESULT);
     msg2.setData(resultData);

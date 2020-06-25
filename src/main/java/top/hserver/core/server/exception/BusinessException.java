@@ -1,48 +1,65 @@
 package top.hserver.core.server.exception;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
+import top.hserver.core.server.context.Webkit;
+
 /**
  * 业务异常
+ * @author hxm
  */
 public class BusinessException extends RuntimeException {
 
+    /**
+     * 错误状态码
+     */
     private Integer httpCode;
-    private String msg;
+    /**
+     * 错误类型
+     */
+    private String errorDescription;
+    /**
+     * req和resp
+     */
+    private Webkit webkit;
+    /**
+     * 真实的报错
+     */
+    private Throwable throwable;
 
     public BusinessException() {
         super();
     }
 
-    public BusinessException(Integer httpCode, String msg) {
+    public BusinessException(Integer httpCode, String errorDescription,Throwable throwable,Webkit webkit) {
         super();
         this.httpCode = httpCode;
-        this.msg = msg;
+        this.errorDescription = errorDescription;
+        this.webkit=webkit;
+        this.throwable=throwable;
     }
 
     public BusinessException(String s) {
         super(s);
     }
 
-
-    public String getRespMsg() {
-        if (httpCode != null) {
-            if (httpCode == 404) {
-                return "404：" + msg;
-            }
-            return "503：" + msg;
-        } else {
-            return "未知错误";
-        }
-    }
-
     public Integer getHttpCode() {
         if (httpCode != null) {
             return httpCode;
         } else {
-            return 503;
+            return HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
         }
     }
 
-    public String getMsg() {
-        return msg;
+
+    public String getErrorDescription() {
+        return errorDescription;
+    }
+
+    public Webkit getWebkit() {
+        return webkit;
+    }
+
+    public Throwable getThrowable() {
+        return throwable;
     }
 }

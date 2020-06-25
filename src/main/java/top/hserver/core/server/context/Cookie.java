@@ -2,6 +2,9 @@ package top.hserver.core.server.context;
 
 import java.util.HashMap;
 
+/**
+ * @author hxm
+ */
 public class Cookie extends HashMap<String, String> {
 
     public String path;

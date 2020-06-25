@@ -24,7 +24,7 @@ public class FileItem {
      */
 
     /**
-     *上传的表单字段
+     * 上传的表单字段
      */
     private String name;
 
@@ -52,10 +52,11 @@ public class FileItem {
 
     /**
      * 扩展名字
+     *
      * @return
      */
     public String extName() {
-        return fileName.substring(fileName.lastIndexOf(".")+1);
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
     @Override
@@ -83,10 +84,20 @@ public class FileItem {
             fileContent = Files.readAllBytes(file.toPath());
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }finally {
+        } finally {
             file.delete();
         }
         return fileContent;
+    }
+
+    public String getFileToString() {
+        try {
+            return new String(Files.readAllBytes(file.toPath()), "UTF-8");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            file.delete();
+        }
     }
 
 }

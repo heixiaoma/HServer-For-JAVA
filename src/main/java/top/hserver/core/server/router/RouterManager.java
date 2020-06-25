@@ -3,8 +3,8 @@ package top.hserver.core.server.router;
 import io.netty.handler.codec.http.HttpMethod;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.core.ioc.annotation.RequestMethod;
+import top.hserver.core.server.context.HServerContext;
 import top.hserver.core.server.context.PatternUri;
-import top.hserver.core.server.context.WebContext;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -16,6 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author hxm
+ */
 @Slf4j
 public class RouterManager {
 
@@ -133,8 +136,8 @@ public class RouterManager {
     }
 
 
-    public static RouterInfo getRouterInfo(String url, HttpMethod requestType, WebContext webContext) {
-        Map<String, String> requestParams = webContext.getRequest().getRequestParams();
+    public static RouterInfo getRouterInfo(String url, HttpMethod requestType, HServerContext hServerContext) {
+        Map<String, String> requestParams = hServerContext.getRequest().getRequestParams();
         Map<String, RouterInfo> router = router(requestType);
         if (router == null) {
             return null;

@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.interfaces.HttpResponse;
-import top.hserver.core.server.context.WebContext;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -12,6 +11,7 @@ import javassist.NotFoundException;
 import javassist.bytecode.CodeAttribute;
 import javassist.bytecode.LocalVariableAttribute;
 import javassist.bytecode.MethodInfo;
+import top.hserver.core.server.context.HServerContext;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -30,7 +30,7 @@ public class ParameterUtil {
    */
   private final static ConcurrentHashMap<Class, ConcurrentHashMap<Method, String[]>> paramNameMap = new ConcurrentHashMap<>();
 
-  public static Object[] getMethodArgs(Class cs, Method method, WebContext webContext) throws Exception {
+  public static Object[] getMethodArgs(Class cs, Method method, HServerContext hServerContext) throws Exception {
     Parameter[] parameterTypes = method.getParameters();
     Object[] objects = new Object[parameterTypes.length];
 
@@ -42,14 +42,14 @@ public class ParameterUtil {
     for (int i = 0; i < parameterTypes.length; i++) {
       //构建方法参数
       if (parameterTypes[i].getParameterizedType() == HttpRequest.class) {
-        objects[i] = webContext.getRequest();
+        objects[i] = hServerContext.getRequest();
       } else if (parameterTypes[i].getParameterizedType() == HttpResponse.class) {
-        objects[i] = webContext.getResponse();
+        objects[i] = hServerContext.getResponse();
       } else {
         Parameter parameterType = parameterTypes[i];
         //更具基础类型转换
         String typeName = strings[i];
-        Map<String, String> requestParams = webContext.getRequest().getRequestParams();
+        Map<String, String> requestParams = hServerContext.getRequest().getRequestParams();
         switch (parameterType.getType().getName()) {
           case "int":
           case "java.lang.Integer":
@@ -121,8 +121,9 @@ public class ParameterUtil {
       int pos = Modifier.isStatic(cm.getModifiers()) ? 0 : 1;
       String[] paramNames = new String[cm.getParameterTypes().length];
       for (int i = 0; i < attr.tableLength(); i++) {
-        if (attr.index(i) >= pos && attr.index(i) < paramNames.length + pos)
+        if (attr.index(i) >= pos && attr.index(i) < paramNames.length + pos) {
           paramNames[attr.index(i) - pos] = attr.variableName(i);
+        }
       }
       return paramNames;
     } catch (NotFoundException e) {

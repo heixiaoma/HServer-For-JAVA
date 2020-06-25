@@ -31,6 +31,7 @@ public class Response implements HttpResponse {
      * @param key
      * @param value
      */
+    @Override
     public void setHeader(String key, String value) {
         this.headers.put(key, value);
     }
@@ -40,6 +41,7 @@ public class Response implements HttpResponse {
      *
      * @param file
      */
+    @Override
     public void setDownloadFile(File file) {
         this.file = file;
         this.isDownload = true;
@@ -51,6 +53,7 @@ public class Response implements HttpResponse {
      *
      * @param inputStream
      */
+    @Override
     public void setDownloadFile(InputStream inputStream, String fileName) {
         this.inputStream = inputStream;
         this.isDownload = true;
@@ -67,6 +70,12 @@ public class Response implements HttpResponse {
     public void sendHtml(String html) {
         this.jsonAndHtml = html;
         headers.put("content-type", "text/html;charset=UTF-8");
+    }
+
+    @Override
+    public void sendText(String text) {
+        this.jsonAndHtml = text;
+        headers.put("content-type", "text/plain;charset=UTF-8");
     }
 
     @Override
