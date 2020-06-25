@@ -1,5 +1,6 @@
 package top.hserver.core.server.handlers;
 
+import io.netty.util.ReferenceCountUtil;
 import top.hserver.core.server.context.HServerContext;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,17 +18,21 @@ public class ActionHandler extends SimpleChannelInboundHandler<HServerContext> {
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HServerContext hServerContext) throws Exception {
-        CompletableFuture<HServerContext> future = CompletableFuture.completedFuture(hServerContext);
-        Executor executor = ctx.executor();
-        future.thenApplyAsync(req -> DispatcherHandler.buildHServerContext(ctx, hServerContext), executor)
-                .thenApplyAsync(DispatcherHandler::statistics, executor)
-                .thenApplyAsync(DispatcherHandler::staticFile, executor)
-                .thenApplyAsync(DispatcherHandler::permission, executor)
-                .thenApplyAsync(DispatcherHandler::filter, executor)
-                .thenApplyAsync(DispatcherHandler::findController, executor)
-                .thenApplyAsync(DispatcherHandler::buildResponse, executor)
-                .exceptionally(DispatcherHandler::handleException)
-                .thenAcceptAsync(msg -> DispatcherHandler.writeResponse(ctx, future, msg), ctx.channel().eventLoop());
+        try {
+            CompletableFuture<HServerContext> future = CompletableFuture.completedFuture(hServerContext);
+            Executor executor = ctx.executor();
+            future.thenApplyAsync(req -> DispatcherHandler.buildHServerContext(ctx, hServerContext), executor)
+                    .thenApplyAsync(DispatcherHandler::statistics, executor)
+                    .thenApplyAsync(DispatcherHandler::staticFile, executor)
+                    .thenApplyAsync(DispatcherHandler::permission, executor)
+                    .thenApplyAsync(DispatcherHandler::filter, executor)
+                    .thenApplyAsync(DispatcherHandler::findController, executor)
+                    .thenApplyAsync(DispatcherHandler::buildResponse, executor)
+                    .exceptionally(DispatcherHandler::handleException)
+                    .thenAcceptAsync(msg -> DispatcherHandler.writeResponse(ctx, future, msg), ctx.channel().eventLoop());
+        }finally {
+            ReferenceCountUtil.release(hServerContext);
+        }
     }
 
 
