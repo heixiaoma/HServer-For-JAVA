@@ -8,8 +8,8 @@
     <artifactId>HServer</artifactId>
     <version>2.9.26</version>
     <packaging>jar</packaging>
-    <name>hserver</name>
-    <url>https://gitee.com/heixiaomas_admin/HServer</url>
+    <name>HServer</name>
+    <url>https://gitee.com/HServer/HServer</url>
     <description>一个基于Netty的高并发Server 服务器</description>
 
     <licenses>
@@ -22,9 +22,9 @@
 
     <scm>
         <tag>master</tag>
-        <connection>https://gitee.com//heixiaomas_admin/HServer.git</connection>
-        <developerConnection>https://heixiaomas_admin/</developerConnection>
-        <url>https://gitee.com/heixiaomas_admin/HServer.git</url>
+        <connection>https://gitee.com/HServer/HServer.git</connection>
+        <developerConnection>https://hserver.top/</developerConnection>
+        <url>https://gitee.com/HServer/HServer.git</url>
     </scm>
 
 
@@ -32,7 +32,7 @@
         <developer>
             <name>heixiaoma</name>
             <email>heixiaoma@gmail.com</email>
-            <url>https://gitee.com/heixiaomas_admin/HServer</url>
+            <url>https://gitee.com/HServer/HServer</url>
         </developer>
     </developers>
 
