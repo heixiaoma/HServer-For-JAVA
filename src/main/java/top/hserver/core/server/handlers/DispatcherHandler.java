@@ -1,6 +1,7 @@
 package top.hserver.core.server.handlers;
 
 import com.alibaba.fastjson.JSON;
+import io.netty.util.ReferenceCountUtil;
 import top.hserver.core.interfaces.GlobalException;
 import top.hserver.core.interfaces.PermissionAdapter;
 import top.hserver.core.ioc.IocUtil;
@@ -72,11 +73,12 @@ public class DispatcherHandler {
                     }
                     decoder.offer(content);
                     request.readHttpDataChunkByChunk(decoder);
-                    content.release();
+                    ReferenceCountUtil.release(content);
                 }
                 if (!byteBuffs.isEmpty()) {
                     request.setBody(Unpooled.copiedBuffer(byteBuffs.toArray(new ByteBuf[0])));
                 }
+                byteBuffs.forEach(ReferenceCountUtil::release);
             } catch (Exception e) {
                 throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "生成解码器失败", e, hServerContext.getWebkit());
             }
