@@ -68,7 +68,7 @@ public class DispatcherHandler {
                 List<ByteBuf> byteBuffs = new ArrayList<>(hServerContext.getContents().size());
                 for (HttpContent content : hServerContext.getContents()) {
                     if (!isMultipart) {
-                        byteBuffs.add(content.content().copy());
+                        byteBuffs.add(content.content());
                     }
                     decoder.offer(content);
                     request.readHttpDataChunkByChunk(decoder);
@@ -77,6 +77,7 @@ public class DispatcherHandler {
                 if (!byteBuffs.isEmpty()) {
                     request.setBody(Unpooled.copiedBuffer(byteBuffs.toArray(new ByteBuf[0])));
                 }
+                byteBuffs.forEach(a->a.release());
             } catch (Exception e) {
                 throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "生成解码器失败", e, hServerContext.getWebkit());
             }
