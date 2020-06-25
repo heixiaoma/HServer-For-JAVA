@@ -2,7 +2,7 @@
 
 <p align="center">
 <a href="https://hserver.top">
-<img src="https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/hserver.png" width="500" />
+<img src="https://gitee.com/HServer/HServer/raw/master/doc/hserver.png" width="500" />
 </a>
 </p>
 <p align="center">
@@ -44,7 +44,7 @@
     
     全部版本查询 https://repo1.maven.org/maven2/top/hserver/HServer/
 ### 压测结果，8核Linux 虚拟机 23w qps 恐怖至极（做api最适合了）
-![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/23.png)
+![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/23.png)
 
 详情请查看 [PM.md](doc/PM.md) 查看说明
 
@@ -54,7 +54,7 @@
 
 
 ### 文档地址
-文档说明请查看 [点我](https://gitee.com/heixiaomas_admin/HServer/wikis/pages) 
+文档说明请查看 [点我](https://gitee.com/HServer/HServer/wikis/pages) 
 
 Redis操作源码案例地址(Jedis) [点我](https://gitee.com/HServer/hserver-for-java-redis)
 
@@ -69,7 +69,7 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/HServer/hserver-for-
 
 ## 快速开始
 #### 1.文件结构框架架构说明
-![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/架构说明.png)
+![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/架构说明.png)
 #### 2.注解认识
     以下注解基本模拟Spring的功能
     
@@ -512,7 +512,7 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/HServer/hserver-for-
 
 #### 14.HServer2.9.4+后添加APIDOC生成功能
     详情请看WIKi
-![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/apidoc.png)
+![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/apidoc.png)
 
 
 ### 15.HServer2.9.9版本后添EventBus(订阅与发布，mq那种感觉)
