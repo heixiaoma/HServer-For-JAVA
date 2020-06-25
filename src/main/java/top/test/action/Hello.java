@@ -120,6 +120,11 @@ public class Hello {
     return res;
   }
 
+  @POST("/b")
+  public Map b(HttpRequest request) {
+    return JsonResult.ok();
+  }
+
   /**
    * 响应头测试
    *
