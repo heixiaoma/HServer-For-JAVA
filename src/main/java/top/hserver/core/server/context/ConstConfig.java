@@ -22,7 +22,7 @@ public class ConstConfig {
   /**
    * git 地址反馈
    */
-  public static final String BUG_ADDRESS ="https://gitee.com/heixiaomas_admin/HServer/issues";
+  public static final String BUG_ADDRESS ="https://gitee.com/HServer/HServer/issues";
 
   /**
    * 社区地址
