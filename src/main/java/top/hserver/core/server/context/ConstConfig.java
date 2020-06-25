@@ -27,6 +27,6 @@ public class ConstConfig {
   /**
    * 社区地址
    */
-  public static final String communityAddress="http://hserver.top";
+  public static final String COMMUNITY_ADDRESS ="http://hserver.top";
 
 }

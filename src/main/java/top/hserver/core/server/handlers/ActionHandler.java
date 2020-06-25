@@ -20,9 +20,9 @@ public class ActionHandler extends SimpleChannelInboundHandler<HServerContext> {
         CompletableFuture<HServerContext> future = CompletableFuture.completedFuture(hServerContext);
         Executor executor = ctx.executor();
         future.thenApplyAsync(req -> DispatcherHandler.buildHServerContext(ctx, hServerContext), executor)
-                .thenApplyAsync(DispatcherHandler::Statistics, executor)
+                .thenApplyAsync(DispatcherHandler::statistics, executor)
                 .thenApplyAsync(DispatcherHandler::staticFile, executor)
-                .thenApplyAsync(DispatcherHandler::Permission, executor)
+                .thenApplyAsync(DispatcherHandler::permission, executor)
                 .thenApplyAsync(DispatcherHandler::filter, executor)
                 .thenApplyAsync(DispatcherHandler::findController, executor)
                 .thenApplyAsync(DispatcherHandler::buildResponse, executor)

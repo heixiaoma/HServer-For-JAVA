@@ -32,6 +32,7 @@ import static io.netty.handler.codec.http.HttpMethod.GET;
 
 /**
  * 分发器
+ * @author hxm
  */
 @Slf4j
 public class DispatcherHandler {
@@ -111,7 +112,7 @@ public class DispatcherHandler {
      * @param hServerContext
      * @return
      */
-    static HServerContext Statistics(HServerContext hServerContext) {
+    static HServerContext statistics(HServerContext hServerContext) {
         return hServerContext;
     }
 
@@ -143,7 +144,7 @@ public class DispatcherHandler {
      * @param hServerContext
      * @return
      */
-    static HServerContext Permission(HServerContext hServerContext) {
+    static HServerContext permission(HServerContext hServerContext) {
 
         //如果是静态文件就不进行权限验证了
         if (hServerContext.isStaticFile()) {

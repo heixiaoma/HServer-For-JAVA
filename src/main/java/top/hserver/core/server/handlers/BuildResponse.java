@@ -148,7 +148,7 @@ public class BuildResponse {
                 .url(httpRequest.getUri())
                 .version(ConstConfig.VERSION)
                 .bugAddress(ConstConfig.BUG_ADDRESS)
-                .communityAddress(ConstConfig.communityAddress)
+                .communityAddress(ConstConfig.COMMUNITY_ADDRESS)
                 .build();
 
         Map data = new HashMap<>();
