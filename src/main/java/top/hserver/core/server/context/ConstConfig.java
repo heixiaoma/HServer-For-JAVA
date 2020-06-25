@@ -4,6 +4,9 @@ import io.netty.handler.ssl.SslContext;
 
 import java.util.concurrent.CopyOnWriteArraySet;
 
+/**
+ * @author hxm
+ */
 public class ConstConfig {
 
   /**
