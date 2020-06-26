@@ -1,10 +1,6 @@
 package top.hserver.core.server.handlers;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.handler.codec.DecoderResult;
 import io.netty.handler.codec.http.multipart.*;
-import io.netty.util.ReferenceCountUtil;
 import top.hserver.core.server.context.HServerContext;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -20,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static io.netty.handler.codec.http.HttpMethod.GET;
 
 /**
  * @author hxm
@@ -43,8 +38,8 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         if (req.method()==HttpMethod.GET) {
             Map<String, String> requestParams = new HashMap<>();
             QueryStringDecoder decoder = new QueryStringDecoder(req.uri());
-            Map<String, List<String>> parame = decoder.parameters();
-            for (Map.Entry<String, List<String>> next : parame.entrySet()) {
+            Map<String, List<String>> params = decoder.parameters();
+            for (Map.Entry<String, List<String>> next : params.entrySet()) {
                 requestParams.put(next.getKey(), next.getValue().get(0));
             }
             request.setRequestParams(requestParams);
@@ -53,8 +48,8 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
             req.content().readBytes(b);
             request.setBody(b);
             HttpPostRequestDecoder decoder=new HttpPostRequestDecoder(FACTORY ,req);
-            List<InterfaceHttpData> bodyHttpDatas = decoder.getBodyHttpDatas();
-            bodyHttpDatas.forEach(request::writeHttpData);
+            List<InterfaceHttpData> bodyHttpDates = decoder.getBodyHttpDatas();
+            bodyHttpDates.forEach(request::writeHttpData);
             decoder.destroy();
         }
 

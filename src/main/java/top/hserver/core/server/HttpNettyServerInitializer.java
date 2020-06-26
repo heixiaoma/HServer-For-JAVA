@@ -25,7 +25,7 @@ public class HttpNettyServerInitializer extends ChannelInitializer<Channel> {
         }
         pipeline.addLast(new HttpServerCodec());
         pipeline.addLast(new HttpObjectAggregator(Integer.MAX_VALUE));
-        //有socket才走他
+        //有websocket才走他
         if (WebSocketServerHandler.WebSocketRouter.size() > 0) {
             pipeline.addLast(new WebSocketServerHandler());
         }
