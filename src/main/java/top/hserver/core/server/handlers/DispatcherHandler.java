@@ -70,7 +70,7 @@ public class DispatcherHandler {
                 List<ByteBuf> byteBuffs = new ArrayList<>(hServerContext.getContents().size());
                 for (HttpContent content : hServerContext.getContents()) {
                     if (!isMultipart) {
-                        byteBuffs.add(content.content().copy());
+                        byteBuffs.add(content.content());
                     }
                     decoder.offer(content);
                     request.readHttpDataChunkByChunk(decoder);
