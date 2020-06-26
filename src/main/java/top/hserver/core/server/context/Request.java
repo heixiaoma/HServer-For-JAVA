@@ -18,6 +18,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author hxm
+ */
 @Getter
 @Setter
 public class Request implements HttpRequest {
@@ -36,7 +39,6 @@ public class Request implements HttpRequest {
     private static final ByteBuf EMPTY_BUF = Unpooled.copiedBuffer("", CharsetUtil.UTF_8);
     private ByteBuf body = EMPTY_BUF;
     private Map<String, FileItem> fileItems = new HashMap<>(8);
-    private HttpData partialContent;
     private String tempPath = System.getProperty("java.io.tmpdir");
 
     public ByteBuf getBody() {
@@ -86,7 +88,8 @@ public class Request implements HttpRequest {
     @Override
     public String getRawData() {
         String str;
-        if (body.hasArray()) { // 处理堆缓冲区
+        if (body.hasArray()) {
+            // 处理堆缓冲区
             str = new String(body.array(), body.arrayOffset() + body.readerIndex(), body.readableBytes());
         } else { // 处理直接缓冲区以及复合缓冲区
             byte[] bytes = new byte[body.readableBytes()];
@@ -101,20 +104,11 @@ public class Request implements HttpRequest {
             while (decoder.hasNext()) {
                 InterfaceHttpData data = decoder.next();
                 if (data != null) {
-                    if (partialContent == data) {
-                        partialContent = null;
-                    }
                     try {
                         writeHttpData(data);
                     } finally {
                         data.release();
                     }
-                }
-            }
-            InterfaceHttpData data = decoder.currentPartialHttpData();
-            if (data != null) {
-                if (partialContent == null) {
-                    partialContent = (HttpData) data;
                 }
             }
         } catch (HttpPostRequestDecoder.EndOfDataDecoderException e1) {

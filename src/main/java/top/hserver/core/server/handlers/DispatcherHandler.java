@@ -38,7 +38,6 @@ import static io.netty.handler.codec.http.HttpMethod.GET;
 public class DispatcherHandler {
 
     private final static StaticHandler staticHandler = new StaticHandler();
-    private static final HttpDataFactory HTTP_DATA_FACTORY = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
     /**
      * 标识不是静态文件，这样下次使用方便直接跳过检查
      */
@@ -65,12 +64,12 @@ public class DispatcherHandler {
         } else {
             //檢查是否有文件上传
             try {
-                HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(HTTP_DATA_FACTORY, req);
+                HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(req);
                 boolean isMultipart = decoder.isMultipart();
                 List<ByteBuf> byteBuffs = new ArrayList<>(hServerContext.getContents().size());
                 for (HttpContent content : hServerContext.getContents()) {
                     if (!isMultipart) {
-                        byteBuffs.add(content.content());
+                        byteBuffs.add(content.content().copy());
                     }
                     decoder.offer(content);
                     request.readHttpDataChunkByChunk(decoder);
