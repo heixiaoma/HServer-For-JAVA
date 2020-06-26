@@ -67,14 +67,15 @@ public class DispatcherHandler {
                 HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(req);
                 boolean isMultipart = decoder.isMultipart();
                 List<ByteBuf> byteBuffs = new ArrayList<>(hServerContext.getContents().size());
-                for (HttpContent content : hServerContext.getContents()) {
+                hServerContext.getContents().forEach(content->{
                     if (!isMultipart) {
                         byteBuffs.add(content.content().copy());
                     }
                     decoder.offer(content);
                     request.readHttpDataChunkByChunk(decoder);
+                    content.release();
                     ReferenceCountUtil.release(content);
-                }
+                });
                 if (!byteBuffs.isEmpty()) {
                     request.setBody(Unpooled.copiedBuffer(byteBuffs.toArray(new ByteBuf[0])));
                 }

@@ -112,6 +112,7 @@ public class Request implements HttpRequest {
                 }
             }
         } catch (HttpPostRequestDecoder.EndOfDataDecoderException e1) {
+//            e1.printStackTrace();
         }
     }
 
@@ -124,6 +125,7 @@ public class Request implements HttpRequest {
                 parseFileUpload((FileUpload) data);
             }
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -1,5 +1,6 @@
 package top.test.action;
 
+import lombok.extern.slf4j.Slf4j;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.interfaces.HttpResponse;
 import top.hserver.core.ioc.annotation.*;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 public class Hello {
 
