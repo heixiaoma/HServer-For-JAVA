@@ -23,7 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
-    private final static DefaultHttpDataFactory FACTORY =new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
+    private final static DefaultHttpDataFactory FACTORY = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
+
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpRequest req) throws Exception {
         HServerContext hServerContext = new HServerContext();
@@ -35,7 +36,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         request.setCtx(channelHandlerContext);
         request.setNettyUri(req.uri());
         hServerContext.setCtx(channelHandlerContext);
-        if (req.method()==HttpMethod.GET) {
+        if (req.method() == HttpMethod.GET) {
             Map<String, String> requestParams = new HashMap<>();
             QueryStringDecoder decoder = new QueryStringDecoder(req.uri());
             Map<String, List<String>> params = decoder.parameters();
@@ -43,14 +44,14 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
                 requestParams.put(next.getKey(), next.getValue().get(0));
             }
             request.setRequestParams(requestParams);
-        }else {
-            byte[] b = new byte[req.content().readableBytes()];
-            req.content().readBytes(b);
-            request.setBody(b);
-            HttpPostRequestDecoder decoder=new HttpPostRequestDecoder(FACTORY ,req);
+        } else {
+            HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(FACTORY, req);
             List<InterfaceHttpData> bodyHttpDates = decoder.getBodyHttpDatas();
             bodyHttpDates.forEach(request::writeHttpData);
             decoder.destroy();
+            byte[] b = new byte[req.content().readableBytes()];
+            req.content().readBytes(b);
+            request.setBody(b);
         }
 
         //获取URi，設置真實的URI

@@ -50,46 +50,49 @@ public class ParameterUtil {
         //更具基础类型转换
         String typeName = strings[i];
         Map<String, String> requestParams = hServerContext.getRequest().getRequestParams();
-        switch (parameterType.getType().getName()) {
-          case "int":
-          case "java.lang.Integer":
-            objects[i] = Integer.parseInt(requestParams.get(typeName));
-            break;
+        try {
+          switch (parameterType.getType().getName()) {
+            case "int":
+            case "java.lang.Integer":
+              objects[i] = Integer.parseInt(requestParams.get(typeName));
+              break;
 
-          case "double":
-          case "java.lang.Double":
-            objects[i] = Double.parseDouble(requestParams.get(typeName));
-            break;
+            case "double":
+            case "java.lang.Double":
+              objects[i] = Double.parseDouble(requestParams.get(typeName));
+              break;
 
-          case "long":
-          case "java.lang.Long":
-            objects[i] = Long.parseLong(requestParams.get(typeName));
-            break;
+            case "long":
+            case "java.lang.Long":
+              objects[i] = Long.parseLong(requestParams.get(typeName));
+              break;
 
-          case "short":
-          case "java.lang.java.lang.Short":
-            objects[i] = Short.parseShort(requestParams.get(typeName));
-            break;
+            case "short":
+            case "java.lang.java.lang.Short":
+              objects[i] = Short.parseShort(requestParams.get(typeName));
+              break;
 
-          case "float":
-          case "java.lang.Float":
-            objects[i] = Float.parseFloat(requestParams.get(typeName));
-            break;
+            case "float":
+            case "java.lang.Float":
+              objects[i] = Float.parseFloat(requestParams.get(typeName));
+              break;
 
-          case "boolean":
-          case "java.lang.Boolean":
-            objects[i] = Boolean.valueOf(requestParams.get(typeName));
-            break;
-          case "java.lang.String":
-            objects[i] = requestParams.get(typeName);
-            break;
-          default:
-            //不是基础类型可能就是我来转换的类型，哈哈，有毒哦
-            JSONObject jsonObject = JSON.parseObject(JSON.toJSON(requestParams).toString());
-            objects[i] = JSON.toJavaObject(jsonObject, parameterType.getType());
-            break;
+            case "boolean":
+            case "java.lang.Boolean":
+              objects[i] = Boolean.valueOf(requestParams.get(typeName));
+              break;
+            case "java.lang.String":
+              objects[i] = requestParams.get(typeName);
+              break;
+            default:
+              //不是基础类型可能就是我来转换的类型，哈哈，有毒哦
+              JSONObject jsonObject = JSON.parseObject(JSON.toJSON(requestParams).toString());
+              objects[i] = JSON.toJavaObject(jsonObject, parameterType.getType());
+              break;
+          }
+        }catch (Exception e){
+           objects[i]=null;
         }
-
       }
     }
     return objects;
