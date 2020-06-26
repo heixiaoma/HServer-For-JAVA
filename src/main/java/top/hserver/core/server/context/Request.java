@@ -125,7 +125,7 @@ public class Request implements HttpRequest {
                 parseFileUpload((FileUpload) data);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
