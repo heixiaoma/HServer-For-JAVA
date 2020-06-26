@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import top.hserver.core.server.handlers.FileItem;
 import io.netty.handler.codec.http.HttpMethod;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 public interface HttpRequest {
@@ -34,6 +35,8 @@ public interface HttpRequest {
     int getPort();
 
     ChannelHandlerContext getCtx();
+
+    byte[] getBody();
 
 
 }

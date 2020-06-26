@@ -1,11 +1,14 @@
 package top.hserver.core.server.context;
 
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpRequest;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -23,7 +26,7 @@ public class HServerContext {
 
     private boolean isFilter;
 
-    private HttpRequest httpRequest;
+    private FullHttpRequest fullHttpRequest;
 
     private StaticFile staticFile;
 
@@ -31,19 +34,7 @@ public class HServerContext {
 
     private ChannelHandlerContext ctx;
 
-
-    private Queue<HttpContent> contents = new ConcurrentLinkedDeque<>();
-
-
-
-    /**
-     * 多消息内容存起来，一会构建对象的时候编码然后取出文件或者字段或者数据
-     *
-     * @param msg
-     */
-    public void appendContent(HttpContent msg) {
-        this.contents.add(msg.retain());
-    }
+    private List<ByteBuf> byteBufs;
 
     public Request getRequest() {
         return request;
@@ -69,12 +60,12 @@ public class HServerContext {
         isStaticFile = staticFile;
     }
 
-    public HttpRequest getHttpRequest() {
-        return httpRequest;
+    public FullHttpRequest getFullHttpRequest() {
+        return fullHttpRequest;
     }
 
-    public void setHttpRequest(HttpRequest httpRequest) {
-        this.httpRequest = httpRequest;
+    public void setFullHttpRequest(FullHttpRequest fullHttpRequest) {
+        this.fullHttpRequest = fullHttpRequest;
     }
 
     public StaticFile getStaticFile() {
@@ -91,14 +82,6 @@ public class HServerContext {
 
     public void setResult(String result) {
         this.result = result;
-    }
-
-    public Queue<HttpContent> getContents() {
-        return contents;
-    }
-
-    public void setContents(Queue<HttpContent> contents) {
-        this.contents = contents;
     }
 
     public boolean isFilter() {
@@ -123,5 +106,16 @@ public class HServerContext {
 
     public void setWebkit(Webkit webkit) {
         this.webkit = webkit;
+    }
+
+    public List<ByteBuf> getByteBufs() {
+        return byteBufs;
+    }
+
+    public void addByteBuf(ByteBuf byteBuf) {
+        if (this.byteBufs==null){
+            this.byteBufs=new ArrayList<>();
+        }
+        this.byteBufs.add(byteBuf);
     }
 }

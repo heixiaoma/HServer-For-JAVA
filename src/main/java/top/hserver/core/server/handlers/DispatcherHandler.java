@@ -1,7 +1,6 @@
 package top.hserver.core.server.handlers;
 
 import com.alibaba.fastjson.JSON;
-import io.netty.util.ReferenceCountUtil;
 import top.hserver.core.interfaces.GlobalException;
 import top.hserver.core.interfaces.PermissionAdapter;
 import top.hserver.core.ioc.IocUtil;
@@ -12,131 +11,54 @@ import top.hserver.core.server.router.RouterInfo;
 import top.hserver.core.server.router.RouterManager;
 import top.hserver.core.server.router.RouterPermission;
 import top.hserver.core.server.util.ExceptionUtil;
-import top.hserver.core.server.util.HServerIpUtil;
 import top.hserver.core.server.util.ParameterUtil;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
-import io.netty.handler.codec.http.multipart.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
-
-import static io.netty.handler.codec.http.HttpMethod.GET;
 
 /**
  * 分发器
+ *
  * @author hxm
  */
 @Slf4j
 public class DispatcherHandler {
 
-    private final static StaticHandler staticHandler = new StaticHandler();
+    private final static StaticHandler STATIC_HANDLER = new StaticHandler();
+
+
     /**
      * 标识不是静态文件，这样下次使用方便直接跳过检查
      */
-    private final static CopyOnWriteArraySet<String> noStaticFileUri = new CopyOnWriteArraySet<>();
-
-    static HServerContext buildHServerContext(ChannelHandlerContext ctx,
-                                              HServerContext hServerContext) {
-        HttpRequest req = hServerContext.getHttpRequest();
-        Request request = new Request();
-        request.setIp(HServerIpUtil.getClientIp(ctx));
-        request.setPort(HServerIpUtil.getClientPort(ctx));
-        request.setCtx(ctx);
-        request.setNettyUri(req.uri());
-        hServerContext.setCtx(ctx);
-        //如果GET请求
-        if (req.method() == GET) {
-            Map<String, String> requestParams = new HashMap<>();
-            QueryStringDecoder decoder = new QueryStringDecoder(req.uri());
-            Map<String, List<String>> parame = decoder.parameters();
-            for (Map.Entry<String, List<String>> next : parame.entrySet()) {
-                requestParams.put(next.getKey(), next.getValue().get(0));
-            }
-            request.setRequestParams(requestParams);
-        } else {
-            //檢查是否有文件上传
-            try {
-                HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(req);
-                boolean isMultipart = decoder.isMultipart();
-                List<ByteBuf> byteBuffs = new ArrayList<>(hServerContext.getContents().size());
-                hServerContext.getContents().forEach(content->{
-                    if (!isMultipart) {
-                        byteBuffs.add(content.content().copy());
-                    }
-                    decoder.offer(content);
-                    request.readHttpDataChunkByChunk(decoder);
-                    content.release();
-                    ReferenceCountUtil.release(content);
-                });
-                if (!byteBuffs.isEmpty()) {
-                    request.setBody(Unpooled.copiedBuffer(byteBuffs.toArray(new ByteBuf[0])));
-                }
-                byteBuffs.forEach(ReferenceCountUtil::release);
-            } catch (Exception e) {
-                throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "生成解码器失败", e, hServerContext.getWebkit());
-            }
-        }
-        //获取URi，設置真實的URI
-        int i = req.uri().indexOf("?");
-        if (i > 0) {
-            String uri = req.uri();
-            request.setUri(uri.substring(0, i));
-        } else {
-            request.setUri(req.uri());
-        }
-        request.setRequestType(req.method());
-        //处理Headers
-        Map<String, String> headers = new ConcurrentHashMap<>();
-        req.headers().names().forEach(a -> headers.put(a, req.headers().get(a)));
-        request.setHeaders(headers);
-        hServerContext.setRequest(request);
-        hServerContext.setResponse(new Response());
-        Webkit webkit = new Webkit();
-        webkit.httpRequest = hServerContext.getRequest();
-        webkit.httpResponse = hServerContext.getResponse();
-        hServerContext.setWebkit(webkit);
-        return hServerContext;
-    }
-
-    /**
-     * 统计.暂时关闭
-     *
-     * @param hServerContext
-     * @return
-     */
-    static HServerContext statistics(HServerContext hServerContext) {
-        return hServerContext;
-    }
+    private final static CopyOnWriteArraySet<String> NO_STATIC_FILE_URI = new CopyOnWriteArraySet<>();
 
     /**
      * 静态文件的处理
+     * 此处的静态文件缓存是非常有必要的，直接拉低了整体QPS.
+     *
      *
      * @param hServerContext
      * @return
      */
     static HServerContext staticFile(HServerContext hServerContext) {
         //检查是不是静态文件，如果是封装下请求，然后跳过控制器的方法
-        if (noStaticFileUri.contains(hServerContext.getRequest().getUri()) || hServerContext.getRequest().getRequestType() != HttpMethod.GET) {
+        if (NO_STATIC_FILE_URI.contains(hServerContext.getRequest().getUri()) || hServerContext.getRequest().getRequestType() != HttpMethod.GET) {
             return hServerContext;
         }
-        StaticFile handler = staticHandler.handler(hServerContext.getRequest().getUri(), hServerContext);
+        StaticFile handler = STATIC_HANDLER.handler(hServerContext.getRequest().getUri(), hServerContext);
         if (handler != null) {
             hServerContext.setStaticFile(true);
             hServerContext.setStaticFile(handler);
         } else {
-            noStaticFileUri.add(hServerContext.getRequest().getUri());
+            NO_STATIC_FILE_URI.add(hServerContext.getRequest().getUri());
         }
         return hServerContext;
     }
-
 
     /**
      * 权限验证
@@ -262,7 +184,7 @@ public class DispatcherHandler {
             }
         } catch (InvocationTargetException e) {
             throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "调用方法失败", e.getTargetException(), hServerContext.getWebkit());
-        } catch ( IllegalAccessException | IllegalArgumentException e) {
+        } catch (IllegalAccessException | IllegalArgumentException e) {
             throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "调用控制器时参数异常", e, hServerContext.getWebkit());
         }
         return hServerContext;
@@ -316,8 +238,8 @@ public class DispatcherHandler {
             //是否Response的
             response = BuildResponse.buildHttpResponseData(httpResponse);
         }
-        if (response==null){
-            response =BuildResponse.buildString("你开启了全局异常处理，但是你没有处理.");
+        if (response == null) {
+            response = BuildResponse.buildString("你开启了全局异常处理，但是你没有处理.");
         }
         return BuildResponse.buildEnd(response, httpResponse);
     }
@@ -333,9 +255,9 @@ public class DispatcherHandler {
             //一般是走自己的异常
             if (e.getCause() instanceof BusinessException) {
                 BusinessException e1 = (BusinessException) e.getCause();
-                if (e1.getHttpCode()==HttpResponseStatus.NOT_FOUND.code()){
+                if (e1.getHttpCode() == HttpResponseStatus.NOT_FOUND.code()) {
                     log.error(e1.getErrorDescription());
-                }else{
+                } else {
                     log.error(ExceptionUtil.getMessage(e1.getThrowable()));
                 }
                 GlobalException bean2 = IocUtil.getBean(GlobalException.class);

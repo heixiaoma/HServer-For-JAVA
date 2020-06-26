@@ -1,6 +1,7 @@
 package top.hserver.core.server.context;
 
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.HttpContent;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.server.handlers.FileItem;
 import io.netty.buffer.ByteBuf;
@@ -13,6 +14,7 @@ import lombok.Setter;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -37,17 +39,9 @@ public class Request implements HttpRequest {
      * 文件处理
      */
     private static final ByteBuf EMPTY_BUF = Unpooled.copiedBuffer("", CharsetUtil.UTF_8);
-    private ByteBuf body = EMPTY_BUF;
+    private byte[] body = null;
     private Map<String, FileItem> fileItems = new HashMap<>(8);
     private String tempPath = System.getProperty("java.io.tmpdir");
-
-    public ByteBuf getBody() {
-        return body;
-    }
-
-    public void setBody(ByteBuf body) {
-        this.body = body;
-    }
 
 
     @Override
@@ -87,36 +81,29 @@ public class Request implements HttpRequest {
 
     @Override
     public String getRawData() {
-        String str;
-        if (body.hasArray()) {
-            // 处理堆缓冲区
-            str = new String(body.array(), body.arrayOffset() + body.readerIndex(), body.readableBytes());
-        } else { // 处理直接缓冲区以及复合缓冲区
-            byte[] bytes = new byte[body.readableBytes()];
-            body.getBytes(body.readerIndex(), bytes);
-            str = new String(bytes, 0, body.readableBytes());
-        }
-        return str;
-    }
-
-    public void readHttpDataChunkByChunk(HttpPostRequestDecoder decoder) {
         try {
-            while (decoder.hasNext()) {
-                InterfaceHttpData data = decoder.next();
-                if (data != null) {
-                    try {
-                        writeHttpData(data);
-                    } finally {
-                        data.release();
-                    }
-                }
-            }
-        } catch (HttpPostRequestDecoder.EndOfDataDecoderException e1) {
-//            e1.printStackTrace();
+            return new String(this.body, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return null;
         }
     }
 
-    private void writeHttpData(InterfaceHttpData data) {
+
+    @Override
+    public byte[] getBody() {
+        return this.body;
+    }
+
+    public void setBody(byte[] body) {
+        this.body = body;
+    }
+
+    /**
+     * 判断数据类型进行转换
+     *
+     * @param data
+     */
+    public void writeHttpData(InterfaceHttpData data) {
         try {
             InterfaceHttpData.HttpDataType dataType = data.getHttpDataType();
             if (dataType == InterfaceHttpData.HttpDataType.Attribute) {
@@ -125,14 +112,25 @@ public class Request implements HttpRequest {
                 parseFileUpload((FileUpload) data);
             }
         } catch (IOException e) {
-//            e.printStackTrace();
         }
     }
 
+    /**
+     * httpContent 转化为 Key-Value
+     *
+     * @param attribute
+     * @throws IOException
+     */
     private void parseAttribute(Attribute attribute) throws IOException {
         this.requestParams.put(attribute.getName(), attribute.getValue());
     }
 
+    /**
+     * httpContent 转化为文件
+     *
+     * @param fileUpload
+     * @throws IOException
+     */
     private void parseFileUpload(FileUpload fileUpload) throws IOException {
         if (!fileUpload.isCompleted()) {
             return;
