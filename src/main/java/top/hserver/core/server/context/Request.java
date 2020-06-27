@@ -83,7 +83,7 @@ public class Request implements HttpRequest {
     public String getRawData() {
         try {
             return new String(this.body, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             return null;
         }
     }
