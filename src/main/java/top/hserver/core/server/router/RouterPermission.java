@@ -6,6 +6,9 @@ import top.hserver.core.ioc.annotation.RequiresPermissions;
 import top.hserver.core.ioc.annotation.RequiresRoles;
 import top.hserver.core.ioc.annotation.Sign;
 
+/**
+ * @author hxm
+ */
 @Data
 public class RouterPermission {
     private String url;

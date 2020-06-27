@@ -6,13 +6,21 @@ import java.io.InputStream;
 
 public class StaticFile {
 
-    //文件大小
+    /**
+     * 文件大小
+     */
     private long size;
-    //文件名字
+    /**
+     * 文件名字
+     */
     private String fileName;
-    //文件后缀
+    /**
+     * 文件后缀
+     */
     private String fileSuffix;
-    //文件流
+    /**
+     * 文件流
+     */
     private InputStream inputStream;
 
     public long getSize() {

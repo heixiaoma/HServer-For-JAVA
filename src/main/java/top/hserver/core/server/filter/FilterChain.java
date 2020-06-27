@@ -5,17 +5,20 @@ import top.hserver.core.server.context.Webkit;
 
 import java.util.*;
 
+/**
+ * @author hxm
+ */
 public class FilterChain {
 
     /**
      * FilterChain鏈子
      */
-    public final static List<Map<String, FilterAdapter>> filtersIoc = new LinkedList();
+    public final static List<Map<String, FilterAdapter>> FILTERS_IOC = new LinkedList();
 
     public static FilterChain getFileChain() {
         FilterChain filterChain = new FilterChain();
         List<FilterAdapter> filter = new LinkedList<>();
-        for (Map<String, FilterAdapter> filterMap : filtersIoc) {
+        for (Map<String, FilterAdapter> filterMap : FILTERS_IOC) {
             Set<String> strings = filterMap.keySet();
             Iterator<String> iterator = strings.iterator();
             if (iterator.hasNext()) {

@@ -24,12 +24,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
+/**
+ * @author hxm
+ */
 @Slf4j
 public class InitBean {
 
   /**
    * 加载所有bean进容器
-   *
    * @param baseClass
    */
   public static void init(Class<?> baseClass) {
@@ -55,8 +57,8 @@ public class InitBean {
 
 
   private static void initConfiguration(PackageScanner scan) throws Exception {
-    List<Class<?>> classs = scan.getAnnotationList(Configuration.class);
-    for (Class aClass : classs) {
+    List<Class<?>> clasps = scan.getAnnotationList(Configuration.class);
+    for (Class aClass : clasps) {
       Method[] methods = aClass.getDeclaredMethods();
       Object o = aClass.newInstance();
       for (Field field : aClass.getDeclaredFields()) {
@@ -86,8 +88,8 @@ public class InitBean {
   }
 
   private static void initWebSocket(PackageScanner scan) throws Exception {
-    List<Class<?>> classs = scan.getAnnotationList(WebSocket.class);
-    for (Class aClass : classs) {
+    List<Class<?>> clasps = scan.getAnnotationList(WebSocket.class);
+    for (Class aClass : clasps) {
       //检查注解里面是否有值
       WebSocket annotation = (WebSocket) aClass.getAnnotation(WebSocket.class);
       IocUtil.addBean(aClass.getName(), aClass.newInstance());
@@ -98,12 +100,12 @@ public class InitBean {
   private static void initTest(PackageScanner scan) throws Exception {
     try {
       Class<Annotation> aClass1 = (Class<Annotation>) InitBean.class.getClassLoader().loadClass("org.junit.runner.RunWith");
-      List<Class<?>> classs = scan.getAnnotationList(aClass1);
-      for (Class aClass : classs) {
+      List<Class<?>> clasps = scan.getAnnotationList(aClass1);
+      for (Class aClass : clasps) {
         //检查注解里面是否有值
         IocUtil.addBean(aClass.getName(), aClass.newInstance());
       }
-    } catch (Exception e) {
+    } catch (Exception ignored) {
     }
   }
 
@@ -111,8 +113,8 @@ public class InitBean {
    * 初始化Bean
    */
   private static void initBean(PackageScanner scan) throws Exception {
-    List<Class<?>> classs = scan.getAnnotationList(Bean.class);
-    for (Class aClass : classs) {
+    List<Class<?>> clasps = scan.getAnnotationList(Bean.class);
+    for (Class aClass : clasps) {
       //检测这个Bean是否是全局异常处理的类
       if (GlobalException.class.isAssignableFrom(aClass)) {
         IocUtil.addBean(GlobalException.class.getName(), aClass.newInstance());
@@ -202,8 +204,8 @@ public class InitBean {
     /**
      * 检查是否有方法注解
      */
-    List<Class<?>> classs = scan.getAnnotationList(Controller.class);
-    for (Class aClass : classs) {
+    List<Class<?>> clasps = scan.getAnnotationList(Controller.class);
+    for (Class aClass : clasps) {
       //检查注解里面是否有值
       Method[] methods = aClass.getDeclaredMethods();
       for (Method method : methods) {
@@ -250,7 +252,7 @@ public class InitBean {
         if (requestMapping != null) {
           RequestMethod[] requestMethods = requestMapping.method();
           String[] requestMethod;
-          if (requestMethods == null || requestMethods.length == 0) {
+          if (requestMethods.length == 0) {
             requestMethod = RequestMethod.getRequestMethodAll();
           } else {
             String[] rm = new String[requestMethods.length];
@@ -302,11 +304,11 @@ public class InitBean {
     int tempMax = 0;
     // 解析事件处理类
     for (Class<?> clazz : classes) {
-      Filter handlerAnno = clazz.getAnnotation(Filter.class);
-      if (handlerAnno == null) {
+      Filter handlerAnn = clazz.getAnnotation(Filter.class);
+      if (handlerAnn == null) {
         continue;
       }
-      log.info("{}优先级：{}", clazz.getCanonicalName(), handlerAnno.value());
+      log.info("{}优先级：{}", clazz.getCanonicalName(), handlerAnn.value());
       FilterAdapter obj = null;
       try {
         obj = (FilterAdapter) clazz.newInstance();
@@ -315,14 +317,14 @@ public class InitBean {
         continue;
       }
       if (obj != null) {
-        if (map.containsKey(handlerAnno.value())) {
-          throw new RuntimeException("初始化插件出现异常，顺序冲突:" + handlerAnno.value());
+        if (map.containsKey(handlerAnn.value())) {
+          throw new RuntimeException("初始化插件出现异常，顺序冲突:" + handlerAnn.value());
         } else {
           Map<String, FilterAdapter> filterMap = new HashMap<>();
           filterMap.put(clazz.getName(), obj);
-          map.put(handlerAnno.value(), filterMap);
-          if (handlerAnno.value() > tempMax) {
-            tempMax = handlerAnno.value();
+          map.put(handlerAnn.value(), filterMap);
+          if (handlerAnn.value() > tempMax) {
+            tempMax = handlerAnn.value();
           }
         }
       }
@@ -330,7 +332,7 @@ public class InitBean {
     for (int i = 0; i <= tempMax; i++) {
       if (map.containsKey(i)) {
         Map<String, FilterAdapter> filterMap = map.get(i);
-        FilterChain.filtersIoc.add(filterMap);
+        FilterChain.FILTERS_IOC.add(filterMap);
       }
     }
   }
@@ -338,8 +340,8 @@ public class InitBean {
 
   private static void initHook(PackageScanner scan) throws Exception {
     JavassistProxyFactory javassistProxyFactory = new JavassistProxyFactory();
-    List<Class<?>> classs = scan.getAnnotationList(Hook.class);
-    for (Class aClass : classs) {
+    List<Class<?>> clasps = scan.getAnnotationList(Hook.class);
+    for (Class aClass : clasps) {
       Hook hook = (Hook) aClass.getAnnotation(Hook.class);
       Class value = hook.value();
       String method = hook.method();
@@ -360,7 +362,7 @@ public class InitBean {
     all.forEach((k, v) -> autoZr(v));
 
     //Filter注入
-    List<Map<String, FilterAdapter>> filtersIoc = FilterChain.filtersIoc;
+    List<Map<String, FilterAdapter>> filtersIoc = FilterChain.FILTERS_IOC;
     filtersIoc.forEach((v) -> {
       //获取当前类的所有字段
       String next = v.keySet().iterator().next();
@@ -413,7 +415,7 @@ public class InitBean {
     });
 
     //Filter注入
-    List<Map<String, FilterAdapter>> filtersIoc = FilterChain.filtersIoc;
+    List<Map<String, FilterAdapter>> filtersIoc = FilterChain.FILTERS_IOC;
     filtersIoc.forEach((v) -> {
       //获取当前类的所有字段
       String next = v.keySet().iterator().next();

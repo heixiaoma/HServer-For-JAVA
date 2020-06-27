@@ -6,6 +6,9 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 
+/**
+ * @author hxm
+ */
 public class ProcessIdClassicConverter extends ClassicConverter {
 
     @Override

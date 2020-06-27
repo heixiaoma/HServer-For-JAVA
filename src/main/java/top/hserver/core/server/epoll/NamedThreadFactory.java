@@ -3,6 +3,9 @@ package top.hserver.core.server.epoll;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.LongAdder;
 
+/**
+ * @author hxm
+ */
 public class NamedThreadFactory implements ThreadFactory {
 
     private final String prefix;

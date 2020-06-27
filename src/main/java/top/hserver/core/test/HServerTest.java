@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author hxm
+ */
 public class HServerTest extends BlockJUnit4ClassRunner {
     public HServerTest(Class<?> klass) throws InitializationError {
         super(klass);

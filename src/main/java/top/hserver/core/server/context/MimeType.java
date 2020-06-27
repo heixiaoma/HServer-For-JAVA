@@ -3,6 +3,9 @@ package top.hserver.core.server.context;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author hxm
+ */
 public interface MimeType {
 
     String APPLICATION = "application/octet-stream";

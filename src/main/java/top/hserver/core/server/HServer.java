@@ -27,6 +27,9 @@ import java.util.stream.Collectors;
 
 import static top.hserver.core.event.EventDispatcher.startTaskThread;
 
+/**
+ * @author hxm
+ */
 @Slf4j
 public class HServer {
 

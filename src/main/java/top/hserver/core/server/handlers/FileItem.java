@@ -19,7 +19,7 @@ import java.nio.file.StandardCopyOption;
 public class FileItem {
 
     /**
-     * 注意如果你是通过File 去炒作的文件，请自己删除临时文件哦，不然会垃圾文件很多
+     * 注意如果你是通过File 去操作作的文件，请自己删除临时文件哦，不然会垃圾文件很多
      * moveTo();
      * getData();
      */
@@ -35,20 +35,23 @@ public class FileItem {
     private String fileName;
 
     /**
-     * File temp path
+     * 文件临时目录
      */
     private String filePath;
 
     /**
-     * File Content Type
+     * 文件类型
      */
     private String contentType;
 
     /**
-     * File size, unit: byte
+     * 文件大小字节
      */
     private long length;
 
+    /**
+     * 文件对象
+     */
     private File file;
 
     /**
@@ -60,25 +63,29 @@ public class FileItem {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
-    @Override
-    public String toString() {
-        long kb = length / 1024;
-        return "FileItem(" +
-                "name='" + formName + '\'' +
-                "fileName='" + fileName + '\'' +
-                ", path='" + filePath + '\'' +
-                ", contentType='" + contentType + '\'' +
-                ", size=" + (kb < 1 ? 1 : kb) + "KB)";
-    }
 
+    /**
+     * 移动文件
+     * @param newFile
+     * @throws IOException
+     */
     public void moveTo(File newFile) throws IOException {
         this.moveTo(Paths.get(newFile.getPath()));
     }
 
+    /**
+     * 移动文件
+     * @param newFile
+     * @throws IOException
+     */
     private void moveTo(Path newFile) throws IOException {
         Files.move(Paths.get(file.getPath()), newFile, StandardCopyOption.REPLACE_EXISTING);
     }
 
+    /**
+     * 文件转字节
+     * @return
+     */
     public byte[] getData() {
         byte[] fileContent;
         try {
@@ -91,6 +98,10 @@ public class FileItem {
         return fileContent;
     }
 
+    /**
+     * 文件转文件流
+     * @return
+     */
     public FileInputStream getFileInputStream() {
         try {
             return new FileInputStream(file);
@@ -101,6 +112,10 @@ public class FileItem {
         }
     }
 
+    /**
+     * 文件转字符串
+     * @return
+     */
     public String getFileToString() {
         try {
             return new String(Files.readAllBytes(file.toPath()), "UTF-8");
@@ -109,6 +124,25 @@ public class FileItem {
         } finally {
             file.delete();
         }
+    }
+
+    /**
+     * 删除缓存文件
+     */
+    public void deleteTempCacheFile(){
+        file.delete();
+    }
+
+
+    @Override
+    public String toString() {
+        long kb = length / 1024;
+        return "FileItem(" +
+                "name='" + formName + '\'' +
+                "fileName='" + fileName + '\'' +
+                ", path='" + filePath + '\'' +
+                ", contentType='" + contentType + '\'' +
+                ", size=" + (kb < 1 ? 1 : kb) + "KB)";
     }
 
 }

@@ -9,8 +9,8 @@ public interface TrackAdapter {
 
     /**
      * 当前被调用的的方法信息
-     *
      * @param clazz
+     * @param method
      * @param stackTraceElements
      * @param start
      * @param end

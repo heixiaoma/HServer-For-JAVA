@@ -43,7 +43,7 @@ public class MemoryInitClass {
                 }catch (NoClassDefFoundError error){
                   continue;
                 }
-                bname:
+                bake:
                 for (Method method : methods) {
                     Annotation[] annotations = method.getAnnotations();
                     for (Annotation annotation : annotations) {
@@ -62,7 +62,7 @@ public class MemoryInitClass {
                                     log.debug("被链路跟踪的类：{}", aClass.getName());
                                     initTrack(cc, cp,method);
                                 }
-                                continue bname;
+                                continue bake;
                             }
                         }
                     }

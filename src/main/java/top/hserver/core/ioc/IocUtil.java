@@ -4,54 +4,55 @@ import java.util.Map;
 
 /**
  * 简易IOC处理工具类
+ * @author hxm
  */
 public class IocUtil {
 
-    private final static Ioc ioc = new HServerIoc();
+    private final static Ioc IOC = new HServerIoc();
 
     public static Map<String, Object> getAll(){
-        return ioc.getAll();
+        return IOC.getAll();
     }
 
     public static <T> T getBean(Class<T> type) {
-        return ioc.getBean(type);
+        return IOC.getBean(type);
     }
 
     public static Object getBean(String beanName) {
-        return ioc.getBean(beanName);
+        return IOC.getBean(beanName);
     }
 
     public static <T> T getBean(String beanName, Class<T> type) {
-        return ioc.getBean(beanName, type);
+        return IOC.getBean(beanName, type);
     }
 
     public static void addBean(Object bean) {
-        ioc.addBean(bean);
+        IOC.addBean(bean);
     }
 
     public static void addBean(String name, Object bean) {
-        ioc.addBean(name, bean);
+        IOC.addBean(name, bean);
     }
 
     public static void remove(Class<?> type) {
-        ioc.remove(type);
+        IOC.remove(type);
     }
 
     public static void remove(String beanName) {
-        ioc.remove(beanName);
+        IOC.remove(beanName);
     }
 
     public static void clearAll() {
-        ioc.clearAll();
+        IOC.clearAll();
 
     }
 
     public static boolean exist(String beanName) {
-        return ioc.exist(beanName);
+        return IOC.exist(beanName);
     }
 
     public static boolean exist(Class<?> type) {
-        return ioc.exist(type);
+        return IOC.exist(type);
     }
 
 }

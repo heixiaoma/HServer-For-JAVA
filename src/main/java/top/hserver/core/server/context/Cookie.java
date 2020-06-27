@@ -7,9 +7,9 @@ import java.util.HashMap;
  */
 public class Cookie extends HashMap<String, String> {
 
-    public String path;
+    private String path;
 
-    public Integer maxAge;
+    private Integer maxAge;
 
     public Cookie add(String key, String value) {
         super.put(key, value);

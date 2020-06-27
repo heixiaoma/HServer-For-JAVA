@@ -34,8 +34,6 @@ public class HServerContext {
 
     private ChannelHandlerContext ctx;
 
-    private List<ByteBuf> byteBufs;
-
     public Request getRequest() {
         return request;
     }
@@ -108,14 +106,4 @@ public class HServerContext {
         this.webkit = webkit;
     }
 
-    public List<ByteBuf> getByteBufs() {
-        return byteBufs;
-    }
-
-    public void addByteBuf(ByteBuf byteBuf) {
-        if (this.byteBufs==null){
-            this.byteBufs=new ArrayList<>();
-        }
-        this.byteBufs.add(byteBuf);
-    }
 }

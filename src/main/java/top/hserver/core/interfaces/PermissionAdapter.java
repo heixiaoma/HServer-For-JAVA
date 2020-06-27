@@ -11,14 +11,15 @@ import java.util.List;
 
 /**
  * 权限验证接口
+ * @author hxm
  */
 public interface PermissionAdapter {
 
     /**
      * 自定义实现权限检查
-     *
      * @param requiresPermissions
      * @param webkit
+     * @throws Exception
      */
     void requiresPermissions(RequiresPermissions requiresPermissions, Webkit webkit) throws Exception;
 
@@ -27,6 +28,7 @@ public interface PermissionAdapter {
      *
      * @param requiresRoles
      * @param webkit
+     * @throws Exception
      */
     void requiresRoles(RequiresRoles requiresRoles, Webkit webkit) throws Exception;
 
@@ -35,6 +37,7 @@ public interface PermissionAdapter {
      *
      * @param sign
      * @param webkit
+     * @throws Exception
      */
     void sign(Sign sign, Webkit webkit) throws Exception;
 

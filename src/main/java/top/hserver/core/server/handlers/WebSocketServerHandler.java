@@ -14,12 +14,15 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author hxm
+ */
 @Slf4j
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
 
     public static final Map<String, String> WebSocketRouter = new ConcurrentHashMap<>();
 
-    private WebSocketServerHandshaker handshaker;
+    private WebSocketServerHandshaker handshake;
     private WebSocketHandler webSocketHandler;
     private String uri;
     private String uid;
@@ -45,11 +48,11 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     private void handleHttpRequest(ChannelHandlerContext ctx, HttpRequest req) {
         if (isWebSocketRequest(req)) {
             WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(req.uri(), null, true);
-            this.handshaker = wsFactory.newHandshaker(req);
-            if (this.handshaker == null) {
+            this.handshake = wsFactory.newHandshaker(req);
+            if (this.handshake == null) {
                 WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
             } else {
-                this.handshaker.handshake(ctx.channel(), req);
+                this.handshake.handshake(ctx.channel(), req);
                 this.uri = req.uri();
                 this.uid = UUID.randomUUID().toString();
                 initHandler();
@@ -64,7 +67,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 
     private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         if (frame instanceof CloseWebSocketFrame) {
-            this.handshaker.close(ctx.channel(), (CloseWebSocketFrame) frame.retain());
+            this.handshake.close(ctx.channel(), (CloseWebSocketFrame) frame.retain());
             CompletableFuture.completedFuture(new Ws(ctx, uid))
                     .thenAcceptAsync(this.webSocketHandler::disConnect, ctx.executor());
             return;

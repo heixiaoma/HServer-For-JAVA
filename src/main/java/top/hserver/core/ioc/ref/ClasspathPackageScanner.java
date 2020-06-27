@@ -10,6 +10,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 
+/**
+ * @author hxm
+ */
 @Slf4j
 public class ClasspathPackageScanner implements PackageScanner {
 

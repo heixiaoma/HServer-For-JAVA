@@ -5,6 +5,9 @@ import io.netty.channel.socket.ServerSocketChannel;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * @author hxm
+ */
 @Builder
 @Getter
 public class NettyServerGroup {

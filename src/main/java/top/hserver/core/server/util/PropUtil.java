@@ -3,6 +3,9 @@ package top.hserver.core.server.util;
 import java.io.*;
 import java.util.Properties;
 
+/**
+ * @author hxm
+ */
 public class PropUtil {
 
   private static PropUtil propUtil;

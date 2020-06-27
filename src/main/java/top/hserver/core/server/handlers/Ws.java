@@ -5,6 +5,9 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * @author hxm
+ */
 @Getter
 @Setter
 public class Ws {

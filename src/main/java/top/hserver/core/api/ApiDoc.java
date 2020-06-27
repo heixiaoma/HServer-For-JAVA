@@ -9,16 +9,21 @@ import top.hserver.core.ioc.ref.PackageScanner;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Api 数据操作对象
+ * @author hxm
  */
 public class ApiDoc {
 
   private PackageScanner packageScanner;
 
-  //第一步开始扫描应该有的包对象
+  /**
+   * 第一步开始扫描应该有的包对象
+   * @param baseClass
+   */
   public ApiDoc(Class<?> baseClass) {
     this.packageScanner = new ClasspathPackageScanner(baseClass.getPackage().getName());
   }
@@ -37,7 +42,7 @@ public class ApiDoc {
       boolean flag = false;
       //所有的方法
       Method[] methods = aClass.getMethods();
-      List<ApiData> apiDatas = new ArrayList<>();
+      List<ApiData> amiDates = new ArrayList<>();
       for (Method method : methods) {
         ApiImplicitParams annotation = method.getAnnotation(ApiImplicitParams.class);
         if (annotation != null) {
@@ -62,11 +67,11 @@ public class ApiDoc {
           //设置URL
           apiData.setUrl(reqMethods.getUrl());
           apiData.setRequestMethod(reqMethods.getRequestMethod());
-          apiDatas.add(apiData);
+          amiDates.add(apiData);
         }
       }
       if (flag) {
-        apiResult.setApiData(apiDatas);
+        apiResult.setApiData(amiDates);
         if (controller.name().trim().length() == 0) {
           apiResult.setName(aClass.getName());
         } else {
@@ -94,11 +99,9 @@ public class ApiDoc {
         }
         if (aClass1 == RequestMapping.class) {
           RequestMapping annotation1 = (RequestMapping) annotation;
-          if (annotation1.method() == null || annotation1.method().length == 0) {
+          if (annotation1.method().length == 0) {
             String[] requestMethodAll = RequestMethod.getRequestMethodAll();
-            for (String s : requestMethodAll) {
-              reqNames.add(s);
-            }
+            Collections.addAll(reqNames, requestMethodAll);
           } else {
             for (RequestMethod requestMethod : annotation1.method()) {
               reqNames.add(requestMethod.toString());

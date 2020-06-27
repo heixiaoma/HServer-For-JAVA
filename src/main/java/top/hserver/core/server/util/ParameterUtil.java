@@ -22,19 +22,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 参数自动转换工具类
+ * @author hxm
  */
 public class ParameterUtil {
 
   /**
    * 需要这map在初始化就被赋值了
    */
-  private final static ConcurrentHashMap<Class, ConcurrentHashMap<Method, String[]>> paramNameMap = new ConcurrentHashMap<>();
+  private final static ConcurrentHashMap<Class, ConcurrentHashMap<Method, String[]>> PARAM_NAME_MAP = new ConcurrentHashMap<>();
 
   public static Object[] getMethodArgs(Class cs, Method method, HServerContext hServerContext) throws Exception {
     Parameter[] parameterTypes = method.getParameters();
     Object[] objects = new Object[parameterTypes.length];
 
-    String[] strings = paramNameMap.get(cs).get(method);
+    String[] strings = PARAM_NAME_MAP.get(cs).get(method);
     if (parameterTypes.length != strings.length) {
       throw new Exception(method.getName() + "-方法参数获取异常");
     }
@@ -137,16 +138,14 @@ public class ParameterUtil {
 
   public static void addParam(Class cs, Method method) {
     String[] paramNames = getParamNames(method);
-    if (paramNameMap.containsKey(cs)) {
-      ConcurrentHashMap<Method, String[]> concurrentHashMap = paramNameMap.get(cs);
-      assert paramNames != null;
+    if (PARAM_NAME_MAP.containsKey(cs)) {
+      ConcurrentHashMap<Method, String[]> concurrentHashMap = PARAM_NAME_MAP.get(cs);
       concurrentHashMap.put(method, paramNames);
-      paramNameMap.put(cs, concurrentHashMap);
+      PARAM_NAME_MAP.put(cs, concurrentHashMap);
     } else {
       ConcurrentHashMap<Method, String[]> concurrentHashMap = new ConcurrentHashMap<>();
-      assert paramNames != null;
       concurrentHashMap.put(method, paramNames);
-      paramNameMap.put(cs, concurrentHashMap);
+      PARAM_NAME_MAP.put(cs, concurrentHashMap);
     }
 
   }

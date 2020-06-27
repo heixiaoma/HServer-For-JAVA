@@ -5,6 +5,9 @@ import top.hserver.core.interfaces.HookAdapter;
 import top.hserver.core.ioc.IocUtil;
 import javassist.util.proxy.ProxyFactory;
 
+/**
+ * @author hxm
+ */
 public class JavassistProxyFactory {
 
     public Object newProxyInstance(Class clazz, String hookPageName, String method) throws InstantiationException, IllegalAccessException {

@@ -88,7 +88,10 @@ public class Response implements HttpResponse {
         headers.put("content-type", "text/html;charset=UTF-8");
     }
 
-    //添加Cookie
+    /**
+     * 添加Cookie
+     * @param cookie
+     */
     @Override
     public void addCookie(Cookie cookie) {
         Iterator<String> iterator = cookie.keySet().iterator();

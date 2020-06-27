@@ -3,6 +3,9 @@ package top.hserver.core.server.epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 
+/**
+ * @author hxm
+ */
 public class EpollKit {
 
   public static NettyServerGroup group(int threadCount, int workers, String name) {

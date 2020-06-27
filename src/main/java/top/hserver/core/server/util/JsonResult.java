@@ -7,8 +7,10 @@ import java.util.HashMap;
 /**
  * 返回结果对象
  *
+ * @author hxm
  */
 public class JsonResult extends HashMap<String, Object> {
+
     private static final long serialVersionUID = 1L;
 	
     private JsonResult() {

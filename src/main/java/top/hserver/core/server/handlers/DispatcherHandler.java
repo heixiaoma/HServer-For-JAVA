@@ -112,7 +112,7 @@ public class DispatcherHandler {
         /**
          * 检测下Filter的过滤哈哈
          */
-        if (!FilterChain.filtersIoc.isEmpty()) {
+        if (!FilterChain.FILTERS_IOC.isEmpty()) {
             //不是空就要进行Filter过滤洛
             hServerContext.setFilter(true);
             try {

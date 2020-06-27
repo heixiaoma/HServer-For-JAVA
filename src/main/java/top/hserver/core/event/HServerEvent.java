@@ -6,6 +6,7 @@ import java.util.Map;
 
 /**
  * 异步事件处理入口类
+ * @author hxm
  */
 public class HServerEvent{
 

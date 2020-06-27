@@ -6,20 +6,23 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author hxm
+ */
 @Slf4j
 public class HServerIoc implements Ioc {
 
-    private static final Map<String, Object> pool = new ConcurrentHashMap<>(32);
+    private static final Map<String, Object> POOL = new ConcurrentHashMap<>(32);
 
     @Override
     public Map<String, Object> getAll() {
-        return pool;
+        return POOL;
     }
 
     @Override
     public <T> T getBean(Class<T> type) {
         if (type != null) {
-            Object o = pool.get(type.getName());
+            Object o = POOL.get(type.getName());
             return type.cast(o);
         }
         return null;
@@ -28,7 +31,7 @@ public class HServerIoc implements Ioc {
     @Override
     public Object getBean(String beanName) {
         if (beanName != null && beanName.trim().length() > 0) {
-            return pool.get(beanName);
+            return POOL.get(beanName);
         }
         return null;
     }
@@ -37,7 +40,7 @@ public class HServerIoc implements Ioc {
     public <T> T getBean(String beanName, Class<T> type) {
         try {
             if (type != null && beanName != null && beanName.trim().length() > 0) {
-                Object o = pool.get(beanName);
+                Object o = POOL.get(beanName);
                 return type.cast(o);
             }
         } catch (Exception e) {
@@ -57,7 +60,7 @@ public class HServerIoc implements Ioc {
     @Override
     public void addBean(String name, Object bean) {
         if (name != null && name.trim().length() > 0 && bean != null ) {
-            pool.put(name, bean);
+            POOL.put(name, bean);
         }
     }
 
@@ -65,8 +68,8 @@ public class HServerIoc implements Ioc {
     public void remove(Class<?> type) {
         if (type != null) {
             String name = type.getName();
-            if (pool.containsKey(name)) {
-                pool.remove(name);
+            if (POOL.containsKey(name)) {
+                POOL.remove(name);
             }
         }
     }
@@ -74,22 +77,22 @@ public class HServerIoc implements Ioc {
     @Override
     public void remove(String beanName) {
         if (beanName != null) {
-            if (pool.containsKey(beanName)) {
-                pool.remove(beanName);
+            if (POOL.containsKey(beanName)) {
+                POOL.remove(beanName);
             }
         }
     }
 
     @Override
     public void clearAll() {
-        pool.clear();
+        POOL.clear();
 
     }
 
     @Override
     public boolean exist(String beanName) {
         if (beanName != null && beanName.trim().length() > 0) {
-            if (pool.containsKey(beanName)) {
+            if (POOL.containsKey(beanName)) {
                 return true;
             } else {
                 return false;
@@ -102,7 +105,7 @@ public class HServerIoc implements Ioc {
     public boolean exist(Class<?> type) {
         if (type != null) {
             String name = type.getName();
-            if (pool.containsKey(name)) {
+            if (POOL.containsKey(name)) {
                 return true;
             } else {
                 return false;
