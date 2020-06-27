@@ -132,7 +132,6 @@ public abstract class BasePersistence implements PersistenceIntf
         }
         catch (Exception e)
         {
-            // TODO
         	e.printStackTrace();
         }
         finally {
