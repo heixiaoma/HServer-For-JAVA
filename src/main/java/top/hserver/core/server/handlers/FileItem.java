@@ -4,6 +4,7 @@ package top.hserver.core.server.handlers;
 import lombok.Data;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,7 +27,7 @@ public class FileItem {
     /**
      * 上传的表单字段
      */
-    private String name;
+    private String formName;
 
     /**
      * 上传的文件名
@@ -36,7 +37,7 @@ public class FileItem {
     /**
      * File temp path
      */
-    private String path;
+    private String filePath;
 
     /**
      * File Content Type
@@ -63,9 +64,9 @@ public class FileItem {
     public String toString() {
         long kb = length / 1024;
         return "FileItem(" +
-                "name='" + name + '\'' +
+                "name='" + formName + '\'' +
                 "fileName='" + fileName + '\'' +
-                ", path='" + path + '\'' +
+                ", path='" + filePath + '\'' +
                 ", contentType='" + contentType + '\'' +
                 ", size=" + (kb < 1 ? 1 : kb) + "KB)";
     }
@@ -88,6 +89,16 @@ public class FileItem {
             file.delete();
         }
         return fileContent;
+    }
+
+    public FileInputStream getFileInputStream() {
+        try {
+            return new FileInputStream(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            file.delete();
+        }
     }
 
     public String getFileToString() {

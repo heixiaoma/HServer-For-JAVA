@@ -136,15 +136,15 @@ public class Request implements HttpRequest {
             return;
         }
         FileItem fileItem = new FileItem();
-        fileItem.setName(fileUpload.getName());
+        fileItem.setFormName(fileUpload.getName());
         fileItem.setFileName(fileUpload.getFilename());
         File file = new File(tempPath + "h_server_" + UUID.randomUUID() + "_upload");
         fileUpload.renameTo(file);
         fileItem.setFile(file);
-        fileItem.setPath(file.getPath());
+        fileItem.setFilePath(file.getPath());
         fileItem.setContentType(fileUpload.getContentType());
         fileItem.setLength(fileUpload.length());
-        fileItems.put(fileItem.getName(), fileItem);
+        fileItems.put(fileItem.getFormName(), fileItem);
     }
 
 }
