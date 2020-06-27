@@ -1,7 +1,6 @@
 package top.hserver.core.server.context;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.HttpContent;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.server.handlers.FileItem;
 import io.netty.buffer.ByteBuf;
@@ -14,7 +13,6 @@ import lombok.Setter;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -41,8 +39,7 @@ public class Request implements HttpRequest {
     private static final ByteBuf EMPTY_BUF = Unpooled.copiedBuffer("", CharsetUtil.UTF_8);
     private byte[] body = null;
     private Map<String, FileItem> fileItems = new HashMap<>(8);
-    private String tempPath = System.getProperty("java.io.tmpdir");
-
+    private static final String tempPath = System.getProperty("java.io.tmpdir") + File.separator;
 
     @Override
     public String query(String name) {
