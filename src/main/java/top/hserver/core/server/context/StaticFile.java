@@ -1,9 +1,11 @@
 package top.hserver.core.server.context;
 
-import io.netty.buffer.ByteBuf;
 
 import java.io.InputStream;
 
+/**
+ * @author hxm
+ */
 public class StaticFile {
 
     /**

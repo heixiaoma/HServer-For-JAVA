@@ -31,31 +31,17 @@ public class DispatcherHandler {
 
     private final static StaticHandler STATIC_HANDLER = new StaticHandler();
 
-
-    /**
-     * 标识不是静态文件，这样下次使用方便直接跳过检查
-     */
-    private final static CopyOnWriteArraySet<String> NO_STATIC_FILE_URI = new CopyOnWriteArraySet<>();
-
     /**
      * 静态文件的处理
-     * 此处的静态文件缓存是非常有必要的，直接拉低了整体QPS.
-     *
      *
      * @param hServerContext
      * @return
      */
     static HServerContext staticFile(HServerContext hServerContext) {
-        //检查是不是静态文件，如果是封装下请求，然后跳过控制器的方法
-        if (NO_STATIC_FILE_URI.contains(hServerContext.getRequest().getUri()) || hServerContext.getRequest().getRequestType() != HttpMethod.GET) {
-            return hServerContext;
-        }
         StaticFile handler = STATIC_HANDLER.handler(hServerContext.getRequest().getUri(), hServerContext);
         if (handler != null) {
             hServerContext.setStaticFile(true);
             hServerContext.setStaticFile(handler);
-        } else {
-            NO_STATIC_FILE_URI.add(hServerContext.getRequest().getUri());
         }
         return hServerContext;
     }
