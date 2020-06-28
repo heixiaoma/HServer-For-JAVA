@@ -46,7 +46,7 @@
         <netty.version>4.1.50.Final</netty.version>
         <slf4j.version>1.7.28</slf4j.version>
         <logback.version>1.2.3</logback.version>
-        <fastjson.version>1.2.62</fastjson.version>
+        <fastjson.version>1.2.71</fastjson.version>
         <projectlombok.version>1.18.10</projectlombok.version>
         <javassist.version>3.27.0-GA</javassist.version>
         <freemarker.version>2.3.28</freemarker.version>
