@@ -37,7 +37,9 @@ public class ClassLoadUtil {
             ClassLoader classLoader=null;
             if (isJavassist){
               ClassPool cp = ClassPool.getDefault();
-              classLoader = new Loader(cp);
+                Loader loader = new Loader(cp);
+                loader.delegateLoadingOf("jdk.internal.reflect.");
+                classLoader=loader;
             }else {
                classLoader = Thread.currentThread().getContextClassLoader();
             }
