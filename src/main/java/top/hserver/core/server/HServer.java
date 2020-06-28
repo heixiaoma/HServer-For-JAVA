@@ -49,13 +49,13 @@ public class HServer {
       ServerBootstrap bootstrap = new ServerBootstrap();
       if (EpollUtil.check()) {
         bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
-        bossGroup = new EpollEventLoopGroup(bossPool, new NamedThreadFactory("hserver_epoll_boss@"));
-        workerGroup = new EpollEventLoopGroup(workerPool, new NamedThreadFactory("hserver_epoll_worker@"));
+        bossGroup = new EpollEventLoopGroup(bossPool, new NamedThreadFactory("hserver_epoll_boss"));
+        workerGroup = new EpollEventLoopGroup(workerPool, new NamedThreadFactory("hserver_epoll_worker"));
         bootstrap.group(bossGroup, workerGroup).channel(EpollServerSocketChannel.class);
         typeName = "Epoll";
       } else {
-        bossGroup = new NioEventLoopGroup(bossPool, new NamedThreadFactory("hserver_boss@"));
-        workerGroup = new NioEventLoopGroup(workerPool, new NamedThreadFactory("hserver_ worker@"));
+        bossGroup = new NioEventLoopGroup(bossPool, new NamedThreadFactory("hserver_boss"));
+        workerGroup = new NioEventLoopGroup(workerPool, new NamedThreadFactory("hserver_ worker"));
         bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
         typeName = "Nio";
       }

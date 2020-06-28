@@ -31,12 +31,12 @@ public class RegServer extends Thread {
             ServerBootstrap bootstrap = new ServerBootstrap();
             if (EpollUtil.check()) {
               bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
-              bossGroup = new EpollEventLoopGroup(bossGroupThreadCount, new NamedThreadFactory("hserver_epoll_rpc_boss@"));
-              workerGroup = new EpollEventLoopGroup(workerGroupThreadCount, new NamedThreadFactory("hserver_epoll_rpc_worker@"));
+              bossGroup = new EpollEventLoopGroup(bossGroupThreadCount, new NamedThreadFactory("hserver_epoll_rpc_boss"));
+              workerGroup = new EpollEventLoopGroup(workerGroupThreadCount, new NamedThreadFactory("hserver_epoll_rpc_worker"));
               bootstrap.group(bossGroup, workerGroup).channel(EpollServerSocketChannel.class);
             } else {
-                bossGroup = new NioEventLoopGroup(bossGroupThreadCount, new NamedThreadFactory("hserver_rpc_boss@"));
-                workerGroup = new NioEventLoopGroup(workerGroupThreadCount, new NamedThreadFactory("hserver_rpc_ worker@"));
+                bossGroup = new NioEventLoopGroup(bossGroupThreadCount, new NamedThreadFactory("hserver_rpc_boss"));
+                workerGroup = new NioEventLoopGroup(workerGroupThreadCount, new NamedThreadFactory("hserver_rpc_ worker"));
                 bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
             }
             bootstrap.childHandler(new RpcServerInitializer());

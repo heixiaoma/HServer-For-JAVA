@@ -19,7 +19,7 @@ public class TaskManager {
 
     private static final Map<String, ScheduledFuture<?>> CRON_TASK = new ConcurrentHashMap<>();
 
-    private static final ScheduledThreadPoolExecutorPro SCHEDULED_THREAD_POOL_EXECUTOR = new ScheduledThreadPoolExecutorPro(ConstConfig.taskPool, new NamedThreadFactory("hserver_task@"));
+    private static final ScheduledThreadPoolExecutorPro SCHEDULED_THREAD_POOL_EXECUTOR = new ScheduledThreadPoolExecutorPro(ConstConfig.taskPool, new NamedThreadFactory("hserver_task"));
 
     /**
      * 动态添加任务

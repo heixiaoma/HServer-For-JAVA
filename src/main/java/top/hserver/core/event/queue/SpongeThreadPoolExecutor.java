@@ -92,7 +92,7 @@ public class SpongeThreadPoolExecutor {
         new SpongeArrayBlockingQueue(tmpCapacity, tmpOnePersistLimit, tmpSpongeService);
       tmpThreadPool =
         new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, timeUnit,
-          tmpMyArrayBlockingQueue, new NamedThreadFactory("hserver_ queue@"));
+          tmpMyArrayBlockingQueue, new NamedThreadFactory("hserver_ queue"));
       tmpMyArrayBlockingQueue.doFetchData_init(tmpThreadPool);
     } catch (Throwable ex) {
       ex.printStackTrace();
