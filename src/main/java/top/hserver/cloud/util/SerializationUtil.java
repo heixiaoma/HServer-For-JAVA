@@ -7,9 +7,11 @@ import com.dyuproject.protostuff.runtime.RuntimeSchema;
 import org.objenesis.Objenesis;
 import org.objenesis.ObjenesisStd;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author hxm
+ */
 public class SerializationUtil {
 
     private static ConcurrentHashMap cachedSchema = new ConcurrentHashMap();

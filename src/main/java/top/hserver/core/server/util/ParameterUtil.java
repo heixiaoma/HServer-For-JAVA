@@ -1,7 +1,6 @@
 package top.hserver.core.server.util;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.interfaces.HttpResponse;
 import javassist.ClassPool;
@@ -11,6 +10,7 @@ import javassist.NotFoundException;
 import javassist.bytecode.CodeAttribute;
 import javassist.bytecode.LocalVariableAttribute;
 import javassist.bytecode.MethodInfo;
+import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.context.HServerContext;
 
 import java.lang.reflect.Field;
@@ -87,8 +87,7 @@ public class ParameterUtil {
               break;
             default:
               //不是基础类型可能就是我来转换的类型，哈哈，有毒哦
-              JSONObject jsonObject = JSON.parseObject(JSON.toJSON(requestParams).toString());
-              objects[i] = JSON.toJavaObject(jsonObject, parameterType.getType());
+              objects[i] = ConstConfig.OBJECT_MAPPER.convertValue(requestParams, parameterType.getType());
               break;
           }
         }catch (Exception e){

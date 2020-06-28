@@ -1,6 +1,5 @@
 package top.hserver.core.server.handlers;
 
-import com.alibaba.fastjson.JSON;
 import top.hserver.core.interfaces.GlobalException;
 import top.hserver.core.interfaces.PermissionAdapter;
 import top.hserver.core.ioc.IocUtil;
@@ -165,7 +164,11 @@ public class DispatcherHandler {
                 hServerContext.setResult(res.toString());
             } else {
                 //非字符串类型的将对象转换Json字符串
-                hServerContext.setResult(JSON.toJSONString(res));
+                try {
+                  hServerContext.setResult(ConstConfig.OBJECT_MAPPER.writeValueAsString(res));
+                }catch (Exception e){
+                  throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "返回的数据非字符串被转换JSON异常", e, hServerContext.getWebkit());
+                }
                 hServerContext.getResponse().setHeader("content-type", "application/json;charset=UTF-8");
             }
         } catch (InvocationTargetException e) {

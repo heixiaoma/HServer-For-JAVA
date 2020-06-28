@@ -1,9 +1,8 @@
 package top.hserver.core.event.queue;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.parser.ParserConfig;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import lombok.extern.slf4j.Slf4j;
+import top.hserver.cloud.util.SerializationUtil;
+import top.hserver.core.event.EventHandleTask;
 import top.hserver.core.event.queue.util.DataByteArrayOutputStream;
 import top.hserver.core.event.queue.util.Utilities;
 
@@ -55,11 +54,6 @@ import static top.hserver.core.event.EventDispatcher.clearFile;
 @Slf4j
 public class SpongeArrayBlockingQueue<E> extends AbstractQueue<E>
         implements BlockingQueue<E>, java.io.Serializable {
-
-    static {
-        ParserConfig.getGlobalInstance().addAccept("top.hserver.core.event.EventHandleTask");
-        ParserConfig.getGlobalInstance().setAutoTypeSupport(true);
-    }
 
     /**
      * Serialization ID. This class relies on default serialization
@@ -942,8 +936,7 @@ public class SpongeArrayBlockingQueue<E> extends AbstractQueue<E>
 
             try {
                 for (int i = 0; i < count; i++) {
-//                    byte[] tmpBytes = SerializationUtil.serialize(itemArray[i]);
-                    byte[] tmpBytes = JSON.toJSONBytes(itemArray[i], SerializerFeature.WriteClassName);
+                    byte[] tmpBytes =SerializationUtil.serialize(itemArray[i]);
                     theBytesOut.write(Utilities.getBytesFromInt(tmpBytes.length));
                     theBytesOut.write(tmpBytes);
                 }
@@ -974,8 +967,9 @@ public class SpongeArrayBlockingQueue<E> extends AbstractQueue<E>
                             tmpCurPosi += 4;
                             byte[] tmpOneItemBytes = new byte[tmpOneItemLength];
                             System.arraycopy(tmpBytes, tmpCurPosi, tmpOneItemBytes, 0, tmpOneItemLength);
-                            E tmpOneItem = (E) JSON.parse(tmpOneItemBytes);
-                            theThreadPoolExecutorInsParm.execute((Runnable) tmpOneItem);
+                            E tmpOneItem = (E)SerializationUtil.deserialize(tmpOneItemBytes,EventHandleTask.class);
+
+                          theThreadPoolExecutorInsParm.execute((Runnable) tmpOneItem);
                             tmpCurPosi += tmpOneItemLength;
                         }
                         isInPersistence = true;
@@ -993,14 +987,13 @@ public class SpongeArrayBlockingQueue<E> extends AbstractQueue<E>
                     byte[] tmpBytes = theSpongeService.getThePersistence().fetchOneBatchBytes();
 
                     if (tmpBytes != null) {
-                        long tmpStartTime = System.currentTimeMillis();
                         int tmpCurPosi = 6;
                         while (tmpCurPosi < tmpBytes.length) {
                             int tmpOneItemLength = Utilities.getIntFromBytes(tmpBytes, tmpCurPosi);
                             tmpCurPosi += 4;
                             byte[] tmpOneItemBytes = new byte[tmpOneItemLength];
                             System.arraycopy(tmpBytes, tmpCurPosi, tmpOneItemBytes, 0, tmpOneItemLength);
-                            E tmpOneItem = (E) JSON.parse(tmpOneItemBytes);
+                            E tmpOneItem = (E) SerializationUtil.deserialize(tmpOneItemBytes,EventHandleTask.class);
                             insert(tmpOneItem);
                             tmpCurPosi += tmpOneItemLength;
                         }

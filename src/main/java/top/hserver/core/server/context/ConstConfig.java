@@ -1,5 +1,7 @@
 package top.hserver.core.server.context;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.ssl.SslContext;
 
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -50,5 +52,8 @@ public class ConstConfig {
 
   public static Integer workerPool=4;
 
+
+  public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+    .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
 }

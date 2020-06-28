@@ -1,6 +1,5 @@
 package top.hserver.core.server.context;
 
-import com.alibaba.fastjson.JSON;
 import top.hserver.core.interfaces.HttpResponse;
 import top.hserver.core.server.util.FreemarkerUtil;
 
@@ -62,8 +61,12 @@ public class Response implements HttpResponse {
 
     @Override
     public void sendJson(Object object) {
-        this.jsonAndHtml = JSON.toJSONString(object);
+      try {
+        this.jsonAndHtml = ConstConfig.OBJECT_MAPPER.writeValueAsString(object);
         headers.put("content-type", "application/json;charset=UTF-8");
+      }catch (Exception e){
+        e.printStackTrace();
+      }
     }
 
     @Override

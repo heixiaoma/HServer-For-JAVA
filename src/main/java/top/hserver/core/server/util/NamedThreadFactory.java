@@ -18,6 +18,6 @@ public class NamedThreadFactory implements ThreadFactory {
     @Override
     public Thread newThread(Runnable runnable) {
         threadNumber.add(1);
-        return new Thread(runnable, prefix + "thread-" + threadNumber.intValue());
+        return new Thread(runnable, prefix + "-" + threadNumber.intValue());
     }
 }
