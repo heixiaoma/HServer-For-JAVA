@@ -1,16 +1,16 @@
 package top.hserver.core.server.handlers;
 
+import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.multipart.*;
-import top.hserver.core.server.context.HServerContext;
+import top.hserver.core.server.context.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import lombok.extern.slf4j.Slf4j;
-import top.hserver.core.server.context.Request;
-import top.hserver.core.server.context.Response;
-import top.hserver.core.server.context.Webkit;
+import top.hserver.core.server.util.ExceptionUtil;
 import top.hserver.core.server.util.HServerIpUtil;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,4 +76,9 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
 
         channelHandlerContext.fireChannelRead(hServerContext);
     }
+
+  @Override
+  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    BuildResponse.writeException(ctx,cause);
+  }
 }

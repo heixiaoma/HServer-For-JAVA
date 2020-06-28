@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.*;
 
+import static top.hserver.core.server.context.ConstConfig.queuePool;
+
 /**
  * 事件分发器<br>
  * <br>
@@ -81,11 +83,10 @@ public class EventDispatcher {
                 if (!file.exists()) {
                     file.mkdirs();
                 }
-                int nThreads = Runtime.getRuntime().availableProcessors();
                 HashMap tmpParmHMap = new HashMap();
                 tmpParmHMap.put(SpongeThreadPoolExecutor.FilePersistence_Dir, path);
                 handlePool = SpongeThreadPoolExecutor.generateThreadPoolExecutor(
-                        nThreads, nThreads * 2, 60L, TimeUnit.SECONDS, tmpParmHMap);
+                  queuePool, queuePool * 2, 60L, TimeUnit.SECONDS, tmpParmHMap);
             } catch (Exception e) {
             }
         }

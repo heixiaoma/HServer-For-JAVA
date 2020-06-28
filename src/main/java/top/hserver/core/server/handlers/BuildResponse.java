@@ -1,6 +1,7 @@
 package top.hserver.core.server.handlers;
 
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.server.context.ConstConfig;
@@ -179,4 +180,21 @@ public class BuildResponse {
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
         return response;
     }
+
+    public static void writeException(ChannelHandlerContext ctx,Throwable cause){
+      String message = ExceptionUtil.getMessage(cause);
+      message="HServer:"+ ConstConfig.VERSION +"服务器异常:\n"+message;
+
+      FullHttpResponse response = new DefaultFullHttpResponse(
+        HttpVersion.HTTP_1_1,
+        HttpResponseStatus.SERVICE_UNAVAILABLE,
+        Unpooled.wrappedBuffer(message.getBytes(StandardCharsets.UTF_8)));
+      response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
+      response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
+      response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+      ctx.write(response);
+      ctx.flush();
+      ctx.close();
+    }
+
 }

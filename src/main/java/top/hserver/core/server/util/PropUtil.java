@@ -49,6 +49,20 @@ public class PropUtil {
     return value.trim();
   }
 
+
+  public Integer getInt(String key) {
+    String s = get(key);
+    if (s != null && s.trim().length() > 0) {
+      try {
+        return Integer.parseInt(s);
+      } catch (Exception e) {
+        return null;
+      }
+    }
+    return null;
+  }
+
+
   private boolean isBlank(String str) {
     int strLen;
     if (str != null && (strLen = str.length()) != 0) {

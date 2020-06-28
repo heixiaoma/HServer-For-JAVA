@@ -3,7 +3,7 @@ package top.hserver.core.task;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.core.interfaces.TaskJob;
 import top.hserver.core.server.context.ConstConfig;
-import top.hserver.core.server.epoll.NamedThreadFactory;
+import top.hserver.core.server.util.NamedThreadFactory;
 
 import java.lang.reflect.Method;
 import java.util.Map;

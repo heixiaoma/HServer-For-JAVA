@@ -10,14 +10,22 @@ import top.hserver.core.server.util.PropUtil;
 public class PropertiesInit {
 
   public static void  init() {
-    try {
-      PropUtil propKit = new PropUtil();
-      Object taskPool = propKit.get("taskPool");
-      if (taskPool != null && taskPool.toString().trim().length() > 0) {
-        ConstConfig.taskPool = Integer.parseInt(taskPool.toString());
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
+    PropUtil instance = PropUtil.getInstance();
+    Integer taskPool = instance.getInt("taskPool");
+    if (taskPool!=null){
+      ConstConfig.taskPool=taskPool;
+    }
+    Integer queuePool = instance.getInt("queuePool");
+    if (taskPool!=null){
+      ConstConfig.queuePool=queuePool;
+    }
+    Integer bossPool = instance.getInt("bossPool");
+    if (bossPool!=null){
+      ConstConfig.bossPool=bossPool;
+    }
+    Integer workerPool = instance.getInt("workerPool");
+    if (workerPool!=null){
+      ConstConfig.workerPool=workerPool;
     }
   }
 

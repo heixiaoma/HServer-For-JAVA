@@ -1,16 +1,11 @@
 package top.hserver.core.server.handlers;
 
 import io.netty.util.ReferenceCountUtil;
-import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.context.HServerContext;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.*;
 import lombok.extern.slf4j.Slf4j;
-import top.hserver.core.server.util.ExceptionUtil;
 
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -46,18 +41,6 @@ public class ActionHandler extends SimpleChannelInboundHandler<HServerContext> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        String message = ExceptionUtil.getMessage(cause);
-        message="HServer:"+ ConstConfig.VERSION +"服务器异常:\n"+message;
-
-        FullHttpResponse response = new DefaultFullHttpResponse(
-                HttpVersion.HTTP_1_1,
-                HttpResponseStatus.SERVICE_UNAVAILABLE,
-                Unpooled.wrappedBuffer(message.getBytes(StandardCharsets.UTF_8)));
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
-        response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
-        response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-        ctx.write(response);
-        ctx.flush();
-        ctx.close();
+      BuildResponse.writeException(ctx,cause);
     }
 }

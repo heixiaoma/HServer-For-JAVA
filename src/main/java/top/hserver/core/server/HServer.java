@@ -1,16 +1,13 @@
 package top.hserver.core.server;
 
-/**
- * Created by Bess on 23.09.14.
- */
-
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.handler.ssl.SslContextBuilder;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.ConstConfig;
-import top.hserver.core.server.epoll.EpollKit;
-import top.hserver.core.server.epoll.NamedThreadFactory;
-import top.hserver.core.server.epoll.NettyServerGroup;
+import top.hserver.core.server.util.NamedThreadFactory;
+import top.hserver.core.server.util.EpollUtil;
 import top.hserver.core.server.util.PropUtil;
 import top.hserver.core.task.TaskManager;
 import io.netty.bootstrap.ServerBootstrap;
@@ -26,6 +23,7 @@ import java.io.*;
 import java.util.stream.Collectors;
 
 import static top.hserver.core.event.EventDispatcher.startTaskThread;
+import static top.hserver.core.server.context.ConstConfig.*;
 
 /**
  * @author hxm
@@ -46,21 +44,18 @@ public class HServer {
     EventLoopGroup bossGroup = null;
     EventLoopGroup workerGroup = null;
 
-    int acceptThreadCount = 2;
-    int ioThreadCount = 4;
     String typeName;
     try {
       ServerBootstrap bootstrap = new ServerBootstrap();
-      if (EpollKit.epollIsAvailable()) {
+      if (EpollUtil.check()) {
         bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
-        NettyServerGroup nettyServerGroup = EpollKit.group(acceptThreadCount, ioThreadCount, "hserver");
-        bossGroup = nettyServerGroup.getBoosGroup();
-        workerGroup = nettyServerGroup.getWorkerGroup();
-        bootstrap.group(bossGroup, workerGroup).channel(nettyServerGroup.getSocketChannel());
+        bossGroup = new EpollEventLoopGroup(bossPool, new NamedThreadFactory("hserver_epoll_boss@"));
+        workerGroup = new EpollEventLoopGroup(workerPool, new NamedThreadFactory("hserver_epoll_worker@"));
+        bootstrap.group(bossGroup, workerGroup).channel(EpollServerSocketChannel.class);
         typeName = "Epoll";
       } else {
-        bossGroup = new NioEventLoopGroup(acceptThreadCount, new NamedThreadFactory("hserver_boss@"));
-        workerGroup = new NioEventLoopGroup(ioThreadCount, new NamedThreadFactory("hserver_ worker@"));
+        bossGroup = new NioEventLoopGroup(bossPool, new NamedThreadFactory("hserver_boss@"));
+        workerGroup = new NioEventLoopGroup(workerPool, new NamedThreadFactory("hserver_ worker@"));
         bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
         typeName = "Nio";
       }

@@ -17,6 +17,11 @@ public class ConstConfig {
    * 定时任务线程数配置
    */
   public static Integer taskPool = Runtime.getRuntime().availableProcessors() + 1;
+
+  /**
+   * 队列里面的线程数
+   */
+  public static Integer queuePool = Runtime.getRuntime().availableProcessors() + 1;
   /**
    * SSL 配置
    */
@@ -31,5 +36,19 @@ public class ConstConfig {
    * 社区地址
    */
   public static final String COMMUNITY_ADDRESS ="http://hserver.top";
+
+
+  /**
+   * webServer  bossThreadCount
+   */
+
+  public static Integer bossPool=2;
+
+  /**
+   * webServer workerGroupThreadCount
+   */
+
+  public static Integer workerPool=4;
+
 
 }

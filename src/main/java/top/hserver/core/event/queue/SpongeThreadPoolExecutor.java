@@ -1,6 +1,6 @@
 package top.hserver.core.event.queue;
 
-import top.hserver.core.server.epoll.NamedThreadFactory;
+import top.hserver.core.server.util.NamedThreadFactory;
 
 import java.util.HashMap;
 import java.util.concurrent.ThreadPoolExecutor;
