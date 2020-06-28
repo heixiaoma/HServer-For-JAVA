@@ -54,15 +54,11 @@ public class StaticHandler {
         if (!STATIC_FILE_URI.contains(uri)){
             return null;
         }
-        InputStream input = getResourceStreamFromJar(BASE_PATH + uri);
+        InputStream input = StaticHandler.class.getResourceAsStream(BASE_PATH + uri);
         if (input != null) {
             return buildStaticFile(input, uri, hServerContext);
         }
         return null;
-    }
-
-    private InputStream getResourceStreamFromJar(String uri) {
-        return StaticHandler.class.getResourceAsStream(uri);
     }
 
     /**

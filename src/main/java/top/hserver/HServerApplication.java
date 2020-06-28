@@ -3,6 +3,7 @@ package top.hserver;
 import top.hserver.cloud.CloudManager;
 import top.hserver.core.ioc.ref.InitBean;
 import top.hserver.core.ioc.ref.MemoryInitClass;
+import top.hserver.core.log.HServerLogConfig;
 import top.hserver.core.properties.PropertiesInit;
 import top.hserver.core.server.HServer;
 import lombok.extern.slf4j.Slf4j;
@@ -12,14 +13,13 @@ import java.util.List;
 import static top.hserver.core.event.EventDispatcher.startTaskThread;
 
 
+/**
+ * @author hxm
+ */
 @Slf4j
 public class HServerApplication {
 
   public static void run(Class classz, Integer port, String... args) {
-    if (classz == null || port == null) {
-      log.info("HServer 启动失败");
-      return;
-    }
     iocInit(classz);
     startServer(port, args);
   }
@@ -40,6 +40,10 @@ public class HServerApplication {
   }
 
   private static void iocInit(Class... classz) {
+    /**
+     * 初始化哈日志配置
+     */
+    new HServerLogConfig().init();
     log.info("初始化配置文件");
     PropertiesInit.init();
     log.info("初始化配置完成");
