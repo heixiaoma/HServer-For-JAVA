@@ -32,14 +32,14 @@ public class InitBean {
 
   /**
    * 加载所有bean进容器
-   * @param baseClass
+   * @param packageName
    */
-  public static void init(Class<?> baseClass) {
+  public static void init(String packageName) {
     try {
-      if (baseClass == null || baseClass.getPackage() == null || baseClass.getPackage().getName() == null) {
+      if (packageName == null ) {
         return;
       }
-      PackageScanner scan = new ClasspathPackageScanner(baseClass.getPackage().getName());
+      PackageScanner scan = new ClasspathPackageScanner(packageName);
       //读取配置文件
       initConfiguration(scan);
       initWebSocket(scan);

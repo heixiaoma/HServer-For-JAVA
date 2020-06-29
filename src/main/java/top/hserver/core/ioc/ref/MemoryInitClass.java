@@ -28,12 +28,12 @@ public class MemoryInitClass {
     public static final ConcurrentHashMap<String,Object> annMapObject=new ConcurrentHashMap<>();
 
 
-    public static void init(Class clazz) {
-        if (clazz == null || clazz.getPackage() == null || clazz.getPackage().getName() == null) {
+    public static void init(String packageName){
+        if (packageName == null ) {
             return;
         }
         try {
-            List<Class<?>> classes =ClassLoadUtil.LoadClasses(clazz.getPackage().getName(), true,true);
+            List<Class<?>> classes =ClassLoadUtil.LoadClasses(packageName, true,true);
             ClassPool cp = ClassPool.getDefault();
             for (Class<?> aClass : classes) {
                 CtClass cc = null;
