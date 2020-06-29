@@ -26,11 +26,11 @@ public class ClassLoadUtil {
     /**
      * 加载包下的class
      *
-     * @param packageName 包名，如：com.xxx.yyy
+     * @param packageName 包名，如：com
      * @param recursive   是否要递归加载子包下的class
      * @return Class列表
      */
-    public static List<Class<?>> LoadClasses(String packageName, boolean recursive,boolean isJavassist) {
+    public static List<Class<?>> LoadClasses(final String packageName, boolean recursive,boolean isJavassist) {
         List<Class<?>> classes = new ArrayList<Class<?>>();
         String packageDirName = packageName.replace('.', '/');
         try {
@@ -53,6 +53,7 @@ public class ClassLoadUtil {
                 } else if ("jar".equals(protocol)) {
                     JarFile jar;
                     try {
+                        String tmpPackage;
                         jar = ((java.net.JarURLConnection) url.openConnection()).getJarFile();
                         Enumeration<JarEntry> entries = jar.entries();
                         while (entries.hasMoreElements()) {
@@ -64,13 +65,15 @@ public class ClassLoadUtil {
                             if (name.startsWith(packageDirName)) {
                                 int idx = name.lastIndexOf('/');
                                 if (idx != -1) {
-                                    packageName = name.substring(0, idx).replace('/', '.');
+                                    tmpPackage = name.substring(0, idx).replace('/', '.');
+                                }else {
+                                    tmpPackage=packageName;
                                 }
                                 if ((idx != -1) || recursive) {
                                     if (name.endsWith(".class") && !entry.isDirectory()) {
-                                        String className = name.substring(packageName.length() + 1, name.length() - 6);
+                                        String className = name.substring(tmpPackage.length() + 1, name.length() - 6);
                                         try {
-                                            classes.add(classLoader.loadClass(packageName + '.' + className));
+                                            classes.add(classLoader.loadClass(tmpPackage + '.' + className));
                                         } catch (Throwable e) {
                                             if (!"HServerTest".equals(className)) {
 //                                                log.error(e.getMessage());
