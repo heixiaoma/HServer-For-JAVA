@@ -18,38 +18,40 @@ import java.util.jar.JarFile;
 
 /**
  * class加载工具类
+ *
  * @author hxm
  */
 @Slf4j
 public class ClassLoadUtil {
 
+    private static ClassLoader classLoader;
+    private static List<Class<?>> classes = new ArrayList<Class<?>>();
+
     /**
      * 加载包下的class
      *
      * @param packageName 包名，如：com
-     * @param recursive   是否要递归加载子包下的class
      * @return Class列表
      */
-    public static List<Class<?>> LoadClasses(final String packageName, boolean recursive,boolean isJavassist) {
-        List<Class<?>> classes = new ArrayList<Class<?>>();
+    public static List<Class<?>> LoadClasses(final String packageName, boolean isJavassist) {
+        classes.clear();
         String packageDirName = packageName.replace('.', '/');
         try {
-            ClassLoader classLoader=null;
-            if (isJavassist){
-              ClassPool cp = ClassPool.getDefault();
+            if (isJavassist) {
+                ClassPool cp = ClassPool.getDefault();
                 Loader loader = new Loader(cp);
                 loader.delegateLoadingOf("jdk.internal.reflect.");
-                classLoader=loader;
-            }else {
-               classLoader = Thread.currentThread().getContextClassLoader();
+                classLoader = loader;
+            } else {
+                classLoader = Thread.currentThread().getContextClassLoader();
             }
-          Enumeration<URL> dirs = classLoader.getResources(packageDirName);
-          while (dirs.hasMoreElements()) {
+            Enumeration<URL> dirs = classLoader.getResources(packageDirName);
+            while (dirs.hasMoreElements()) {
                 URL url = dirs.nextElement();
                 String protocol = url.getProtocol();
                 if ("file".equals(protocol)) {
                     String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
-                    findAndLoadClassesInPackageByFile(classLoader, packageName, filePath, recursive, classes);
+                    findAndLoadClassesInPackageByFile(packageName, filePath);
                 } else if ("jar".equals(protocol)) {
                     JarFile jar;
                     try {
@@ -66,18 +68,16 @@ public class ClassLoadUtil {
                                 int idx = name.lastIndexOf('/');
                                 if (idx != -1) {
                                     tmpPackage = name.substring(0, idx).replace('/', '.');
-                                }else {
-                                    tmpPackage=packageName;
+                                } else {
+                                    tmpPackage = packageName;
                                 }
-                                if ((idx != -1) || recursive) {
-                                    if (name.endsWith(".class") && !entry.isDirectory()) {
-                                        String className = name.substring(tmpPackage.length() + 1, name.length() - 6);
-                                        try {
-                                            classes.add(classLoader.loadClass(tmpPackage + '.' + className));
-                                        } catch (Throwable e) {
-                                            if (!"HServerTest".equals(className)) {
+                                if (name.endsWith(".class") && !entry.isDirectory()) {
+                                    String className = name.substring(tmpPackage.length() + 1, name.length() - 6);
+                                    try {
+                                        classes.add(classLoader.loadClass(tmpPackage + '.' + className));
+                                    } catch (Throwable e) {
+                                        if (!"HServerTest".equals(className)) {
 //                                                log.error(e.getMessage());
-                                            }
                                         }
                                     }
                                 }
@@ -95,8 +95,7 @@ public class ClassLoadUtil {
         return classes;
     }
 
-    private static void findAndLoadClassesInPackageByFile(ClassLoader classLoader, String packageName, String packagePath,
-                                                          final boolean recursive, List<Class<?>> classes) {
+    private static void findAndLoadClassesInPackageByFile(String packageName, String packagePath) {
         File dir = new File(packagePath);
         if (!dir.exists() || !dir.isDirectory()) {
             return;
@@ -104,13 +103,12 @@ public class ClassLoadUtil {
         File[] dirfiles = dir.listFiles(new FileFilter() {
             @Override
             public boolean accept(File file) {
-                return (recursive && file.isDirectory()) || (file.getName().endsWith(".class"));
+                return (file.isDirectory()) || (file.getName().endsWith(".class"));
             }
         });
         for (File file : dirfiles) {
             if (file.isDirectory()) {
-                findAndLoadClassesInPackageByFile(classLoader, packageName + "." + file.getName(), file.getAbsolutePath(), recursive,
-                        classes);
+                findAndLoadClassesInPackageByFile(packageName + "." + file.getName(), file.getAbsolutePath());
             } else {
                 String className = file.getName().substring(0, file.getName().length() - 6);
                 try {

@@ -33,7 +33,7 @@ public class MemoryInitClass {
             return;
         }
         try {
-            List<Class<?>> classes =ClassLoadUtil.LoadClasses(packageName, true,true);
+            List<Class<?>> classes =ClassLoadUtil.LoadClasses(packageName, true);
             ClassPool cp = ClassPool.getDefault();
             for (Class<?> aClass : classes) {
                 CtClass cc = null;
