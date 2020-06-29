@@ -8,36 +8,17 @@ import top.hserver.core.ioc.annotation.Autowired;
 import top.hserver.core.ioc.annotation.HServerBootTest;
 import top.hserver.core.test.HServerTest;
 import top.test.TestWebApp;
+import top.test.annotation.Aa;
 import top.test.bean.User;
 
 @RunWith(HServerTest.class)
 @HServerBootTest(TestWebApp.class)
-public class TestCode {
-
-  @Autowired
-  private User user;
-
-  @Autowired
-  private ApiService apiService;
-
-  @Before
-  public void before() {
-    System.out.println();
-    apiService.sayHello();
-  }
-
-  @After
-  public void After() {
-    System.out.println(user.getName());
-  }
+public class MyTest {
 
   @Test
-  public void test(){
-    apiService.sayHello();
+  public void test() {
+    new Aa().loga("ok");
   }
-
-
-
 
 
 }
