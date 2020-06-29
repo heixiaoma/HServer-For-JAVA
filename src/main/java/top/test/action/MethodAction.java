@@ -24,7 +24,7 @@ public class MethodAction {
 
   @RequestMapping(value = "/PUT", method = RequestMethod.PUT)
   public JsonResult PUT(HttpRequest httpRequest) {
-    return JsonResult.ok().put("data",httpRequest.getFileItems());
+    return JsonResult.ok().put("data",httpRequest.getMultipartFile());
   }
 
   @RequestMapping(value = "/OPTIONS", method = RequestMethod.OPTIONS)
