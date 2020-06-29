@@ -2,7 +2,6 @@ package top.hserver.core.server.context;
 
 import io.netty.channel.ChannelHandlerContext;
 import top.hserver.core.interfaces.HttpRequest;
-import top.hserver.core.server.handlers.FileItem;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.HttpMethod;
@@ -38,7 +37,7 @@ public class Request implements HttpRequest {
      */
     private static final ByteBuf EMPTY_BUF = Unpooled.copiedBuffer("", CharsetUtil.UTF_8);
     private byte[] body = null;
-    private Map<String, FileItem> fileItems = new HashMap<>(8);
+    private Map<String, PartFile> multipartFile = new HashMap<>(8);
     private static final String tempPath = System.getProperty("java.io.tmpdir") + File.separator;
 
     @Override
@@ -47,8 +46,8 @@ public class Request implements HttpRequest {
     }
 
     @Override
-    public FileItem queryFile(String name) {
-        return fileItems.get(name);
+    public PartFile queryFile(String name) {
+        return multipartFile.get(name);
     }
 
     @Override
@@ -129,19 +128,18 @@ public class Request implements HttpRequest {
      * @throws IOException
      */
     private void parseFileUpload(FileUpload fileUpload) throws IOException {
-        if (!fileUpload.isCompleted()) {
-            return;
+        if (fileUpload.isCompleted()) {
+          PartFile partFile = new PartFile();
+          partFile.setFormName(fileUpload.getName());
+          partFile.setFileName(fileUpload.getFilename());
+          File file = new File(tempPath + "h_server_" + UUID.randomUUID() + "_upload");
+          fileUpload.renameTo(file);
+          partFile.setFile(file);
+          partFile.setFilePath(file.getPath());
+          partFile.setContentType(fileUpload.getContentType());
+          partFile.setLength(fileUpload.length());
+          multipartFile.put(partFile.getFormName(), partFile);
         }
-        FileItem fileItem = new FileItem();
-        fileItem.setFormName(fileUpload.getName());
-        fileItem.setFileName(fileUpload.getFilename());
-        File file = new File(tempPath + "h_server_" + UUID.randomUUID() + "_upload");
-        fileUpload.renameTo(file);
-        fileItem.setFile(file);
-        fileItem.setFilePath(file.getPath());
-        fileItem.setContentType(fileUpload.getContentType());
-        fileItem.setLength(fileUpload.length());
-        fileItems.put(fileItem.getFormName(), fileItem);
     }
 
 }

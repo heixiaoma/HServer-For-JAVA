@@ -2,10 +2,9 @@ package top.hserver.core.interfaces;
 
 
 import io.netty.channel.ChannelHandlerContext;
-import top.hserver.core.server.handlers.FileItem;
 import io.netty.handler.codec.http.HttpMethod;
+import top.hserver.core.server.context.PartFile;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
@@ -48,14 +47,14 @@ public interface HttpRequest {
      * 获取所有上传的文件
      * @return
      */
-    Map<String, FileItem> getFileItems();
+    Map<String, PartFile> getMultipartFile();
 
     /**
      * 更具名字查询一个文件对象
      * @param name
      * @return
      */
-    FileItem queryFile(String name);
+    PartFile queryFile(String name);
 
     /**
      * 查询一个header头的值

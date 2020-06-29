@@ -5,8 +5,8 @@ import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.interfaces.HttpResponse;
 import top.hserver.core.ioc.annotation.*;
 import top.hserver.core.server.context.Cookie;
+import top.hserver.core.server.context.PartFile;
 import top.hserver.core.server.context.Response;
-import top.hserver.core.server.handlers.FileItem;
 import top.hserver.core.server.util.JsonResult;
 import top.test.annotation.Aa;
 import top.test.bean.User;
@@ -90,7 +90,7 @@ public class Hello {
   @POST("/file")
   public Map file(HttpRequest request) {
 
-    Map<String, FileItem> fileItems = request.getFileItems();
+    Map<String, PartFile> fileItems = request.getMultipartFile();
     fileItems.forEach((k, v) -> {
       System.out.println(k);
       System.out.println(v);
