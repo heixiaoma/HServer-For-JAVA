@@ -2,6 +2,7 @@ package top.hserver.core.server.handlers;
 
 
 import io.netty.handler.codec.http.HttpResponseStatus;
+import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.context.StaticFile;
 import top.hserver.core.server.context.HServerContext;
 import top.hserver.core.server.exception.BusinessException;
@@ -37,11 +38,11 @@ public class StaticHandler {
          */
         File f = new File(StaticHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath());
         //jar的
-        if (f.getPath().endsWith("jar")) {
-            onlineFile(f.getPath());
+        if (ConstConfig.RUNJAR) {
+            onlineFile(ConstConfig.CLASSPATH);
         } else {
             //开发中的.
-            String s = f.getPath() + BASE_PATH;
+            String s = ConstConfig.CLASSPATH + BASE_PATH;
             developFile(s,s.length());
         }
     }

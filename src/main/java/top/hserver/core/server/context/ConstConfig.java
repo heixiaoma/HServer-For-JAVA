@@ -12,9 +12,18 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class ConstConfig {
 
   /**
+   * 运行环境
+   */
+  public static Boolean RUNJAR=false;
+  /**
+   * classpat路径
+   */
+  public static String CLASSPATH;
+
+  /**
    * 版本号
    */
-  public static final String VERSION = "2.9.29";
+  public static final String VERSION = "2.9.30";
   /**
    * 定时任务线程数配置
    */
@@ -52,8 +61,8 @@ public class ConstConfig {
 
   public static Integer workerPool=4;
 
-
   public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-    .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+    .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
+    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 }

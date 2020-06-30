@@ -1,5 +1,6 @@
 package top.hserver.core.server.util;
 
+import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.handlers.StaticHandler;
 
 import java.io.File;
@@ -20,14 +21,12 @@ public class PackageUtil {
         /**
          * 把静态文件递归遍历出来.
          */
-        File f = new File(StaticHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath());
         //jar的
-        if (f.getPath().endsWith("jar")) {
-            return onlineFile(f.getPath());
+        if (ConstConfig.RUNJAR) {
+            return onlineFile(ConstConfig.CLASSPATH);
         } else {
             //开发中的.
-            String s = f.getPath();
-            return developFile(s);
+            return developFile(ConstConfig.CLASSPATH);
         }
     }
 
