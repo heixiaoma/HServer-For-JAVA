@@ -25,7 +25,6 @@ import java.util.jar.JarFile;
 public class ClassLoadUtil {
 
     private static ClassLoader classLoader;
-    private static List<Class<?>> classes = new ArrayList<Class<?>>();
 
     /**
      * 加载包下的class
@@ -34,7 +33,7 @@ public class ClassLoadUtil {
      * @return Class列表
      */
     public static List<Class<?>> LoadClasses(final String packageName, boolean isJavassist) {
-        classes.clear();
+        List<Class<?>> classes = new ArrayList<>();
         String packageDirName = packageName.replace('.', '/');
         try {
             if (isJavassist) {
@@ -51,7 +50,7 @@ public class ClassLoadUtil {
                 String protocol = url.getProtocol();
                 if ("file".equals(protocol)) {
                     String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
-                    findAndLoadClassesInPackageByFile(packageName, filePath);
+                    findAndLoadClassesInPackageByFile(packageName, filePath,classes);
                 } else if ("jar".equals(protocol)) {
                     JarFile jar;
                     try {
@@ -95,20 +94,16 @@ public class ClassLoadUtil {
         return classes;
     }
 
-    private static void findAndLoadClassesInPackageByFile(String packageName, String packagePath) {
+    private static void findAndLoadClassesInPackageByFile(String packageName, String packagePath,List<Class<?>> classes) {
         File dir = new File(packagePath);
         if (!dir.exists() || !dir.isDirectory()) {
             return;
         }
-        File[] dirfiles = dir.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                return (file.isDirectory()) || (file.getName().endsWith(".class"));
-            }
-        });
-        for (File file : dirfiles) {
+        File[] dirfiles = dir.listFiles(file-> (file.isDirectory()) || (file.getName().endsWith(".class")));
+      assert dirfiles != null;
+      for (File file : dirfiles) {
             if (file.isDirectory()) {
-                findAndLoadClassesInPackageByFile(packageName + "." + file.getName(), file.getAbsolutePath());
+                findAndLoadClassesInPackageByFile(packageName + "." + file.getName(), file.getAbsolutePath(),classes);
             } else {
                 String className = file.getName().substring(0, file.getName().length() - 6);
                 try {
