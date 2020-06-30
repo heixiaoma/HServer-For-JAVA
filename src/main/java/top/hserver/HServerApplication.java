@@ -141,6 +141,7 @@ public class HServerApplication {
         log.info("初始化配置完成");
         log.info("Class动态修改开始...");
         for (String s : scanPackage) {
+            System.out.println(s);
             MemoryInitClass.init(s);
         }
         log.info("Class动态修改完成");
