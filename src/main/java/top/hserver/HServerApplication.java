@@ -30,10 +30,30 @@ public class HServerApplication {
    * @param port
    * @param args
    */
+  public static void run(String[] packageName,Integer port, String... args) {
+    iocInit(packageName);
+    startServer(port, args);
+  }
+  /**
+   * 启动服务
+   * @param port
+   * @param args
+   */
   public static void run(Integer port, String... args) {
     iocInit();
     startServer(port, args);
   }
+
+
+  /**
+   * 启动服务
+   * @param port
+   */
+  public static void run(String[] packageName,Integer port) {
+    iocInit(packageName);
+    startServer(port,null);
+  }
+
 
   /**
    * 启动服务
@@ -43,6 +63,17 @@ public class HServerApplication {
     iocInit();
     startServer(port,null);
   }
+
+  /**
+   * 非服务模式启动
+   * @param args
+   */
+  public static void run(String[] packageName,String... args) {
+    iocInit();
+    initOK(args);
+  }
+
+
 
   /**
    * 非服务模式启动
