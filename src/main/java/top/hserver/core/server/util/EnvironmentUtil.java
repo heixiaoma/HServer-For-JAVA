@@ -14,8 +14,6 @@ public class EnvironmentUtil {
         /**
          * 运行方式
          */
-        URL resource = Thread.currentThread().getClass().getResource("/");
-
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         Class<?> aClass=null;
         for (StackTraceElement stackTraceElement : stackTrace) {
@@ -29,7 +27,6 @@ public class EnvironmentUtil {
                 }
             }
         }
-
         if (aClass==null){
             return;
         }
