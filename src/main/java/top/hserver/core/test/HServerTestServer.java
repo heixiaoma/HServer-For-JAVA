@@ -8,18 +8,15 @@ import top.hserver.core.ioc.IocUtil;
 /**
  * @author hxm
  */
-public class HServerTest extends BlockJUnit4ClassRunner {
-    public HServerTest(Class<?> klass) throws InitializationError {
+public class HServerTestServer extends BlockJUnit4ClassRunner {
+    public HServerTestServer(Class<?> klass) throws InitializationError {
         super(klass);
         String name = klass.getPackage().getName();
-        if (name==null){
-          System.out.println("请将你的测试文件放在包里面.");
-        }
         int i = name.indexOf(".");
         if (i > -1) {
             name = name.substring(0, i);
         }
-        HServerApplication.runTest(name);
+        HServerApplication.runTest(name,8080);
     }
 
     @Override

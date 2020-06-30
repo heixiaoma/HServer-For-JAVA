@@ -25,20 +25,53 @@ import static top.hserver.core.event.EventDispatcher.startTaskThread;
 @Slf4j
 public class HServerApplication {
 
+  /**
+   * 启动服务
+   * @param port
+   * @param args
+   */
   public static void run(Integer port, String... args) {
     iocInit();
     startServer(port, args);
   }
 
+  /**
+   * 启动服务
+   * @param port
+   */
+  public static void run(Integer port) {
+    iocInit();
+    startServer(port,null);
+  }
+
+  /**
+   * 非服务模式启动
+   * @param args
+   */
   public static void run(String... args) {
     iocInit();
     initOK(args);
   }
 
+  /**
+   * 非服务的测试模式
+   * @param testPackageName
+   */
   public static void runTest(String testPackageName) {
     iocInit(testPackageName);
     initOK(null);
   }
+
+  /**
+   * 服务测试模式
+   * @param testPackageName
+   * @param port
+   */
+  public static void runTest(String testPackageName,Integer port) {
+    iocInit(testPackageName);
+    startServer(port,null);
+  }
+
 
   private static void startServer(int port, String[] args) {
     //云启动
