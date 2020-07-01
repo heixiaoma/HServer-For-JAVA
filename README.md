@@ -234,22 +234,15 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/HServer/hserver-for-
         <version>最新版</version>
     </dependency>
     
+
+    #第一步搞一个主函数
     public class WebApp {
         public static void main(String[] args) {
-            //运行官方例子,直接运行既可以了，默认自带了一些例子。
-            HServerApplication.run(TestWebApp.class, 8888);
-        }
-    }
-
-
-    #第二步搞一个主函数
-    public class WebApp {
-        public static void main(String[] args) {
-            HServerApplication.run(WebApp.class, 8888);
+            HServerApplication.run(8888,args);
         }
     }
     
-    #第三步同主函数建立一个包文件夹比如controller
+    #第二步同主函数建立一个包文件夹比如controller
     
     @Controller
     public class Hello {
@@ -279,7 +272,7 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/HServer/hserver-for-
             httpResponse.sendTemplate("a.ftl", obj);
         }
     }
-    #就这样你就完成了一个简单得get请求定义，更多例子，可以参考包top.test下面的例子
+    #就这样你就完成了一个简单得get请求定义，更多例子，可以参考包原理里测试包下面的例子
 
 #### 4.文件上传下载操作
 
