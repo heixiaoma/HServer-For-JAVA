@@ -108,6 +108,8 @@ public class Request implements HttpRequest {
                 parseFileUpload((FileUpload) data);
             }
         } catch (IOException e) {
+        }finally {
+            data.release();
         }
     }
 
