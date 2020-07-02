@@ -30,7 +30,7 @@ public class Request implements HttpRequest {
     private int port;
     private ChannelHandlerContext ctx;
     private Map<String, String> requestParams = new ConcurrentHashMap<>();
-    private Map<String, String> headers = new ConcurrentHashMap<>();
+    private Map<String, String> headers;
 
     /**
      * 文件处理

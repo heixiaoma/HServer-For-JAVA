@@ -10,6 +10,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author hxm
+ */
 public class Response implements HttpResponse {
 
     private Map<String, String> headers = new ConcurrentHashMap<>();

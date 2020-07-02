@@ -5,9 +5,16 @@ import top.hserver.core.server.util.EnvironmentUtil;
 
 import java.io.File;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class test {
     public static void main(String[] args) {
-        EnvironmentUtil.init();
+//        EnvironmentUtil.init();
+
     }
+
+
+
 }

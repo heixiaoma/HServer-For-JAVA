@@ -64,7 +64,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         }
         request.setRequestType(req.method());
         //处理Headers
-        Map<String, String> headers = new ConcurrentHashMap<>();
+        HeadMap headers = new HeadMap();
         req.headers().names().forEach(a -> headers.put(a, req.headers().get(a)));
         request.setHeaders(headers);
         hServerContext.setRequest(request);
