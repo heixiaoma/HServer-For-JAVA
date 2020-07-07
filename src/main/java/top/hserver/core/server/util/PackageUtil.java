@@ -1,13 +1,10 @@
 package top.hserver.core.server.util;
 
 import top.hserver.core.server.context.ConstConfig;
-import top.hserver.core.server.handlers.StaticHandler;
 
 import java.io.File;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
@@ -17,7 +14,7 @@ import java.util.jar.JarFile;
  */
 public class PackageUtil {
 
-    public static Set<String> scanPackage() {
+    public  static Set<String> scanPackage() {
         /**
          * 把静态文件递归遍历出来.
          */
@@ -38,7 +35,7 @@ public class PackageUtil {
         }
     }
 
-    private static Set<String> developFile(String path) {
+    private  static Set<String> developFile(String path) {
         Set<String> tmp = new HashSet<>();
         File file = new File(path);
         if (file.exists()) {
@@ -54,16 +51,16 @@ public class PackageUtil {
         return tmp;
     }
 
-    private static Set<String> onlineFile(String path) {
+    private  static Set<String> onlineFile(String path) {
         Set<String> tmp = new HashSet<>();
         try {
             JarFile jarFile = new JarFile(path);
-            Enumeration<JarEntry> entry = jarFile.entries();
-            while (entry.hasMoreElements()) {
-                JarEntry jar = entry.nextElement();
-                String name = jar.getName();
-                tmp.add(name.substring(0, name.indexOf("/")));
-            }
+            jarFile.stream().forEach(jarEntry -> {
+                try {
+                    String name = jarEntry.getName();
+                    tmp.add(name.substring(0, name.indexOf("/")));
+                }catch (Exception ignored){}
+            });
             jarFile.close();
         } catch (Exception ignored) {
         }
