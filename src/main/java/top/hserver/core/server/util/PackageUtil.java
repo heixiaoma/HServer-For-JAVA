@@ -25,8 +25,16 @@ public class PackageUtil {
         if (ConstConfig.RUNJAR) {
             return onlineFile(ConstConfig.CLASSPATH);
         } else {
-            //开发中的.
+            //开发中的.看看是不是测试模式
+          //测试模式需要把项目路径打包进去
+          if (ConstConfig.CLASSPATH.endsWith("test-classes")) {
+            Set<String> strings = developFile(ConstConfig.CLASSPATH);
+            Set<String> strings1 = developFile(ConstConfig.CLASSPATH.replaceAll("test-classes", "classes"));
+            strings.addAll(strings1);
+            return strings;
+          }else {
             return developFile(ConstConfig.CLASSPATH);
+          }
         }
     }
 

@@ -11,7 +11,7 @@ public class TestWebApp {
 
   @Test
   public void start(){
-    System.out.println("运行我就可以了.");
+
   }
 
 }

@@ -19,7 +19,7 @@ public class HServerTest extends BlockJUnit4ClassRunner {
         if (i > -1) {
             name = name.substring(0, i);
         }
-        HServerApplication.runTest(name);
+        HServerApplication.runTest(name,klass);
     }
 
     @Override

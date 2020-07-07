@@ -110,7 +110,9 @@ public class BuildResponse {
      * @return
      */
     public static FullHttpResponse buildEnd(FullHttpResponse response, Response response1) {
-
+        if (response1.getHttpResponseStatus()!=null){
+          response.setStatus(response1.getHttpResponseStatus());
+        }
         response.headers().set(HttpHeaderNames.SERVER, "HServer");
         response.headers().set("HServer", ConstConfig.VERSION);
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());

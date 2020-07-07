@@ -1,7 +1,9 @@
 package test1.exception;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import top.hserver.core.interfaces.GlobalException;
 import top.hserver.core.interfaces.HttpRequest;
+import top.hserver.core.ioc.annotation.Bean;
 import top.hserver.core.server.context.Webkit;
 
 //@Bean
@@ -18,6 +20,7 @@ public class WebException implements GlobalException {
                 .append(throwable.getMessage())
                 .append("错误描述：")
                 .append(errorDescription);
+        webkit.httpResponse.sendStatusCode(HttpResponseStatus.BAD_GATEWAY);
         webkit.httpResponse.sendText(error.toString());
 
     }

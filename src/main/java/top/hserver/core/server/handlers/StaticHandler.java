@@ -36,7 +36,6 @@ public class StaticHandler {
         /**
          * 把静态文件递归遍历出来.
          */
-        File f = new File(StaticHandler.class.getProtectionDomain().getCodeSource().getLocation().getPath());
         //jar的
         if (ConstConfig.RUNJAR) {
             onlineFile(ConstConfig.CLASSPATH);

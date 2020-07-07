@@ -78,7 +78,7 @@ public class HServerApplication {
      * @param args
      */
     public static void run(String[] packageName, String... args) {
-        iocInit();
+        iocInit(packageName);
         initOK(args);
     }
 
@@ -98,8 +98,8 @@ public class HServerApplication {
      *
      * @param testPackageName
      */
-    public static void runTest(String testPackageName) {
-        iocInit(testPackageName);
+    public static void runTest(String testPackageName,Class clazz) {
+        iocInit(clazz,testPackageName);
         initOK(null);
     }
 
@@ -109,8 +109,8 @@ public class HServerApplication {
      * @param testPackageName
      * @param port
      */
-    public static void runTest(String testPackageName, Integer port) {
-        iocInit(testPackageName);
+    public static void runTest(String testPackageName, Integer port,Class clazz) {
+        iocInit(clazz,testPackageName);
         startServer(port, null);
     }
 
@@ -126,10 +126,14 @@ public class HServerApplication {
     }
 
     private static void iocInit(String... packages) {
+      iocInit(null,packages);
+    }
+
+    private static void iocInit(Class clazz,String... packages) {
         /**
          * 初始化哈日志配置
          */
-        EnvironmentUtil.init();
+        EnvironmentUtil.init(clazz);
         new HServerLogConfig().init();
         log.info("检查包文件");
         Set<String> scanPackage = PackageUtil.scanPackage();

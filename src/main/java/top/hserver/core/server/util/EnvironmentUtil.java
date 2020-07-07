@@ -10,14 +10,27 @@ import java.net.URL;
  */
 public class EnvironmentUtil {
 
-    public static void init() {
+    public static void init(Class clazz) {
+      /**
+       * 测试模式
+       */
+      if (clazz!=null){
+          File f = new File(clazz.getProtectionDomain().getCodeSource().getLocation().getPath());
+          ConstConfig.RUNJAR = false;
+        /**
+         * 静态路径
+         */
+          ConstConfig.CLASSPATH = f.getPath();
+          return;
+        }
+
         /**
          * 运行方式
          */
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         Class<?> aClass=null;
         for (StackTraceElement stackTraceElement : stackTrace) {
-            //如果是主函数
+            //如果是main
             if ("main".equals(stackTraceElement.getMethodName())){
                 try {
                     aClass = Class.forName(stackTraceElement.getClassName());

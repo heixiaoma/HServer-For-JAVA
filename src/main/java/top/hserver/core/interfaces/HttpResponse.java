@@ -1,5 +1,6 @@
 package top.hserver.core.interfaces;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import top.hserver.core.server.context.Cookie;
 
 import java.io.File;
@@ -38,6 +39,12 @@ public interface HttpResponse {
     void sendJson(Object object);
 
     /**
+     * 发送String的字符串
+     * @param jsonStr
+     */
+    void sendJsonString(String jsonStr);
+
+    /**
      * 发送HTML
      * @param html
      */
@@ -67,4 +74,12 @@ public interface HttpResponse {
      * @param url
      */
     void redirect(String url);
+
+
+    /**
+     * 设置状态码
+     * @param httpResponseStatus
+     */
+    void sendStatusCode(HttpResponseStatus httpResponseStatus);
+
 }
