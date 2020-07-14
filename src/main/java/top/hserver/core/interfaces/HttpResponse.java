@@ -63,6 +63,15 @@ public interface HttpResponse {
      */
     void sendTemplate(String htmlPath, Map<String, Object> obj);
 
+
+    /**
+     * Freemarker模板
+     * @param htmlPath
+     * @param
+     */
+    void sendTemplate(String htmlPath);
+
+
     /**
      * 添加Cookie
      * @param cookie

@@ -7,6 +7,7 @@ import top.hserver.core.server.util.FreemarkerUtil;
 import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -107,6 +108,11 @@ public class Response implements HttpResponse {
       e.printStackTrace();
     }
     headers.put("content-type", "text/html;charset=UTF-8");
+  }
+
+  @Override
+  public void sendTemplate(String htmlPath) {
+    this.sendTemplate(htmlPath,new HashMap<>(0));
   }
 
   /**
