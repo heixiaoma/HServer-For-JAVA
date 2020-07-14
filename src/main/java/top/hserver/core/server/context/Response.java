@@ -142,6 +142,7 @@ public class Response implements HttpResponse {
 
   @Override
   public void redirect(String url) {
+    this.jsonAndHtml="";
     headers.put("location", url);
   }
 

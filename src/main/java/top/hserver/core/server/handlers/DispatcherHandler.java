@@ -127,9 +127,13 @@ public class DispatcherHandler {
         }
 
         /**
-         * 检查下Filter是否有值了
+         * 检查下Webkit是否设置了值
+         *  文本输出
+         *  下载
+         *  重定向
+         *
          */
-        if (hServerContext.getResponse().getJsonAndHtml() != null || hServerContext.getResponse().isDownload()) {
+        if (hServerContext.getResponse().getJsonAndHtml() != null || hServerContext.getResponse().isDownload()||hServerContext.getResponse().getHeaders().get("location")!=null) {
             return hServerContext;
         }
 
@@ -149,8 +153,7 @@ public class DispatcherHandler {
         Object res;
         //如果控制器有参数，那么就进行，模糊赋值，在检测是否有req 和resp
         try {
-
-            Object[] methodArgs = null;
+            Object[] methodArgs;
             try {
                 methodArgs = ParameterUtil.getMethodArgs(aClass, method, hServerContext);
             } catch (Exception e) {
