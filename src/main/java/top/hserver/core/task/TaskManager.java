@@ -71,6 +71,16 @@ public class TaskManager {
     }
 
     /**
+     * 存在任务？
+     * @param name
+     * @return
+     */
+    public static boolean existTask(String name){
+        return CRON_TASK.containsKey(name);
+    }
+
+
+    /**
      * 系统自己用的
      *
      * @param name
