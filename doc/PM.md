@@ -6,21 +6,21 @@
 ### 环境Win（Nio模型）
     win10,i7_9700k(8核16G)（每秒10W次左右）
 ##### 1.压测json
-![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/json.png)
+![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/json.png)
 ##### 2.压测静态文件
-![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/file.png)
+![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/file.png)
 ##### 3.模板引擎html
-![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/template.png)
+![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/template.png)
 
 
 ### 环境Linux（Epoll模型）
     阿里云学生机 Centos7.3（1核2G内存）（每秒6W次左右）
 ##### 1.压测json
-![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/LinuxJson.png)
+![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/LinuxJson.png)
 ##### 2.压测静态文件
-![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/LinuxFile.png)
+![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/LinuxFile.png)
 ##### 3.模板引擎html
-![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/LinuxTemp.png)
+![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/LinuxTemp.png)
 
 
 ### HServer2.2版本，环境Linux（Epoll模型）
@@ -28,7 +28,7 @@
     hello--> Requests per second:    73156.87 [#/sec] (mean)
     reids读--> Requests per second:    44103.39 [#/sec] (mean)
     redis写--> Requests per second:    38631.04 [#/sec] (mean) 
-文档源码地址 [点我](https://gitee.com/heixiaomas_admin/hserver-for-java-redis)
+文档源码地址 [点我](https://gitee.com/HServer/hserver-for-java-redis)
 
 ### Hserver2.4版本，环境Linux（1核2G）
     RPC远程调用测试：Requests per second:    15709.09 [#/sec] (mean)
@@ -86,11 +86,11 @@
     模板文件测试：Requests per second:    51492.05 [#/sec] (mean)
 
 ###  HServer2.9.9版本，环境Linux（8核2G虚拟机）
-![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/8.png)
+![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/8.png)
 
 ###  HServer2.9.10版本，环境Linux（8核2G虚拟机）
     数据只做参考，这玩意悬乎得很，一切都应该以实际业务为准，如有问题可以及时联系作者反馈
-![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/23.png)
+![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/23.png)
 
 ###  HServer Jmeter压测
-![AB测试](https://gitee.com/heixiaomas_admin/HServer/raw/master/doc/jm.png)
+![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/jm.png)
