@@ -16,6 +16,7 @@ import top.hserver.core.task.TaskManager;
 
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +40,26 @@ public class HServerApplication {
         startServer(port, args);
     }
 
+    /**
+     * 主函数启动
+     * @param mainClass
+     * @param port
+     * @param args
+     */
+    public static void run(Class mainClass,Integer port, String... args) {
+        iocInit(mainClass);
+        startServer(port, args);
+    }
+
+    /**
+     * 主函数启动
+     * @param mainClass
+     * @param port
+     */
+    public static void run(Class mainClass,Integer port) {
+        iocInit(mainClass);
+        startServer(port,null);
+    }
     /**
      * 启动服务
      *
@@ -99,7 +120,7 @@ public class HServerApplication {
      * @param testPackageName
      */
     public static void runTest(String testPackageName,Class clazz) {
-        iocInit(clazz,testPackageName);
+        iocInit(clazz,null,testPackageName);
         initOK(null);
     }
 
@@ -110,7 +131,7 @@ public class HServerApplication {
      * @param port
      */
     public static void runTest(String testPackageName, Integer port,Class clazz) {
-        iocInit(clazz,testPackageName);
+        iocInit(clazz,null,testPackageName);
         startServer(port, null);
     }
 
@@ -126,19 +147,29 @@ public class HServerApplication {
     }
 
     private static void iocInit(String... packages) {
-      iocInit(null,packages);
+      iocInit(null,null,packages);
     }
 
-    private static void iocInit(Class clazz,String... packages) {
+    private static void iocInit(Class mainClass) {
+        iocInit(null,mainClass);
+    }
+
+    private static void iocInit(Class clazz,Class mainClass,String... packages) {
         /**
          * 初始化哈日志配置
          */
         EnvironmentUtil.init(clazz);
         new HServerLogConfig().init();
         log.info("检查包文件");
-        Set<String> scanPackage = PackageUtil.scanPackage();
-        if (packages != null) {
-            scanPackage.addAll(Arrays.asList(packages));
+        Set<String> scanPackage;
+        if (mainClass==null) {
+            scanPackage = PackageUtil.scanPackage();
+            if (packages != null) {
+                scanPackage.addAll(Arrays.asList(packages));
+            }
+        }else {
+            scanPackage=new HashSet<>();
+            scanPackage.add(mainClass.getPackage().getName());
         }
         log.info("初始化配置文件");
         PropertiesInit.init();
