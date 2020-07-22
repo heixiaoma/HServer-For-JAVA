@@ -27,7 +27,7 @@ public class ActionHandler extends SimpleChannelInboundHandler<HServerContext> {
                     .thenApplyAsync(DispatcherHandler::findController, executor)
                     .thenApplyAsync(DispatcherHandler::buildResponse, executor)
                     .exceptionally(DispatcherHandler::handleException)
-                    .thenAcceptAsync(msg -> DispatcherHandler.writeResponse(ctx, future, msg), ctx.channel().eventLoop());
+                    .thenAcceptAsync(msg -> DispatcherHandler.writeResponse(ctx, future, msg),executor);
         }finally {
             ReferenceCountUtil.release(hServerContext);
         }
