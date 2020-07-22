@@ -47,7 +47,7 @@ public class HServer {
     String typeName;
     try {
       ServerBootstrap bootstrap = new ServerBootstrap();
-      if (EpollUtil.check()) {
+      if (EpollUtil.check()&&EPOLL) {
         bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
         bossGroup = new EpollEventLoopGroup(bossPool, new NamedThreadFactory("hserver_epoll_boss"));
         workerGroup = new EpollEventLoopGroup(workerPool, new NamedThreadFactory("hserver_epoll_worker"));

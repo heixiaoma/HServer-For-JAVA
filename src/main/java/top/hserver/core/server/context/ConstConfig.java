@@ -20,6 +20,8 @@ public class ConstConfig {
    */
   public static String CLASSPATH;
 
+  public static Boolean EPOLL=true;
+
   /**
    * 版本号
    */
