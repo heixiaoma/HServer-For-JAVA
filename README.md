@@ -13,7 +13,7 @@
           <img src="https://img.shields.io/badge/HServer-2.9.35-yeoll.svg?style=flat" />
       </a>
     <a >
-        <img src="https://img.shields.io/badge/Netty-4.1.50.Final-blue.svg" alt="flat">
+        <img src="https://img.shields.io/badge/Netty-4.1.51.Final-blue.svg" alt="flat">
     </a>
     <a >
         <img src="https://img.shields.io/badge/Licence-Apache2.0-green.svg?style=flat" />
