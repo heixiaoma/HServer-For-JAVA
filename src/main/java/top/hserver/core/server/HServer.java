@@ -55,7 +55,7 @@ public class HServer {
         typeName = "Epoll";
       } else {
         bossGroup = new NioEventLoopGroup(bossPool, new NamedThreadFactory("hserver_boss"));
-        workerGroup = new NioEventLoopGroup(workerPool, new NamedThreadFactory("hserver_ worker"));
+        workerGroup = new NioEventLoopGroup(workerPool, new NamedThreadFactory("hserver_worker"));
         bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
         typeName = "Nio";
       }

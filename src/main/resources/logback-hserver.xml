@@ -3,11 +3,11 @@
 
   <!--可视化的高亮样式-->
   <property name="STDOUT_PATTERN"
-            value="%d{yyyy-MM-dd HH:mm:ss.SSS} %HServerHighlight(%5.5level) %magenta(%pid) --- [%15.15thread] %cyan(%-40.40logger{39} [%4.4line]) : %msg%n"/>
+            value="%d{yyyy-MM-dd HH:mm:ss.SSS} %HServerHighlight(%5.5level) PID:[ %magenta(%pid)] 线程名: [%17.17thread] %cyan(%-40.40logger{39} [%4.4line]) : %msg%n"/>
 
   <!--文件存储的样式-->
   <property name="FILE_PATTERN"
-            value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5.5level %pid --- [%15.15thread] %-40.40logger{40} [%4.4line] : %msg%n"/>
+            value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5.5level %pid --- [%17.17thread] %-40.40logger{40} [%4.4line] : %msg%n"/>
 
   <!--文件存储地址-->
   <property name="LOGGINE_FILE_HOME" value="log"/>
