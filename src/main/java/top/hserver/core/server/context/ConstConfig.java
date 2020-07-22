@@ -24,7 +24,7 @@ public class ConstConfig {
   /**
    * 支持Epoll时，是否使用epoll
    */
-  public static Boolean EPOLL = true;
+  public static Boolean EPOLL = false;
 
   /**
    * 版本号
