@@ -20,6 +20,12 @@ public class ConstConfig {
    */
   public static String CLASSPATH;
 
+
+  /**
+   * 支持Epoll时，是否使用epoll
+   */
+  public static Boolean EPOLL = true;
+
   /**
    * 版本号
    */

@@ -27,6 +27,10 @@ public class PropertiesInit {
     if (workerPool!=null){
       ConstConfig.workerPool=workerPool;
     }
+    Boolean epoll = Boolean.valueOf(instance.get("epoll"));
+    if (workerPool!=null){
+      ConstConfig.EPOLL=epoll;
+    }
   }
 
 }
