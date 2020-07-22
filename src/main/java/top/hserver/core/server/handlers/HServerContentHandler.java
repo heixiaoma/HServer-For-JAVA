@@ -31,6 +31,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         hServerContext.setFullHttpRequest(req);
         Request request = new Request();
         hServerContext.setRequest(request);
+        request.setNettyRequest(req);
         request.setIp(HServerIpUtil.getClientIp(channelHandlerContext));
         request.setPort(HServerIpUtil.getClientPort(channelHandlerContext));
         request.setCtx(channelHandlerContext);

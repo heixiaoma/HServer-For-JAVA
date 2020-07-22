@@ -2,6 +2,7 @@ package top.hserver.core.interfaces;
 
 
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import top.hserver.core.server.context.PartFile;
 
@@ -23,6 +24,12 @@ public interface HttpRequest {
      * @return
      */
     String getNettyUri();
+
+    /**
+     * 获取Netty的request
+     * @return
+     */
+    FullHttpRequest getNettyRequest();
 
     /**
      * 请求方法类型

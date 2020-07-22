@@ -91,4 +91,11 @@ public interface HttpResponse {
      */
     void sendStatusCode(HttpResponseStatus httpResponseStatus);
 
+
+    /**
+     * 设置为代理模式，就不输出数据了
+     * @param p
+     */
+    void isProxy(boolean p);
+
 }

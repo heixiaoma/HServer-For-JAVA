@@ -31,6 +31,8 @@ public class Response implements HttpResponse {
 
   private HttpResponseStatus httpResponseStatus;
 
+  private boolean isProxy=false;
+
   /**
    * 设置响应头
    *
@@ -98,6 +100,11 @@ public class Response implements HttpResponse {
   @Override
   public void sendStatusCode(HttpResponseStatus httpResponseStatus) {
     this.httpResponseStatus = httpResponseStatus;
+  }
+
+  @Override
+  public void isProxy(boolean p) {
+    this.isProxy=p;
   }
 
   @Override
@@ -182,4 +189,9 @@ public class Response implements HttpResponse {
   public HttpResponseStatus getHttpResponseStatus() {
     return httpResponseStatus;
   }
+
+  public boolean isProxy() {
+    return isProxy;
+  }
+
 }

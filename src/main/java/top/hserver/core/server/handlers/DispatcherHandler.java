@@ -204,6 +204,10 @@ public class DispatcherHandler {
                 //是否Response的
                 response = BuildResponse.buildHttpResponseData(hServerContext.getResponse());
             } else {
+                //使用了代理模式，让用户自由控制ctx 不受框架操作
+                if (hServerContext.getResponse().isProxy()){
+                    return null;
+                }
                 //控制器调用的
                 response = BuildResponse.buildControllerResult(hServerContext);
             }
@@ -276,8 +280,11 @@ public class DispatcherHandler {
      * @param msg
      */
     static void writeResponse(ChannelHandlerContext ctx, CompletableFuture<HServerContext> future, FullHttpResponse msg) {
-        ctx.writeAndFlush(msg);
-        future.complete(null);
+        //等于null 是让用户自己调度
+        if (msg!=null) {
+            ctx.writeAndFlush(msg);
+            future.complete(null);
+        }
     }
 
 }

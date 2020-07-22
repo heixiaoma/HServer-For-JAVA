@@ -1,6 +1,7 @@
 package top.hserver.core.server.context;
 
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpRequest;
 import top.hserver.core.interfaces.HttpRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -31,6 +32,7 @@ public class Request implements HttpRequest {
     private ChannelHandlerContext ctx;
     private Map<String, String> requestParams = new ConcurrentHashMap<>();
     private HeadMap headers;
+    private FullHttpRequest nettyRequest;
 
     /**
      * 文件处理
@@ -68,6 +70,11 @@ public class Request implements HttpRequest {
     @Override
     public String getNettyUri() {
         return nettyUri;
+    }
+
+    @Override
+    public FullHttpRequest getNettyRequest() {
+        return this.nettyRequest;
     }
 
     @Override
