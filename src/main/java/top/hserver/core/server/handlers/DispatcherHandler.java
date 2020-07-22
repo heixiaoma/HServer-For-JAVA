@@ -245,8 +245,8 @@ public class DispatcherHandler {
     static FullHttpResponse handleException(Throwable e) {
         try {
             //一般是走自己的异常
-            if (e.getCause() instanceof BusinessException) {
-                BusinessException e1 = (BusinessException) e.getCause();
+            if (e instanceof BusinessException) {
+                BusinessException e1 = (BusinessException)e;
                 if (e1.getHttpCode() == HttpResponseStatus.NOT_FOUND.code()) {
                     log.error(e1.getErrorDescription());
                 } else {
@@ -272,12 +272,9 @@ public class DispatcherHandler {
      * 终极输出
      *
      * @param ctx
-     * @param future
-     * @param msg
      */
-    static void writeResponse(ChannelHandlerContext ctx, CompletableFuture<HServerContext> future, FullHttpResponse msg) {
+    static void writeResponse(ChannelHandlerContext ctx,FullHttpResponse msg) {
         ctx.writeAndFlush(msg);
-        future.complete(null);
     }
 
 }

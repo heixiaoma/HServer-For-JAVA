@@ -1,5 +1,6 @@
 package top.hserver.core.server.handlers;
 
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.util.ReferenceCountUtil;
 import top.hserver.core.server.context.HServerContext;
 import io.netty.channel.ChannelHandlerContext;
@@ -19,15 +20,16 @@ public class ActionHandler extends SimpleChannelInboundHandler<HServerContext> {
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HServerContext hServerContext) throws Exception {
         try {
-            CompletableFuture<HServerContext> future = CompletableFuture.completedFuture(hServerContext);
-            Executor executor = ctx.executor();
-            future.thenApplyAsync(req -> DispatcherHandler.staticFile(hServerContext), executor)
-                    .thenApplyAsync(DispatcherHandler::permission, executor)
-                    .thenApplyAsync(DispatcherHandler::filter, executor)
-                    .thenApplyAsync(DispatcherHandler::findController, executor)
-                    .thenApplyAsync(DispatcherHandler::buildResponse, executor)
-                    .exceptionally(DispatcherHandler::handleException)
-                    .thenAcceptAsync(msg -> DispatcherHandler.writeResponse(ctx, future, msg),executor);
+            DispatcherHandler.staticFile(hServerContext);
+            DispatcherHandler.permission(hServerContext);
+            DispatcherHandler.filter(hServerContext);
+            DispatcherHandler.findController(hServerContext);
+            FullHttpResponse fullHttpResponse = DispatcherHandler.buildResponse(hServerContext);
+            DispatcherHandler.writeResponse(ctx,fullHttpResponse);
+        }catch (Throwable e){
+            FullHttpResponse fullHttpResponse = DispatcherHandler.handleException(e);
+            DispatcherHandler.writeResponse(ctx,fullHttpResponse);
+
         }finally {
             ReferenceCountUtil.release(hServerContext);
         }
