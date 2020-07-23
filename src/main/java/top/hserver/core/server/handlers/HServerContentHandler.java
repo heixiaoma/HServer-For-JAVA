@@ -7,14 +7,11 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import lombok.extern.slf4j.Slf4j;
-import top.hserver.core.server.util.ExceptionUtil;
 import top.hserver.core.server.util.HServerIpUtil;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -31,21 +28,23 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         hServerContext.setFullHttpRequest(req);
         Request request = new Request();
         hServerContext.setRequest(request);
-        request.setNettyRequest(req);
         request.setIp(HServerIpUtil.getClientIp(channelHandlerContext));
         request.setPort(HServerIpUtil.getClientPort(channelHandlerContext));
         request.setCtx(channelHandlerContext);
         request.setNettyUri(req.uri());
+        DefaultFullHttpRequest defaultFullHttpRequest;
         hServerContext.setCtx(channelHandlerContext);
         if (req.method() == HttpMethod.GET) {
-            Map<String, String> requestParams = new HashMap<>();
+            Map<String, String> requestParams = new HashMap<>(1);
             QueryStringDecoder decoder = new QueryStringDecoder(req.uri());
             Map<String, List<String>> params = decoder.parameters();
             for (Map.Entry<String, List<String>> next : params.entrySet()) {
                 requestParams.put(next.getKey(), next.getValue().get(0));
             }
             request.setRequestParams(requestParams);
+            defaultFullHttpRequest= new DefaultFullHttpRequest(req.protocolVersion(),req.method(),req.uri(), Unpooled.buffer(0), req.headers(),req.trailingHeaders());
         } else {
+            defaultFullHttpRequest= new DefaultFullHttpRequest(req.protocolVersion(),req.method(),req.uri(),Unpooled.copiedBuffer(req.content()), req.headers(),req.trailingHeaders());
             HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(FACTORY, req);
             List<InterfaceHttpData> bodyHttpDates = decoder.getBodyHttpDatas();
             bodyHttpDates.forEach(request::writeHttpData);
@@ -54,7 +53,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
             req.content().readBytes(b);
             request.setBody(b);
         }
-
+        request.setNettyRequest(defaultFullHttpRequest);
         //获取URi，設置真實的URI
         int i = req.uri().indexOf("?");
         if (i > 0) {
