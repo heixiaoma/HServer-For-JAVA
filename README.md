@@ -654,7 +654,11 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/HServer/hserver-for-
 #### 20.自定义Banner
     resources文件夹里存放一个banner.txt 里面放入你图标就可以了.
     
+#### 21.自定义application.properties
+    在application.properties文件中添加,env=dev
+    配置文件application-dev.properties也会加载在里面
+    或者java -jar -Denv=dev xxx.jar  启动参数指定env
 
-#### 21技巧篇
+#### 22技巧篇
     1. Linux 内核版本大于 2.5.44，(目前云服务器都有了，没有的话自己升级内核)的Linux默认使用epoll
     2.待更新 
