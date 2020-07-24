@@ -67,11 +67,16 @@ public class InitBean {
             }
             Object o = clasp.newInstance();
             for (Field field : clasp.getDeclaredFields()) {
-                PropUtil instance = PropUtil.getInstance();
-                String s = instance.get(value == null ? field.getName() : value + "." + field.getName());
-                Object convert = ParameterUtil.convert(field, s);
-                field.setAccessible(true);
-                field.set(o, convert);
+                try {
+                    PropUtil instance = PropUtil.getInstance();
+                    String s = instance.get(value == null ? field.getName() : value + "." + field.getName());
+                    Object convert = ParameterUtil.convert(field, s);
+                    field.setAccessible(true);
+                    field.set(o, convert);
+                }catch (Exception e){
+                    log.error(e.getMessage());
+                }
+
             }
             IocUtil.addBean(clasp.getName(), o);
         }
@@ -85,7 +90,13 @@ public class InitBean {
             Method[] methods = aClass.getDeclaredMethods();
             Object o = aClass.newInstance();
             for (Field field : aClass.getDeclaredFields()) {
+                //配置类只能注入字段和配置属性
                 valuezr(field, o);
+                if(field.getType().getAnnotation(ConfigurationProperties.class)!=null){
+                    field.setAccessible(true);
+                    field.set(o,IocUtil.getBean(field.getType()));
+                }
+
             }
             for (Method method : methods) {
                 Bean bean = method.getAnnotation(Bean.class);
