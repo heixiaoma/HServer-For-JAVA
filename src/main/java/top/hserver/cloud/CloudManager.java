@@ -28,7 +28,7 @@ public class CloudManager {
     CloudProxy.clearCache();
     //1.读取自己是不是开启了云
     try {
-      PropUtil propKit = new PropUtil();
+      PropUtil propKit = PropUtil.getInstance();
       Object open = propKit.get("app.cloud.open");
       if (open != null && Boolean.parseBoolean(open.toString())) {
         //2.自己是不是主机

@@ -11,15 +11,14 @@ import top.hserver.core.ioc.annotation.Value;
 @Bean
 public class RunInit implements InitRunner {
 
-  @Value("statisticalRules")
-  private String statisticalRules;
+  @Value("ENDPOINT")
+  private String env;
 
   @Autowired
   private User user;
 
   @Override
   public void init(String[] args) {
-    System.out.println(statisticalRules);
-    log.debug("初始化方法：注入的User对象的名字是-->{}", user.getName());
+    log.debug("初始化方法：注入的User对象的名字是-->{}", user.getName()+env);
   }
 }
