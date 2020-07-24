@@ -48,7 +48,10 @@ public class ClasspathPackageScanner implements PackageScanner {
             if (aClass.getAnnotation(EventHandler.class) != null) {
                 add(aClass, EventHandler.class);
             }
-
+            if (aClass.getAnnotation(ConfigurationProperties.class) != null) {
+                add(aClass, ConfigurationProperties.class);
+            }
+            //单元测试模式。存在就加载
             try {
                 Class<Annotation> aClass1 = (Class<Annotation>) this.getClass().getClassLoader().loadClass("org.junit.runner.RunWith");
                 if (aClass.getAnnotation(aClass1) != null) {

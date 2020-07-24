@@ -11,9 +11,20 @@ public class test2 {
   @Autowired
   private TestBean testBean;
 
+  @Autowired
+  private Tom tom;
+
   @Test
   public void test(){
     System.out.println(testBean.hello());
   }
+
+
+
+  @Test
+  public void test2(){
+    System.out.println(tom.toString());
+  }
+
 
 }

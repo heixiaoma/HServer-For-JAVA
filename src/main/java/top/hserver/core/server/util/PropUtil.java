@@ -1,5 +1,7 @@
 package top.hserver.core.server.util;
 
+import top.hserver.core.server.context.HeadMap;
+
 import java.io.*;
 import java.util.Properties;
 
@@ -14,7 +16,7 @@ public class PropUtil {
 
     private String name = "/application.properties";
 
-    private Properties p = null;
+    private HeadMap data;
 
     public PropUtil() {
     }
@@ -37,8 +39,9 @@ public class PropUtil {
     }
 
     private void initProp() {
-        if (p == null) {
-            p = new Properties();
+        if (data == null) {
+            data=new HeadMap();
+            Properties p = new Properties();
             try (InputStream is = PropUtil.class.getResourceAsStream(name)) {
                 p.load(is);
                 //优先级查代码的，再查配置的
@@ -56,13 +59,14 @@ public class PropUtil {
                 }
             } catch (Exception ignored) {
             }
+            p.forEach((k,v)->data.put(k.toString(),v.toString()));
         }
     }
 
 
     public String get(String key) {
         initProp();
-        String property = p.getProperty(key);
+        String property = data.get(key);
         return property == null ? "" : property;
     }
 
