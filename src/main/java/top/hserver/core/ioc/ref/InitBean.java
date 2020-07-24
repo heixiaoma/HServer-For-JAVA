@@ -246,6 +246,7 @@ public class InitBean {
                     Annotation annotation = method.getAnnotation(aClass1);
                     if (annotation != null) {
                         Method value = aClass1.getMethod("value");
+                        value.setAccessible(true);
                         String path = controllerPath + value.invoke(annotation).toString();
                         RouterInfo routerInfo = new RouterInfo();
                         method.setAccessible(true);
@@ -581,6 +582,7 @@ public class InitBean {
                     if (getMapper == null) {
                         return;
                     }
+                    getMapper.setAccessible(true);
                     //这个就是Dao的接口的实现类，将他进行注入到其他地方
                     Object bean = getMapper.invoke(sqlManager, declaredField.getType());
                     //同类型注入
