@@ -25,7 +25,7 @@ public class ConstConfig {
     /**
      * 版本号
      */
-    public static final String VERSION = "2.9.37";
+    public static final String VERSION = "2.9.38";
     /**
      * 定时任务线程数配置
      */
@@ -48,7 +48,7 @@ public class ConstConfig {
     /**
      * 社区地址
      */
-    public static final String COMMUNITY_ADDRESS = "http://hserver.top";
+    public static final String COMMUNITY_ADDRESS = "https://gitee.com/HServer/HServer/wikis/pages";
 
 
     /**
