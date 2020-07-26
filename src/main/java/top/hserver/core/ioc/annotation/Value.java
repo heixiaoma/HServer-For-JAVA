@@ -3,6 +3,9 @@ package top.hserver.core.ioc.annotation;
 import java.lang.annotation.*;
 
 
+/**
+ * @author hxm
+ */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

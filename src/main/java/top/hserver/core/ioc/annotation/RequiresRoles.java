@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * 角色判断注解
+ * @author hxm
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

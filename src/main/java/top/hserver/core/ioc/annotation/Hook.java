@@ -4,6 +4,9 @@ import java.lang.annotation.*;
 import java.lang.reflect.Method;
 
 
+/**
+ * @author hxm
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
