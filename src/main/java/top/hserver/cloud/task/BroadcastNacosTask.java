@@ -36,7 +36,7 @@ public class BroadcastNacosTask implements TaskJob {
 
         if (naming == null) {
             try {
-                naming = NamingFactory.createNamingService(host + post);
+                naming = NamingFactory.createNamingService(host+":"+post);
                 if (CloudManager.isRpcService()) {
                     //上报服务器
                     Instance instance = new Instance();
@@ -50,6 +50,7 @@ public class BroadcastNacosTask implements TaskJob {
                     naming.registerInstance(rpcServerName, instance);
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 log.error("Nacos 注册中心注册失败");
                 naming = null;
             }

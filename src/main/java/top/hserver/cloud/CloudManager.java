@@ -72,14 +72,7 @@ public class CloudManager {
             TaskManager.addTask(cloudName, "5000", Broadcast1V1Task.class, cloudName, host);
           }
         }else if(type.equalsIgnoreCase("nacos")){
-
             String cloudName = propKit.get("app.cloud.slave.name");
-            if (cloudName == null || cloudName.trim().length() == 0) {
-                //获取内网IP
-                cloudName = NetUtil.getIpAddress();
-            } else {
-                cloudName = cloudName + "-->" + NetUtil.getIpAddress();
-            }
             String host = propKit.get("app.cloud.slave.master.host",null);
             String port = propKit.get("app.cloud.port",null);
             String host1 = propKit.get("app.cloud.slave.host",null);
