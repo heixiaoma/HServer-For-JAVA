@@ -6,7 +6,8 @@ import top.hserver.cloud.bean.ClientData;
 import top.hserver.cloud.client.ChatClient;
 import top.hserver.cloud.proxy.CloudProxy;
 import top.hserver.cloud.server.RegServer;
-import top.hserver.cloud.task.BroadcastTask;
+import top.hserver.cloud.task.Broadcast1V1Task;
+import top.hserver.cloud.task.BroadcastNacosTask;
 import top.hserver.cloud.util.NetUtil;
 import top.hserver.core.server.util.PropUtil;
 import top.hserver.core.task.TaskManager;
@@ -16,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author hxm
+ */
 @Slf4j
 public class CloudManager {
 
@@ -29,37 +33,64 @@ public class CloudManager {
     //1.读取自己是不是开启了云
     try {
       PropUtil propKit = PropUtil.getInstance();
-      Object open = propKit.get("app.cloud.open");
-      if (open != null && Boolean.parseBoolean(open.toString())) {
-        //2.自己是不是主机
-        Object master_open = propKit.get("app.cloud.master.open");
-        if (master_open != null && Boolean.parseBoolean(master_open.toString())) {
-          //开启监听从机动态
-          new RegServer(port).start();
-        }
-        port=Integer.parseInt(propKit.get("app.cloud.port","9527"));
-        //自己是不是从机
-        Object slave_open = propKit.get("app.cloud.slave.open");
-        if (slave_open != null && Boolean.parseBoolean(slave_open.toString())) {
-          //上报给主机自己的状态
-          Object cloud_name = propKit.get("app.cloud.slave.name");
-          if (cloud_name == null) {
-            //获取内网IP
-            cloud_name = NetUtil.getIpAddress();
-          } else {
-            cloud_name = cloud_name + "-->" + NetUtil.getIpAddress();
+      Boolean open = propKit.getBoolean("app.cloud.open");
+      if (open != null && open) {
+
+        String type = propKit.get("app.cloud.type");
+
+        if (type.equalsIgnoreCase("1v1")) {
+
+          //2.自己是不是主机
+          Boolean masterOpen = propKit.getBoolean("app.cloud.master.open");
+          if (masterOpen != null && masterOpen) {
+            //开启监听从机动态
+            new RegServer(port).start();
           }
-          //启动聊天服务器
-          Object host = null;
-          try {
-            host = propKit.get("app.cloud.slave.master.host");
-            if (host != null) {
-              new ChatClient(host.toString(), CloudManager.port).start();
+          port = Integer.parseInt(propKit.get("app.cloud.port", "9527"));
+          //自己是不是从机
+          Boolean slaveOpen = propKit.getBoolean("app.cloud.slave.open");
+          if (slaveOpen != null && slaveOpen) {
+            //上报给主机自己的状态
+            String cloudName = propKit.get("app.cloud.slave.name");
+            if (cloudName == null || cloudName.trim().length() == 0) {
+              //获取内网IP
+              cloudName = NetUtil.getIpAddress();
+            } else {
+              cloudName = cloudName + "-->" + NetUtil.getIpAddress();
             }
-          } catch (Exception e) {
-            log.error(e.getMessage());
+            //启动聊天服务器
+            Object host;
+            try {
+              host = propKit.get("app.cloud.slave.master.host");
+              if (host != null) {
+                new ChatClient(host.toString(), CloudManager.port).start();
+              }
+            } catch (Exception e) {
+              log.error(e.getMessage());
+              return;
+            }
+            TaskManager.addTask(cloudName, "5000", Broadcast1V1Task.class, cloudName, host);
           }
-          TaskManager.addTask(cloud_name.toString(), "5000", BroadcastTask.class, cloud_name.toString(), host);
+        }else if(type.equalsIgnoreCase("nacos")){
+
+            String cloudName = propKit.get("app.cloud.slave.name");
+            if (cloudName == null || cloudName.trim().length() == 0) {
+                //获取内网IP
+                cloudName = NetUtil.getIpAddress();
+            } else {
+                cloudName = cloudName + "-->" + NetUtil.getIpAddress();
+            }
+            String host = propKit.get("app.cloud.slave.master.host",null);
+            String port = propKit.get("app.cloud.port",null);
+            String host1 = propKit.get("app.cloud.slave.host",null);
+            String port1 = propKit.get("app.cloud.slave.port",null);
+            if (host==null||port==null){
+                log.error("nacos 地址有误");
+                return;
+            }
+            TaskManager.addTask(cloudName, "5000", BroadcastNacosTask.class, cloudName, host,port,host1,port1);
+        }else {
+          log.error("你开启了RPC模式，但是RPC类型有问题");
         }
       }
     } catch (Exception e) {

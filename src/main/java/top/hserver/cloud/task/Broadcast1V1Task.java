@@ -10,8 +10,11 @@ import top.hserver.cloud.util.NetUtil;
 import top.hserver.core.interfaces.TaskJob;
 import top.hserver.core.server.util.PropUtil;
 
+/**
+ * @author hxm
+ */
 @Slf4j
-public class BroadcastTask implements TaskJob {
+public class Broadcast1V1Task implements TaskJob {
 
 
   @Override
