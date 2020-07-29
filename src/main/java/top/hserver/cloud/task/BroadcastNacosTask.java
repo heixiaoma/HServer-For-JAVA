@@ -5,16 +5,11 @@ import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.CloudManager;
-import top.hserver.cloud.bean.CloudData;
-import top.hserver.cloud.client.ChatClient;
-import top.hserver.cloud.common.MSG_TYPE;
-import top.hserver.cloud.common.Msg;
 import top.hserver.core.interfaces.TaskJob;
+import top.hserver.core.server.context.ConstConfig;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author hxm
@@ -36,19 +31,19 @@ public class BroadcastNacosTask implements TaskJob {
 
         if (naming == null) {
             try {
-                naming = NamingFactory.createNamingService(host+":"+post);
+                naming = NamingFactory.createNamingService(host + ":" + post);
+                //消费者和提供者都上报服务器
+                Instance instance = new Instance();
+                instance.setIp(host1);
+                instance.setPort(Integer.parseInt(post2));
+                instance.setHealthy(true);
+                instance.setWeight(0);
                 if (CloudManager.isRpcService()) {
-                    //上报服务器
-                    Instance instance = new Instance();
-                    instance.setIp(host1);
-                    instance.setPort(Integer.parseInt(post2));
-                    instance.setHealthy(true);
-                    instance.setWeight(0);
-                    Map<String,String> data=new HashMap<>(1);
-                    data.put("key",CloudManager.getClasses().toString());
+                    Map<String, String> data = new HashMap<>(1);
+                    data.put("key", ConstConfig.OBJECT_MAPPER.writeValueAsString(CloudManager.getClasses().toString()));
                     instance.setMetadata(data);
-                    naming.registerInstance(rpcServerName, instance);
                 }
+                naming.registerInstance(rpcServerName, instance);
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error("Nacos 注册中心注册失败");

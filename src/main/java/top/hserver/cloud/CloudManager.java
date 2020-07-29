@@ -23,94 +23,107 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class CloudManager {
 
-  public static int port = 9527;
+    public static int port = 9527;
 
-  private static Map<String, ClientData> serviceDataMap = new ConcurrentHashMap<>();
+    private static final String TYPE1 ="1v1";
 
-  public static void run() {
-    //清除启动的Map缓存
-    CloudProxy.clearCache();
-    //1.读取自己是不是开启了云
-    try {
-      PropUtil propKit = PropUtil.getInstance();
-      Boolean open = propKit.getBoolean("app.cloud.open");
-      if (open != null && open) {
+    private static final String TYPE2 ="nacos";
 
-        String type = propKit.get("app.cloud.type");
+    private static Map<String, ClientData> serviceDataMap = new ConcurrentHashMap<>();
 
-        if (type.equalsIgnoreCase("1v1")) {
-
-          //2.自己是不是主机
-          Boolean masterOpen = propKit.getBoolean("app.cloud.master.open");
-          if (masterOpen != null && masterOpen) {
-            //开启监听从机动态
-            new RegServer(port).start();
-          }
-          port = Integer.parseInt(propKit.get("app.cloud.port", "9527"));
-          //自己是不是从机
-          Boolean slaveOpen = propKit.getBoolean("app.cloud.slave.open");
-          if (slaveOpen != null && slaveOpen) {
-            //上报给主机自己的状态
-            String cloudName = propKit.get("app.cloud.slave.name");
-            if (cloudName == null || cloudName.trim().length() == 0) {
-              //获取内网IP
-              cloudName = NetUtil.getIpAddress();
-            } else {
-              cloudName = cloudName + "-->" + NetUtil.getIpAddress();
+    public static void run() {
+        //清除启动的Map缓存
+        CloudProxy.clearCache();
+        //1.读取自己是不是开启了云
+        try {
+            PropUtil propKit = PropUtil.getInstance();
+            Boolean open = propKit.getBoolean("app.cloud.open");
+            if (open != null && open) {
+                port = Integer.parseInt(propKit.get("app.cloud.port", "9527"));
+                String type = propKit.get("app.cloud.type");
+                if (type.equalsIgnoreCase(TYPE1)) {
+                    //2.自己是不是主机
+                    Boolean masterOpen = propKit.getBoolean("app.cloud.master.open");
+                    if (masterOpen != null && masterOpen) {
+                        //开启监听从机动态
+                        new RegServer(port).start();
+                    }
+                    //自己是不是从机
+                    Boolean slaveOpen = propKit.getBoolean("app.cloud.slave.open");
+                    if (slaveOpen != null && slaveOpen) {
+                        //上报给主机自己的状态
+                        String cloudName = propKit.get("app.cloud.slave.name");
+                        if (cloudName == null || cloudName.trim().length() == 0) {
+                            //获取内网IP
+                            cloudName = NetUtil.getIpAddress();
+                        } else {
+                            cloudName = cloudName + "-->" + NetUtil.getIpAddress();
+                        }
+                        //启动聊天服务器
+                        Object host;
+                        try {
+                            host = propKit.get("app.cloud.slave.master.host");
+                            if (host != null) {
+                                new ChatClient(host.toString(), CloudManager.port).start();
+                            }
+                        } catch (Exception e) {
+                            log.error(e.getMessage());
+                            return;
+                        }
+                        TaskManager.addTask(cloudName, "5000", Broadcast1V1Task.class, cloudName, host);
+                    }
+                } else if (type.equalsIgnoreCase(TYPE2)) {
+                    String cloudName = propKit.get("app.cloud.slave.name",null);
+                    String host = propKit.get("app.cloud.nacos.host", null);
+                    String port = propKit.get("app.cloud.nacos.port", null);
+                    String host1 = propKit.get("app.cloud.slave.host", null);
+                    String port1 = propKit.get("app.cloud.slave.port", null);
+                    if (host == null || port == null) {
+                        log.error("nacos 地址有误");
+                        return;
+                    }
+                    if (host1==null||port1==null||cloudName==null){
+                         host1 = propKit.get("app.cloud.master.host", null);
+                         port1 = propKit.get("app.cloud.master.port", null);
+                         cloudName = propKit.get("app.cloud.master.name",null);
+                         if (host1==null||port1==null||cloudName==null){
+                             log.error("消费者或者生产者host或者port未填写");
+                         }
+                        log.info("当前身份为：消费者");
+                    }else {
+                        log.info("当前身份为：提供者");
+                    }
+                    TaskManager.addTask(cloudName, "5000", BroadcastNacosTask.class, cloudName, host, port, host1, port1);
+                } else {
+                    log.error("你开启了RPC模式，但是RPC类型有问题");
+                }
             }
-            //启动聊天服务器
-            Object host;
-            try {
-              host = propKit.get("app.cloud.slave.master.host");
-              if (host != null) {
-                new ChatClient(host.toString(), CloudManager.port).start();
-              }
-            } catch (Exception e) {
-              log.error(e.getMessage());
-              return;
-            }
-            TaskManager.addTask(cloudName, "5000", Broadcast1V1Task.class, cloudName, host);
-          }
-        }else if(type.equalsIgnoreCase("nacos")){
-            String cloudName = propKit.get("app.cloud.slave.name");
-            String host = propKit.get("app.cloud.slave.master.host",null);
-            String port = propKit.get("app.cloud.port",null);
-            String host1 = propKit.get("app.cloud.slave.host",null);
-            String port1 = propKit.get("app.cloud.slave.port",null);
-            if (host==null||port==null){
-                log.error("nacos 地址有误");
-                return;
-            }
-            TaskManager.addTask(cloudName, "5000", BroadcastNacosTask.class, cloudName, host,port,host1,port1);
-        }else {
-          log.error("你开启了RPC模式，但是RPC类型有问题");
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
         }
-      }
-    } catch (Exception e) {
-      log.error(e.getMessage());
     }
-  }
 
-  public static void add(String name, ClientData classs) {
+    public static void add(String name, ClientData classs) {
 
-    if (serviceDataMap.containsKey(name)) {
-      log.warn("已经存在：{}Rpc服务", name);
-      return;
+        if (serviceDataMap.containsKey(name)) {
+            log.warn("已经存在：{}Rpc服务", name);
+            return;
+        }
+        serviceDataMap.put(name, classs);
     }
-    serviceDataMap.put(name, classs);
-  }
 
-  public static boolean isRpcService() {
-    return serviceDataMap.size() > 0;
-  }
+    public static boolean isRpcService() {
+        return serviceDataMap.size() > 0;
+    }
 
-  public static List<String> getClasses() {
-    List<String> list = new ArrayList<>();
-    serviceDataMap.forEach((a, b) -> list.add(b.getAClass()));
-    return list;
-  }
+    public static List<String> getClasses() {
+        List<String> list = new ArrayList<>();
+        serviceDataMap.forEach((a, b) -> list.add(b.getAClass()));
+        return list;
+    }
 
-  public static ClientData get(String name) {
-    return serviceDataMap.get(name);
-  }
+    public static ClientData get(String name) {
+        return serviceDataMap.get(name);
+    }
 }

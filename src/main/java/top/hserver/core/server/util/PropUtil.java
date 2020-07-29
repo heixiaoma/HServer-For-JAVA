@@ -75,7 +75,7 @@ public class PropUtil {
         if (isBlank(value)) {
             value = defaultValue;
         }
-        return value.trim();
+        return value==null?value:value.trim();
     }
 
 
