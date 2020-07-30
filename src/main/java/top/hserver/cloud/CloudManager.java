@@ -8,6 +8,7 @@ import top.hserver.cloud.proxy.CloudProxy;
 import top.hserver.cloud.server.RegServer;
 import top.hserver.cloud.task.Broadcast1V1Task;
 import top.hserver.cloud.task.BroadcastNacosTask;
+import top.hserver.cloud.task.ConsumerInfoTask;
 import top.hserver.cloud.util.NetUtil;
 import top.hserver.core.server.util.PropUtil;
 import top.hserver.core.task.TaskManager;
@@ -25,9 +26,9 @@ public class CloudManager {
 
     public static int port = 9527;
 
-    private static final String TYPE1 ="1v1";
+    private static final String TYPE1 = "1v1";
 
-    private static final String TYPE2 ="nacos";
+    private static final String TYPE2 = "nacos";
 
     private static Map<String, ClientData> serviceDataMap = new ConcurrentHashMap<>();
 
@@ -70,10 +71,13 @@ public class CloudManager {
                             log.error(e.getMessage());
                             return;
                         }
-                        TaskManager.addTask(cloudName, "5000", Broadcast1V1Task.class, cloudName, host);
+                        TaskManager.addTask(Broadcast1V1Task.class.getName(), "5000", Broadcast1V1Task.class, cloudName, host);
                     }
                 } else if (type.equalsIgnoreCase(TYPE2)) {
-                    String cloudName = propKit.get("app.cloud.slave.name",null);
+
+                    boolean flag;
+
+                    String cloudName = propKit.get("app.cloud.slave.name", null);
                     String host = propKit.get("app.cloud.nacos.host", null);
                     String port = propKit.get("app.cloud.nacos.port", null);
                     String host1 = propKit.get("app.cloud.slave.host", null);
@@ -82,18 +86,30 @@ public class CloudManager {
                         log.error("nacos 地址有误");
                         return;
                     }
-                    if (host1==null||port1==null||cloudName==null){
-                         host1 = propKit.get("app.cloud.master.host", null);
-                         port1 = propKit.get("app.cloud.master.port", null);
-                         cloudName = propKit.get("app.cloud.master.name",null);
-                         if (host1==null||port1==null||cloudName==null){
-                             log.error("消费者或者生产者host或者port未填写");
-                         }
+                    if (host1 == null || port1 == null || cloudName == null) {
+                        flag = true;
+                        host1 = propKit.get("app.cloud.master.host", null);
+                        port1 = propKit.get("app.cloud.master.port", null);
+                        cloudName = propKit.get("app.cloud.master.name", null);
+                        if (host1 == null || port1 == null || cloudName == null) {
+                            log.error("消费者或者生产者host或者port未填写");
+                            return;
+                        }
                         log.info("当前身份为：消费者");
-                    }else {
+                        //开启监听从机动态
+                        new RegServer(CloudManager.port).start();
+                    } else {
+                        flag = false;
+                        String serviceNames = propKit.get("app.cloud.serviceNames", null);
+                        if (serviceNames == null) {
+                            log.error("app.cloud.serviceNames不能为空");
+                            return;
+                        }
+                        //动态的获取有效果的提供者
+                        TaskManager.addTask(ConsumerInfoTask.class.getName(), "5000", ConsumerInfoTask.class, host, port, serviceNames);
                         log.info("当前身份为：提供者");
                     }
-                    TaskManager.addTask(cloudName, "5000", BroadcastNacosTask.class, cloudName, host, port, host1, port1);
+                    TaskManager.addTask(BroadcastNacosTask.class.getName(), "5000", BroadcastNacosTask.class, cloudName, host, port, host1, port1, flag);
                 } else {
                     log.error("你开启了RPC模式，但是RPC类型有问题");
                 }

@@ -56,14 +56,14 @@ privateKeyPwd=123
 ##rpc调用端口
 #app.cloud.port=9527
 
-
 ##生产者的名字
-#app.cloud.slave.name=ServerA
+#app.cloud.slave.name=ServerB
 ##生产者host
 #app.cloud.slave.host=127.0.0.1
 ##生产者端口
 #app.cloud.slave.port=8080
-
+#消费者的服务名.
+#app.cloud.serviceNames=ServerA
 
 ##消费者的名字
 #app.cloud.master.name=ServerA

@@ -10,6 +10,9 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.client.handler.FileServerInitializer;
 
+/**
+ * @author hxm
+ */
 @Slf4j
 public class ChatClient extends Thread {
 
