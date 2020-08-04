@@ -244,23 +244,22 @@ public class InitBean {
         for (Class aClass : clasps) {
             //检查注解里面是否有值
             Method[] methods = aClass.getDeclaredMethods();
-            bname:for (Method method : methods) {
+            for (Method method : methods) {
                 Controller controller = (Controller) aClass.getAnnotation(Controller.class);
                 String controllerPath = controller.value().trim();
                 /**
                  * 这里对方法控制器的注解的方法参数，进行初始化
+                 * 非控制器的方法过滤排除
                  */
                 Annotation[] annotations = method.getAnnotations();
-                for (Annotation annotation : annotations) {
-                    Request annotation1 = annotation.annotationType().getAnnotation(Request.class);
-                    if (annotation1==null){
-                        //非请求类型的方法，跳过
-                        break bname;
-                    }
+                boolean b = Arrays.stream(annotations).anyMatch(annotation -> annotation.annotationType().getAnnotation(Request.class) != null);
+                if (!b){
+                    break;
                 }
                 try {
                     ParameterUtil.addParam(aClass, method);
                 }catch (Exception ignored){
+                    break;
                 }
                 //细化后的注解
                 Class[] classes = new Class[]{GET.class, POST.class, HEAD.class, PUT.class, PATCH.class, DELETE.class, OPTIONS.class, CONNECT.class, TRACE.class};
