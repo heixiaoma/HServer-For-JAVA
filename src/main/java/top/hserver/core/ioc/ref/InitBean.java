@@ -258,7 +258,10 @@ public class InitBean {
                         break bname;
                     }
                 }
-                ParameterUtil.addParam(aClass, method);
+                try {
+                    ParameterUtil.addParam(aClass, method);
+                }catch (Exception ignored){
+                }
                 //细化后的注解
                 Class[] classes = new Class[]{GET.class, POST.class, HEAD.class, PUT.class, PATCH.class, DELETE.class, OPTIONS.class, CONNECT.class, TRACE.class};
                 for (Class aClass1 : classes) {
