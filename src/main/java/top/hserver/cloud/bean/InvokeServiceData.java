@@ -17,4 +17,6 @@ public class InvokeServiceData implements Serializable {
 
     private Object[] objects; //参数列表
 
+    private boolean isPingPing;
+
 }

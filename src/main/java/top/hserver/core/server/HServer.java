@@ -59,11 +59,9 @@ public class HServer {
         bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
         typeName = "Nio";
       }
-
-
       //看看有没有SSL
       initSSl();
-      bootstrap.childHandler(new HttpNettyServerInitializer());
+      bootstrap.childHandler(new ServerInitializer());
       Channel ch = bootstrap.bind(port).sync().channel();
       log.info("HServer 启动完成");
       System.out.println();

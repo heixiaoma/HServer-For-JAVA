@@ -27,15 +27,18 @@ privateKeyPwd=123
 
 #-----------------RPC-------------
 
-
 #是否开启RPC模式
-#app.cloud.open=false
+#app.rpc.open=false
+#app.rpc.type=nacos
+
+#消费者连接提供者的地址
+#app.rpc.address=
+
+
+
 
 #方案一 1v1 模式
 
-#app.cloud.type=1v1
-##注册中心端口和rpc调用端口
-#app.cloud.port=9527
 ##是否是消费者
 #app.cloud.master.open=false
 ##是否是生产者
@@ -48,13 +51,10 @@ privateKeyPwd=123
 
 #方案二 nacos 模式
 
-#app.cloud.type=nacos
 ##注册中心端口
 #app.cloud.nacos.port=8848
 ##Nacos的IP地址
 #app.cloud.nacos.host=127.0.0.1
-##rpc调用端口
-#app.cloud.port=9527
 
 ##生产者的名字
 #app.cloud.slave.name=ServerB

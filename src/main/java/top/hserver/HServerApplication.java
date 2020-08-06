@@ -138,7 +138,7 @@ public class HServerApplication {
 
     private static void startServer(int port, String[] args) {
         //云启动
-        CloudManager.run();
+        CloudManager.run(port);
         try {
             new HServer(port, args).run();
         } catch (Exception e) {
@@ -171,6 +171,7 @@ public class HServerApplication {
             scanPackage=new HashSet<>();
             scanPackage.add(mainClass.getPackage().getName());
         }
+        scanPackage.add(HServerApplication.class.getPackage().getName());
         log.info("初始化配置文件");
         PropertiesInit.init();
         log.info("初始化配置完成");

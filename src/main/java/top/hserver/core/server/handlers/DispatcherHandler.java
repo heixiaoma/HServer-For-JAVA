@@ -143,7 +143,9 @@ public class DispatcherHandler {
             error.append("未找到对应的控制器，请求方式：")
                     .append(hServerContext.getRequest().getRequestType().toString())
                     .append("，请求路径：")
-                    .append(hServerContext.getRequest().getUri());
+                    .append(hServerContext.getRequest().getUri())
+                    .append("，来源IP：")
+                    .append(hServerContext.getRequest().getIp());
             throw new BusinessException(HttpResponseStatus.NOT_FOUND.code(), error.toString(), new Exception("不能找到处理当前请求的资源"), hServerContext.getWebkit());
         }
         Method method = routerInfo.getMethod();

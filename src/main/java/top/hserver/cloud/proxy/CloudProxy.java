@@ -8,7 +8,7 @@ import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.bean.InvokeServiceData;
-import top.hserver.cloud.server.handler.RpcServerHandler;
+import top.hserver.cloud.client.handler.RpcServerHandler;
 import top.hserver.core.ioc.annotation.Resource;
 
 @Slf4j
@@ -50,7 +50,7 @@ public class CloudProxy {
             }
             invokeServiceData.setObjects(args);
             invokeServiceData.setUUID(UUID.randomUUID().toString());
-            return RpcServerHandler.SendInvoker(invokeServiceData);
+            return RpcServerHandler.sendInvoker(invokeServiceData);
         });
 
         if (value.trim().length() > 0) {

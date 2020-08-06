@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.common.Msg;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -16,10 +17,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
   protected void channelRead0(ChannelHandlerContext channelHandlerContext, Msg msg) throws Exception {
     CompletableFuture<Msg> futures = CompletableFuture.completedFuture(msg);
     Executor executor = channelHandlerContext.executor();
-    futures.thenApplyAsync(req -> InvokerHandler.buildContext(channelHandlerContext, msg), executor)
-      .thenApplyAsync(InvokerHandler::Invoker, executor)
-      .exceptionally(InvokerHandler::handleException)
-      .thenAcceptAsync(msgs -> InvokerHandler.writeResponse(channelHandlerContext, futures, msgs), channelHandlerContext.channel().eventLoop());
+      futures.thenApplyAsync(e-> RpcServerHandler.readData(channelHandlerContext, msg), executor);
   }
 
   @Override
