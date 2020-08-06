@@ -69,10 +69,12 @@ public class InitBean {
             for (Field field : clasp.getDeclaredFields()) {
                 try {
                     PropUtil instance = PropUtil.getInstance();
-                    String s = instance.get(value == null ? field.getName() : value + "." + field.getName());
+                    String s = instance.get(value == null ? field.getName() : value + "." + field.getName(),null);
                     Object convert = ParameterUtil.convert(field, s);
-                    field.setAccessible(true);
-                    field.set(o, convert);
+                    if (convert!=null){
+                        field.setAccessible(true);
+                        field.set(o, convert);
+                    }
                 }catch (Exception e){
                     log.error(e.getMessage());
                 }
@@ -481,6 +483,8 @@ public class InitBean {
     private static void rpczr(Field declaredField, Object v) {
         Resource annotation = declaredField.getAnnotation(Resource.class);
         if (annotation != null) {
+            //对这个字段保存一份,用户nacos 拉去数据
+            CloudManager.add(annotation.value().trim().length()==0?declaredField.getType().getName():annotation.value());
             try {
                 declaredField.setAccessible(true);
                 Object proxy = CloudProxy.getProxy(declaredField.getType(), annotation);

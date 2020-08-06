@@ -191,6 +191,8 @@ public class ParameterUtil {
                 case "java.lang.String":
                     object = res;
                     break;
+                default:
+                    return null;
             }
         } catch (Exception ignored) {
         }

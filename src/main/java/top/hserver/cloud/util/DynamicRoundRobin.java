@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * @author hxm
+ */
 public class DynamicRoundRobin<T> {
   private final List<T> list = new CopyOnWriteArrayList<>();
   private AtomicInteger pos = new AtomicInteger(0);

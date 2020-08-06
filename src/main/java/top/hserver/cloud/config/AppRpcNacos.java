@@ -6,9 +6,8 @@ import top.hserver.core.ioc.annotation.ConfigurationProperties;
 @Data
 @ConfigurationProperties(prefix = "app.rpc.nacos")
 public class AppRpcNacos {
-
-    private String host;
-
-    private Integer port;
-
+    /**
+     * nacos 地址
+     */
+    private String address;
 }

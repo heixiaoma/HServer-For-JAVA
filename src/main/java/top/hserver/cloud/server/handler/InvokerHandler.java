@@ -18,14 +18,17 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 
+/**
+ * @author hxm
+ */
 @Slf4j
 public class InvokerHandler {
 
 
-    public static final Set<Channel> consumerChannel=new CopyOnWriteArraySet<>();
+    public static final Set<Channel> CONSUMER_CHANNEL =new CopyOnWriteArraySet<>();
 
 
-    public static Msg<ResultData> invoker(InvokeServiceData data) {
+    static Msg<ResultData> invoker(InvokeServiceData data) {
         if (data != null && !data.isPingPing()) {
             log.debug("调用信息--->{}", data.toString());
             //返回调用结果
@@ -56,7 +59,7 @@ public class InvokerHandler {
                     }
                 }
             }
-        } else if (data != null && data.isPingPing()) {
+        } else if (data != null) {
             ResultData resultData = new ResultData();
             resultData.setData("ok");
             resultData.setCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
@@ -74,13 +77,13 @@ public class InvokerHandler {
         return msg2;
     }
 
-    public static InvokeServiceData buildContext(ChannelHandlerContext ctx, Msg msg) {
+    static InvokeServiceData buildContext(ChannelHandlerContext ctx, Msg msg) {
         if (msg.getMsg_type() == MSG_TYPE.INVOKER) {
             InvokeServiceData data = ((Msg<InvokeServiceData>) msg).getData();
             return data;
         } else if (msg.getMsg_type() == MSG_TYPE.PINGPONG) {
             //存储一个ctx
-            consumerChannel.add(ctx.channel());
+            CONSUMER_CHANNEL.add(ctx.channel());
             log.debug("ping-pong");
             InvokeServiceData invokeServiceData = new InvokeServiceData();
             invokeServiceData.setPingPing(true);
@@ -89,7 +92,7 @@ public class InvokerHandler {
         return null;
     }
 
-    public static Msg<ResultData> handleException(Throwable e) {
+    static Msg<ResultData> handleException(Throwable e) {
         ResultData resultData = new ResultData();
         resultData.setData(e.getMessage());
         resultData.setCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());

@@ -15,10 +15,13 @@ import top.hserver.cloud.util.DynamicRoundRobin;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author hxm
+ */
 @Slf4j
 public class RpcServerHandler {
 
-    private final static Map<String, DynamicRoundRobin<ServiceData>> classStringMap = new ConcurrentHashMap<>();
+    private final static Map<String, DynamicRoundRobin<ServiceData>> CLASS_STRING_MAP = new ConcurrentHashMap<>();
 
     public static InvokeServiceData readData(ChannelHandlerContext ctx, Msg msg) {
         switch (msg.getMsg_type()) {
@@ -28,12 +31,12 @@ public class RpcServerHandler {
                 serviceData.setName(data.getName());
                 serviceData.setCtx(ctx);
                 data.getClasses().forEach(a -> {
-                    if (classStringMap.containsKey(a)) {
-                        classStringMap.get(a).add(serviceData);
+                    if (CLASS_STRING_MAP.containsKey(a)) {
+                        CLASS_STRING_MAP.get(a).add(serviceData);
                     } else {
                         DynamicRoundRobin<ServiceData> sd = new DynamicRoundRobin<>();
                         sd.add(serviceData);
-                        classStringMap.put(a, sd);
+                        CLASS_STRING_MAP.put(a, sd);
                     }
                 });
                 log.debug(data.toString());
@@ -49,15 +52,17 @@ public class RpcServerHandler {
                 String s = ((Msg<ResultData>) msg).getData().getData().toString();
                 log.debug(s);
                 break;
+            default:
+                break;
 
         }
         return null;
     }
 
     public static Object sendInvoker(InvokeServiceData invokeServiceData) throws Exception {
-        int size = classStringMap.get(invokeServiceData.getAClass()).size();
+        int size = CLASS_STRING_MAP.get(invokeServiceData.getAClass()) != null ? CLASS_STRING_MAP.get(invokeServiceData.getAClass()).size() : 0;
         for (int i = 0; i < size; i++) {
-            ServiceData serviceData = classStringMap.get(invokeServiceData.getAClass()).choose();
+            ServiceData serviceData = CLASS_STRING_MAP.get(invokeServiceData.getAClass()).choose();
             if (serviceData != null) {
                 ChannelHandlerContext ctx = serviceData.getCtx();
                 if (ctx != null && ctx.channel().isActive()) {
@@ -72,7 +77,7 @@ public class RpcServerHandler {
                     }
                 } else {
                     //如果这个服务是不活跃的就干掉他
-                    classStringMap.get(invokeServiceData.getAClass()).remove(serviceData);
+                    CLASS_STRING_MAP.get(invokeServiceData.getAClass()).remove(serviceData);
                 }
             }
         }

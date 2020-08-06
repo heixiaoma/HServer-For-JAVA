@@ -12,7 +12,6 @@ import top.hserver.core.interfaces.TaskJob;
 @Slf4j
 public class Broadcast1V1ConsumerTask implements TaskJob {
 
-
     @Override
     public void exec(Object... args) {
         String addresss = args[0] == null ? null : args[0].toString();
@@ -26,9 +25,10 @@ public class Broadcast1V1ConsumerTask implements TaskJob {
                     ChatClient.channels.get(address).writeAndFlush(msg);
                 } else {
                     try {
-                        log.warn("连接提供者，{}", address);
+                        log.info("连接提供者，{}", address);
                         if (ChatClient.channels.get(address) != null) {
                             ChatClient.channels.get(address).close();
+                            ChatClient.channels.remove(address);
                         }
                         new ChatClient(address).start();
                     } catch (Exception e) {

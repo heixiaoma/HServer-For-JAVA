@@ -19,13 +19,30 @@ public class AppRpc {
     /**
      * nacos 或者默认模式
      */
-    private String type;
+    private String mode;
 
+    /**
+     * 消费者还是提供者
+     * true 消费者
+     * false 提供者
+     */
+    private boolean type;
 
     /**
      * 消费者连接提供者的地址
      */
 
     private String address;
+
+    /**
+     * 服务名字
+     */
+    private String name;
+
+    /**
+     * 能访问到自己的IP地址，nacos 才用
+     */
+
+    private String ip;
 
 }

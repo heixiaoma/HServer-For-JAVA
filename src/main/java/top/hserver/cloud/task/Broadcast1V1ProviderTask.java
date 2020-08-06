@@ -20,12 +20,13 @@ public class Broadcast1V1ProviderTask implements TaskJob {
 
     /**
      * 服务提供者上报消费者
+     *
      * @param args
      */
     @Override
     public void exec(Object... args) {
         if (CloudManager.isRpcService()) {
-            Iterator<Channel> it = InvokerHandler.consumerChannel.iterator();
+            Iterator<Channel> it = InvokerHandler.CONSUMER_CHANNEL.iterator();
             while (it.hasNext()) {
                 Channel channel = it.next();
                 if (channel.isActive()) {
@@ -38,7 +39,7 @@ public class Broadcast1V1ProviderTask implements TaskJob {
                     msg.setData(cloudData);
                     channel.writeAndFlush(msg);
                 } else {
-                    it.remove();
+                    InvokerHandler.CONSUMER_CHANNEL.remove(channel);
                 }
             }
         }
