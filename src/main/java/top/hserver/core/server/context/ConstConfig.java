@@ -10,7 +10,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author hxm
  */
 public class ConstConfig {
-
     /**
      * 运行环境
      */
@@ -20,6 +19,9 @@ public class ConstConfig {
      */
     public static String CLASSPATH;
 
+    /**
+     * 当可以使用Epoll时是否使用Epoll
+     */
     public static Boolean EPOLL = true;
 
     /**
@@ -63,6 +65,9 @@ public class ConstConfig {
 
     public static Integer workerPool = 4;
 
+    /**
+     * 对象处理
+     */
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
