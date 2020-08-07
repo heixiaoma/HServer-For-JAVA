@@ -90,11 +90,13 @@ public class CloudManager {
                         naming.registerInstance(name, appRpc.getIp(), port);
                     }
                 } else {
-                    String address = appRpc.getAddress();
-                    if (address == null) {
-                        throw new NullPointerException("app.rpc.address 不能为空");
-                    }
                     if (appRpc.isType()) {
+
+                        String address = appRpc.getAddress();
+                        if (address == null) {
+                            throw new NullPointerException("app.rpc.address 不能为空");
+                        }
+
                         log.info("我是消费者");
                         /**
                          * 消费者连接提供者
