@@ -39,7 +39,7 @@
     <dependency>
         <groupId>top.hserver</groupId>
         <artifactId>HServer</artifactId>
-        <version>2.9.39</version>
+        <version>2.9.40</version>
     </dependency>
     
     全部版本查询 https://repo1.maven.org/maven2/top/hserver/HServer/
