@@ -1,5 +1,6 @@
 package top.hserver.cloud.future;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeoutException;
 
 public class SyncWrite {
 
-    public ResultData writeAndSync(ChannelHandlerContext channel, final InvokeServiceData invokeServiceData, final long timeout) throws Exception {
+    public ResultData writeAndSync(Channel channel, final InvokeServiceData invokeServiceData, final long timeout) throws Exception {
 
         if (channel == null) {
             throw new NullPointerException("channel");
@@ -39,7 +40,7 @@ public class SyncWrite {
         return response;
     }
 
-    private ResultData doWriteAndSync(ChannelHandlerContext channel, final InvokeServiceData invokeServiceData, final long timeout, final WriteFuture<ResultData> writeFuture) throws Exception {
+    private ResultData doWriteAndSync(Channel channel, final InvokeServiceData invokeServiceData, final long timeout, final WriteFuture<ResultData> writeFuture) throws Exception {
         Msg<InvokeServiceData> msg = new Msg<>();
         msg.setMsg_type(MSG_TYPE.INVOKER);
         msg.setData(invokeServiceData);

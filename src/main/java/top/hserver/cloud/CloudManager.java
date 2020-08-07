@@ -12,7 +12,6 @@ import top.hserver.cloud.task.*;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.task.TaskManager;
 
-import javax.naming.event.NamingEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +33,6 @@ public class CloudManager {
      * 消费者要消费的
      */
     private static Set<String> involve = new CopyOnWriteArraySet<>();
-    /**
-     * 所有的提供者的服务IP+port
-     */
-    private static Set<String> providersIpData = new CopyOnWriteArraySet<>();
 
 
     /**
@@ -78,12 +73,11 @@ public class CloudManager {
 
                     if (appRpc.isType()) {
                         log.info("我是消费者");
-                        TaskManager.addTask(ProviderInfo.class.getName(), "5000", ProviderInfo.class);
+                        SubProviderInfo.init();
                         //维持长连接的任务
                         TaskManager.addTask(KeepLiveTask.class.getName(), "5000", KeepLiveTask.class);
                     } else {
                         log.info("我是提供者");
-                        TaskManager.addTask(Broadcast1V1ProviderTask.class.getName(), "5000", Broadcast1V1ProviderTask.class, name);
                     }
                     /**
                      * 不论是消费者还生产者都要去注册中心注册
@@ -165,18 +159,5 @@ public class CloudManager {
     public static ClientData get(String name) {
         return serviceDataMap.get(name);
     }
-
-    public static void addAddress(String address) {
-        providersIpData.add(address);
-    }
-
-    public static Set<String> getAddress() {
-        return providersIpData;
-    }
-
-    public static void removeAddress(String address) {
-        providersIpData.remove(address);
-    }
-
 
 }

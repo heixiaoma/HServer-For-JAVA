@@ -1,5 +1,6 @@
 package top.hserver.cloud.client.handler;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.bean.InvokeServiceData;
@@ -12,6 +13,7 @@ import top.hserver.cloud.future.SyncWriteFuture;
 import top.hserver.cloud.future.SyncWriteMap;
 import top.hserver.cloud.util.DynamicRoundRobin;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,15 +23,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class RpcServerHandler {
 
-    private final static Map<String, DynamicRoundRobin<ServiceData>> CLASS_STRING_MAP = new ConcurrentHashMap<>();
+    public final static Map<String, DynamicRoundRobin<ServiceData>> CLASS_STRING_MAP = new ConcurrentHashMap<>();
 
-    public static InvokeServiceData readData(ChannelHandlerContext ctx, Msg msg) {
+    static InvokeServiceData readData(ChannelHandlerContext ctx, Msg msg) {
         switch (msg.getMsg_type()) {
             case REG:
                 RegRpcData data = ((Msg<RegRpcData>) msg).getData();
                 ServiceData serviceData = new ServiceData();
                 serviceData.setName(data.getName());
-                serviceData.setCtx(ctx);
+                serviceData.setChannel(ctx.channel());
                 data.getClasses().forEach(a -> {
                     if (CLASS_STRING_MAP.containsKey(a)) {
                         CLASS_STRING_MAP.get(a).add(serviceData);
@@ -64,9 +66,9 @@ public class RpcServerHandler {
         for (int i = 0; i < size; i++) {
             ServiceData serviceData = CLASS_STRING_MAP.get(invokeServiceData.getAClass()).choose();
             if (serviceData != null) {
-                ChannelHandlerContext ctx = serviceData.getCtx();
-                if (ctx != null && ctx.channel().isActive()) {
-                    ResultData response = new SyncWrite().writeAndSync(ctx, invokeServiceData, 5000);
+                Channel channel = serviceData.getChannel();
+                if (channel != null && channel.isActive()) {
+                    ResultData response = new SyncWrite().writeAndSync(channel, invokeServiceData, 5000);
                     switch (response.getCode()) {
                         case 200:
                             return response.getData();
@@ -84,4 +86,20 @@ public class RpcServerHandler {
         return new NullPointerException("暂无服务");
     }
 
+
+    /**
+     * 关闭一个链接通道
+     * @param className
+     */
+    public static void closeChannel(String className){
+        DynamicRoundRobin<ServiceData> serviceDataDynamicRoundRobin = CLASS_STRING_MAP.get(className);
+        if (serviceDataDynamicRoundRobin!=null){
+            List<ServiceData> all = serviceDataDynamicRoundRobin.getAll();
+            for (int i = 0; i < all.size(); i++) {
+                all.get(i).getChannel().close();
+                all.remove(all.get(i));
+            }
+            CLASS_STRING_MAP.remove(className);
+        }
+    }
 }
