@@ -27,7 +27,7 @@ public class ConstConfig {
     /**
      * 版本号
      */
-    public static final String VERSION = "2.9.39";
+    public static final String VERSION = "2.9.40";
     /**
      * 定时任务线程数配置
      */
