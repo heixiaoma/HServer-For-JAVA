@@ -69,7 +69,7 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/HServer/hserver-for-
 
 ## 快速开始
 #### 1.文件结构框架架构说明
-![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/架构说明.png)
+![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/架构说明1.png)
 #### 2.注解认识
     以下注解基本模拟Spring的功能
     
