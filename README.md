@@ -44,14 +44,7 @@
     
     全部版本查询 https://repo1.maven.org/maven2/top/hserver/HServer/
 ### 压测结果，8核Linux 虚拟机 23w qps 恐怖至极（做api最适合了）
-![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/23.png)
-
-详情请查看 [PM.md](doc/PM.md) 查看说明
-
-
-### 更新历史
-请查看 [CHANGELOG.md](doc/CHANGELOG.md) 了解近期更新情况。
-
+详情请查看压测文档 [PM.md](doc/PM.md) 查看说明
 
 ### 文档地址
 文档说明请查看 [点我](https://gitee.com/HServer/HServer/wikis/pages) 
@@ -68,7 +61,7 @@ RPC操作源码案例地址(RPC) [点我](https://gitee.com/HServer/hserver-for-
 
 
 ## 快速开始
-#### 1.文件结构框架架构说明
+#### 1.项目流程示意说明
 ![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/%E6%9E%B6%E6%9E%84%E8%AF%B4%E6%98%8E1.jpg)
 #### 2.注解认识
     以下注解基本模拟Spring的功能
