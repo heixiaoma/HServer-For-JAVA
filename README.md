@@ -28,7 +28,7 @@
 
 #### 介绍
     QQ交流群：1065301527
-    HServer是一个基于Netty的一个高并发Webserver,它不仅仅是一个webserver，我们可以直接在这个基础上进行开发
+    HServer是一个基于Netty的一个高并发Webserver，8核Linux 虚拟机 23w+ qps， 它不仅仅是一个webserver，我们可以直接在这个基础上进行开发
     它提供了相关的注解和一些方法，完全能够完成我们大大小小的项目。作为一名Java程序员写web程序spring是我们项目99%会用的。
     spring的优点就不过多讲。Hserver是一个“tomcat”+“spring”的这样的小玩意。
     它的qps比tomcat更快，这个是因为Hserver使用的Netty,注解比spring更简，这是因为，它还不够强大（滑稽，我会努力让它更智能点）
@@ -41,23 +41,18 @@
         <artifactId>HServer</artifactId>
         <version>2.9.40</version>
     </dependency>
-    
-    全部版本查询 https://repo1.maven.org/maven2/top/hserver/HServer/
-### 压测结果，8核Linux 虚拟机 23w qps 恐怖至极（做api最适合了）
-详情请查看压测文档 [PM.md](doc/PM.md) 查看说明
 
-### 文档地址
-文档说明请查看 [点我](https://gitee.com/HServer/HServer/wikis/pages) 
+### 资源菜单
 
-Redis操作源码案例地址(Jedis) [点我](https://gitee.com/HServer/hserver-for-java-redis)
-
-MYSQL操作源码案例地址(Neo) [点我](https://gitee.com/HServer/hserver-for-java-mysql)
-
-MYSQL操作源码案例地址(BeetlSQL) [点我](https://gitee.com/HServer/hserver-for-java-beetlsql)
-
-RPC操作源码案例地址(RPC) [点我](https://gitee.com/HServer/hserver-for-java-rpc)
-
-
+| 资源名 | 地址 |
+| :----:| :----: | 
+| 压测文档 | [PM.md](doc/PM.md) |
+| 文档 | [点我](https://gitee.com/HServer/HServer/wikis/pages)  | 
+| Redis操作源码 | [点我](https://gitee.com/HServer/hserver-for-java-redis) |
+| MYSQL-BeetlSQL(推荐)源码 | [点我](https://gitee.com/HServer/hserver-for-java-beetlsql) |
+| MYSQL-NEO 源码 |  [点我](https://gitee.com/HServer/hserver-for-java-mysql) |
+| RPC操作源码 | [点我](https://gitee.com/HServer/hserver-for-java-rpc) |
+| HServer版本查询 | [点我](https://repo1.maven.org/maven2/top/hserver/HServer/) |
 
 
 ## 快速开始
