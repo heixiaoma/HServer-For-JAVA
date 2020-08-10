@@ -13,21 +13,19 @@ import java.util.concurrent.Executor;
 @Slf4j
 public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
 
-  @Override
-  protected void channelRead0(ChannelHandlerContext channelHandlerContext, Msg msg) throws Exception {
-    CompletableFuture<Msg> futures = CompletableFuture.completedFuture(msg);
-    Executor executor = channelHandlerContext.executor();
-      futures.thenApplyAsync(e-> RpcServerHandler.readData(channelHandlerContext, msg), executor);
-  }
+    @Override
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Msg msg) throws Exception {
+        RpcServerHandler.readData(channelHandlerContext, msg);
+    }
 
-  @Override
-  public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-    ctx.flush();
-  }
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        ctx.flush();
+    }
 
-  @Override
-  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-    ctx.close();
-  }
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        ctx.close();
+    }
 
 }

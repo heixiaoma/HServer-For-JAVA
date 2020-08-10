@@ -9,12 +9,11 @@ import top.hserver.cloud.bean.ResultData;
 import top.hserver.cloud.bean.ServiceData;
 import top.hserver.cloud.common.Msg;
 import top.hserver.cloud.future.SyncWrite;
-import top.hserver.cloud.future.SyncWriteFuture;
-import top.hserver.cloud.future.SyncWriteMap;
 import top.hserver.cloud.util.DynamicRoundRobin;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -45,10 +44,13 @@ public class RpcServerHandler {
                 break;
             case RESULT:
                 ResultData resultData = ((Msg<ResultData>) msg).getData();
-                String requestId = resultData.getUUID();
-                SyncWriteFuture future = (SyncWriteFuture) SyncWriteMap.syncKey.get(requestId);
+                String requestId = resultData.getRequestId();
+                CompletableFuture<ResultData> future = SyncWrite.syncKey.get(requestId);
                 if (future != null) {
-                    future.setResultData(resultData);
+                    future.thenApplyAsync((res)->{
+                        res.setData(resultData.getData());
+                        return res;
+                    });
                 }
             case PINGPONG:
                 String s = ((Msg<ResultData>) msg).getData().getData().toString();
@@ -68,7 +70,7 @@ public class RpcServerHandler {
             if (serviceData != null) {
                 Channel channel = serviceData.getChannel();
                 if (channel != null && channel.isActive()) {
-                    ResultData response = new SyncWrite().writeAndSync(channel, invokeServiceData, 5000);
+                    ResultData response = SyncWrite.writeAndSync(channel, invokeServiceData, 5000);
                     switch (response.getCode()) {
                         case 200:
                             return response.getData();

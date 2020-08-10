@@ -27,7 +27,7 @@ public class ConstConfig {
     /**
      * 版本号
      */
-    public static final String VERSION = "2.9.40";
+    public static final String VERSION = "2.9.41";
     /**
      * 定时任务线程数配置
      */
@@ -71,6 +71,11 @@ public class ConstConfig {
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+    /**
+     * 另外JSON一个名字，兼容以前的
+     */
+    public static final ObjectMapper JSON=OBJECT_MAPPER;
 
     /**
      * 配置文件

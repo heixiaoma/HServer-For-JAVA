@@ -9,9 +9,11 @@ public class ResultData implements Serializable {
 
     private static final long SerialVersionUID = 1L;
 
-    private String UUID;
+    private String requestId;
 
     private int code;
 
     private Object data;
+
+    private Throwable error;
 }

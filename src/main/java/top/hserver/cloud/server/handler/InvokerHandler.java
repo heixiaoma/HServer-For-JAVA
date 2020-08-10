@@ -41,16 +41,16 @@ public class InvokerHandler {
                         Object invoke = method.invoke(bean, data.getObjects());
                         ResultData resultData = new ResultData();
                         resultData.setData(invoke);
-                        resultData.setUUID(data.getUUID());
+                        resultData.setRequestId(data.getRequestId());
                         resultData.setCode(HttpResponseStatus.OK.code());
                         Msg<ResultData> msg2 = new Msg<>();
                         msg2.setMsg_type(MSG_TYPE.RESULT);
                         msg2.setData(resultData);
                         return msg2;
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         ResultData resultData = new ResultData();
-                        resultData.setData(e.getMessage());
-                        resultData.setUUID(data.getUUID());
+                        resultData.setError(e);
+                        resultData.setRequestId(data.getRequestId());
                         resultData.setCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
                         Msg<ResultData> msg2 = new Msg<>();
                         msg2.setMsg_type(MSG_TYPE.RESULT);

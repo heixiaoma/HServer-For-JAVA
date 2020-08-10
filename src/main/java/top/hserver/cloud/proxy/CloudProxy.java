@@ -49,7 +49,6 @@ public class CloudProxy {
                 invokeServiceData.setAClass(clazz.getName());
             }
             invokeServiceData.setObjects(args);
-            invokeServiceData.setUUID(UUID.randomUUID().toString());
             return RpcServerHandler.sendInvoker(invokeServiceData);
         });
 

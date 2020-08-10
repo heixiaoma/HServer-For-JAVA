@@ -15,7 +15,7 @@ public class InvokeServiceData implements Serializable {
     /**
      * 调用标识
      */
-    private String UUID;
+    private String requestId;
 
     /**
      *  类名
