@@ -3,6 +3,7 @@ package top.hserver.cloud.bean;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author hxm

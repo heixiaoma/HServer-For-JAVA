@@ -14,9 +14,7 @@ import top.hserver.core.ioc.IocUtil;
 
 import java.lang.reflect.Method;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArraySet;
-
 
 /**
  * @author hxm
@@ -25,10 +23,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class InvokerHandler {
 
 
-    public static final Set<Channel> CONSUMER_CHANNEL =new CopyOnWriteArraySet<>();
+    public static final Set<Channel> CONSUMER_CHANNEL = new CopyOnWriteArraySet<>();
 
-
-    static Msg<ResultData> invoker(InvokeServiceData data) {
+    static void invoker(InvokeServiceData data, ChannelHandlerContext ctx) {
         if (data != null && !data.isPingPing()) {
             log.debug("调用信息--->{}", data.toString());
             //返回调用结果
@@ -40,41 +37,42 @@ public class InvokerHandler {
                     try {
                         Object invoke = method.invoke(bean, data.getObjects());
                         ResultData resultData = new ResultData();
-                        resultData.setData(invoke);
+                        resultData.setCode(HttpResponseStatus.OK);
                         resultData.setRequestId(data.getRequestId());
-                        resultData.setCode(HttpResponseStatus.OK.code());
                         Msg<ResultData> msg2 = new Msg<>();
                         msg2.setMsg_type(MSG_TYPE.RESULT);
+                        resultData.setData(invoke);
                         msg2.setData(resultData);
-                        return msg2;
+                        ctx.writeAndFlush(msg2);
                     } catch (Throwable e) {
                         ResultData resultData = new ResultData();
                         resultData.setError(e);
                         resultData.setRequestId(data.getRequestId());
-                        resultData.setCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+                        resultData.setCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
                         Msg<ResultData> msg2 = new Msg<>();
                         msg2.setMsg_type(MSG_TYPE.RESULT);
                         msg2.setData(resultData);
-                        return msg2;
+                        ctx.writeAndFlush(msg2);
                     }
                 }
             }
         } else if (data != null) {
             ResultData resultData = new ResultData();
             resultData.setData("ok");
-            resultData.setCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+            resultData.setCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
             Msg<ResultData> msg2 = new Msg<>();
             msg2.setMsg_type(MSG_TYPE.PINGPONG);
             msg2.setData(resultData);
-            return msg2;
+            ctx.writeAndFlush(msg2);
+        } else {
+            ResultData resultData = new ResultData();
+            resultData.setData("空调用");
+            resultData.setCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+            Msg<ResultData> msg2 = new Msg<>();
+            msg2.setMsg_type(MSG_TYPE.RESULT);
+            msg2.setData(resultData);
+            ctx.writeAndFlush(msg2);
         }
-        ResultData resultData = new ResultData();
-        resultData.setData("空调用");
-        resultData.setCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
-        Msg<ResultData> msg2 = new Msg<>();
-        msg2.setMsg_type(MSG_TYPE.RESULT);
-        msg2.setData(resultData);
-        return msg2;
     }
 
     static InvokeServiceData buildContext(ChannelHandlerContext ctx, Msg msg) {
@@ -90,21 +88,5 @@ public class InvokerHandler {
             return invokeServiceData;
         }
         return null;
-    }
-
-    static Msg<ResultData> handleException(Throwable e) {
-        ResultData resultData = new ResultData();
-        resultData.setData(e.getMessage());
-        resultData.setCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
-        Msg<ResultData> msg2 = new Msg<>();
-        msg2.setMsg_type(MSG_TYPE.RESULT);
-        msg2.setData(resultData);
-        return msg2;
-    }
-
-    static void writeResponse(ChannelHandlerContext
-                                      ctx, CompletableFuture<Msg> future, Msg msg) {
-        ctx.writeAndFlush(msg);
-        future.complete(null);
     }
 }

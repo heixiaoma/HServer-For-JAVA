@@ -1,8 +1,10 @@
 package top.hserver.cloud.bean;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.concurrent.CompletableFuture;
 
 @Data
 public class ResultData implements Serializable {
@@ -11,7 +13,7 @@ public class ResultData implements Serializable {
 
     private String requestId;
 
-    private int code;
+    private HttpResponseStatus code;
 
     private Object data;
 

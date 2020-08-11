@@ -2,7 +2,6 @@ package top.hserver.cloud.proxy;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
