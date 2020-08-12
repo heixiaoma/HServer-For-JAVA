@@ -2,7 +2,6 @@ package top.hserver.cloud.client.handler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.bean.InvokeServiceData;
 import top.hserver.cloud.bean.RegRpcData;
@@ -23,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class RpcServerHandler {
 
-    public final static Map<String, DynamicRoundRobin<ServiceData>> CLASS_STRING_MAP = new ConcurrentHashMap<>();
+    public final static Map<String, DynamicRoundRobin> CLASS_STRING_MAP = new ConcurrentHashMap<>();
 
     static InvokeServiceData readData(ChannelHandlerContext ctx, Msg msg) {
         switch (msg.getMsg_type()) {
@@ -36,7 +35,7 @@ public class RpcServerHandler {
                     if (CLASS_STRING_MAP.containsKey(a)) {
                         CLASS_STRING_MAP.get(a).add(serviceData);
                     } else {
-                        DynamicRoundRobin<ServiceData> sd = new DynamicRoundRobin<>();
+                        DynamicRoundRobin sd = new DynamicRoundRobin();
                         sd.add(serviceData);
                         CLASS_STRING_MAP.put(a, sd);
                     }
@@ -48,6 +47,7 @@ public class RpcServerHandler {
                 String requestId = resultData.getRequestId();
                 CompletableFuture<ResultData> future = RpcWrite.syncKey.get(requestId);
                 future.complete(resultData);
+                break;
             case PINGPONG:
                 String s = ((Msg<ResultData>) msg).getData().getData().toString();
                 log.debug(s);
@@ -93,7 +93,7 @@ public class RpcServerHandler {
      * @param className
      */
     public static void closeChannel(String className) {
-        DynamicRoundRobin<ServiceData> serviceDataDynamicRoundRobin = CLASS_STRING_MAP.get(className);
+        DynamicRoundRobin serviceDataDynamicRoundRobin = CLASS_STRING_MAP.get(className);
         if (serviceDataDynamicRoundRobin != null) {
             List<ServiceData> all = serviceDataDynamicRoundRobin.getAll();
             for (int i = 0; i < all.size(); i++) {

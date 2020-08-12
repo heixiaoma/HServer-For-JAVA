@@ -40,7 +40,7 @@ public class NacosRpcClient {
                 future.addListener((ChannelFutureListener) arg0 -> {
                     if (future.isSuccess()) {
                         log.debug("重新连接服务器成功");
-                        DynamicRoundRobin<ServiceData> serviceDataDynamicRoundRobin = CLASS_STRING_MAP.get(className);
+                        DynamicRoundRobin serviceDataDynamicRoundRobin = CLASS_STRING_MAP.get(className);
                         if (serviceDataDynamicRoundRobin != null) {
                             serviceData.setChannel(future.channel());
                             serviceDataDynamicRoundRobin.add(serviceData);
@@ -81,9 +81,9 @@ public class NacosRpcClient {
                 future.addListener((ChannelFutureListener) arg0 -> {
                     if (future.isSuccess()) {
                         log.debug("连接服务器成功");
-                        DynamicRoundRobin<ServiceData> serviceDataDynamicRoundRobin = CLASS_STRING_MAP.get(className);
+                        DynamicRoundRobin serviceDataDynamicRoundRobin = CLASS_STRING_MAP.get(className);
                         if (serviceDataDynamicRoundRobin == null) {
-                            serviceDataDynamicRoundRobin = new DynamicRoundRobin<>();
+                            serviceDataDynamicRoundRobin = new DynamicRoundRobin();
                         }
                         ServiceData serviceData = new ServiceData();
                         serviceData.setChannel(future.channel());

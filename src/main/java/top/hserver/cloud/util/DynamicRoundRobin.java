@@ -1,5 +1,8 @@
 package top.hserver.cloud.util;
 
+
+import top.hserver.cloud.bean.ServiceData;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -7,23 +10,34 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author hxm
  */
-public class DynamicRoundRobin<T> {
+public class DynamicRoundRobin {
 
-    private final List<T> list = new CopyOnWriteArrayList<>();
+    private final List<ServiceData> list = new CopyOnWriteArrayList<>();
 
     private AtomicInteger pos = new AtomicInteger(0);
 
-    public void add(T t) {
-        if (!list.contains(t)) {
+    public void add(ServiceData t) {
+        for (int i = 0; i < list.size(); i++) {
+            ServiceData serviceData = list.get(i);
+            if (serviceData.getName().equals(t.getName())) {
+                if (serviceData.getChannel().isActive()) {
+                    return;
+                } else {
+                    list.remove(serviceData);
+                    break;
+                }
+            }
+        }
+        if (t.getChannel().isActive()) {
             list.add(t);
         }
     }
 
-    public List<T> getAll(){
+    public List<ServiceData> getAll() {
         return list;
     }
 
-    public boolean remove(T t) {
+    public boolean remove(ServiceData t) {
         return list.remove(t);
     }
 
@@ -31,7 +45,7 @@ public class DynamicRoundRobin<T> {
         return list.size();
     }
 
-    public T choose() {
+    public ServiceData choose() {
         while (true) {
             int size = list.size();
             if (size == 0) {

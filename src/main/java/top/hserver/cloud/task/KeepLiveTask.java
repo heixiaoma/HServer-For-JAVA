@@ -23,7 +23,7 @@ public class KeepLiveTask implements TaskJob {
 
     @Override
     public void exec(Object... args) {
-        Map<String, DynamicRoundRobin<ServiceData>> classStringMap = RpcServerHandler.CLASS_STRING_MAP;
+        Map<String, DynamicRoundRobin> classStringMap = RpcServerHandler.CLASS_STRING_MAP;
         classStringMap.forEach((k, v) -> {
             List<ServiceData> serviceDataList = v.getAll();
             for (int i = 0; i < serviceDataList.size(); i++) {
