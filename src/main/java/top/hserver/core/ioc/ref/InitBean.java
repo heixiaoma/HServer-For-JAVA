@@ -254,14 +254,13 @@ public class InitBean {
                  * 非控制器的方法过滤排除
                  */
                 Annotation[] annotations = method.getAnnotations();
-                boolean b = Arrays.stream(annotations).anyMatch(annotation -> annotation.annotationType().getAnnotation(Request.class) != null);
-                if (!b){
-                    break;
+                if (Arrays.stream(annotations).noneMatch(annotation -> annotation.annotationType().getAnnotation(Request.class) != null)){
+                    continue;
                 }
                 try {
                     ParameterUtil.addParam(aClass, method);
                 }catch (Exception ignored){
-                    break;
+                    continue;
                 }
                 //细化后的注解
                 Class[] classes = new Class[]{GET.class, POST.class, HEAD.class, PUT.class, PATCH.class, DELETE.class, OPTIONS.class, CONNECT.class, TRACE.class};
