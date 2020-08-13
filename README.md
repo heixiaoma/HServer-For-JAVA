@@ -646,7 +646,26 @@
     在application.properties文件中添加,env=dev
     配置文件application-dev.properties也会加载在里面
     或者java -jar -Denv=dev xxx.jar  启动参数指定env
+    
+#### 22.配置注解
+    添加了@Value 和 @ConfigurationProperties 注解
+    @Value("app.name")
+    private String name;
+    
+    @ConfigurationProperties( prefix = "mysql")
+    class MysqlConfig{
+        private String name;
+        private String userName;
+        private String password;
+    }
+    
+    application.properties
+    app.name=张三
+    mysql.url=jdbc.....
+    mysql.userName=root
+    mysql.password=root
 
-#### 22技巧篇
+
+#### 23技巧篇
     1. Linux 内核版本大于 2.5.44，(目前云服务器都有了，没有的话自己升级内核)的Linux默认使用epoll
     2.待更新 
