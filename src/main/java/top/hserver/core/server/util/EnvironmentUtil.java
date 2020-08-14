@@ -10,12 +10,12 @@ import java.net.URL;
  */
 public class EnvironmentUtil {
 
-    public static void init(Class clazz) {
+    public static void init(Class clazz) throws Exception {
       /**
        * 测试模式
        */
       if (clazz!=null){
-          File f = new File(clazz.getProtectionDomain().getCodeSource().getLocation().getPath());
+          File f = new File(clazz.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
           ConstConfig.RUNJAR = false;
         /**
          * 静态路径
@@ -43,7 +43,7 @@ public class EnvironmentUtil {
         if (aClass==null){
             return;
         }
-        File f = new File(aClass.getProtectionDomain().getCodeSource().getLocation().getPath());
+        File f = new File(aClass.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
         if (!f.getPath().endsWith(".jar")) {
             ConstConfig.RUNJAR = false;
         } else {

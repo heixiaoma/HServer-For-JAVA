@@ -158,7 +158,12 @@ public class HServerApplication {
         /**
          * 初始化哈日志配置
          */
-        EnvironmentUtil.init(clazz);
+        try {
+            EnvironmentUtil.init(clazz);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         new HServerLogConfig().init();
         log.info("检查包文件");
         Set<String> scanPackage;
