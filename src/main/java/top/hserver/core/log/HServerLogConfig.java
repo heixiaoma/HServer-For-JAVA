@@ -1,39 +1,53 @@
 package top.hserver.core.log;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import java.net.URI;
+import ch.qos.logback.classic.LoggerContext;
+import org.slf4j.impl.StaticLoggerBinder;
+
+import java.io.InputStream;
 
 /**
  * @author hxm
  */
 public class HServerLogConfig {
 
-  private String[] getStandardConfigLocations() {
-    return new String[]{"logback-test.groovy", "logback-test.xml", "logback.groovy", "logback.xml"};
-  }
+    private LoggerContext factory;
 
-  public void init() {
-    try {
-      if (existConfig()){
-        return;
-      }
-      System.setProperty("log4j.skipJansi","false");
-      LoggerContext loggerContext = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
-      loggerContext.setConfigLocation(URI.create("log4j2-hserver.xml"));
-      loggerContext.reconfigure();
-    } catch (Exception e) {
-      e.printStackTrace();
+    private String[] getStandardConfigLocations() {
+        return new String[]{"logback-test.groovy", "logback-test.xml", "logback.groovy", "logback.xml"};
     }
-  }
 
-  private boolean existConfig(){
-    for (String s : getStandardConfigLocations()) {
-      if (HServerLogConfig.class.getResourceAsStream("/"+s)!=null){
-      return true;
-      }
+    public void init() {
+        try {
+            if (existConfig()){
+                return;
+            }
+            factory = (LoggerContext) StaticLoggerBinder.getSingleton().getLoggerFactory();
+            loadConfiguration(HServerLogConfig.class.getResourceAsStream("/logback-hserver.xml"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    return false;
-  }
 
+    private boolean existConfig(){
+        for (String s : getStandardConfigLocations()) {
+            if (HServerLogConfig.class.getResourceAsStream("/"+s)!=null){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void stopAndReset(LoggerContext loggerContext) {
+        loggerContext.stop();
+        loggerContext.reset();
+    }
+
+    private void loadConfiguration(InputStream in) throws Exception {
+        LoggerContext loggerContext = this.factory;
+        stopAndReset(loggerContext);
+        ch.qos.logback.classic.joran.JoranConfigurator configurator = new ch.qos.logback.classic.joran.JoranConfigurator();
+        configurator.setContext(loggerContext);
+        configurator.doConfigure(in);
+    }
 
 }
