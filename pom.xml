@@ -45,8 +45,8 @@
         <skipTests>true</skipTests>
 
         <netty.version>4.1.51.Final</netty.version>
-        <slf4j.version>1.7.30</slf4j.version>
-        <log4j.version>2.13.3</log4j.version>
+        <slf4j.version>1.7.28</slf4j.version>
+        <logback.version>1.2.3</logback.version>
         <jackson.version>2.11.1</jackson.version>
         <projectlombok.version>1.18.10</projectlombok.version>
         <javassist.version>3.27.0-GA</javassist.version>
@@ -74,15 +74,21 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>${log4j.version}</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-access</artifactId>
+            <version>${logback.version}</version>
         </dependency>
 
         <!--   快速操作类     -->
