@@ -117,7 +117,8 @@ public class InitBean {
                             log.warn("{},方法返回空值，不进入容器", method.getName());
                         }
                     } catch (Exception e) {
-                        log.warn("{},方法不能有入参", method.getName());
+                        log.warn("{},提示：方法不能有入参", method.getName());
+                        log.warn(e.getMessage());
                     }
                 }
             }
