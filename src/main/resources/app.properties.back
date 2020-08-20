@@ -1,0 +1,44 @@
+#动态配置文件
+env=dev
+
+#taskPool定时任务线程池子配置，默认大小是cpu核心数+1
+taskPool=5
+
+#queuePool定时任务线程池子配置，默认大小是cpu核心数+1
+queuePool=5
+
+#bossPool Netty boss线程组大小 默认2，可以按cpu 核心数来
+bossPool=2
+
+#workerPool Netty boss线程组大小 默认4
+workerPool=4
+
+#可以开启Epoll时是否开启epoll 默认true
+epoll=true
+
+#-----------------ssl-------------
+#注意下载的证书中 key文件需要转换成 pk8 文件
+#因为netty4不支持pkcs12格式的私钥, 所以需要将私钥转换成pkcs8格式.
+#openssl pkcs8 -in my.key -topk8 -out my.pk8
+certPath=hserver.pem
+privateKeyPath=hserver.pk8
+privateKeyPwd=123
+
+
+#-----------------RPC-------------
+#是否开启RPC模式
+#app.rpc.open=false
+#模式,不填写采用默认模式
+app.rpc.mode=nacos
+#是否是消费者
+app.rpc.type=true
+#app.rpc.name=serverName
+
+
+#默认模式
+#消费者连接提供者的地址
+#app.rpc.address=127.0.0.1:8082,127.0.0.1:8083
+
+#nacos
+#app.rpc.ip=127.0.0.1
+#app.rpc.nacos.address=127.0.0.1:8848

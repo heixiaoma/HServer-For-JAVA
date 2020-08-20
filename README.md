@@ -10,7 +10,7 @@
         <img src="https://img.shields.io/badge/Build-Java8-red.svg?style=flat" />
     </a>
      <a >
-          <img src="https://img.shields.io/badge/HServer-2.9.41-yeoll.svg?style=flat" />
+          <img src="https://img.shields.io/badge/HServer-2.9.42-yeoll.svg?style=flat" />
       </a>
     <a >
         <img src="https://img.shields.io/badge/Netty-4.1.51.Final-blue.svg" alt="flat">
@@ -39,7 +39,7 @@
     <dependency>
         <groupId>top.hserver</groupId>
         <artifactId>HServer</artifactId>
-        <version>2.9.41</version>
+        <version>2.9.42</version>
     </dependency>
 
 ### 资源菜单
@@ -580,7 +580,7 @@
 
 #### 18.SSL配置
       
-      在application.properties配置文件添加
+      在app.properties配置文件添加
       
       #举栗子：nginx版本的证书下载可能会得到 (xxx.pem或者xxx.cert) xxx.key
       #注意下载的证书中 key文件需要转换成 pk8 文件
@@ -642,9 +642,9 @@
 #### 20.自定义Banner
     resources文件夹里存放一个banner.txt 里面放入你图标就可以了.
     
-#### 21.自定义application.properties
-    在application.properties文件中添加,env=dev
-    配置文件application-dev.properties也会加载在里面
+#### 21.自定义app.properties
+    在app.properties文件中添加,env=dev
+    配置文件app-dev.properties也会加载在里面
     或者java -jar -Denv=dev xxx.jar  启动参数指定env
     
 #### 22.配置注解
@@ -659,7 +659,7 @@
         private String password;
     }
     
-    application.properties
+    app.properties
     app.name=张三
     mysql.url=jdbc.....
     mysql.userName=root

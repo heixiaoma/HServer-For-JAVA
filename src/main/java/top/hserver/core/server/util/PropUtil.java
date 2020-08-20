@@ -14,15 +14,9 @@ public class PropUtil {
 
     private static PropUtil propUtil;
 
-    private String name = "/application.properties";
+    private static HeadMap data = new HeadMap();
 
-    private HeadMap data;
-
-    public PropUtil() {
-    }
-
-    public PropUtil(String fileName) {
-        this.name = "/" + fileName;
+    private PropUtil() {
     }
 
     public static PropUtil getInstance() {
@@ -30,42 +24,53 @@ public class PropUtil {
             return propUtil;
         } else {
             propUtil = new PropUtil();
+            initProp();
             return propUtil;
         }
     }
 
-    private String getProFiles(String name) {
-        return name == null ? null : "/application-" + name + ".properties";
+    private static String getProFiles(String name) {
+        return name == null ? null : "/app-" + name + ".properties";
     }
 
-    private void initProp() {
-        if (data == null) {
-            data=new HeadMap();
-            Properties p = new Properties();
-            try (InputStream is = PropUtil.class.getResourceAsStream(name)) {
-                p.load(is);
-                //优先级查代码的，再查配置的
-                if (profiles == null) {
-                    profiles = p.getProperty("env");
-                }
-                if (profiles != null) {
-                    try (InputStream is2 = PropUtil.class.getResourceAsStream(getProFiles(profiles))) {
-                        Properties properties = new Properties();
-                        properties.load(is2);
-                        properties.forEach(p::put);
-                    } catch (Exception ignored) {
-
-                    }
-                }
-            } catch (Exception ignored) {
-            }
-            p.forEach((k,v)->data.put(k.toString(),v.toString()));
+    private static void initProp() {
+        Properties p = new Properties();
+        try {
+            String name = "/app.properties";
+            InputStream is = PropUtil.class.getResourceAsStream(name);
+            p.load(is);
+            p.forEach((k, v) -> {
+                data.put(k.toString(), v.toString());
+                System.out.println(k);
+            });
+            is.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    }
+        //优先级查代码的，再查配置的
+        if (profiles == null) {
+            profiles = data.get("env");
+        }
+        if (profiles != null) {
+            try {
+                InputStream is2 = PropUtil.class.getResourceAsStream(getProFiles(profiles));
+                p.clear();
+                p.load(is2);
+                p.forEach((k, v) -> {
+                    data.put(k.toString(), v.toString());
+                    System.out.println(k);
+                });
+                is2.close();
+                p.clear();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
+        System.out.println(data);
+    }
 
     public String get(String key) {
-        initProp();
         String property = data.get(key);
         return property == null ? "" : property;
     }
@@ -75,7 +80,7 @@ public class PropUtil {
         if (isBlank(value)) {
             value = defaultValue;
         }
-        return value==null?value:value.trim();
+        return value == null ? value : value.trim();
     }
 
 
