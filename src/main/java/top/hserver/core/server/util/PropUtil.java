@@ -38,6 +38,9 @@ public class PropUtil {
         try {
             String name = "/app.properties";
             InputStream is = PropUtil.class.getResourceAsStream(name);
+            if (is == null) {
+                return;
+            }
             p.load(is);
             p.forEach((k, v) -> {
                 data.put(k.toString(), v.toString());
@@ -55,6 +58,9 @@ public class PropUtil {
             try {
                 InputStream is2 = PropUtil.class.getResourceAsStream(getProFiles(profiles));
                 p.clear();
+                if (is2 == null) {
+                    return;
+                }
                 p.load(is2);
                 p.forEach((k, v) -> {
                     data.put(k.toString(), v.toString());
@@ -66,8 +72,6 @@ public class PropUtil {
                 e.printStackTrace();
             }
         }
-
-        System.out.println(data);
     }
 
     public String get(String key) {
