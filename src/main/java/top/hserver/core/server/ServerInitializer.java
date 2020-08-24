@@ -83,8 +83,8 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
 
         private void dispatchRpc(ChannelHandlerContext ctx) {
             ChannelPipeline pipeline = ctx.pipeline();
-            pipeline.addLast(ConstConfig.BUSINESS_EVENT,new RpcDecoder(Msg.class));
-            pipeline.addLast(ConstConfig.BUSINESS_EVENT,new RpcEncoder(Msg.class));
+            pipeline.addLast(new RpcDecoder(Msg.class));
+            pipeline.addLast(new RpcEncoder(Msg.class));
             pipeline.addLast("RpcServerProviderHandler", new ServerHandler());
             pipeline.remove(this);
             ctx.fireChannelActive();

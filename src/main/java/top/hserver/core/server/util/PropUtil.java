@@ -44,7 +44,6 @@ public class PropUtil {
             p.load(is);
             p.forEach((k, v) -> {
                 data.put(k.toString(), v.toString());
-                System.out.println(k);
             });
             is.close();
         } catch (Exception e) {
@@ -64,7 +63,6 @@ public class PropUtil {
                 p.load(is2);
                 p.forEach((k, v) -> {
                     data.put(k.toString(), v.toString());
-                    System.out.println(k);
                 });
                 is2.close();
                 p.clear();

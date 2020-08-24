@@ -13,8 +13,8 @@ public class RpcClientInitializer extends ChannelInitializer<Channel> {
     @Override
     protected void initChannel(Channel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-        pipeline.addLast(ConstConfig.BUSINESS_EVENT,new RpcDecoder(Msg.class));
-        pipeline.addLast(ConstConfig.BUSINESS_EVENT,new RpcEncoder(Msg.class));
+        pipeline.addLast(new RpcDecoder(Msg.class));
+        pipeline.addLast(new RpcEncoder(Msg.class));
         pipeline.addLast("RpcClientHandler", new ClientHandler());
     }
 
