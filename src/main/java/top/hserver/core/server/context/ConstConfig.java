@@ -4,8 +4,13 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.ssl.SslContext;
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
+import io.netty.util.concurrent.EventExecutorGroup;
+import top.hserver.core.server.util.NamedThreadFactory;
 
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author hxm
@@ -77,10 +82,15 @@ public class ConstConfig {
     /**
      * 另外JSON一个名字，兼容以前的
      */
-    public static final ObjectMapper JSON=OBJECT_MAPPER;
+    public static final ObjectMapper JSON = OBJECT_MAPPER;
 
     /**
      * 配置文件
      */
     public static String profiles = System.getProperty("env");
+
+    /**
+     * 业务线程池子
+     */
+    public static EventExecutorGroup BUSINESS_EVENT;
 }

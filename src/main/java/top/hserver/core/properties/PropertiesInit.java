@@ -1,6 +1,8 @@
 package top.hserver.core.properties;
 
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import top.hserver.core.server.context.ConstConfig;
+import top.hserver.core.server.util.NamedThreadFactory;
 import top.hserver.core.server.util.PropUtil;
 
 
@@ -29,6 +31,11 @@ public class PropertiesInit {
         }
         Boolean epoll = Boolean.valueOf(instance.get("epoll"));
         ConstConfig.EPOLL = epoll;
+
+        Integer businessPool = instance.getInt("businessPool");
+        if (businessPool!=null){
+            ConstConfig.BUSINESS_EVENT = new DefaultEventExecutorGroup(businessPool,new NamedThreadFactory("hserver_business"));
+        }
     }
 
 }

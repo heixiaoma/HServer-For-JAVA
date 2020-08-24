@@ -73,18 +73,18 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
             pipeline.addLast(new HttpObjectAggregator(Integer.MAX_VALUE));
             //有websocket才走他
             if (WebSocketServerHandler.WebSocketRouter.size() > 0) {
-                pipeline.addLast(new WebSocketServerHandler());
+                pipeline.addLast(ConstConfig.BUSINESS_EVENT,new WebSocketServerHandler());
             }
             pipeline.addLast(new HServerContentHandler());
-            pipeline.addLast(new ActionHandler());
+            pipeline.addLast(ConstConfig.BUSINESS_EVENT,new ActionHandler());
             pipeline.remove(this);
             ctx.fireChannelActive();
         }
 
         private void dispatchRpc(ChannelHandlerContext ctx) {
             ChannelPipeline pipeline = ctx.pipeline();
-            pipeline.addLast(new RpcDecoder(Msg.class));
-            pipeline.addLast(new RpcEncoder(Msg.class));
+            pipeline.addLast(ConstConfig.BUSINESS_EVENT,new RpcDecoder(Msg.class));
+            pipeline.addLast(ConstConfig.BUSINESS_EVENT,new RpcEncoder(Msg.class));
             pipeline.addLast("RpcServerProviderHandler", new ServerHandler());
             pipeline.remove(this);
             ctx.fireChannelActive();
