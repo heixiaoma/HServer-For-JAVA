@@ -33,7 +33,7 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
     }
 
 
-    class ProtocolDispatcher extends ByteToMessageDecoder {
+    static class ProtocolDispatcher extends ByteToMessageDecoder {
 
         @Override
         public void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
