@@ -68,7 +68,12 @@ public class MemoryInitClass {
                     }
                 }
                 if (cc != null) {
-                    cc.toClass();
+                    try{
+                        cc.toClass();
+                    }catch (Exception e){
+                        log.warn(e.getMessage());
+                    }
+
                 }
             }
         } catch (Exception e) {

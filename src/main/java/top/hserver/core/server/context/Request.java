@@ -13,6 +13,7 @@ import lombok.Setter;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -40,7 +41,7 @@ public class Request implements HttpRequest {
     private static final ByteBuf EMPTY_BUF = Unpooled.copiedBuffer("", CharsetUtil.UTF_8);
     private byte[] body = null;
     private Map<String, PartFile> multipartFile = new HashMap<>(8);
-    private static final String tempPath = System.getProperty("java.io.tmpdir") + File.separator;
+    private static final String TEMP_PATH = System.getProperty("java.io.tmpdir") + File.separator;
 
     @Override
     public String query(String name) {
@@ -85,7 +86,7 @@ public class Request implements HttpRequest {
     @Override
     public String getRawData() {
         try {
-            return new String(this.body, "UTF-8");
+            return new String(this.body, StandardCharsets.UTF_8);
         } catch (Exception e) {
             return null;
         }
@@ -114,7 +115,7 @@ public class Request implements HttpRequest {
             } else if (dataType == InterfaceHttpData.HttpDataType.FileUpload) {
                 parseFileUpload((FileUpload) data);
             }
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
     }
 
@@ -139,7 +140,7 @@ public class Request implements HttpRequest {
           PartFile partFile = new PartFile();
           partFile.setFormName(fileUpload.getName());
           partFile.setFileName(fileUpload.getFilename());
-          File file = new File(tempPath + "h_server_" + UUID.randomUUID() + "_upload");
+          File file = new File(TEMP_PATH + "h_server_" + UUID.randomUUID() + "_upload");
           fileUpload.renameTo(file);
           partFile.setFile(file);
           partFile.setFilePath(file.getPath());

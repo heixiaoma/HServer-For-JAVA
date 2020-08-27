@@ -88,7 +88,16 @@ public class ParameterUtil {
                             break;
                         default:
                             //不是基础类型可能就是我来转换的类型，哈哈，有毒哦
-                            objects[i] = ConstConfig.OBJECT_MAPPER.convertValue(requestParams, parameterType.getType());
+                            if (requestParams.size()>0) {
+                                //正常的表单
+                                objects[i] = ConstConfig.OBJECT_MAPPER.convertValue(requestParams, parameterType.getType());
+                            }else {
+                                //raw
+                                String rawData = hServerContext.getRequest().getRawData();
+                                if (rawData!=null) {
+                                    objects[i] = ConstConfig.OBJECT_MAPPER.readValue(rawData, parameterType.getType());
+                                }
+                            }
                             break;
                     }
                 } catch (Exception e) {

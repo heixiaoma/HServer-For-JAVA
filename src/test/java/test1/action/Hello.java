@@ -137,6 +137,11 @@ public class Hello {
         return JsonResult.ok();
     }
 
+    @POST("/raw")
+    public Map raw(User user) {
+        return JsonResult.ok().put("data",user);
+    }
+
     /**
      * 响应头测试
      *
