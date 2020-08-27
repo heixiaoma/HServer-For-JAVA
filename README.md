@@ -47,7 +47,7 @@
 | 资源名 | 地址 |
 | :----:| :----: | 
 | 文档 | [点我](https://gitee.com/HServer/HServer/wikis/pages)  | 
-| 压测文档 | [PM.md](doc/PM.md) |
+| 压测文档 | [点我](doc/PM.md) |
 | Redis操作源码 | [点我](https://gitee.com/HServer/hserver-for-java-redis) |
 | MYSQL-BeetlSQL(推荐)源码 | [点我](https://gitee.com/HServer/hserver-for-java-beetlsql) |
 | MYSQL-NEO 源码 |  [点我](https://gitee.com/HServer/hserver-for-java-mysql) |
