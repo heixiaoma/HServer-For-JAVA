@@ -10,25 +10,22 @@ import java.io.InputStream;
  */
 public class HServerLogConfig {
 
-    private LoggerContext factory;
-
-    private String[] getStandardConfigLocations() {
+    private static String[] getStandardConfigLocations() {
         return new String[]{"logback-test.groovy", "logback-test.xml", "logback.groovy", "logback.xml"};
     }
 
-    public void init() {
+    public static void init() {
         try {
             if (existConfig()){
                 return;
             }
-            factory = (LoggerContext) StaticLoggerBinder.getSingleton().getLoggerFactory();
             loadConfiguration(HServerLogConfig.class.getResourceAsStream("/logback-hserver.xml"));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private boolean existConfig(){
+    private static boolean existConfig(){
         for (String s : getStandardConfigLocations()) {
             if (HServerLogConfig.class.getResourceAsStream("/"+s)!=null){
                 return true;
@@ -37,13 +34,13 @@ public class HServerLogConfig {
         return false;
     }
 
-    private void stopAndReset(LoggerContext loggerContext) {
+    private static void stopAndReset(LoggerContext loggerContext) {
         loggerContext.stop();
         loggerContext.reset();
     }
 
-    private void loadConfiguration(InputStream in) throws Exception {
-        LoggerContext loggerContext = this.factory;
+    private static void loadConfiguration(InputStream in) throws Exception {
+        LoggerContext loggerContext = (LoggerContext)StaticLoggerBinder.getSingleton().getLoggerFactory();
         stopAndReset(loggerContext);
         ch.qos.logback.classic.joran.JoranConfigurator configurator = new ch.qos.logback.classic.joran.JoranConfigurator();
         configurator.setContext(loggerContext);

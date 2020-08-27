@@ -28,6 +28,10 @@ privateKeyPath=hserver.pk8
 privateKeyPwd=123
 
 
+#配置中心
+app.nacos.config.address=127.0.0.1:8848
+
+
 #-----------------RPC-------------
 #是否开启RPC模式
 #app.rpc.open=false

@@ -30,6 +30,15 @@ public class RouterManager {
     private final static Map<HttpMethod, Map<String, RouterPermission>> routerPermission = new ConcurrentHashMap<>();
 
     /**
+     * 清除
+     */
+    public static synchronized void clearRouterManager(){
+        router.clear();
+        routerPermission.clear();
+    }
+
+
+    /**
      * 记录url是否是需要url正则匹配的
      */
     private final static Map<HttpMethod, Map<String, PatternUri>> ISPAURI = new ConcurrentHashMap<>();

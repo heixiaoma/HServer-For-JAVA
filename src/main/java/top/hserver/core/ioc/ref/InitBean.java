@@ -7,6 +7,7 @@ import top.hserver.core.event.EventDispatcher;
 import top.hserver.core.interfaces.*;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.ioc.annotation.*;
+import top.hserver.core.ioc.annotation.nacos.NacosValue;
 import top.hserver.core.proxy.JavassistProxyFactory;
 import top.hserver.core.server.filter.FilterChain;
 import top.hserver.core.server.handlers.WebSocketServerHandler;
@@ -32,6 +33,11 @@ public class InitBean {
 
     /**
      * 加载所有bean进容器
+     * <p>
+     * <p>
+     * 容器分为 Filter容器 和 普通容器
+     * <p>
+     * 注入时要两个都要注入
      *
      * @param packageName
      */
@@ -69,13 +75,13 @@ public class InitBean {
             for (Field field : clasp.getDeclaredFields()) {
                 try {
                     PropUtil instance = PropUtil.getInstance();
-                    String s = instance.get(value == null ? field.getName() : value + "." + field.getName(),null);
+                    String s = instance.get(value == null ? field.getName() : value + "." + field.getName(), null);
                     Object convert = ParameterUtil.convert(field, s);
-                    if (convert!=null){
+                    if (convert != null) {
                         field.setAccessible(true);
                         field.set(o, convert);
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     log.error(e.getMessage());
                 }
 
@@ -94,11 +100,10 @@ public class InitBean {
             for (Field field : aClass.getDeclaredFields()) {
                 //配置类只能注入字段和配置属性
                 valuezr(field, o);
-                if(field.getType().getAnnotation(ConfigurationProperties.class)!=null){
-                    field.setAccessible(true);
-                    field.set(o,IocUtil.getBean(field.getType()));
-                }
-
+                //注入配置类
+                zr(field,o);
+                //注入Nacos配置中心的数据
+                nacoszr(field,o);
             }
             for (Method method : methods) {
                 Bean bean = method.getAnnotation(Bean.class);
@@ -255,12 +260,12 @@ public class InitBean {
                  * 非控制器的方法过滤排除
                  */
                 Annotation[] annotations = method.getAnnotations();
-                if (Arrays.stream(annotations).noneMatch(annotation -> annotation.annotationType().getAnnotation(Request.class) != null)){
+                if (Arrays.stream(annotations).noneMatch(annotation -> annotation.annotationType().getAnnotation(Request.class) != null)) {
                     continue;
                 }
                 try {
                     ParameterUtil.addParam(aClass, method);
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
                     continue;
                 }
                 //细化后的注解
@@ -358,7 +363,7 @@ public class InitBean {
                 continue;
             }
             log.info("{}优先级：{}", clazz.getCanonicalName(), handlerAnn.value());
-            FilterAdapter obj = null;
+            FilterAdapter obj;
             try {
                 obj = (FilterAdapter) clazz.newInstance();
             } catch (Exception e) {
@@ -427,9 +432,15 @@ public class InitBean {
             //获取当前类的所有字段
             Field[] declaredFields = par.getDeclaredFields();
             for (Field field : declaredFields) {
+                //Value 注入
                 valuezr(field, v);
+                //Autowired注入
                 zr(field, v);
+                //rpc注入
                 rpczr(field, v);
+                //nacos注入
+                nacoszr(field, v);
+
             }
             par = par.getSuperclass();
         }
@@ -478,13 +489,38 @@ public class InitBean {
 
 
     /**
+     * Nacos注入
+     *
+     * @param declaredField
+     * @param v
+     */
+    private static void nacoszr(Field declaredField, Object v) {
+        NacosValue annotation = declaredField.getAnnotation(NacosValue.class);
+        if (annotation != null) {
+            try {
+                declaredField.setAccessible(true);
+                Object bean = IocUtil.getBean(annotation.dataId() + annotation.group());
+                if (bean == null) {
+                    log.info("{}：空值", v.getClass().getSimpleName());
+                    return;
+                }
+                declaredField.set(v, bean);
+                log.info("{}----->{}：装配完成，NacosValue装配", bean.getClass().getSimpleName(), v.getClass().getSimpleName());
+            } catch (Exception e) {
+                log.error("{}----->{}：NacosValue装配失败", v.getClass().getSimpleName(), v.getClass().getSimpleName());
+            }
+        }
+    }
+
+
+    /**
      * Rpc 服务的代理对象生成
      */
     private static void rpczr(Field declaredField, Object v) {
         Resource annotation = declaredField.getAnnotation(Resource.class);
         if (annotation != null) {
             //对这个字段保存一份,用户nacos 拉去数据
-            CloudManager.add(annotation.value().trim().length()==0?declaredField.getType().getName():annotation.value());
+            CloudManager.add(annotation.value().trim().length() == 0 ? declaredField.getType().getName() : annotation.value());
             try {
                 declaredField.setAccessible(true);
                 Object proxy = CloudProxy.getProxy(declaredField.getType(), annotation);

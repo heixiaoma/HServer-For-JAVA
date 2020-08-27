@@ -15,6 +15,14 @@ public class FilterChain {
      */
     public final static List<Map<String, FilterAdapter>> FILTERS_IOC = new LinkedList();
 
+
+    /**
+     * 清除所有
+     */
+    public static synchronized void clearFilterChain() {
+        FILTERS_IOC.clear();
+    }
+
     public static FilterChain getFileChain() {
         FilterChain filterChain = new FilterChain();
         List<FilterAdapter> filter = new LinkedList<>();
@@ -30,7 +38,6 @@ public class FilterChain {
     }
 
 
-
     private List<FilterAdapter> filters;
 
     private int pos = 0;
@@ -43,7 +50,7 @@ public class FilterChain {
         this.filters = filters;
     }
 
-    public void doFilter(Webkit webkit) throws Exception{
+    public void doFilter(Webkit webkit) throws Exception {
         if (pos < filters.size()) {
             filters.get(pos++).doFilter(this, webkit);
         }

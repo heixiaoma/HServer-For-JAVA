@@ -68,18 +68,14 @@ public class HServerIoc implements Ioc {
     public void remove(Class<?> type) {
         if (type != null) {
             String name = type.getName();
-            if (POOL.containsKey(name)) {
-                POOL.remove(name);
-            }
+            POOL.remove(name);
         }
     }
 
     @Override
     public void remove(String beanName) {
         if (beanName != null) {
-            if (POOL.containsKey(beanName)) {
-                POOL.remove(beanName);
-            }
+            POOL.remove(beanName);
         }
     }
 

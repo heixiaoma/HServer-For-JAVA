@@ -42,9 +42,7 @@ public class PropUtil {
                 return;
             }
             p.load(is);
-            p.forEach((k, v) -> {
-                data.put(k.toString(), v.toString());
-            });
+            p.forEach((k, v) -> data.put(k.toString(), v.toString()));
             is.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,9 +59,7 @@ public class PropUtil {
                     return;
                 }
                 p.load(is2);
-                p.forEach((k, v) -> {
-                    data.put(k.toString(), v.toString());
-                });
+                p.forEach((k, v) -> data.put(k.toString(), v.toString()));
                 is2.close();
                 p.clear();
             } catch (Exception e) {

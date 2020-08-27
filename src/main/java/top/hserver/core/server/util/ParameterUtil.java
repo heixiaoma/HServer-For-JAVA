@@ -156,7 +156,6 @@ public class ParameterUtil {
             return null;
         }
         Object object = null;
-
         try {
             switch (field.getType().getName()) {
                 case "int":
