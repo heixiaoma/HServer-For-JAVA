@@ -40,6 +40,7 @@ app.rpc.mode=nacos
 #是否是消费者
 app.rpc.type=true
 #app.rpc.name=serverName
+#app.rpc.group=DEFAULT_GROUP
 
 
 #默认模式
@@ -49,3 +50,4 @@ app.rpc.type=true
 #nacos
 #app.rpc.ip=127.0.0.1
 #app.rpc.nacos.address=127.0.0.1:8848
+#app.rpc.group=DEFAULT_GROUP

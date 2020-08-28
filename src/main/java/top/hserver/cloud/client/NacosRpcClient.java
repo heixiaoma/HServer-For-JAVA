@@ -28,7 +28,7 @@ import static top.hserver.cloud.client.handler.RpcServerHandler.CLASS_STRING_MAP
 public class NacosRpcClient {
 
 
-    public static void reconnect(ServiceData serviceData,String className){
+    public static synchronized void  reconnect(ServiceData serviceData,String className){
         Instance instance = serviceData.getInstance();
             try {
                 final EventLoopGroup group = new NioEventLoopGroup();
@@ -61,7 +61,7 @@ public class NacosRpcClient {
     }
 
 
-    public static void connect(NamingEvent namingEvent) {
+    public static synchronized void connect(NamingEvent namingEvent) {
         String serviceName = namingEvent.getServiceName();
         //订阅的消息
         String[] split = serviceName.split("@@");
@@ -77,7 +77,6 @@ public class NacosRpcClient {
                 b.handler(new RpcClientInitializer());
                 //发起异步连接请求，绑定连接端口和host信息
                 final ChannelFuture future = b.connect(instance.getIp(), instance.getPort()).sync();
-
                 future.addListener((ChannelFutureListener) arg0 -> {
                     if (future.isSuccess()) {
                         log.debug("连接服务器成功");

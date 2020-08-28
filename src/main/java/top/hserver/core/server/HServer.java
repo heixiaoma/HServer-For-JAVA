@@ -3,6 +3,7 @@ package top.hserver.core.server;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.handler.ssl.SslContextBuilder;
+import top.hserver.cloud.CloudManager;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.ConstConfig;
@@ -31,117 +32,120 @@ import static top.hserver.core.server.context.ConstConfig.*;
 @Slf4j
 public class HServer {
 
-  private final int port;
+    private final int port;
 
-  private final String[] args;
+    private final String[] args;
 
-  public HServer(int port, String[] args) {
-    this.port = port;
-    this.args = args;
-  }
-
-  public void run() throws Exception {
-    EventLoopGroup bossGroup = null;
-    EventLoopGroup workerGroup = null;
-
-    String typeName;
-    try {
-      ServerBootstrap bootstrap = new ServerBootstrap();
-      if (EpollUtil.check()&&EPOLL) {
-        bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
-        bossGroup = new EpollEventLoopGroup(bossPool, new NamedThreadFactory("hserver_epoll_boss"));
-        workerGroup = new EpollEventLoopGroup(workerPool, new NamedThreadFactory("hserver_epoll_worker"));
-        bootstrap.group(bossGroup, workerGroup).channel(EpollServerSocketChannel.class);
-        typeName = "Epoll";
-      } else {
-        bossGroup = new NioEventLoopGroup(bossPool, new NamedThreadFactory("hserver_boss"));
-        workerGroup = new NioEventLoopGroup(workerPool, new NamedThreadFactory("hserver_worker"));
-        bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
-        typeName = "Nio";
-      }
-      //看看有没有SSL
-      initSSl();
-      bootstrap.childHandler(new ServerInitializer());
-      Channel ch = bootstrap.bind(port).sync().channel();
-      log.info("HServer 启动完成");
-      System.out.println();
-      System.out.println(getHello(typeName, port));
-      System.out.println();
-      initOK();
-      ch.closeFuture().sync();
-
-    } finally {
-      bossGroup.shutdownGracefully();
-      workerGroup.shutdownGracefully();
-    }
-  }
-
-  private void initOK() {
-    //初始化完成可以放开任务了
-    TaskManager.IS_OK = true;
-    InitRunner bean = IocUtil.getBean(InitRunner.class);
-    if (bean != null) {
-      bean.init(args);
-    }
-    startTaskThread();
-  }
-
-
-  private String getHello(String typeName, int port) {
-    InputStream banner = HServer.class.getResourceAsStream("/banner.txt");
-    try {
-
-      if (banner != null) {
-        InputStreamReader inputStreamReader = new InputStreamReader(banner);
-        String result = new BufferedReader(inputStreamReader)
-          .lines().collect(Collectors.joining(System.lineSeparator()));
-        inputStreamReader.close();
-        banner.close();
-        return result;
-      }
-    } catch (IOException e) {
-      log.error("banner.txt 流关闭错误{}", e.getMessage());
+    public HServer(int port, String[] args) {
+        this.port = port;
+        this.args = args;
     }
 
-    //GRAFFtit 字体
-    return "  ___ ___  _________ \t运行方式：" + typeName + "\t端口：" + port + "\n" +
-      " /   |   \\/   _____/ ______________  __ ___________ \n" +
-      "/    ~    \\_____  \\_/ __ \\_  __ \\  \\/ // __ \\_  __ \\\n" +
-      "\\    Y    /        \\  ___/|  | \\/\\   /\\  ___/|  | \\/\n" +
-      " \\___|_  /_______  /\\___  >__|    \\_/  \\___  >__|   \n" +
-      "       \\/        \\/     \\/                 \\/       ";
-  }
+    public void run() throws Exception {
+        EventLoopGroup bossGroup = null;
+        EventLoopGroup workerGroup = null;
 
-  private void initSSl() {
+        String typeName;
+        try {
+            ServerBootstrap bootstrap = new ServerBootstrap();
+            if (EpollUtil.check() && EPOLL) {
+                bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
+                bossGroup = new EpollEventLoopGroup(bossPool, new NamedThreadFactory("hserver_epoll_boss"));
+                workerGroup = new EpollEventLoopGroup(workerPool, new NamedThreadFactory("hserver_epoll_worker"));
+                bootstrap.group(bossGroup, workerGroup).channel(EpollServerSocketChannel.class);
+                typeName = "Epoll";
+            } else {
+                bossGroup = new NioEventLoopGroup(bossPool, new NamedThreadFactory("hserver_boss"));
+                workerGroup = new NioEventLoopGroup(workerPool, new NamedThreadFactory("hserver_worker"));
+                bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
+                typeName = "Nio";
+            }
+            //看看有没有SSL
+            initSSl();
+            bootstrap.childHandler(new ServerInitializer());
+            Channel ch = bootstrap.bind(port).sync().channel();
+            log.info("HServer 启动完成");
+            System.out.println();
+            System.out.println(getHello(typeName, port));
+            System.out.println();
+            initOK();
+            ch.closeFuture().sync();
 
-    PropUtil instance = PropUtil.getInstance();
-    String certFilePath = instance.get("certPath");
-    String privateKeyPath = instance.get("privateKeyPath");
-    String privateKeyPwd = instance.get("privateKeyPwd");
-    if (privateKeyPath == null || certFilePath == null || privateKeyPath.trim().length() == 0 || certFilePath.trim().length() == 0) {
-      return;
+        } finally {
+            assert bossGroup != null;
+            bossGroup.shutdownGracefully();
+            assert workerGroup != null;
+            workerGroup.shutdownGracefully();
+        }
     }
-    try {
-      //检查下是不是外部路径。
-      File cfile = new File(certFilePath);
-      File pfile = new File(privateKeyPath);
-      if (cfile.isFile() && pfile.isFile()) {
-        ConstConfig.sslContext = SslContextBuilder.forServer(cfile, pfile, privateKeyPwd).build();
-        return;
-      }
 
-      //看看是不是resources里面的
-      InputStream cinput = HServer.class.getResourceAsStream("/ssl/" + certFilePath);
-      InputStream pinput = HServer.class.getResourceAsStream("/ssl/" + privateKeyPath);
-
-      if (cinput != null && pinput != null) {
-        ConstConfig.sslContext = SslContextBuilder.forServer(cinput, pinput, privateKeyPwd).build();
-        return;
-      }
-    } catch (SSLException s) {
-      log.error(s.getMessage());
-      s.printStackTrace();
+    private void initOK() {
+        //云启动
+        CloudManager.run(port);
+        //初始化完成可以放开任务了
+        TaskManager.IS_OK = true;
+        InitRunner bean = IocUtil.getBean(InitRunner.class);
+        if (bean != null) {
+            bean.init(args);
+        }
+        startTaskThread();
     }
-  }
+
+
+    private String getHello(String typeName, int port) {
+        InputStream banner = HServer.class.getResourceAsStream("/banner.txt");
+        try {
+
+            if (banner != null) {
+                InputStreamReader inputStreamReader = new InputStreamReader(banner);
+                String result = new BufferedReader(inputStreamReader)
+                        .lines().collect(Collectors.joining(System.lineSeparator()));
+                inputStreamReader.close();
+                banner.close();
+                return result;
+            }
+        } catch (IOException e) {
+            log.error("banner.txt 流关闭错误{}", e.getMessage());
+        }
+
+        //GRAFFtit 字体
+        return "  ___ ___  _________ \t运行方式：" + typeName + "\t端口：" + port + "\n" +
+                " /   |   \\/   _____/ ______________  __ ___________ \n" +
+                "/    ~    \\_____  \\_/ __ \\_  __ \\  \\/ // __ \\_  __ \\\n" +
+                "\\    Y    /        \\  ___/|  | \\/\\   /\\  ___/|  | \\/\n" +
+                " \\___|_  /_______  /\\___  >__|    \\_/  \\___  >__|   \n" +
+                "       \\/        \\/     \\/                 \\/       ";
+    }
+
+    private void initSSl() {
+
+        PropUtil instance = PropUtil.getInstance();
+        String certFilePath = instance.get("certPath");
+        String privateKeyPath = instance.get("privateKeyPath");
+        String privateKeyPwd = instance.get("privateKeyPwd");
+        if (privateKeyPath == null || certFilePath == null || privateKeyPath.trim().length() == 0 || certFilePath.trim().length() == 0) {
+            return;
+        }
+        try {
+            //检查下是不是外部路径。
+            File cfile = new File(certFilePath);
+            File pfile = new File(privateKeyPath);
+            if (cfile.isFile() && pfile.isFile()) {
+                ConstConfig.sslContext = SslContextBuilder.forServer(cfile, pfile, privateKeyPwd).build();
+                return;
+            }
+
+            //看看是不是resources里面的
+            InputStream cinput = HServer.class.getResourceAsStream("/ssl/" + certFilePath);
+            InputStream pinput = HServer.class.getResourceAsStream("/ssl/" + privateKeyPath);
+
+            if (cinput != null && pinput != null) {
+                ConstConfig.sslContext = SslContextBuilder.forServer(cinput, pinput, privateKeyPwd).build();
+            }
+        } catch (SSLException s) {
+            log.error(s.getMessage());
+            s.printStackTrace();
+        }
+    }
 
 }

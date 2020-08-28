@@ -1,6 +1,7 @@
 package top.hserver.cloud;
 
 
+import com.alibaba.nacos.api.common.Constants;
 import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import lombok.extern.slf4j.Slf4j;
@@ -82,12 +83,15 @@ public class CloudManager {
                     /**
                      * 不论是消费者还生产者都要去注册中心注册
                      */
+                    if (appRpc.getGroup() == null || appRpc.getGroup().trim().length() == 0) {
+                        appRpc.setGroup(Constants.DEFAULT_GROUP);
+                    }
                     if (CloudManager.isRpcService()) {
                         for (String aClass : CloudManager.getClasses()) {
-                            naming.registerInstance(aClass, appRpc.getIp(), port, name);
+                            naming.registerInstance(aClass, appRpc.getGroup(), appRpc.getIp(), port, name);
                         }
                     } else {
-                        naming.registerInstance(name, appRpc.getIp(), port);
+                        naming.registerInstance(name, appRpc.getGroup(), appRpc.getIp(), port);
                     }
                 } else {
                     if (appRpc.isType()) {

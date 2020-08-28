@@ -40,9 +40,13 @@ public class AppRpc {
     private String name;
 
     /**
+     * 服务组名
+     */
+    private String group;
+
+    /**
      * 能访问到自己的IP地址，nacos 才用
      */
-
     private String ip;
 
 }

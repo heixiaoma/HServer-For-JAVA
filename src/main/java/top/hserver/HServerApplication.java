@@ -146,8 +146,6 @@ public class HServerApplication {
 
 
     private static void startServer(int port, String[] args) {
-        //云启动
-        CloudManager.run(port);
         try {
             new HServer(port, args).run();
         } catch (Exception e) {
