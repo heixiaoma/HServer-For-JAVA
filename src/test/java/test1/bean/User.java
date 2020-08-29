@@ -1,8 +1,14 @@
 package test1.bean;
 
+import top.hserver.core.ioc.annotation.validate.Length;
+import top.hserver.core.ioc.annotation.validate.NotNull;
+import top.hserver.core.ioc.annotation.validate.Null;
+
 public class User {
 
+    @Length(1)
     private String name;
+    @NotNull
     private String sex;
     private Integer age;
 

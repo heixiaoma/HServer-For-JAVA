@@ -12,6 +12,7 @@ import javassist.bytecode.LocalVariableAttribute;
 import javassist.bytecode.MethodInfo;
 import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.context.HServerContext;
+import top.hserver.core.server.exception.ValidateException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -88,20 +89,25 @@ public class ParameterUtil {
                             break;
                         default:
                             //不是基础类型可能就是我来转换的类型，哈哈，有毒哦
-                            if (requestParams.size()>0) {
+                            if (requestParams.size() > 0) {
                                 //正常的表单
                                 objects[i] = ConstConfig.OBJECT_MAPPER.convertValue(requestParams, parameterType.getType());
-                            }else {
+                            } else {
                                 //raw
                                 String rawData = hServerContext.getRequest().getRawData();
-                                if (rawData!=null) {
+                                if (rawData != null) {
                                     objects[i] = ConstConfig.OBJECT_MAPPER.readValue(rawData, parameterType.getType());
                                 }
                             }
+                            ValidateUtil.validate(objects[i]);
                             break;
                     }
                 } catch (Exception e) {
-                    objects[i] = null;
+                    if (e instanceof ValidateException) {
+                        throw e;
+                    } else {
+                        objects[i] = null;
+                    }
                 }
             }
         }
