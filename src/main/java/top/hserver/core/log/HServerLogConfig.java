@@ -3,6 +3,7 @@ package top.hserver.core.log;
 import ch.qos.logback.classic.LoggerContext;
 import org.slf4j.impl.StaticLoggerBinder;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -27,7 +28,12 @@ public class HServerLogConfig {
 
     private static boolean existConfig(){
         for (String s : getStandardConfigLocations()) {
-            if (HServerLogConfig.class.getResourceAsStream("/"+s)!=null){
+            InputStream resourceAsStream = HServerLogConfig.class.getResourceAsStream("/" + s);
+            if (resourceAsStream!=null){
+                try {
+                    resourceAsStream.close();
+                } catch (IOException ignored) {
+                }
                 return true;
             }
         }
@@ -45,6 +51,7 @@ public class HServerLogConfig {
         ch.qos.logback.classic.joran.JoranConfigurator configurator = new ch.qos.logback.classic.joran.JoranConfigurator();
         configurator.setContext(loggerContext);
         configurator.doConfigure(in);
+        in.close();
     }
 
 }
