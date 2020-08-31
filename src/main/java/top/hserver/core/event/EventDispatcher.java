@@ -79,6 +79,10 @@ public class EventDispatcher {
         if (handleMethodMap.size() > 0) {
             try {
                 String path = System.getProperty("user.dir") + File.separator + "queue";
+                String flag = "../";
+                if (path.contains(flag)) {
+                    return;
+                }
                 File file = new File(path);
                 if (!file.exists()) {
                     file.mkdirs();
@@ -86,7 +90,7 @@ public class EventDispatcher {
                 HashMap tmpParmHMap = new HashMap();
                 tmpParmHMap.put(SpongeThreadPoolExecutor.FilePersistence_Dir, path);
                 handlePool = SpongeThreadPoolExecutor.generateThreadPoolExecutor(
-                  queuePool, queuePool * 2, 60L, TimeUnit.SECONDS, tmpParmHMap);
+                        queuePool, queuePool * 2, 60L, TimeUnit.SECONDS, tmpParmHMap);
             } catch (Exception e) {
             }
         }
@@ -94,6 +98,10 @@ public class EventDispatcher {
 
     public static void clearFile() {
         String path = System.getProperty("user.dir") + File.separator + "queue";
+        String flag = "../";
+        if (path.contains(flag)) {
+            return;
+        }
         File file = new File(path);
         if (file.exists()) {
             file.delete();
