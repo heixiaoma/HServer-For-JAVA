@@ -60,7 +60,7 @@ public class HelloController {
     
     @POST("/test2")
     public JsonResult b(HttpRequest request) {
-        return return JsonResult.ok().put("data",request.getRequestParams());
+        return JsonResult.ok().put("data",request.getRequestParams());
     }
     
     @RequestMapping(value = "/get", method = RequestMethod.GET)
