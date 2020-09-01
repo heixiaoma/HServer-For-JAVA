@@ -142,7 +142,9 @@ public class HServer {
             if (cinput != null && pinput != null) {
                 ConstConfig.sslContext = SslContextBuilder.forServer(cinput, pinput, privateKeyPwd).build();
             }
-        } catch (SSLException s) {
+            cinput.close();
+            pinput.close();
+        } catch (Exception s) {
             log.error(s.getMessage());
             s.printStackTrace();
         }

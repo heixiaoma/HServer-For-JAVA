@@ -137,16 +137,20 @@ public class Request implements HttpRequest {
      */
     private void parseFileUpload(FileUpload fileUpload) throws IOException {
         if (fileUpload.isCompleted()) {
-          PartFile partFile = new PartFile();
-          partFile.setFormName(fileUpload.getName());
-          partFile.setFileName(fileUpload.getFilename());
-          File file = new File(TEMP_PATH + "h_server_" + UUID.randomUUID() + "_upload");
-          fileUpload.renameTo(file);
-          partFile.setFile(file);
-          partFile.setFilePath(file.getPath());
-          partFile.setContentType(fileUpload.getContentType());
-          partFile.setLength(fileUpload.length());
-          multipartFile.put(partFile.getFormName(), partFile);
+            PartFile partFile = new PartFile();
+            partFile.setFormName(fileUpload.getName());
+            partFile.setFileName(fileUpload.getFilename());
+            String s = TEMP_PATH + "h_server_" + UUID.randomUUID() + "_upload";
+            if (s.contains("../")) {
+                return;
+            }
+            File file = new File(s);
+            fileUpload.renameTo(file);
+            partFile.setFile(file);
+            partFile.setFilePath(file.getPath());
+            partFile.setContentType(fileUpload.getContentType());
+            partFile.setLength(fileUpload.length());
+            multipartFile.put(partFile.getFormName(), partFile);
         }
     }
 
