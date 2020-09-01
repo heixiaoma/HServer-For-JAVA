@@ -56,6 +56,7 @@
         <objenesis.version>3.1</objenesis.version>
         <junit.version>4.12</junit.version>
         <nacos.version>1.3.2</nacos.version>
+        <disruptor.version>3.4.2</disruptor.version>
     </properties>
 
     <dependencies>
@@ -152,11 +153,18 @@
             <version>${objenesis.version}</version>
         </dependency>
 
-        <!--但原车-->
+        <!--单元测试-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
+        </dependency>
+
+        <!-- 队列disruptor -->
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+            <version>${disruptor.version}</version>
         </dependency>
 
         <!--注册配置中心-->
