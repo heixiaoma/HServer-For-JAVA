@@ -12,5 +12,23 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface EventHandler {
-	String value() default "";
+    /**
+     * 队列名
+     *
+     * @return
+     */
+    String queueName();
+
+    /**
+     * 消费者类型
+     *
+     * @return
+     */
+    EventHandlerType type() default EventHandlerType.NO_REPEAT_CONSUMPTION;
+
+    /**
+     * 大小
+     * @return
+     */
+    int bufferSize() default 1024;
 }

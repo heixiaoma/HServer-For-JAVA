@@ -5,18 +5,22 @@ import com.lmax.disruptor.WorkHandler;
 
 import javax.annotation.Resource;
 
-public class SpikeEventHandler1 implements EventHandler<Event>,WorkHandler<Event> {
+public class SpikeEventHandler implements EventHandler<Event>, WorkHandler<Event> {
 
+    private String name;
+
+    public SpikeEventHandler(String name) {
+        this.name = name;
+    }
 
     @Override
     public void onEvent(Event event, long sequence, boolean endOfBatch) throws Exception {
-        System.out.println(event.getData());
+        System.out.println(name + event.getData());
     }
 
 
     @Override
     public void onEvent(Event event) throws Exception {
-        Thread.sleep(4000);
-        System.out.println("1-"+event.getData());
+        System.out.println(name + event.getData());
     }
 }

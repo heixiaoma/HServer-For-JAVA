@@ -4,8 +4,7 @@ package top.hserver.core.ioc.annotation.event;
 import java.lang.annotation.*;
 
 /**
- * 注解：事件。用于事件处理方法<br>
- * 用法： Event(value = "事件名", priority = EventPriority.XXX)
+ * 标记消费者的方法
  *
  * @author hxm
  */
@@ -13,5 +12,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Event {
-	String value() default "";
+    //级别重小到大排序，小的有限，同一样的就并行操作
+    int level() default 1;
 }

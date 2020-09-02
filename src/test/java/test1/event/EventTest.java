@@ -7,13 +7,13 @@ import top.hserver.core.ioc.annotation.event.EventHandler;
 
 import java.util.Map;
 
-@EventHandler("/aa/aa")
+//@EventHandler("/aa/aa")
 public class EventTest {
 
   @Autowired
   private HelloService helloService;
 
-  @Event("aa")
+//  @Event("aa")
   public void aa(Map params) {
     try {
       System.out.println(Thread.currentThread().getName() + helloService.sayHello());
@@ -23,7 +23,7 @@ public class EventTest {
     }
   }
 
-  @Event("bb")
+//  @Event("bb")
   public void bb(Map params) {
     try {
       System.out.println(Thread.currentThread().getName());

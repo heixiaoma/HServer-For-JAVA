@@ -13,9 +13,9 @@ public class DisruptorUtils {
         // 创建disruptor
         disruptor = new Disruptor<>(Event::new, bufferSize, DaemonThreadFactory.INSTANCE);
         //多消费者重复消费
-        disruptor.handleEventsWith(new SpikeEventHandler1(),new SpikeEventHandler2());
+//        disruptor.handleEventsWith(new SpikeEventHandler("A"),new SpikeEventHandler("B"));
         //多消费者不重复消费
-        disruptor.handleEventsWithWorkerPool(new SpikeEventHandler1(),new SpikeEventHandler2());
+        disruptor.handleEventsWithWorkerPool(new SpikeEventHandler("C"),new SpikeEventHandler("D")).thenHandleEventsWithWorkerPool(new SpikeEventHandler("E"));
         // 启动
         disruptor.start();
     }

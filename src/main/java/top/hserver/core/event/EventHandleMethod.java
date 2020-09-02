@@ -13,21 +13,35 @@ import java.lang.reflect.Method;
  */
 @Data
 public class EventHandleMethod implements Serializable {
-
+    /**
+     * 级别
+     */
+    private int level;
     private Method method;
-    private String uri;
+    private Object args;
     private String className;
-    private Class<?>[] parameterTypes;
 
-    public EventHandleMethod(String className, Method method, String uri) {
+
+    public EventHandleMethod() {
+    }
+
+    public EventHandleMethod(String className, Method method, Object args, int level) {
         this.method = method;
-        this.uri = uri;
-        this.className = className;
-        this.parameterTypes = method.getParameterTypes();
+        this.className=className;
+        this.args = args;
+        this.level=level;
     }
 
     public Object getHandler() {
         return IocUtil.getBean(this.className);
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public Method getMethod() {
@@ -38,12 +52,12 @@ public class EventHandleMethod implements Serializable {
         this.method = method;
     }
 
-    public Class<?>[] getParameterTypes() {
-        return parameterTypes;
+    public Object getArgs() {
+        return args;
     }
 
-    public void setParameterTypes(Class<?>[] parameterTypes) {
-        this.parameterTypes = parameterTypes;
+    public void setArgs(Object args) {
+        this.args = args;
     }
 
     public String getClassName() {
@@ -53,13 +67,4 @@ public class EventHandleMethod implements Serializable {
     public void setClassName(String className) {
         this.className = className;
     }
-
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
 }

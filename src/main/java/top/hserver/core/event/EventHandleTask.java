@@ -17,6 +17,7 @@ import java.util.Map;
 @Slf4j
 @Data
 public class EventHandleTask implements Runnable, Serializable {
+
     private Map<String, Object> eventParams;
     private String methodName;
     private String uri;
