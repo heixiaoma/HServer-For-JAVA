@@ -1,4 +1,4 @@
-package test4;
+package test4.demo;
 
 public class LongEvent
 {

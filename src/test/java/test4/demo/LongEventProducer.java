@@ -1,4 +1,4 @@
-package test4;
+package test4.demo;
 
 import com.lmax.disruptor.RingBuffer;
 
@@ -20,7 +20,7 @@ public class LongEventProducer
         {
             LongEvent event = ringBuffer.get(sequence); // Get the entry in the Disruptor
                                                         // for the sequence
-            event.set(bb.getLong(0));  // Fill with data
+            event.set(bb.getLong(0));  //填写数据
         }
         finally
         {
