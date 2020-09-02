@@ -7,23 +7,25 @@ import top.hserver.core.event.EventHandleMethod;
 import java.lang.reflect.Method;
 
 
+/**
+ * @author hxm
+ */
 public class EventProducer {
 
-    private final RingBuffer<EventHandleMethod> ringBuffer;
+    private final RingBuffer<EventData> ringBuffer;
 
-    public EventProducer(RingBuffer<EventHandleMethod> ringBuffer) {
+    public EventProducer(RingBuffer<EventData> ringBuffer) {
         this.ringBuffer = ringBuffer;
     }
 
-    private static final EventTranslatorVararg<EventHandleMethod> TRANSLATOR = (event, sequence, args) -> {
-        event.setClassName((String) args[0]);
-        event.setMethod((Method) args[1]);
-        event.setArgs(args[2]);
-        event.setLevel((Integer) args[3]);
-    };
-
-    public void onData(EventHandleMethod event) {
-        ringBuffer.publishEvent(TRANSLATOR, event.getClassName(), event.getMethod(), event.getArgs(), event.getLevel());
+    public void onData(Object[] args) {
+        long sequence = ringBuffer.next();
+        try {
+            EventData eventData = ringBuffer.get(sequence);
+            eventData.setArgs(args);
+        } finally {
+            ringBuffer.publish(sequence);
+        }
     }
 
 }

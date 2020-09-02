@@ -3,7 +3,9 @@ package top.hserver.core.event;
 import top.hserver.core.event.queue.QueueFactory;
 import top.hserver.core.ioc.annotation.event.EventHandlerType;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 队列信息
@@ -20,7 +22,7 @@ public class EventHandleInfo {
 
     private EventHandlerType eventHandlerType;
 
-    private LinkedList<EventHandleMethod> eventHandleMethods = new LinkedList<>();
+    private List<EventHandleMethod> eventHandleMethods = new ArrayList<>();
 
     public void add(EventHandleMethod eventHandleMethod) {
         this.eventHandleMethods.add(eventHandleMethod);
@@ -34,7 +36,7 @@ public class EventHandleInfo {
         this.eventHandlerType = eventHandlerType;
     }
 
-    public LinkedList<EventHandleMethod> getEventHandleMethods() {
+    public List<EventHandleMethod> getEventHandleMethods() {
         return eventHandleMethods;
     }
 

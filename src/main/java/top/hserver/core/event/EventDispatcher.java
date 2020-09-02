@@ -16,9 +16,6 @@ import java.util.concurrent.*;
 
 
 /**
- * 事件分发器<br>
- * <br>
- * 在代码中初始化（只需初始化一次），参数为事件处理器类的包名：<br>
  *
  * @author hxm
  */
@@ -44,6 +41,7 @@ public class EventDispatcher {
             EventHandleInfo eventHandleInfo = new EventHandleInfo();
             eventHandleInfo.setEventHandlerType(eventHandler.type());
             eventHandleInfo.setQueueName(eventHandler.queueName());
+            eventHandleInfo.setBufferSize(eventHandler.bufferSize());
             Object obj;
             try {
                 obj = clazz.newInstance();
@@ -56,7 +54,7 @@ public class EventDispatcher {
             for (Method method : methods) {
                 Event eventMethod = method.getAnnotation(Event.class);
                 if (eventMethod != null) {
-                    eventHandleInfo.add(new EventHandleMethod(clazz.getName(), method, eventMethod.level()));
+                    eventHandleInfo.add(new EventHandleMethod(method,eventMethod.size(), eventMethod.level()));
                     log.debug("寻找队列 [{}] 的方法 [{}.{}]", eventHandler.queueName(), clazz.getSimpleName(),
                             method.getName());
                 }
@@ -71,7 +69,7 @@ public class EventDispatcher {
     public static void startTaskThread() {
         handleMethodMap.forEach((k, v) -> {
             QueueFactory queueFactory = new QueueFactoryImpl();
-            queueFactory.createQueue(v.getQueueName(), v.getBufferSize());
+            queueFactory.createQueue(v.getQueueName(), v.getBufferSize(), v.getEventHandlerType(), v.getEventHandleMethods());
             v.setQueueFactory(queueFactory);
 
         });
