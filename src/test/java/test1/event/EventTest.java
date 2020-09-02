@@ -9,22 +9,22 @@ import top.hserver.core.ioc.annotation.event.EventHandlerType;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 
 @Slf4j
-@EventHandler(queueName = "Queue",type = EventHandlerType.NO_REPEAT_CONSUMPTION)
+@EventHandler(queueName = "Queue",type = EventHandlerType.NO_REPEAT_CONSUMPTION,bufferSize = 65536)
 public class EventTest {
 
     @Autowired
     private HelloService helloService;
 
-    AtomicLong atomicLong=new AtomicLong(0);
+    LongAdder atomicLong=new LongAdder();
 
-    @Event(level = 1,size = 2)
+    @Event(level = 1,size = 20)
     public void aa(String name) {
-
-        long l = atomicLong.incrementAndGet();
-        if (l%1000000==0){
-            log.info(l+"");
+        atomicLong.increment();
+        if (atomicLong.intValue()%100000000==0){
+            log.info(atomicLong.intValue()+"");
         }
 
     }

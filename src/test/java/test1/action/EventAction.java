@@ -13,10 +13,12 @@ public class EventAction {
 
     @GET("/event")
     public JsonResult event() {
-        for (int i = 0; i < 10000000; i++) {
+        long start = System.currentTimeMillis();
+        int j=100000000;
+        for (int i = 0; i < j; i++) {
             HServerEvent.sendEvent("Queue", "666");
         }
-        return JsonResult.ok();
+        return JsonResult.ok().put(j+"个队列，耗时：",System.currentTimeMillis()-start+"ms");
     }
 
 }

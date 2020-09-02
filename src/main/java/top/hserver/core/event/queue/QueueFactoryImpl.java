@@ -2,8 +2,10 @@ package top.hserver.core.event.queue;
 
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.RingBuffer;
+import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.EventHandlerGroup;
+import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.DaemonThreadFactory;
 import top.hserver.core.event.EventHandleMethod;
 import top.hserver.core.ioc.annotation.event.EventHandlerType;
@@ -22,7 +24,7 @@ public class QueueFactoryImpl implements QueueFactory {
     @Override
     public void createQueue(String queueName, int bufferSize, EventHandlerType eventHandlerType, List<EventHandleMethod> eventHandleMethods) {
         // 创建disruptor
-        disruptor = new Disruptor<>(EventData::new, bufferSize, new NamedThreadFactory("h-q:" + queueName));
+        disruptor = new Disruptor<>(EventData::new, bufferSize, new NamedThreadFactory("queue:" + queueName), ProducerType.SINGLE, new YieldingWaitStrategy());
 
         Map<Integer, List<EventHandleMethod>> collect = eventHandleMethods.stream().sorted(Comparator.comparingInt(EventHandleMethod::getLevel)).collect(Collectors.groupingBy(EventHandleMethod::getLevel));
 
