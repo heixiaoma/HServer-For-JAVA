@@ -45,7 +45,7 @@ public class QueueFactoryImpl implements QueueFactory {
                 QueueEventHandler[] queueEventHandlers = new QueueEventHandler[handleMethods.size()];
                 for (int i = 0; i < handleMethods.size(); i++) {
                     QueueHandleMethod queueHandleMethod = handleMethods.get(i);
-                    queueEventHandlers[i] = new QueueEventHandler(queueName, queueHandleMethod.getMethod());
+                    queueEventHandlers[i] = new QueueEventHandler(queueName, queueHandleMethod.getMethod(),queueHandleMethod.isTry());
                 }
                 //多消费者重复消费
                 if (queueHandlerType == QueueHandlerType.REPEAT_CONSUMPTION) {
@@ -59,7 +59,7 @@ public class QueueFactoryImpl implements QueueFactory {
                 QueueEventHandler[] queueEventHandlers = new QueueEventHandler[handleMethods.size()];
                 for (int i = 0; i < handleMethods.size(); i++) {
                     QueueHandleMethod queueHandleMethod = handleMethods.get(i);
-                    queueEventHandlers[i] = new QueueEventHandler(queueName, queueHandleMethod.getMethod());
+                    queueEventHandlers[i] = new QueueEventHandler(queueName, queueHandleMethod.getMethod(),queueHandleMethod.isTry());
                 }
                 //多消费者重复消费
                 if (queueHandlerType == QueueHandlerType.REPEAT_CONSUMPTION) {

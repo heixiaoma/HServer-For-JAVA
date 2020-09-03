@@ -18,7 +18,7 @@ public class EventTest {
 
     LongAdder atomicLong = new LongAdder();
 
-    @QueueHanler(level = 1, size = 20)
+    @QueueHanler(level = 1, size = 20, isTry = true)
     public void aa(String name) {
         atomicLong.increment();
         if (atomicLong.intValue() % 100000000 == 0) {

@@ -17,4 +17,7 @@ public @interface QueueHanler {
 
     //消费者数量
     int size() default 1;
+
+    //异常后是否重试？
+    boolean isTry() default false;
 }

@@ -15,10 +15,12 @@ public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<Q
 
     private String queueName;
     private Method method;
+    private boolean isTry;
 
-    public QueueEventHandler(String queueName, Method method) {
+    public QueueEventHandler(String queueName, Method method, boolean isTry) {
         this.queueName = queueName;
         this.method = method;
+        this.isTry = isTry;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<Q
         try {
             method.invoke(IocUtil.getBean(queueName), args);
         } catch (Exception e) {
-            e.printStackTrace();
+            HServerQueue.sendQueue(queueName, args);
             log.error(e.getMessage());
         }
     }

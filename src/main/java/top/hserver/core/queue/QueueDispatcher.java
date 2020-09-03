@@ -51,7 +51,7 @@ public class QueueDispatcher {
             for (Method method : methods) {
                 QueueHanler queueHanler = method.getAnnotation(QueueHanler.class);
                 if (queueHanler != null) {
-                    eventHandleInfo.add(new QueueHandleMethod(method, queueHanler.size(), queueHanler.level()));
+                    eventHandleInfo.add(new QueueHandleMethod(method, queueHanler.size(), queueHanler.level(),queueHanler.isTry()));
                     log.debug("寻找队列 [{}] 的方法 [{}.{}]", queueListener.queueName(), clazz.getSimpleName(),
                             method.getName());
                 }
