@@ -8,6 +8,7 @@ import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.EventExecutorGroup;
 import top.hserver.core.server.util.NamedThreadFactory;
 
+import java.io.File;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -16,6 +17,10 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author hxm
  */
 public class ConstConfig {
+    /**
+     * 当前项目路径
+     */
+    public static final String PATH = System.getProperty("user.dir") + File.separator;
     /**
      * 运行环境
      */
