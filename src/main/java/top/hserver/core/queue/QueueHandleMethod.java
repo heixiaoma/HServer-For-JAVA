@@ -18,13 +18,11 @@ public class QueueHandleMethod implements Serializable {
     private int level;
     private int size;
     private Method method;
-    private boolean isTry;
 
-    public QueueHandleMethod(Method method, int size, int level,boolean isTry) {
+    public QueueHandleMethod(Method method, int size, int level) {
         this.method = method;
         this.level = level;
         this.size = size;
-        this.isTry=isTry;
     }
 
     public int getLevel() {
@@ -39,7 +37,4 @@ public class QueueHandleMethod implements Serializable {
         return size;
     }
 
-    public boolean isTry() {
-        return isTry;
-    }
 }

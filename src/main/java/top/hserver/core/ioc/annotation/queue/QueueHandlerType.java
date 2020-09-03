@@ -7,9 +7,9 @@ public enum QueueHandlerType {
     /**
      * 不重复消费
      */
-    NO_REPEAT_CONSUMPTION,
+    NO_REPEAT,
     /**
      * 重复消费
      */
-    REPEAT_CONSUMPTION,
+    REPEAT,
 }

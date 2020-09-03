@@ -2,7 +2,7 @@ package top.hserver.core.queue;
 
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.core.ioc.IocUtil;
-import top.hserver.core.ioc.annotation.queue.QueueHanler;
+import top.hserver.core.ioc.annotation.queue.QueueHandler;
 import top.hserver.core.ioc.annotation.queue.QueueListener;
 import top.hserver.core.ioc.ref.PackageScanner;
 
@@ -49,9 +49,9 @@ public class QueueDispatcher {
             IocUtil.addBean(queueListener.queueName(), obj);
             Method[] methods = clazz.getDeclaredMethods();
             for (Method method : methods) {
-                QueueHanler queueHanler = method.getAnnotation(QueueHanler.class);
-                if (queueHanler != null) {
-                    eventHandleInfo.add(new QueueHandleMethod(method, queueHanler.size(), queueHanler.level(),queueHanler.isTry()));
+                QueueHandler queueHandler = method.getAnnotation(QueueHandler.class);
+                if (queueHandler != null) {
+                    eventHandleInfo.add(new QueueHandleMethod(method, queueHandler.size(), queueHandler.level()));
                     log.debug("寻找队列 [{}] 的方法 [{}.{}]", queueListener.queueName(), clazz.getSimpleName(),
                             method.getName());
                 }

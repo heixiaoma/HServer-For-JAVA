@@ -3,14 +3,13 @@ package test1.event;
 import lombok.extern.slf4j.Slf4j;
 import test1.service.HelloService;
 import top.hserver.core.ioc.annotation.Autowired;
-import top.hserver.core.ioc.annotation.queue.QueueHandlerType;
-import top.hserver.core.ioc.annotation.queue.QueueHanler;
+import top.hserver.core.ioc.annotation.queue.QueueHandler;
 import top.hserver.core.ioc.annotation.queue.QueueListener;
 
 import java.util.concurrent.atomic.LongAdder;
 
 @Slf4j
-@QueueListener(queueName = "Queue", type = QueueHandlerType.NO_REPEAT_CONSUMPTION)
+@QueueListener(queueName = "Queue")
 public class EventTest {
 
     @Autowired
@@ -18,13 +17,18 @@ public class EventTest {
 
     LongAdder atomicLong = new LongAdder();
 
-    @QueueHanler(level = 1, size = 20, isTry = true)
+    @QueueHandler(level = 1, size = 2)
     public void aa(String name) {
         atomicLong.increment();
-        if (atomicLong.intValue() % 100000000 == 0) {
-            log.info(atomicLong.intValue() + "");
-        }
-
+        System.out.println(atomicLong + "---------" + Thread.currentThread().getName());
+        throw new NullPointerException("try test");
     }
 
+
+    @QueueHandler(level = 2, size = 2)
+    public void cc(String name) {
+        atomicLong.increment();
+        System.out.println(atomicLong + "---------" + Thread.currentThread().getName());
+        throw new NullPointerException("try test");
+    }
 }

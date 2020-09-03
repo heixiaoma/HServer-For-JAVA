@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import top.hserver.core.ioc.IocUtil;
 
 import java.lang.reflect.Method;
-
 /**
  * @author hxm
  */
@@ -15,12 +14,11 @@ public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<Q
 
     private String queueName;
     private Method method;
-    private boolean isTry;
 
-    public QueueEventHandler(String queueName, Method method, boolean isTry) {
+
+    public QueueEventHandler(String queueName, Method method) {
         this.queueName = queueName;
         this.method = method;
-        this.isTry = isTry;
     }
 
     @Override
@@ -38,7 +36,6 @@ public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<Q
         try {
             method.invoke(IocUtil.getBean(queueName), args);
         } catch (Exception e) {
-            HServerQueue.sendQueue(queueName, args);
             log.error(e.getMessage());
         }
     }

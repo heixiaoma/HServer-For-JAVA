@@ -24,7 +24,7 @@ public @interface QueueListener {
      *
      * @return
      */
-    QueueHandlerType type() default QueueHandlerType.NO_REPEAT_CONSUMPTION;
+    QueueHandlerType type() default QueueHandlerType.NO_REPEAT;
 
     /**
      * 队列默认长度
