@@ -1,9 +1,8 @@
-package top.hserver.core.event.queue;
+package top.hserver.core.queue;
 
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.WorkHandler;
 import lombok.extern.slf4j.Slf4j;
-import top.hserver.core.event.EventHandleMethod;
 import top.hserver.core.ioc.IocUtil;
 
 import java.lang.reflect.Method;
@@ -12,7 +11,7 @@ import java.lang.reflect.Method;
  * @author hxm
  */
 @Slf4j
-public class QueueEventHandler implements EventHandler<EventData>, WorkHandler<EventData> {
+public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<QueueData> {
 
     private String queueName;
     private Method method;
@@ -23,17 +22,17 @@ public class QueueEventHandler implements EventHandler<EventData>, WorkHandler<E
     }
 
     @Override
-    public void onEvent(EventData event, long sequence, boolean endOfBatch) throws Exception {
+    public void onEvent(QueueData event, long sequence, boolean endOfBatch) throws Exception {
         invoke(event);
     }
 
     @Override
-    public void onEvent(EventData event) throws Exception {
+    public void onEvent(QueueData event) throws Exception {
         invoke(event);
     }
 
-    private void invoke(EventData eventHandleMethod) {
-        Object[] args = eventHandleMethod.getArgs();
+    private void invoke(QueueData queueData) {
+        Object[] args = queueData.getArgs();
         try {
             method.invoke(IocUtil.getBean(queueName), args);
         } catch (Exception e) {

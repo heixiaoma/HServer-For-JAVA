@@ -1,14 +1,9 @@
-package top.hserver.core.event.queue;
+package top.hserver.core.queue;
 
-import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.RingBuffer;
-import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.EventHandlerGroup;
-import com.lmax.disruptor.dsl.ProducerType;
-import com.lmax.disruptor.util.DaemonThreadFactory;
-import top.hserver.core.event.EventHandleMethod;
-import top.hserver.core.ioc.annotation.event.EventHandlerType;
+import top.hserver.core.ioc.annotation.queue.QueueHandlerType;
 import top.hserver.core.server.util.NamedThreadFactory;
 
 import java.util.*;
@@ -19,41 +14,41 @@ import java.util.stream.Collectors;
  */
 public class QueueFactoryImpl implements QueueFactory {
 
-    private Disruptor<EventData> disruptor;
+    private Disruptor<QueueData> disruptor;
 
     @Override
-    public void createQueue(String queueName, int bufferSize, EventHandlerType eventHandlerType, List<EventHandleMethod> eventHandleMethods) {
+    public void createQueue(String queueName, int bufferSize, QueueHandlerType queueHandlerType, List<QueueHandleMethod> queueHandleMethods) {
         // 创建disruptor
-        disruptor = new Disruptor<>(EventData::new, bufferSize, new NamedThreadFactory("queue:" + queueName), ProducerType.SINGLE, new YieldingWaitStrategy());
+        disruptor = new Disruptor<>(QueueData::new, bufferSize, new NamedThreadFactory("queue:" + queueName));
 
-        Map<Integer, List<EventHandleMethod>> collect = eventHandleMethods.stream().sorted(Comparator.comparingInt(EventHandleMethod::getLevel)).collect(Collectors.groupingBy(EventHandleMethod::getLevel));
+        Map<Integer, List<QueueHandleMethod>> collect = queueHandleMethods.stream().sorted(Comparator.comparingInt(QueueHandleMethod::getLevel)).collect(Collectors.groupingBy(QueueHandleMethod::getLevel));
 
-        EventHandlerGroup<EventData> eventHandlerGroup = null;
+        EventHandlerGroup<QueueData> eventHandlerGroup = null;
 
         Iterator<Integer> iterator = collect.keySet().iterator();
         int flag = 0;
         while (iterator.hasNext()) {
             Integer next = iterator.next();
-            List<EventHandleMethod> handleMethods = collect.get(next);
+            List<QueueHandleMethod> handleMethods = collect.get(next);
             //检查哈是否有那种设置了多个消费者的添加进去
             for (int i = 0; i < handleMethods.size(); i++) {
-                EventHandleMethod eventHandleMethod = handleMethods.get(i);
-                int size = eventHandleMethod.getSize();
+                QueueHandleMethod queueHandleMethod = handleMethods.get(i);
+                int size = queueHandleMethod.getSize();
                 if (size > 1) {
                     for (int j = 0; j < size - 1; j++) {
-                        handleMethods.add(eventHandleMethod);
+                        handleMethods.add(queueHandleMethod);
                     }
-                    eventHandleMethod.setSize(1);
+                    queueHandleMethod.setSize(1);
                 }
             }
             if (flag == 0) {
                 QueueEventHandler[] queueEventHandlers = new QueueEventHandler[handleMethods.size()];
                 for (int i = 0; i < handleMethods.size(); i++) {
-                    EventHandleMethod eventHandleMethod = handleMethods.get(i);
-                    queueEventHandlers[i] = new QueueEventHandler(queueName, eventHandleMethod.getMethod());
+                    QueueHandleMethod queueHandleMethod = handleMethods.get(i);
+                    queueEventHandlers[i] = new QueueEventHandler(queueName, queueHandleMethod.getMethod());
                 }
                 //多消费者重复消费
-                if (eventHandlerType == EventHandlerType.REPEAT_CONSUMPTION) {
+                if (queueHandlerType == QueueHandlerType.REPEAT_CONSUMPTION) {
                     eventHandlerGroup = disruptor.handleEventsWith(queueEventHandlers);
                 } else {
                     //多消费者不重复消费
@@ -63,11 +58,11 @@ public class QueueFactoryImpl implements QueueFactory {
             } else {
                 QueueEventHandler[] queueEventHandlers = new QueueEventHandler[handleMethods.size()];
                 for (int i = 0; i < handleMethods.size(); i++) {
-                    EventHandleMethod eventHandleMethod = handleMethods.get(i);
-                    queueEventHandlers[i] = new QueueEventHandler(queueName, eventHandleMethod.getMethod());
+                    QueueHandleMethod queueHandleMethod = handleMethods.get(i);
+                    queueEventHandlers[i] = new QueueEventHandler(queueName, queueHandleMethod.getMethod());
                 }
                 //多消费者重复消费
-                if (eventHandlerType == EventHandlerType.REPEAT_CONSUMPTION) {
+                if (queueHandlerType == QueueHandlerType.REPEAT_CONSUMPTION) {
                     eventHandlerGroup.then(queueEventHandlers);
                 } else {
                     //多消费者不重复消费
@@ -80,9 +75,17 @@ public class QueueFactoryImpl implements QueueFactory {
 
     @Override
     public void producer(Object[] args) {
-        RingBuffer<EventData> ringBuffer = disruptor.getRingBuffer();
-        EventProducer producer = new EventProducer(ringBuffer);
+        RingBuffer<QueueData> ringBuffer = disruptor.getRingBuffer();
+        QueueProducer producer = new QueueProducer(ringBuffer);
         producer.onData(args);
     }
 
+    @Override
+    public QueueInfo queueInfo() {
+        QueueInfo queueInfo = new QueueInfo();
+        queueInfo.setCursor(disruptor.getCursor());
+        queueInfo.setQueueSize(disruptor.getBufferSize());
+        queueInfo.setRemainQueueSize(disruptor.getRingBuffer().remainingCapacity());
+        return queueInfo;
+    }
 }

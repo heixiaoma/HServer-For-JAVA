@@ -1,4 +1,4 @@
-package top.hserver.core.event.queue;
+package top.hserver.core.queue;
 
 import lombok.Data;
 
@@ -6,6 +6,6 @@ import lombok.Data;
  * @author hxm
  */
 @Data
-public class EventData {
+public class QueueData {
     private Object[] args;
 }

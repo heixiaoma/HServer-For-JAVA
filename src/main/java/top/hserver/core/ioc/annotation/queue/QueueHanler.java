@@ -1,4 +1,4 @@
-package top.hserver.core.ioc.annotation.event;
+package top.hserver.core.ioc.annotation.queue;
 
 
 import java.lang.annotation.*;
@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Event {
+public @interface QueueHanler {
     //消费者优先级 级别重小到大排序，小的有限，同一样的就并行操作
     int level() default 1;
 

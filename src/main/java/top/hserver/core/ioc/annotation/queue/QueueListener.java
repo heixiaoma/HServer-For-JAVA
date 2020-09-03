@@ -1,4 +1,4 @@
-package top.hserver.core.ioc.annotation.event;
+package top.hserver.core.ioc.annotation.queue;
 
 import java.lang.annotation.*;
 
@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface EventHandler {
+public @interface QueueListener {
     /**
      * 队列名
      *
@@ -24,7 +24,7 @@ public @interface EventHandler {
      *
      * @return
      */
-    EventHandlerType type() default EventHandlerType.NO_REPEAT_CONSUMPTION;
+    QueueHandlerType type() default QueueHandlerType.NO_REPEAT_CONSUMPTION;
 
     /**
      * 大小

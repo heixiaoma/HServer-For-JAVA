@@ -1,6 +1,6 @@
 package top.hserver;
 
-import top.hserver.cloud.CloudManager;
+import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.ioc.ref.InitBean;
@@ -9,20 +9,16 @@ import top.hserver.core.log.HServerLogConfig;
 import top.hserver.core.properties.PropertiesInit;
 import top.hserver.core.server.HServer;
 import lombok.extern.slf4j.Slf4j;
-import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.filter.FilterChain;
 import top.hserver.core.server.router.RouterManager;
 import top.hserver.core.server.util.EnvironmentUtil;
 import top.hserver.core.server.util.PackageUtil;
 import top.hserver.core.task.TaskManager;
 
-import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import static top.hserver.core.event.EventDispatcher.startTaskThread;
 
 
 /**
@@ -215,7 +211,7 @@ public class HServerApplication {
         if (bean != null) {
             bean.init(args);
         }
-        startTaskThread();
+        QueueDispatcher.startTaskThread();
     }
 
 

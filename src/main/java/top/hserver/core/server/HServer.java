@@ -4,6 +4,7 @@ import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.handler.ssl.SslContextBuilder;
 import top.hserver.cloud.CloudManager;
+import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.ConstConfig;
@@ -19,11 +20,9 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.net.ssl.SSLException;
 import java.io.*;
 import java.util.stream.Collectors;
 
-import static top.hserver.core.event.EventDispatcher.startTaskThread;
 import static top.hserver.core.server.context.ConstConfig.*;
 
 /**
@@ -88,7 +87,7 @@ public class HServer {
         if (bean != null) {
             bean.init(args);
         }
-        startTaskThread();
+        QueueDispatcher.startTaskThread();
     }
 
 

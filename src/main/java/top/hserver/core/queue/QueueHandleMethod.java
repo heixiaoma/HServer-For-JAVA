@@ -1,8 +1,6 @@
-package top.hserver.core.event;
+package top.hserver.core.queue;
 
 import lombok.Data;
-import top.hserver.core.ioc.IocUtil;
-import top.hserver.core.ioc.annotation.event.EventHandlerType;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -13,7 +11,7 @@ import java.lang.reflect.Method;
  * @author hxm
  */
 @Data
-public class EventHandleMethod implements Serializable {
+public class QueueHandleMethod implements Serializable {
     /**
      * 级别
      */
@@ -21,7 +19,7 @@ public class EventHandleMethod implements Serializable {
     private int size;
     private Method method;
 
-    public EventHandleMethod(Method method, int size, int level) {
+    public QueueHandleMethod(Method method, int size, int level) {
         this.method = method;
         this.level = level;
         this.size = size;
