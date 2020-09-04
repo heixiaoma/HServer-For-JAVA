@@ -19,22 +19,18 @@ public class TestIndex {
     public static void main(String[] args) throws Exception{
         for (int j = 1; j < 1000000000; j++) {
 //            301770
-//            byte[] bytes = fetchQueue(j);
-//            List<Byte> a = new ArrayList<>();
-//            for (int i = 0; i < bytes.length; i++) {
-//                if (bytes[i] != 0) {
-//                    a.add(bytes[i]);
-//                } else {
-//                    break;
-//                }
-//            }
-//            byte[] bytes1 = new byte[a.size()];
-//            for (int i = 0; i < a.size(); i++) {
-//                bytes1[i] = a.get(i);
-//            }
-//            Index deserialize = SerializationUtil.deserialize(bytes1, Index.class);
-//            System.out.println(deserialize.getIndex());
-        write(j);
+            byte[] bytes = fetchQueue(j);
+            int i = 0;
+            for (; i < bytes.length; i++) {
+                if (bytes[i] == 0) {
+                    break;
+                }
+            }
+            byte[] b = new byte[i];
+            System.arraycopy(bytes,0,b,0,i);
+            Index deserialize = SerializationUtil.deserialize(b, Index.class);
+            System.out.println(deserialize.getIndex());
+//        write(j);
         }
     }
 

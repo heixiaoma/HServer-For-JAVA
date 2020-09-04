@@ -10,9 +10,6 @@ public class Test {
 
     public static void main(String[] args) throws Exception {
         QueueSerialization queueSerialization = new QueueSerialization();
-        byte[] bytes = queueSerialization.fetchQueue();
-        User deserialize = SerializationUtil.deserialize(bytes, User.class);
-        System.out.println(deserialize);
 //        User user = new User();
 //        user.setName("jkk");
 //        user.setSex("男");
