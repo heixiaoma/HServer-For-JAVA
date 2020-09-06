@@ -108,7 +108,7 @@ public class QueueSerialization {
      * @param data
      * @throws IOException
      */
-    public void cacheQueue(byte[] data) throws IOException {
+    public synchronized void cacheQueue(byte[] data) throws IOException {
 
         //添加描述信息
         QueueBlockIndex queueBlockIndex;
@@ -174,7 +174,7 @@ public class QueueSerialization {
      * @return
      * @throws Exception
      */
-    public byte[] fetchQueue() throws Exception {
+    public synchronized byte[] fetchQueue() throws Exception {
         FileChannel queueIndexRandomAccessFileChannel = queueIndexRandomAccessFile.getChannel();
         int i = new Long(queueIndexRandomAccessFileChannel.size()).intValue();
         ByteBuffer buffData = ByteBuffer.allocate(i);
