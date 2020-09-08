@@ -1,5 +1,6 @@
 package test5;
 
+import org.junit.runner.RunWith;
 import top.hserver.cloud.util.SerializationUtil;
 import top.hserver.core.queue.QueueSerialization;
 import top.hserver.core.queue.User;
@@ -73,16 +74,49 @@ public class Test {
             queueSerialization.cacheQueue(SerializationUtil.serialize(user));
         }
 
-        System.out.println(j+"个对象序列化耗时："+(System.currentTimeMillis()-l)/1000.0+"ms");
+        System.out.println(j+"个对象序列化耗时："+(System.currentTimeMillis()-l)/1000.0+"s");
 
         long l1 = System.currentTimeMillis();
         for (int i = 0; i < j; i++) {
             byte[] bytes = queueSerialization.fetchQueue();
             User deserialize = SerializationUtil.deserialize(bytes, User.class);
         }
-        System.out.println(j+"个对象反序列化耗时："+(System.currentTimeMillis()-l1)/1000.0+"ms");
+        System.out.println(j+"个对象反序列化耗时："+(System.currentTimeMillis()-l1)/1000.0+"s");
 
 
+        System.out.println("-------- 边读边写性能测试----------");
+
+        new Thread(() -> {
+            int k=0;
+            for (int i = 0; i < j; i++) {
+                try {
+                    User user = new User();
+                    user.setName("小王" + i);
+                    user.setAge(i);
+                    queueSerialization.cacheQueue(SerializationUtil.serialize(user));
+                    k=k+i;
+                }catch (Exception e){
+                }
+            }
+
+            System.out.println("写累计数大小："+k);
+
+        }).start();
+
+
+        new Thread(() -> {
+            int k=0;
+            for (int i = 0; i < j; i++) {
+                try {
+                    byte[] bytes = queueSerialization.fetchQueue();
+                    User deserialize = SerializationUtil.deserialize(bytes, User.class);
+                    k=k+deserialize.getAge();
+                }catch (Exception e){
+                }
+            }
+
+            System.out.println("读累计数大小："+k);
+        }).start();
 
     }
 }

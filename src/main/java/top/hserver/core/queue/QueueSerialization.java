@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -62,7 +63,7 @@ public class QueueSerialization {
      * @param number
      * @return
      */
-    public static byte[] longToByte(long number) {
+    private static byte[] longToByte(long number) {
         long temp = number;
         byte[] b = new byte[8];
         for (int i = 0; i < b.length; i++) {
@@ -78,7 +79,7 @@ public class QueueSerialization {
      * @param b
      * @return
      */
-    public static long byteToLong(byte[] b) {
+    private static long byteToLong(byte[] b) {
         long s = 0;
         long s0 = b[0] & 0xff;
         long s1 = b[1] & 0xff;
@@ -109,10 +110,8 @@ public class QueueSerialization {
      * @throws IOException
      */
     public synchronized void cacheQueue(byte[] data) throws IOException {
-
         //添加描述信息
         QueueBlockIndex queueBlockIndex;
-
         FileChannel queueIndexRandomAccessFileChannel = queueIndexRandomAccessFile.getChannel();
         //如果为0，那么是第一使用，那么就创建一个进去
         String queueData = "-queueData.queue";
@@ -124,13 +123,8 @@ public class QueueSerialization {
             queueBlockIndex.addBlockName(name);
         } else {
             //读取描述信息
-            int i = new Long(queueIndexRandomAccessFileChannel.size()).intValue();
-            ByteBuffer buff = ByteBuffer.allocate(i);
-            queueIndexRandomAccessFileChannel.position(0);
-            queueIndexRandomAccessFileChannel.read(buff);
-            buff.flip();
-            byte[] bytes = new byte[i];
-            buff.get(bytes);
+            long length = getLength(queueIndexRandomAccessFileChannel, 0);
+            byte[] bytes = getFileBytes(queueIndexRandomAccessFileChannel, 8, length);
             queueBlockIndex = SerializationUtil.deserialize(bytes, QueueBlockIndex.class);
         }
         //检查Block大小
@@ -155,36 +149,97 @@ public class QueueSerialization {
         /**
          * 数据格式 8字节 + queue内容  8字节存内容长度 Long类型住够了
          */
-        byte[] bytes = longToByte(data.length);
-        byte[] newByte = new byte[8 + data.length];
-        //copy 长度 到新的字节数组里
-        System.arraycopy(bytes, 0, newByte, 0, bytes.length);
-        //copy 数据到新的字节数组里
-        System.arraycopy(data, 0, newByte, bytes.length, data.length);
-        queueDataRandomAccessFileChannel.position(queueDataRandomAccessFileChannel.size());
-        queueDataRandomAccessFileChannel.write(ByteBuffer.wrap(newByte));
+        byte[] merge = merge(data.length, data);
+        writeBytes(queueDataRandomAccessFileChannel, merge, queueDataRandomAccessFileChannel.size());
         //写Block信息到文件
-        queueIndexRandomAccessFileChannel.truncate(0);
-        queueIndexRandomAccessFileChannel.write(ByteBuffer.wrap(SerializationUtil.serialize(queueBlockIndex)));
+        byte[] indexBlock = SerializationUtil.serialize(queueBlockIndex);
+        byte[] blockBytes = merge(indexBlock.length, indexBlock);
+        writeBytes(queueIndexRandomAccessFileChannel, blockBytes, 0);
+    }
+
+
+    /**
+     * 长度+数组合并在一起
+     *
+     * @param length
+     * @param bytes
+     * @return
+     */
+    private byte[] merge(int length, byte[] bytes) {
+        byte[] lengthBytes = longToByte(length);
+        byte[] newByte = new byte[8 + bytes.length];
+        //copy 长度 到新的字节数组里
+        System.arraycopy(lengthBytes, 0, newByte, 0, lengthBytes.length);
+        //copy 数据到新的字节数组里
+        System.arraycopy(bytes, 0, newByte, lengthBytes.length, bytes.length);
+        return newByte;
+    }
+
+
+    /**
+     * 更具位置获取长度
+     *
+     * @param channel
+     * @param position
+     * @return
+     * @throws IOException
+     */
+    private long getLength(FileChannel channel, long position) throws IOException {
+
+        synchronized (channel) {
+            channel.position(position);
+            //读取 内容长度
+            ByteBuffer contentLength = ByteBuffer.allocate(8);
+            channel.read(contentLength);
+            contentLength.flip();
+            byte[] contentLengthByte = new byte[8];
+            contentLength.get(contentLengthByte);
+            return byteToLong(contentLengthByte);
+        }
+
     }
 
     /**
-     * 获得一批Queue
+     * 更具位置和长度获取字节数组
+     *
+     * @param channel
+     * @param position
+     * @param length
+     * @return
+     * @throws IOException
+     */
+    private byte[] getFileBytes(FileChannel channel, long position, long length) throws IOException {
+        synchronized (channel) {
+            int i = new Long(length).intValue();
+            ByteBuffer buff = ByteBuffer.allocate(i);
+            channel.position(position);
+            channel.read(buff);
+            buff.flip();
+            byte[] bytes = new byte[i];
+            buff.get(bytes);
+            return bytes;
+        }
+
+    }
+
+    private void writeBytes(FileChannel channel, byte[] data, long position) throws IOException {
+        synchronized (channel){
+            channel.write(ByteBuffer.wrap(data), position);
+        }
+    }
+
+
+    /**
+     * 获得一个Queue
      *
      * @return
      * @throws Exception
      */
     public synchronized byte[] fetchQueue() throws Exception {
         FileChannel queueIndexRandomAccessFileChannel = queueIndexRandomAccessFile.getChannel();
-        int i = new Long(queueIndexRandomAccessFileChannel.size()).intValue();
-        ByteBuffer buffData = ByteBuffer.allocate(i);
-        queueIndexRandomAccessFileChannel.position(0);
-        queueIndexRandomAccessFileChannel.read(buffData);
-        buffData.flip();
-        byte[] byteData = new byte[i];
-        buffData.get(byteData);
+        long length = getLength(queueIndexRandomAccessFileChannel, 0);
+        byte[] byteData = getFileBytes(queueIndexRandomAccessFileChannel, 8, length);
         QueueBlockIndex queueBlockIndex = SerializationUtil.deserialize(byteData, QueueBlockIndex.class);
-
         RandomAccessFile randomAccessFile = getRandomAccessFile(queuePath + queueBlockIndex.getUseBlockName(), "r");
 
         //判断是否存在未消费持久队列
@@ -199,26 +254,15 @@ public class QueueSerialization {
             }
         }
         FileChannel channel = randomAccessFile.getChannel();
-        channel.position(queueBlockIndex.getPosition());
-        //读取 内容长度
-        ByteBuffer contentLength = ByteBuffer.allocate(8);
-        channel.read(contentLength);
-        contentLength.flip();
-        byte[] contentLengthByte = new byte[8];
-        contentLength.get(contentLengthByte);
-        long l = byteToLong(contentLengthByte);
+        long l = getLength(channel, queueBlockIndex.getPosition());
         //读取内容
         int cl = new Long(l).intValue();
-        ByteBuffer content = ByteBuffer.allocate(cl);
-        channel.position(queueBlockIndex.getPosition() + 8);
-        channel.read(content);
-        content.flip();
-        byte[] contentBytes = new byte[cl];
-        content.get(contentBytes);
+        byte[] contentBytes = getFileBytes(channel, queueBlockIndex.getPosition() + 8, l);
         //设置当前的所有位置，
         queueBlockIndex.setPosition(queueBlockIndex.getPosition() + 8 + cl);
-        queueIndexRandomAccessFileChannel.truncate(0);
-        queueIndexRandomAccessFileChannel.write(ByteBuffer.wrap(SerializationUtil.serialize(queueBlockIndex)));
+        byte[] serialize = SerializationUtil.serialize(queueBlockIndex);
+        byte[] merge = merge(serialize.length, serialize);
+        writeBytes(queueIndexRandomAccessFileChannel, merge, 0);
         return contentBytes;
     }
 
