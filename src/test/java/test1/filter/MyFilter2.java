@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
  * 优先级顺序
  */
 @Slf4j
-@Bean
+//@Bean
 public class MyFilter2 implements FilterAdapter  {
 
     @Override

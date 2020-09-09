@@ -2,6 +2,7 @@ package test1.action;
 
 import lombok.extern.slf4j.Slf4j;
 import test1.bean.User;
+import test1.log.Log;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.interfaces.HttpResponse;
 import top.hserver.core.ioc.annotation.*;
@@ -53,6 +54,7 @@ public class Hello {
      * @return
      */
     @GET("/hello")
+    @Log
     public Map hello(HttpRequest request, String name) {
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);

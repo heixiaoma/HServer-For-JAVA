@@ -53,11 +53,9 @@ public class ClasspathPackageScanner implements PackageScanner {
                 if (aClass.getAnnotation(aClass1) != null) {
                     add(aClass, aClass1);
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
-
         }
-
     }
 
     private <A extends Annotation> void add(Class<?> aClass, Class<A> annotation) {

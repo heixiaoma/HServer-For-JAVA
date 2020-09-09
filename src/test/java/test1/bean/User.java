@@ -1,5 +1,6 @@
 package test1.bean;
 
+import test1.log.Log;
 import top.hserver.core.ioc.annotation.validate.Length;
 import top.hserver.core.ioc.annotation.validate.NotNull;
 import top.hserver.core.ioc.annotation.validate.Null;

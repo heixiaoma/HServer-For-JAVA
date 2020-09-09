@@ -3,16 +3,17 @@ package top.hserver.core.ioc.ref;
 import top.hserver.cloud.CloudManager;
 import top.hserver.cloud.bean.ClientData;
 import top.hserver.cloud.proxy.CloudProxy;
+import top.hserver.core.proxy.HookProxyFactory;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.*;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.ioc.annotation.*;
 import top.hserver.core.ioc.annotation.nacos.NacosValue;
-import top.hserver.core.proxy.JavassistProxyFactory;
 import top.hserver.core.server.handlers.WebSocketServerHandler;
 import top.hserver.core.server.router.RouterInfo;
 import top.hserver.core.server.router.RouterManager;
 import top.hserver.core.server.router.RouterPermission;
+import top.hserver.core.server.util.ClassLoadUtil;
 import top.hserver.core.server.util.ParameterUtil;
 import top.hserver.core.server.util.PropUtil;
 import top.hserver.core.task.TaskManager;
@@ -32,28 +33,29 @@ public class InitBean {
 
     /**
      * 加载所有bean进容器
-     *
-     * @param packageName
      */
-    public static void init(String packageName) {
-        try {
-            if (packageName == null) {
-                return;
-            }
-            PackageScanner scan = new ClasspathPackageScanner(packageName);
-            //读取配置文件
-            initConfigurationProperties(scan);
-            initConfiguration(scan);
-            initWebSocket(scan);
-            initTest(scan);
-            initBean(scan);
-            initController(scan);
-            initHook(scan);
-            //初始化异步事件
-            QueueDispatcher.init(scan);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static void init(Set<String> packageNames) {
+        if (packageNames == null) {
+            return;
         }
+        packageNames.forEach(k -> {
+            try {
+                PackageScanner scan = new ClasspathPackageScanner(k);
+                //读取配置文件
+                initConfigurationProperties(scan);
+                initConfiguration(scan);
+                initWebSocket(scan);
+                initTest(scan);
+                initBean(scan);
+                initController(scan);
+                initHook(scan, packageNames);
+                //初始化异步事件
+                QueueDispatcher.init(scan);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 
     private static void initConfigurationProperties(PackageScanner scanner) throws Exception {
@@ -340,26 +342,62 @@ public class InitBean {
     }
 
 
-    private static void initHook(PackageScanner scan) throws Exception {
-        JavassistProxyFactory javassistProxyFactory = new JavassistProxyFactory();
+    private static void initHook(PackageScanner scan, Set<String> packages) throws Exception {
+        HookProxyFactory hookProxyFactory = new HookProxyFactory();
         List<Class<?>> clasps = scan.getAnnotationList(Hook.class);
         for (Class aClass : clasps) {
             Hook hook = (Hook) aClass.getAnnotation(Hook.class);
-            Class value = hook.value();
-            String method[] = hook.method();
-            //检查容器是否有，没有重0生产 ,有就基于现在的进行生产
-            Object bean = IocUtil.getBean(value);
-            Object newProxyInstance;
-            if (bean != null) {
-                Class<?> aClass1 = bean.getClass();
-                newProxyInstance= javassistProxyFactory.newProxyInstance(aClass1, aClass.getName(), method);
-            }else{
-                newProxyInstance= javassistProxyFactory.newProxyInstance(value, aClass.getName(), method);
+            Class[] values = hook.value();
+            for (Class value : values) {
+                //Hook的是类注解.
+                if (Annotation.class.isAssignableFrom(value)) {
+                    for (String aPackage : packages) {
+                        List<Class<?>> classes = ClassLoadUtil.LoadClasses(aPackage, false);
+                        for (Class<?> aClass1 : classes) {
+                            Annotation annotation = aClass1.getAnnotation(value);
+                            //看看类上面的注解是否有，
+                            if (annotation != null) {
+                                Object newProxyInstance = hookProxyFactory.newProxyInstance(aClass1, value.getName() + "HOOK");
+                                if (newProxyInstance != null) {
+                                    IocUtil.addBean(newProxyInstance.getClass().getName(), newProxyInstance);
+                                    IocUtil.addBean(aClass1.getName(), newProxyInstance);
+                                }
+                            } else {
+                                //方法级别的调用
+                                Method[] declaredMethods = aClass1.getDeclaredMethods();
+                                for (Method declaredMethod : declaredMethods) {
+                                    Annotation annotation1 = declaredMethod.getAnnotation(value);
+                                    if (annotation1 != null) {
+                                        Object newProxyInstance = hookProxyFactory.newProxyInstance(aClass1, value.getName() + "HOOK");
+                                        if (newProxyInstance != null) {
+                                            IocUtil.addBean(newProxyInstance.getClass().getName(), newProxyInstance);
+                                            IocUtil.addBean(aClass1.getName(), newProxyInstance);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    //hook的普通方法
+                    //检查容器是否有，没有重0生产 ,有就基于现在的进行生产
+                    Object bean = IocUtil.getBean(value);
+                    Object newProxyInstance;
+                    if (bean != null) {
+                        Class<?> aClass1 = bean.getClass();
+                        newProxyInstance = hookProxyFactory.newProxyInstance(aClass1, value.getName() + "HOOK");
+                    } else {
+                        newProxyInstance = hookProxyFactory.newProxyInstance(value, value.getName() + "HOOK");
+                    }
+                    //将代理类放入容器，,一会让注入的时候就是代理类注入进去了
+                    if (newProxyInstance != null) {
+                        IocUtil.addBean(newProxyInstance.getClass().getName(), newProxyInstance);
+                        IocUtil.addBean(value.getName(), newProxyInstance);
+                    }
+                }
+                IocUtil.addListBean(value.getName() + "HOOK", aClass.newInstance());
             }
-            //将Hook实例类放在容器里面，一会儿还需要检查他是否有其他数据，需要注入
-            IocUtil.addBean(aClass.getName(), aClass.newInstance());
-            //将代理类放入容器，,一会让注入的时候就是代理类注入进去了
-            IocUtil.addBean(value.getName(), newProxyInstance);
         }
     }
 
@@ -526,7 +564,21 @@ public class InitBean {
                 });
                 if (allClassByInterface.size() > 0) {
                     if (allClassByInterface.size() > 1) {
-                        log.warn("装配警告，存在多个子类，建议通过Bean名字装配，避免装配错误");
+                        int tempCode = 0;
+                        boolean flag = false;
+                        for (Class aClass : allClassByInterface) {
+                            if (tempCode == 0) {
+                                tempCode = IocUtil.getBean(aClass).hashCode();
+                            } else {
+                                if (tempCode != IocUtil.getBean(aClass).hashCode()) {
+                                    flag = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (flag) {
+                            log.warn("装配警告，存在多个子类，建议通过Bean名字装配，避免装配错误");
+                        }
                     }
                     bean = IocUtil.getBean(allClassByInterface.get(0));
                     findMsg = "按子类装配，" + declaredField.getType().getSimpleName();

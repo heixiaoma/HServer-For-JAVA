@@ -11,7 +11,7 @@ import test1.service.HelloService;
  * 优先级顺序
  */
 @Slf4j
-@Bean
+//@Bean
 public class MyFilter1 implements FilterAdapter {
 
     @Autowired

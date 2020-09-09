@@ -193,9 +193,7 @@ public class HServerApplication {
         log.info("Class动态修改完成");
         log.info("HServer 启动中....");
         log.info("Package 扫描中");
-        for (String s : scanPackage) {
-            InitBean.init(s);
-        }
+        InitBean.init(scanPackage);
         log.info("IOC 装配中");
         InitBean.injection();
         //Beetlsql注入

@@ -11,7 +11,5 @@ import java.lang.reflect.Method;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Hook {
-    Class value();
-
-    String[] method();
+    Class[] value();
 }
