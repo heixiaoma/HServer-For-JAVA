@@ -68,7 +68,6 @@ public class QueueDispatcher {
             QueueFactory queueFactory = new QueueFactoryImpl();
             queueFactory.createQueue(v.getQueueName(), v.getBufferSize(), v.getQueueHandlerType(), v.getQueueHandleMethods());
             v.setQueueFactory(queueFactory);
-
         });
     }
 

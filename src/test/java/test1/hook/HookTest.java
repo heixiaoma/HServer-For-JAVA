@@ -8,7 +8,7 @@ import test1.service.Test;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Hook(value = Test.class, method = "show")
+@Hook(value = Test.class, method = {"show","ac"})
 public class HookTest implements HookAdapter {
 
     @Autowired
@@ -16,8 +16,7 @@ public class HookTest implements HookAdapter {
 
     @Override
     public void before(Object[] objects) {
-        log.debug("aop.-前置拦截：{}",objects[0]);
-        objects[0]="666";
+        log.debug("aop.-前置拦截");
     }
 
     @Override

@@ -21,6 +21,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static top.hserver.core.server.context.ConstConfig.*;
@@ -83,9 +84,11 @@ public class HServer {
         CloudManager.run(port);
         //初始化完成可以放开任务了
         TaskManager.IS_OK = true;
-        InitRunner bean = IocUtil.getBean(InitRunner.class);
-        if (bean != null) {
-            bean.init(args);
+        List<InitRunner> listBean = IocUtil.getListBean(InitRunner.class);
+        if (listBean != null) {
+            for (InitRunner initRunner : listBean) {
+                initRunner.init(args);
+            }
         }
         QueueDispatcher.startTaskThread();
     }

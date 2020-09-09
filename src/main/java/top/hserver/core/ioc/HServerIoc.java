@@ -19,6 +19,43 @@ public class HServerIoc implements Ioc {
         return POOL;
     }
 
+
+    @Override
+    public void addListBean(Object bean) {
+        addListBean(bean.getClass().getName(), bean);
+    }
+
+    @Override
+    public void addListBean(String name, Object bean) {
+        if (name != null && name.trim().length() > 0 && bean != null) {
+            Object o = POOL.computeIfAbsent(name, k -> new ArrayList<>());
+            if (o instanceof List) {
+                List o1 = (List) o;
+                o1.add(bean);
+            } else {
+                log.warn("不是List");
+            }
+        }
+    }
+
+    @Override
+    public <T> List<T> getListBean(Class<T> type) {
+        Object o = POOL.get(type.getName());
+        if (o instanceof List) {
+            return (List) o;
+        }
+        return null;
+    }
+
+    @Override
+    public List<Object> getListBean(String beanName) {
+        Object o = POOL.get(beanName);
+        if (o instanceof List) {
+            return (List) o;
+        }
+        return null;
+    }
+
     @Override
     public <T> T getBean(Class<T> type) {
         if (type != null) {
@@ -44,7 +81,7 @@ public class HServerIoc implements Ioc {
                 return type.cast(o);
             }
         } catch (Exception e) {
-            log.warn("{}转换异常{}",beanName, e.getMessage());
+            log.warn("{}转换异常{}", beanName, e.getMessage());
         }
         return null;
     }
@@ -59,7 +96,7 @@ public class HServerIoc implements Ioc {
 
     @Override
     public void addBean(String name, Object bean) {
-        if (name != null && name.trim().length() > 0 && bean != null ) {
+        if (name != null && name.trim().length() > 0 && bean != null) {
             POOL.put(name, bean);
         }
     }
@@ -82,7 +119,6 @@ public class HServerIoc implements Ioc {
     @Override
     public void clearAll() {
         POOL.clear();
-
     }
 
     @Override

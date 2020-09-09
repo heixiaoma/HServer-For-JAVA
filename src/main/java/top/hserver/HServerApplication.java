@@ -9,7 +9,6 @@ import top.hserver.core.log.HServerLogConfig;
 import top.hserver.core.properties.PropertiesInit;
 import top.hserver.core.server.HServer;
 import lombok.extern.slf4j.Slf4j;
-import top.hserver.core.server.filter.FilterChain;
 import top.hserver.core.server.router.RouterManager;
 import top.hserver.core.server.util.EnvironmentUtil;
 import top.hserver.core.server.util.PackageUtil;
@@ -223,8 +222,6 @@ public class HServerApplication {
         IocUtil.clearAll();
         //URLMapper 清除
         RouterManager.clearRouterManager();
-        //Filter清除
-        FilterChain.clearFilterChain();
         //重新加载一盘
         iocInit(HServerApplication.clazz, HServerApplication.mainClass, HServerApplication.packages);
     }

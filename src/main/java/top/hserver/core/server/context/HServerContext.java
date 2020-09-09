@@ -24,8 +24,6 @@ public class HServerContext {
 
     private boolean isStaticFile;
 
-    private boolean isFilter;
-
     private FullHttpRequest fullHttpRequest;
 
     private StaticFile staticFile;
@@ -82,13 +80,6 @@ public class HServerContext {
         this.result = result;
     }
 
-    public boolean isFilter() {
-        return isFilter;
-    }
-
-    public void setFilter(boolean filter) {
-        isFilter = filter;
-    }
 
     public ChannelHandlerContext getCtx() {
         return ctx;

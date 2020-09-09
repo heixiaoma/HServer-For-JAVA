@@ -1,11 +1,11 @@
 package top.hserver.core.server.handlers;
 
+import top.hserver.core.interfaces.FilterAdapter;
 import top.hserver.core.interfaces.GlobalException;
 import top.hserver.core.interfaces.PermissionAdapter;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.*;
 import top.hserver.core.server.exception.BusinessException;
-import top.hserver.core.server.filter.FilterChain;
 import top.hserver.core.server.router.RouterInfo;
 import top.hserver.core.server.router.RouterManager;
 import top.hserver.core.server.router.RouterPermission;
@@ -17,8 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * 分发器
@@ -57,29 +57,40 @@ public class DispatcherHandler {
         if (hServerContext.isStaticFile()) {
             return hServerContext;
         }
-        PermissionAdapter permissionAdapter = IocUtil.getBean(PermissionAdapter.class);
-        if (permissionAdapter != null) {
+        List<PermissionAdapter> listBean = IocUtil.getListBean(PermissionAdapter.class);
+        if (listBean != null) {
             RouterPermission routerPermission = RouterManager.getRouterPermission(hServerContext.getRequest().getUri(), hServerContext.getRequest().getRequestType());
             if (routerPermission != null) {
-                if (routerPermission.getRequiresPermissions() != null) {
-                    try {
-                        permissionAdapter.requiresPermissions(routerPermission.getRequiresPermissions(), hServerContext.getWebkit());
-                    } catch (Exception e) {
-                        throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "权限验证", e, hServerContext.getWebkit());
+                for (PermissionAdapter permissionAdapter : listBean) {
+                    if (routerPermission.getRequiresPermissions() != null) {
+                        try {
+                            permissionAdapter.requiresPermissions(routerPermission.getRequiresPermissions(), hServerContext.getWebkit());
+                            if (hServerContext.getWebkit().httpResponse.hasData()) {
+                                break;
+                            }
+                        } catch (Exception e) {
+                            throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "权限验证", e, hServerContext.getWebkit());
+                        }
                     }
-                }
-                if (routerPermission.getRequiresRoles() != null) {
-                    try {
-                        permissionAdapter.requiresRoles(routerPermission.getRequiresRoles(), hServerContext.getWebkit());
-                    } catch (Exception e) {
-                        throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "角色验证", e, hServerContext.getWebkit());
+                    if (routerPermission.getRequiresRoles() != null) {
+                        try {
+                            permissionAdapter.requiresRoles(routerPermission.getRequiresRoles(), hServerContext.getWebkit());
+                            if (hServerContext.getWebkit().httpResponse.hasData()) {
+                                break;
+                            }
+                        } catch (Exception e) {
+                            throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "角色验证", e, hServerContext.getWebkit());
+                        }
                     }
-                }
-                if (routerPermission.getSign() != null) {
-                    try {
-                        permissionAdapter.sign(routerPermission.getSign(), hServerContext.getWebkit());
-                    } catch (Exception e) {
-                        throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "Sign验证", e, hServerContext.getWebkit());
+                    if (routerPermission.getSign() != null) {
+                        try {
+                            permissionAdapter.sign(routerPermission.getSign(), hServerContext.getWebkit());
+                            if (hServerContext.getWebkit().httpResponse.hasData()) {
+                                break;
+                            }
+                        } catch (Exception e) {
+                            throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "Sign验证", e, hServerContext.getWebkit());
+                        }
                     }
                 }
             }
@@ -97,15 +108,18 @@ public class DispatcherHandler {
         /**
          * 检测下Filter的过滤哈哈
          */
-        if (!FilterChain.FILTERS_IOC.isEmpty()) {
-            //不是空就要进行Filter过滤洛
-            hServerContext.setFilter(true);
+        if (IocUtil.getListBean(FilterAdapter.class) != null) {
             try {
-                FilterChain.getFileChain().doFilter(hServerContext.getWebkit());
+                List<FilterAdapter> listBean = IocUtil.getListBean(FilterAdapter.class);
+                for (FilterAdapter filterAdapter : listBean) {
+                    filterAdapter.doFilter(hServerContext.getWebkit());
+                    if (hServerContext.getWebkit().httpResponse.hasData()) {
+                        break;
+                    }
+                }
             } catch (Exception e) {
                 throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "拦截器异常", e, hServerContext.getWebkit());
             }
-            //Filter走完又回来
         }
         return hServerContext;
     }
@@ -133,7 +147,7 @@ public class DispatcherHandler {
          *  重定向
          *
          */
-        if (hServerContext.getResponse().getJsonAndHtml() != null || hServerContext.getResponse().isDownload()||hServerContext.getResponse().getHeaders().get("location")!=null) {
+        if (hServerContext.getWebkit().httpResponse.hasData()) {
             return hServerContext;
         }
 
@@ -170,9 +184,9 @@ public class DispatcherHandler {
             } else {
                 //非字符串类型的将对象转换Json字符串
                 try {
-                  hServerContext.setResult(ConstConfig.OBJECT_MAPPER.writeValueAsString(res));
-                }catch (Exception e){
-                  throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "返回的数据非字符串被转换JSON异常", e, hServerContext.getWebkit());
+                    hServerContext.setResult(ConstConfig.OBJECT_MAPPER.writeValueAsString(res));
+                } catch (Exception e) {
+                    throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "返回的数据非字符串被转换JSON异常", e, hServerContext.getWebkit());
                 }
                 hServerContext.getResponse().setHeader("content-type", "application/json;charset=UTF-8");
             }
@@ -207,7 +221,7 @@ public class DispatcherHandler {
                 response = BuildResponse.buildHttpResponseData(hServerContext.getResponse());
             } else {
                 //使用了代理模式，让用户自由控制ctx 不受框架操作
-                if (hServerContext.getResponse().isProxy()){
+                if (hServerContext.getResponse().isProxy()) {
                     return null;
                 }
                 //控制器调用的
@@ -258,9 +272,14 @@ public class DispatcherHandler {
                 } else {
                     log.error(ExceptionUtil.getMessage(e1.getThrowable()));
                 }
-                GlobalException bean2 = IocUtil.getBean(GlobalException.class);
-                if (bean2 != null) {
-                    bean2.handler(e1.getThrowable(), e1.getHttpCode(), e1.getErrorDescription(), e1.getWebkit());
+                List<GlobalException> listBean = IocUtil.getListBean(GlobalException.class);
+                if (listBean != null) {
+                    for (GlobalException globalException : listBean) {
+                        globalException.handler(e1.getThrowable(), e1.getHttpCode(), e1.getErrorDescription(), e1.getWebkit());
+                        if (e1.getWebkit().httpResponse.hasData()) {
+                            break;
+                        }
+                    }
                     return buildExceptionResponse(e1.getWebkit());
                 } else {
                     return BuildResponse.buildError(e1);
@@ -283,7 +302,7 @@ public class DispatcherHandler {
      */
     static void writeResponse(ChannelHandlerContext ctx, CompletableFuture<HServerContext> future, FullHttpResponse msg) {
         //等于null 是让用户自己调度
-        if (msg!=null) {
+        if (msg != null) {
             ctx.writeAndFlush(msg);
             future.complete(null);
         }

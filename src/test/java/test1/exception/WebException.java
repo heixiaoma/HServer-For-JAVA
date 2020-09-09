@@ -6,13 +6,13 @@ import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.ioc.annotation.Bean;
 import top.hserver.core.server.context.Webkit;
 
-//@Bean
+@Bean
 public class WebException implements GlobalException {
 
     @Override
-    public void handler(Throwable throwable, int httpStatusCode,String errorDescription, Webkit webkit) {
+    public void handler(Throwable throwable, int httpStatusCode, String errorDescription, Webkit webkit) {
         HttpRequest httpRequest = webkit.httpRequest;
-        StringBuilder error=new StringBuilder();
+        StringBuilder error = new StringBuilder();
         error.append("全局异常处理")
                 .append("url")
                 .append(httpRequest.getUri())
@@ -22,6 +22,5 @@ public class WebException implements GlobalException {
                 .append(errorDescription);
         webkit.httpResponse.sendStatusCode(HttpResponseStatus.BAD_GATEWAY);
         webkit.httpResponse.sendText(error.toString());
-
     }
 }

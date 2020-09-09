@@ -1,7 +1,6 @@
 package test1.action;
 
 import lombok.extern.slf4j.Slf4j;
-import test1.annotation.Aa;
 import test1.bean.User;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.interfaces.HttpResponse;
@@ -78,11 +77,7 @@ public class Hello {
         return JsonResult.ok();
     }
 
-    @GET("/log")
-    public String log() {
-        new Aa().loga("牛哦UI");
-        return "0";
-    }
+
 
     @Track
     @GET("/track")

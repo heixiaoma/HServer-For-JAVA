@@ -41,9 +41,6 @@ public class ClasspathPackageScanner implements PackageScanner {
             if (aClass.getAnnotation(Hook.class) != null) {
                 add(aClass, Hook.class);
             }
-            if (aClass.getAnnotation(Filter.class) != null) {
-                add(aClass, Filter.class);
-            }
             if (aClass.getAnnotation(QueueListener.class) != null) {
                 add(aClass, QueueListener.class);
             }

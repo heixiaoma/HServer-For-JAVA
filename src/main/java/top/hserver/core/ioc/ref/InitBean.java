@@ -9,7 +9,6 @@ import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.ioc.annotation.*;
 import top.hserver.core.ioc.annotation.nacos.NacosValue;
 import top.hserver.core.proxy.JavassistProxyFactory;
-import top.hserver.core.server.filter.FilterChain;
 import top.hserver.core.server.handlers.WebSocketServerHandler;
 import top.hserver.core.server.router.RouterInfo;
 import top.hserver.core.server.router.RouterManager;
@@ -33,11 +32,6 @@ public class InitBean {
 
     /**
      * 加载所有bean进容器
-     * <p>
-     * <p>
-     * 容器分为 Filter容器 和 普通容器
-     * <p>
-     * 注入时要两个都要注入
      *
      * @param packageName
      */
@@ -55,7 +49,6 @@ public class InitBean {
             initBean(scan);
             initController(scan);
             initHook(scan);
-            initFilter(scan);
             //初始化异步事件
             QueueDispatcher.init(scan);
         } catch (Exception e) {
@@ -101,9 +94,9 @@ public class InitBean {
                 //配置类只能注入字段和配置属性
                 valuezr(field, o);
                 //注入配置类
-                zr(field,o);
+                zr(field, o);
                 //注入Nacos配置中心的数据
-                nacoszr(field,o);
+                nacoszr(field, o);
             }
             for (Method method : methods) {
                 Bean bean = method.getAnnotation(Bean.class);
@@ -161,31 +154,31 @@ public class InitBean {
         for (Class aClass : clasps) {
             //检测这个Bean是否是全局异常处理的类
             if (GlobalException.class.isAssignableFrom(aClass)) {
-                IocUtil.addBean(GlobalException.class.getName(), aClass.newInstance());
+                IocUtil.addListBean(GlobalException.class.getName(), aClass.newInstance());
                 continue;
             }
 
             //检测这个Bean是否是初始化的类
             if (InitRunner.class.isAssignableFrom(aClass)) {
-                IocUtil.addBean(InitRunner.class.getName(), aClass.newInstance());
+                IocUtil.addListBean(InitRunner.class.getName(), aClass.newInstance());
                 continue;
             }
 
             //检测这个Bean是否是权限认证的
             if (PermissionAdapter.class.isAssignableFrom(aClass)) {
-                IocUtil.addBean(PermissionAdapter.class.getName(), aClass.newInstance());
+                IocUtil.addListBean(PermissionAdapter.class.getName(), aClass.newInstance());
                 continue;
             }
 
             //检测这个Bean是否是track的
             if (TrackAdapter.class.isAssignableFrom(aClass)) {
-                IocUtil.addBean(TrackAdapter.class.getName(), aClass.newInstance());
+                IocUtil.addListBean(TrackAdapter.class.getName(), aClass.newInstance());
                 continue;
             }
 
-            //检测这个Bean是否是自定义注解的
-            if (AnnotationAdapter.class.isAssignableFrom(aClass)) {
-                IocUtil.addBean(AnnotationAdapter.class.getName(), aClass.newInstance());
+            //检测这个Bean是否是track的
+            if (FilterAdapter.class.isAssignableFrom(aClass)) {
+                IocUtil.addListBean(FilterAdapter.class.getName(), aClass.newInstance());
                 continue;
             }
 
@@ -224,7 +217,6 @@ public class InitBean {
                     }
                 }
             }
-
 
             for (Method method : methods) {
                 Task task = method.getAnnotation(Task.class);
@@ -348,61 +340,25 @@ public class InitBean {
     }
 
 
-    /**
-     * 处理下Filter的加载，放在Ioc容器
-     */
-    private static void initFilter(PackageScanner scan) throws Exception {
-        List<Class<?>> classes = scan.getAnnotationList(Filter.class);
-        // 载入事件处理类
-        Map<Integer, Map<String, FilterAdapter>> map = new HashMap<>();
-        int tempMax = 0;
-        // 解析事件处理类
-        for (Class<?> clazz : classes) {
-            Filter handlerAnn = clazz.getAnnotation(Filter.class);
-            if (handlerAnn == null) {
-                continue;
-            }
-            log.info("{}优先级：{}", clazz.getCanonicalName(), handlerAnn.value());
-            FilterAdapter obj;
-            try {
-                obj = (FilterAdapter) clazz.newInstance();
-            } catch (Exception e) {
-                log.error("初始化 {} 错误:{}", clazz.getSimpleName(), e);
-                continue;
-            }
-            if (obj != null) {
-                if (map.containsKey(handlerAnn.value())) {
-                    throw new RuntimeException("初始化插件出现异常，顺序冲突:" + handlerAnn.value());
-                } else {
-                    Map<String, FilterAdapter> filterMap = new HashMap<>();
-                    filterMap.put(clazz.getName(), obj);
-                    map.put(handlerAnn.value(), filterMap);
-                    if (handlerAnn.value() > tempMax) {
-                        tempMax = handlerAnn.value();
-                    }
-                }
-            }
-        }
-        for (int i = 0; i <= tempMax; i++) {
-            if (map.containsKey(i)) {
-                Map<String, FilterAdapter> filterMap = map.get(i);
-                FilterChain.FILTERS_IOC.add(filterMap);
-            }
-        }
-    }
-
-
     private static void initHook(PackageScanner scan) throws Exception {
         JavassistProxyFactory javassistProxyFactory = new JavassistProxyFactory();
         List<Class<?>> clasps = scan.getAnnotationList(Hook.class);
         for (Class aClass : clasps) {
             Hook hook = (Hook) aClass.getAnnotation(Hook.class);
             Class value = hook.value();
-            String method = hook.method();
-            Object newProxyInstance = javassistProxyFactory.newProxyInstance(value, aClass.getName(), method);
+            String method[] = hook.method();
+            //检查容器是否有，没有重0生产 ,有就基于现在的进行生产
+            Object bean = IocUtil.getBean(value);
+            Object newProxyInstance;
+            if (bean != null) {
+                Class<?> aClass1 = bean.getClass();
+                newProxyInstance= javassistProxyFactory.newProxyInstance(aClass1, aClass.getName(), method);
+            }else{
+                newProxyInstance= javassistProxyFactory.newProxyInstance(value, aClass.getName(), method);
+            }
             //将Hook实例类放在容器里面，一会儿还需要检查他是否有其他数据，需要注入
             IocUtil.addBean(aClass.getName(), aClass.newInstance());
-            //将代理类放入容器，一会儿不能把自己替换了
+            //将代理类放入容器，,一会让注入的时候就是代理类注入进去了
             IocUtil.addBean(value.getName(), newProxyInstance);
         }
     }
@@ -413,15 +369,17 @@ public class InitBean {
     public static void injection() {
         //Bean对象
         Map<String, Object> all = IocUtil.getAll();
-        all.forEach((k, v) -> autoZr(v));
+        all.forEach((k, v) -> {
+            //注意有一个List类型的IOC
+            if (v instanceof List) {
+                List v1 = (List) v;
+                for (Object o : v1) {
+                    autoZr(o);
+                }
+            } else {
+                autoZr(v);
+            }
 
-        //Filter注入
-        List<Map<String, FilterAdapter>> filtersIoc = FilterChain.FILTERS_IOC;
-        filtersIoc.forEach((v) -> {
-            //获取当前类的所有字段
-            String next = v.keySet().iterator().next();
-            FilterAdapter filterAdapter = v.get(next);
-            autoZr(filterAdapter);
         });
     }
 
@@ -471,18 +429,6 @@ public class InitBean {
             Field[] declaredFields = v.getClass().getDeclaredFields();
             for (Field declaredField : declaredFields) {
                 beetlsqlzr(declaredField, v, sqlManagers);
-            }
-        });
-
-        //Filter注入
-        List<Map<String, FilterAdapter>> filtersIoc = FilterChain.FILTERS_IOC;
-        filtersIoc.forEach((v) -> {
-            //获取当前类的所有字段
-            String next = v.keySet().iterator().next();
-            FilterAdapter filterAdapter = v.get(next);
-            Field[] declaredFields = filterAdapter.getClass().getDeclaredFields();
-            for (Field declaredField : declaredFields) {
-                beetlsqlzr(declaredField, filterAdapter, sqlManagers);
             }
         });
     }

@@ -13,5 +13,5 @@ import java.lang.reflect.Method;
 public @interface Hook {
     Class value();
 
-    String method();
+    String[] method();
 }

@@ -33,6 +33,20 @@ public class Response implements HttpResponse {
 
   private boolean isProxy=false;
 
+
+  @Override
+  public boolean hasData() {
+    //重定向，json html 等
+    if (jsonAndHtml!=null){
+      return true;
+    }
+    //下载文件
+    if (isDownload){
+      return true;
+    }
+    return false;
+  }
+
   /**
    * 设置响应头
    *
