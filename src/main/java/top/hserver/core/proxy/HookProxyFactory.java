@@ -31,11 +31,17 @@ public class HookProxyFactory {
                     for (HookAdapter hookAdapter : listBean) {
                         hookAdapter.before(self.getClass(), thismethod, args);
                     }
-                    Object result = proceed.invoke(self, args);
-                    for (HookAdapter hookAdapter : listBean) {
-                        result = hookAdapter.after(self.getClass(), thismethod, result);
+                    try {
+                        Object result = proceed.invoke(self, args);
+                        for (HookAdapter hookAdapter : listBean) {
+                            result = hookAdapter.after(self.getClass(), thismethod, result);
+                        }
+                        return result;
+                    }catch (Throwable e){
+                        for (HookAdapter hookAdapter : listBean) {
+                            hookAdapter.throwable(self.getClass(), thismethod, e);
+                        }
                     }
-                    return result;
                 }
             }
             return proceed.invoke(self, args);

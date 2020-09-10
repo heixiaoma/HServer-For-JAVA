@@ -8,6 +8,9 @@ public class T2ServiceImpl implements TService {
     @Log
     @Override
     public String t() {
+
+        System.out.println(1/0);
+
         return "tt111";
     }
 }

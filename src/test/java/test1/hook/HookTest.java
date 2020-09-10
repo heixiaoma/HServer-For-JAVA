@@ -25,4 +25,9 @@ public class HookTest implements HookAdapter {
     public Object after(Class clazz, Method method,Object object) {
         return object + "aop-后置拦截1111111111111111"+helloService.sayHello();
     }
+
+    @Override
+    public void throwable(Class clazz, Method method, Throwable throwable) {
+        System.out.println(throwable);
+    }
 }

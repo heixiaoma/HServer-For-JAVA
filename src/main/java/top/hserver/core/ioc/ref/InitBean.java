@@ -44,19 +44,69 @@ public class InitBean {
                 PackageScanner scan = new ClasspathPackageScanner(k);
                 //读取配置文件
                 initConfigurationProperties(scan);
-                initConfiguration(scan);
-                initWebSocket(scan);
-                initTest(scan);
-                initBean(scan);
-                initController(scan);
-                initHook(scan, packageNames);
-                //初始化异步事件
-                QueueDispatcher.init(scan);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
 
+        packageNames.forEach(k -> {
+            try {
+                PackageScanner scan = new ClasspathPackageScanner(k);
+                initConfiguration(scan);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        packageNames.forEach(k -> {
+            try {
+                PackageScanner scan = new ClasspathPackageScanner(k);
+                initWebSocket(scan);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        packageNames.forEach(k -> {
+            try {
+                PackageScanner scan = new ClasspathPackageScanner(k);
+                initTest(scan);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        packageNames.forEach(k -> {
+            try {
+                PackageScanner scan = new ClasspathPackageScanner(k);
+                initBean(scan);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        packageNames.forEach(k -> {
+            try {
+                PackageScanner scan = new ClasspathPackageScanner(k);
+                initController(scan);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        packageNames.forEach(k -> {
+            try {
+                PackageScanner scan = new ClasspathPackageScanner(k);
+                initHook(scan, packageNames);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        packageNames.forEach(k -> {
+            try {
+                PackageScanner scan = new ClasspathPackageScanner(k);
+                QueueDispatcher.init(scan);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private static void initConfigurationProperties(PackageScanner scanner) throws Exception {
@@ -342,14 +392,14 @@ public class InitBean {
         }
     }
 
-    private static HookCheck checkHook(Class aClass1){
+    private static HookCheck checkHook(Class aClass1) {
         /**
          * 检查IOC是否存在aClass1对象
          * 遍历IOC,取出名字，将其替换为代理对象
          * Ioc存在单个Bean 和List集合类型
          */
         String iocName = null;
-        boolean isList=false;
+        boolean isList = false;
         Map<String, Object> allIoc = IocUtil.getAll();
         Iterator<String> iterator = allIoc.keySet().iterator();
         while (iterator.hasNext()) {
@@ -365,16 +415,16 @@ public class InitBean {
                     }
                 }
             } else {
-                if (aClass1.isAssignableFrom(v.getClass())&&!ProxyObject.class.isAssignableFrom(v.getClass())) {
+                if (aClass1.isAssignableFrom(v.getClass()) && !ProxyObject.class.isAssignableFrom(v.getClass())) {
                     iocName = tempIocName;
                     break;
                 }
             }
         }
-        if (iocName==null){
+        if (iocName == null) {
             return null;
         }
-        return new HookCheck(iocName,isList);
+        return new HookCheck(iocName, isList);
     }
 
 
@@ -400,12 +450,12 @@ public class InitBean {
                                     HookCheck hookCheck = checkHook(aClass1);
                                     //说明是容器存在的，使用后将其替换
                                     if (hookCheck != null) {
-                                        if (hookCheck.isList()){
+                                        if (hookCheck.isList()) {
                                             IocUtil.addListBean(hookCheck.getIocName(), newProxyInstance);
-                                        }else {
+                                        } else {
                                             IocUtil.addBean(hookCheck.getIocName(), newProxyInstance);
                                         }
-                                    }else {
+                                    } else {
                                         IocUtil.addBean(aClass1.getName(), newProxyInstance);
                                     }
                                 }
@@ -421,12 +471,12 @@ public class InitBean {
                                             HookCheck hookCheck = checkHook(aClass1);
                                             //说明是容器存在的，使用后将其替换
                                             if (hookCheck != null) {
-                                                if (hookCheck.isList()){
+                                                if (hookCheck.isList()) {
                                                     IocUtil.addListBean(hookCheck.getIocName(), newProxyInstance);
-                                                }else {
+                                                } else {
                                                     IocUtil.addBean(hookCheck.getIocName(), newProxyInstance);
                                                 }
-                                            }else {
+                                            } else {
                                                 IocUtil.addBean(aClass1.getName(), newProxyInstance);
                                             }
                                             break;
@@ -497,35 +547,6 @@ public class InitBean {
             }
             par = par.getSuperclass();
         }
-    }
-
-    /**
-     * 对BeetlSql兼容
-     */
-    public static void BeetlSqlinit() {
-
-        //检查下是否有Beetlsql的管理器
-        final Map<String, Object> sqlManagers = new HashMap<>();
-        Map<String, Object> all1 = IocUtil.getAll();
-        all1.forEach((k, v) -> {
-            //存在sqlManager.那就搞事情；
-            if ("org.beetl.sql.core.SQLManager".equals(v.getClass().getName())) {
-                sqlManagers.put(k, v);
-            }
-        });
-
-        if (sqlManagers.size() == 0) {
-            return;
-        }
-        //Bean对象
-        Map<String, Object> all = IocUtil.getAll();
-        all.forEach((k, v) -> {
-            //获取当前类的所有字段
-            Field[] declaredFields = v.getClass().getDeclaredFields();
-            for (Field declaredField : declaredFields) {
-                beetlsqlzr(declaredField, v, sqlManagers);
-            }
-        });
     }
 
 
@@ -639,16 +660,13 @@ public class InitBean {
                     }
                     bean = IocUtil.getBean(allClassByInterface.get(0));
                     findMsg = "按子类装配，" + declaredField.getType().getSimpleName();
-                } else {
-                    //Beetlsql，是动态获取，ioc不存在，所以就取消注入
-                    BeetlSQL beetlSQL = declaredField.getType().getAnnotation(BeetlSQL.class);
-                    if (beetlSQL != null) {
-                        return;
-                    }
-                    log.error("装配错误:容器中未找到对应的Bean对象装备配,查找说明：{}", findMsg);
-                    return;
                 }
             }
+
+            if (bean == null) {
+                return;
+            }
+
             try {
                 //同类型注入
                 if (bean.getClass().getName().contains(declaredField.getType().getName())) {
@@ -662,55 +680,8 @@ public class InitBean {
                     log.error("{}----->{}：装配错误:类型不匹配", v.getClass().getSimpleName(), v.getClass().getSimpleName());
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 log.error("装配错误:{},{}", declaredField.getName(), e.getMessage());
-            }
-        }
-    }
-
-
-    /**
-     * Beetlsql注入
-     *
-     * @param declaredField
-     * @param v
-     */
-    private static void beetlsqlzr(Field declaredField, Object v, Map sqlManagers) {
-        //检查是否有注解@Autowired
-        Autowired annotation = declaredField.getAnnotation(Autowired.class);
-        if (annotation != null) {
-            declaredField.setAccessible(true);
-            //检查字段是类型是否被@Beetlsql标注
-            BeetlSQL beetlSQL = declaredField.getType().getAnnotation(BeetlSQL.class);
-            try {
-                if (beetlSQL != null) {
-                    Object sqlManager;
-                    if (beetlSQL.value().trim().length() == 0) {
-                        sqlManager = sqlManagers.get("org.beetl.sql.core.SQLManager");
-                    } else {
-                        sqlManager = sqlManagers.get(beetlSQL.value());
-                    }
-
-                    if (sqlManager == null) {
-                        throw new NullPointerException("空指针，sqlManager-bean存在，但是BeetlSQL的注解的Value值（" + beetlSQL.value() + "） 类型不匹配,请检查配置类的Bean 名字和BeetlSQL 的是否一致.");
-                    }
-                    Class<?> aClass = sqlManager.getClass();
-                    Method getMapper = aClass.getMethod("getMapper", Class.class);
-                    if (getMapper == null) {
-                        return;
-                    }
-                    getMapper.setAccessible(true);
-                    //这个就是Dao的接口的实现类，将他进行注入到其他地方
-                    Object bean = getMapper.invoke(sqlManager, declaredField.getType());
-                    //同类型注入
-                    if (declaredField.getType().isAssignableFrom(bean.getClass())) {
-                        declaredField.set(v, bean);
-                        log.info("{}----->{}：装配完成，{}", new Object[]{bean.getClass().getSimpleName(), v.getClass().getSimpleName(), "BeetlSql注入"});
-                    } else {
-                        log.error("{}----->{}：装配错误:类型不匹配", v.getClass().getSimpleName(), v.getClass().getSimpleName());
-                    }
-                }
-            } catch (Exception e) {
-                log.error("装配错误:{}", e.getMessage());
             }
         }
     }

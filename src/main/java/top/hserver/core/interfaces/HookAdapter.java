@@ -20,4 +20,13 @@ public interface HookAdapter {
      * @return
      */
     Object after(Class clazz, Method method, Object object);
+
+
+    /**
+     * 异常
+     * @param clazz
+     * @param method
+     * @param throwable
+     */
+    void throwable(Class clazz, Method method,Throwable throwable);
 }

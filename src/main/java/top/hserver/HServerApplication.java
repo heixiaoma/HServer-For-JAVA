@@ -212,8 +212,6 @@ public class HServerApplication {
         PLUGS_MANAGER.startInjection();
         InitBean.injection();
         PLUGS_MANAGER.injectionEnd();
-        //Beetlsql注入
-        InitBean.BeetlSqlinit();
         log.info("IOC 全部装配完成");
     }
 

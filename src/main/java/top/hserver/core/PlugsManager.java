@@ -22,7 +22,7 @@ public class PlugsManager implements PlugAdapter {
         for (Class aClass : plugsClass) {
             try {
                 obj.add((PlugAdapter) aClass.newInstance());
-                plugPackages.add(aClass.getName());
+                plugPackages.add(aClass.getPackage().getName());
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -25,4 +25,10 @@ public class HookTest2 implements HookAdapter {
         log.debug("aop.-后置拦截 {}",object);
         return object;
     }
+
+    @Override
+    public void throwable(Class clazz, Method method, Throwable throwable) {
+        System.out.println(throwable);
+
+    }
 }
