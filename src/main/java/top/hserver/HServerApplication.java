@@ -1,6 +1,6 @@
 package top.hserver;
 
-import top.hserver.core.PlugsManager;
+import top.hserver.core.plugs.PlugsManager;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
@@ -207,7 +207,7 @@ public class HServerApplication {
         log.info("Package 扫描中");
         PLUGS_MANAGER.startIocInit();
         InitBean.init(scanPackage);
-        PLUGS_MANAGER.IocInitEnd();
+        PLUGS_MANAGER.iocInitEnd();
         log.info("IOC 装配中");
         PLUGS_MANAGER.startInjection();
         InitBean.injection();

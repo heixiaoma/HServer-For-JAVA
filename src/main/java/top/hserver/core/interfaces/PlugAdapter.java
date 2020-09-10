@@ -16,7 +16,7 @@ public interface PlugAdapter {
     /**
      * 初始化完成
      */
-    void IocInitEnd();
+    void iocInitEnd();
 
     /**
      * 开始注入
