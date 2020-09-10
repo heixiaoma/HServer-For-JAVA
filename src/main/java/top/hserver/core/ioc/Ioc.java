@@ -19,7 +19,6 @@ public interface Ioc {
 
     void addBean(String name, Object bean);
 
-
     void remove(Class<?> type);
 
     void remove(String beanName);

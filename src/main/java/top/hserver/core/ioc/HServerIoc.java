@@ -31,6 +31,11 @@ public class HServerIoc implements Ioc {
             Object o = POOL.computeIfAbsent(name, k -> new ArrayList<>());
             if (o instanceof List) {
                 List o1 = (List) o;
+                for (int i = 0; i < o1.size(); i++) {
+                    if (o1.get(i).getClass().isAssignableFrom(bean.getClass())) {
+                        o1.remove(i);
+                    }
+                }
                 o1.add(bean);
             } else {
                 log.warn("不是List");

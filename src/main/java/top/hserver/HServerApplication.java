@@ -1,5 +1,6 @@
 package top.hserver;
 
+import top.hserver.core.PlugsManager;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
@@ -19,7 +20,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-
 /**
  * @author hxm
  */
@@ -29,6 +29,17 @@ public class HServerApplication {
     private static Class clazz;
     private static Class mainClass;
     private static String[] packages;
+
+    private static final PlugsManager PLUGS_MANAGER = new PlugsManager();
+
+    /**
+     * 添加插件
+     *
+     * @param plugsClass
+     */
+    public static void addPlugs(Class... plugsClass) {
+        PLUGS_MANAGER.addPlugs(plugsClass);
+    }
 
     /**
      * 启动服务
@@ -182,6 +193,7 @@ public class HServerApplication {
             scanPackage = new HashSet<>();
             scanPackage.add(mainClass.getPackage().getName());
         }
+        scanPackage.addAll(PLUGS_MANAGER.getPlugPackages());
         scanPackage.add(HServerApplication.class.getPackage().getName());
         log.info("初始化配置文件");
         PropertiesInit.configFile(scanPackage);
@@ -193,9 +205,13 @@ public class HServerApplication {
         log.info("Class动态修改完成");
         log.info("HServer 启动中....");
         log.info("Package 扫描中");
+        PLUGS_MANAGER.startIocInit();
         InitBean.init(scanPackage);
+        PLUGS_MANAGER.IocInitEnd();
         log.info("IOC 装配中");
+        PLUGS_MANAGER.startInjection();
         InitBean.injection();
+        PLUGS_MANAGER.injectionEnd();
         //Beetlsql注入
         InitBean.BeetlSqlinit();
         log.info("IOC 全部装配完成");

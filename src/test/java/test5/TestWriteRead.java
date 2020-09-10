@@ -1,8 +1,8 @@
 package test5;
 
+import test1.bean.User;
 import top.hserver.cloud.util.SerializationUtil;
 import top.hserver.core.queue.QueueSerialization;
-import top.hserver.core.queue.User;
 
 public class TestWriteRead {
     public static void main(String[] args) throws Exception {

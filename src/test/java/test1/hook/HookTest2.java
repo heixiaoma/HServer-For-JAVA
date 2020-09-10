@@ -17,11 +17,12 @@ public class HookTest2 implements HookAdapter {
 
     @Override
     public void before(Class clazz, Method method, Object[] objects) {
-        log.debug("aop.-前置拦截222222222222");
+        log.debug("aop.-前置拦截 {}",method.getName());
     }
 
     @Override
     public Object after(Class clazz, Method method,Object object) {
+        log.debug("aop.-后置拦截 {}",object);
         return object;
     }
 }

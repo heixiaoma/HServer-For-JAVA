@@ -1,5 +1,6 @@
 package test1.filter;
 
+import test1.log.Log;
 import top.hserver.core.ioc.annotation.Autowired;
 import top.hserver.core.interfaces.FilterAdapter;
 import top.hserver.core.ioc.annotation.Bean;
@@ -11,7 +12,7 @@ import test1.service.HelloService;
  * 优先级顺序
  */
 @Slf4j
-//@Bean
+@Bean
 public class MyFilter1 implements FilterAdapter {
 
     @Autowired

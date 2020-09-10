@@ -3,6 +3,7 @@ package test1.action;
 import lombok.extern.slf4j.Slf4j;
 import test1.bean.User;
 import test1.log.Log;
+import test1.service.TService;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.interfaces.HttpResponse;
 import top.hserver.core.ioc.annotation.*;
@@ -35,6 +36,12 @@ public class Hello {
     @Autowired
     private HelloService helloService;
 
+    @Autowired("t1")
+    private TService tService;
+
+    @Autowired("t2")
+    private TService tService2;
+
     @GET("/")
     public void index(HttpResponse httpResponse) {
         httpResponse.redirect("/hserver.html");
@@ -62,6 +69,12 @@ public class Hello {
         res.put("msg", test1q.show("xx"));
         res.put("name", name);
         return res;
+    }
+
+
+    @GET("/t")
+    public JsonResult r() {
+        return JsonResult.ok(tService.t()+tService2.t());
     }
 
     @GET("/test1")

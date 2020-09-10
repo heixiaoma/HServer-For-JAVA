@@ -1,5 +1,6 @@
 package top.hserver.core.ioc.ref;
 
+import javassist.util.proxy.ProxyObject;
 import top.hserver.cloud.CloudManager;
 import top.hserver.cloud.bean.ClientData;
 import top.hserver.cloud.proxy.CloudProxy;
@@ -341,6 +342,41 @@ public class InitBean {
         }
     }
 
+    private static HookCheck checkHook(Class aClass1){
+        /**
+         * 检查IOC是否存在aClass1对象
+         * 遍历IOC,取出名字，将其替换为代理对象
+         * Ioc存在单个Bean 和List集合类型
+         */
+        String iocName = null;
+        boolean isList=false;
+        Map<String, Object> allIoc = IocUtil.getAll();
+        Iterator<String> iterator = allIoc.keySet().iterator();
+        while (iterator.hasNext()) {
+            String tempIocName = iterator.next();
+            Object v = allIoc.get(tempIocName);
+            if (v instanceof List) {
+                List v1 = (List) v;
+                for (Object o : v1) {
+                    if (aClass1.isAssignableFrom(o.getClass())) {
+                        iocName = tempIocName;
+                        isList = true;
+                        break;
+                    }
+                }
+            } else {
+                if (aClass1.isAssignableFrom(v.getClass())&&!ProxyObject.class.isAssignableFrom(v.getClass())) {
+                    iocName = tempIocName;
+                    break;
+                }
+            }
+        }
+        if (iocName==null){
+            return null;
+        }
+        return new HookCheck(iocName,isList);
+    }
+
 
     private static void initHook(PackageScanner scan, Set<String> packages) throws Exception {
         HookProxyFactory hookProxyFactory = new HookProxyFactory();
@@ -359,8 +395,19 @@ public class InitBean {
                             if (annotation != null) {
                                 Object newProxyInstance = hookProxyFactory.newProxyInstance(aClass1, value.getName() + "HOOK");
                                 if (newProxyInstance != null) {
+                                    //不同名字，同样的bean 在引用不会出错
                                     IocUtil.addBean(newProxyInstance.getClass().getName(), newProxyInstance);
-                                    IocUtil.addBean(aClass1.getName(), newProxyInstance);
+                                    HookCheck hookCheck = checkHook(aClass1);
+                                    //说明是容器存在的，使用后将其替换
+                                    if (hookCheck != null) {
+                                        if (hookCheck.isList()){
+                                            IocUtil.addListBean(hookCheck.getIocName(), newProxyInstance);
+                                        }else {
+                                            IocUtil.addBean(hookCheck.getIocName(), newProxyInstance);
+                                        }
+                                    }else {
+                                        IocUtil.addBean(aClass1.getName(), newProxyInstance);
+                                    }
                                 }
                             } else {
                                 //方法级别的调用
@@ -371,7 +418,17 @@ public class InitBean {
                                         Object newProxyInstance = hookProxyFactory.newProxyInstance(aClass1, value.getName() + "HOOK");
                                         if (newProxyInstance != null) {
                                             IocUtil.addBean(newProxyInstance.getClass().getName(), newProxyInstance);
-                                            IocUtil.addBean(aClass1.getName(), newProxyInstance);
+                                            HookCheck hookCheck = checkHook(aClass1);
+                                            //说明是容器存在的，使用后将其替换
+                                            if (hookCheck != null) {
+                                                if (hookCheck.isList()){
+                                                    IocUtil.addListBean(hookCheck.getIocName(), newProxyInstance);
+                                                }else {
+                                                    IocUtil.addBean(hookCheck.getIocName(), newProxyInstance);
+                                                }
+                                            }else {
+                                                IocUtil.addBean(aClass1.getName(), newProxyInstance);
+                                            }
                                             break;
                                         }
                                     }

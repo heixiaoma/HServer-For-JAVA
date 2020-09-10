@@ -1,11 +1,9 @@
 package test5;
 
-import org.junit.runner.RunWith;
+import test1.bean.User;
 import top.hserver.cloud.util.SerializationUtil;
 import top.hserver.core.queue.QueueSerialization;
-import top.hserver.core.queue.User;
 
-import java.io.IOException;
 
 public class Test {
 
@@ -13,7 +11,7 @@ public class Test {
 
         QueueSerialization queueSerialization = new QueueSerialization();
         for (int i = 0; i < 20000; i++) {
-            top.hserver.core.queue.User user = new top.hserver.core.queue.User();
+            User user = new User();
             user.setName("小王" + i);
             user.setAge(i);
             queueSerialization.cacheQueue(SerializationUtil.serialize(user));
@@ -24,7 +22,7 @@ public class Test {
             System.out.println(deserialize.getName());
         }
         for (int i = 0; i < 20000; i++) {
-            top.hserver.core.queue.User user = new top.hserver.core.queue.User();
+            User user = new User();
             user.setName("小王" + i);
             user.setAge(i);
             queueSerialization.cacheQueue(SerializationUtil.serialize(user));
@@ -42,7 +40,7 @@ public class Test {
         System.out.println("------------------");
 
         for (int i = 0; i < 20000; i++) {
-            top.hserver.core.queue.User user = new top.hserver.core.queue.User();
+            User user = new User();
             user.setName("小王" + i);
             user.setAge(i);
             queueSerialization.cacheQueue(SerializationUtil.serialize(user));
@@ -68,7 +66,7 @@ public class Test {
         int j=100000;
         long l = System.currentTimeMillis();
         for (int i = 0; i < j; i++) {
-            top.hserver.core.queue.User user = new top.hserver.core.queue.User();
+            User user = new User();
             user.setName("小王" + i);
             user.setAge(i);
             queueSerialization.cacheQueue(SerializationUtil.serialize(user));
