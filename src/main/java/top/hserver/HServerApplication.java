@@ -37,8 +37,8 @@ public class HServerApplication {
      *
      * @param plugsClass
      */
-    public static void addPlugs(Class... plugsClass) {
-        PLUGS_MANAGER.addPlugs(plugsClass);
+    public static void addPlugins(Class... plugsClass) {
+        PLUGS_MANAGER.addPlugins(plugsClass);
     }
 
     /**

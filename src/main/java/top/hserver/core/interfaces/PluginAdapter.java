@@ -6,7 +6,7 @@ package top.hserver.core.interfaces;
  *
  * @author hxm
  */
-public interface PlugAdapter {
+public interface PluginAdapter {
 
     /**
      * 开始初始化
