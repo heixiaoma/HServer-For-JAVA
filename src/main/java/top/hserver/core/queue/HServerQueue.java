@@ -15,11 +15,24 @@ public class HServerQueue {
      * @param args      参数
      */
     public static void sendQueue(String queueName, Object... args) {
-        QueueDispatcher.dispatcherEvent(queueName, args);
+        QueueDispatcher.dispatcherQueue(queueName, args);
     }
+
+
+    /**
+     * 发送队列进行持久化
+     *
+     * @param queueName
+     * @param args
+     */
+    public static void sendSerializationQueue(String queueName, Object... args) {
+        QueueDispatcher.dispatcherSerializationQueue(queueName, args);
+    }
+
 
     /**
      * 队列信息
+     *
      * @param queueName
      * @return
      */

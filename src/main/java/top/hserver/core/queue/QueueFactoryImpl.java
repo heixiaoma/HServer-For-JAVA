@@ -74,10 +74,10 @@ public class QueueFactoryImpl implements QueueFactory {
     }
 
     @Override
-    public void producer(Object[] args) {
+    public void producer(QueueData queueData) {
         RingBuffer<QueueData> ringBuffer = disruptor.getRingBuffer();
         QueueProducer producer = new QueueProducer(ringBuffer);
-        producer.onData(args);
+        producer.onData(queueData);
     }
 
     @Override

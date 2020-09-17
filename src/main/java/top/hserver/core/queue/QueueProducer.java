@@ -14,11 +14,12 @@ public class QueueProducer {
         this.ringBuffer = ringBuffer;
     }
 
-    public void onData(Object[] args) {
+    public void onData(QueueData qd) {
         long sequence = ringBuffer.next();
         try {
             QueueData queueData = ringBuffer.get(sequence);
-            queueData.setArgs(args);
+            queueData.setArgs(qd.getArgs());
+            queueData.setQueueName(qd.getQueueName());
         } finally {
             ringBuffer.publish(sequence);
         }

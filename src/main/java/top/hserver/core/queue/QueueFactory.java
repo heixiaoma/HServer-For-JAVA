@@ -12,7 +12,7 @@ public interface QueueFactory {
 
     void createQueue(String queueName, int bufferSize, QueueHandlerType queueHandlerType, List<QueueHandleMethod> queueHandleMethods);
 
-    void producer(Object[] args);
+    void producer(QueueData queueData);
 
     QueueInfo queueInfo();
 

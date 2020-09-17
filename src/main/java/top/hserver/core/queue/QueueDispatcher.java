@@ -1,6 +1,7 @@
 package top.hserver.core.queue;
 
 import lombok.extern.slf4j.Slf4j;
+import top.hserver.cloud.util.SerializationUtil;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.ioc.annotation.queue.QueueHandler;
 import top.hserver.core.ioc.annotation.queue.QueueListener;
@@ -72,17 +73,33 @@ public class QueueDispatcher {
     }
 
     /**
-     * 分发事件
+     * 分发队列
      *
      * @param queueName 事件URI
      * @param args      事件参数
      */
-    public static void dispatcherEvent(String queueName, Object... args) {
+    public static void dispatcherQueue(String queueName, Object... args) {
         QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
         if (queueHandleInfo != null) {
-            queueHandleInfo.getQueueFactory().producer(args);
+            queueHandleInfo.getQueueFactory().producer(new QueueData(queueName, args));
         } else {
             log.error("不存在:{} 队列", queueName);
+        }
+    }
+
+
+    /**
+     * 持久化存储
+     *
+     * @param queueName
+     * @param args
+     */
+    public static void dispatcherSerializationQueue(String queueName, Object... args) {
+        QueueSerialization instance = new QueueSerialization();
+        try {
+            instance.cacheQueue(SerializationUtil.serialize(new QueueData(queueName, args)));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
