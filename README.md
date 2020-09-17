@@ -10,7 +10,7 @@
         <img src="https://img.shields.io/badge/Build-Java8-red.svg?style=flat" />
     </a>
      <a >
-          <img src="https://img.shields.io/badge/HServer-2.9.45-yeoll.svg?style=flat" />
+          <img src="https://img.shields.io/badge/HServer-2.9.46-yeoll.svg?style=flat" />
       </a>
     <a >
         <img src="https://img.shields.io/badge/Netty-4.1.51.Final-blue.svg" alt="flat">
@@ -39,7 +39,7 @@
     <dependency>
         <groupId>top.hserver</groupId>
         <artifactId>HServer</artifactId>
-        <version>2.9.45</version>
+        <version>2.9.46</version>
     </dependency>
 
 ### 资源菜单
