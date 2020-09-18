@@ -34,9 +34,12 @@ public class ParameterUtil {
     private final static ConcurrentHashMap<Class, ConcurrentHashMap<Method, String[]>> PARAM_NAME_MAP = new ConcurrentHashMap<>();
 
     public static Object[] getMethodArgs(Class cs, Method method, HServerContext hServerContext) throws Exception {
-        Parameter[] parameterTypes = method.getParameters();
-        Object[] objects = new Object[parameterTypes.length];
 
+        Parameter[] parameterTypes = method.getParameters();
+        if (parameterTypes.length == 0) {
+            return null;
+        }
+        Object[] objects = new Object[parameterTypes.length];
         String[] strings = PARAM_NAME_MAP.get(cs).get(method);
         if (parameterTypes.length != strings.length) {
             throw new Exception(method.getName() + "-方法参数获取异常");
@@ -111,6 +114,18 @@ public class ParameterUtil {
                 }
             }
         }
+        //数组都是null 返回null
+        boolean flag = true;
+        for (Object object : objects) {
+            if (object != null) {
+                flag = false;
+                break;
+            }
+        }
+        if (flag) {
+            return null;
+        }
+
         return objects;
     }
 
