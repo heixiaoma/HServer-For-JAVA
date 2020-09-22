@@ -1,12 +1,9 @@
 package top.hserver.core.server.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javassist.*;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.interfaces.HttpResponse;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
 import javassist.bytecode.CodeAttribute;
 import javassist.bytecode.LocalVariableAttribute;
 import javassist.bytecode.MethodInfo;
@@ -145,6 +142,8 @@ public class ParameterUtil {
             clz.defrost();
             CtClass[] params = new CtClass[method.getParameterTypes().length];
             for (int i = 0; i < method.getParameterTypes().length; i++) {
+                ClassClassPath classPath = new ClassClassPath(method.getParameterTypes()[i]);
+                pool.insertClassPath(classPath);
                 params[i] = pool.getCtClass(method.getParameterTypes()[i].getName());
             }
             CtMethod cm = clz.getDeclaredMethod(method.getName(), params);
@@ -161,23 +160,27 @@ public class ParameterUtil {
             }
             return paramNames;
         } catch (NotFoundException e) {
+            e.printStackTrace();
             return new String[]{};
         }
     }
 
 
-    public static void addParam(Class cs, Method method) {
+    public static void addParam(Class cs, Method method) throws Exception {
         String[] paramNames = getParamNames(method);
-        if (PARAM_NAME_MAP.containsKey(cs)) {
-            ConcurrentHashMap<Method, String[]> concurrentHashMap = PARAM_NAME_MAP.get(cs);
-            concurrentHashMap.put(method, paramNames);
-            PARAM_NAME_MAP.put(cs, concurrentHashMap);
-        } else {
-            ConcurrentHashMap<Method, String[]> concurrentHashMap = new ConcurrentHashMap<>();
-            concurrentHashMap.put(method, paramNames);
-            PARAM_NAME_MAP.put(cs, concurrentHashMap);
+        if (method.getParameterTypes().length==paramNames.length) {
+            if (PARAM_NAME_MAP.containsKey(cs)) {
+                ConcurrentHashMap<Method, String[]> concurrentHashMap = PARAM_NAME_MAP.get(cs);
+                concurrentHashMap.put(method, paramNames);
+                PARAM_NAME_MAP.put(cs, concurrentHashMap);
+            } else {
+                ConcurrentHashMap<Method, String[]> concurrentHashMap = new ConcurrentHashMap<>();
+                concurrentHashMap.put(method, paramNames);
+                PARAM_NAME_MAP.put(cs, concurrentHashMap);
+            }
+        }else {
+            throw new Exception("参数异常");
         }
-
     }
 
 

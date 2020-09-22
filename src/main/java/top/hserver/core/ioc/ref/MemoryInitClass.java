@@ -1,5 +1,6 @@
 package top.hserver.core.ioc.ref;
 
+import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -34,22 +35,26 @@ public class MemoryInitClass {
             ClassPool cp = ClassPool.getDefault();
             for (Class<?> aClass : classes) {
                 CtClass cc = null;
-                Method[] methods;
+                ClassClassPath classPath = new ClassClassPath(aClass);
+                cp.insertClassPath(classPath);
+                CtMethod[] methods;
                 try {
-                    methods = aClass.getMethods();
+                    methods = cp.getCtClass(aClass.getName()).getMethods();
                 } catch (NoClassDefFoundError error) {
                     continue;
                 }
                 bake:
-                for (Method method : methods) {
-                    Annotation[] annotations = method.getAnnotations();
-                    for (Annotation annotation : annotations) {
-                        for (Annotation annotation1 : annotation.annotationType().getAnnotations()) {
-                            if (annotation1.annotationType().getName().equals(Auto.class.getName())) {
+                for (CtMethod method : methods) {
+                    Object[] annotations = method.getAnnotations();
+                    for (Object annotation : annotations) {
+                        Annotation annotation1 = (Annotation) annotation;
+                        Annotation[] annotations1 = annotation1.annotationType().getAnnotations();
+                        for (Annotation annotation2 : annotations1) {
+                            if (annotation2.annotationType().getName().equals(Auto.class.getName())) {
                                 cc = cp.get(aClass.getName());
                                 cc.freeze();
                                 cc.defrost();
-                                if (annotation.annotationType().getName().equals(Track.class.getName())) {
+                                if (annotation1.annotationType().getName().equals(Track.class.getName())) {
                                     log.debug("被链路跟踪的类：{}", aClass.getName());
                                     initTrack(cc, cp, method);
                                 }
@@ -73,7 +78,7 @@ public class MemoryInitClass {
     }
 
 
-    private static void initTrack(CtClass cc, ClassPool cp, Method method) throws Exception {
+    private static void initTrack(CtClass cc, ClassPool cp, CtMethod method) throws Exception {
         CtMethod[] methods = cc.getMethods();
         for (CtMethod declaredMethod : methods) {
             Object annotation = declaredMethod.getAnnotation(Track.class);
@@ -85,9 +90,9 @@ public class MemoryInitClass {
                 declaredMethod.addLocalVariable("end_hserver", CtClass.longType);
                 declaredMethod.addLocalVariable("trackAdapter_hserver", cp.get(List.class.getCanonicalName()));
                 declaredMethod.addLocalVariable("clazz_hserver", cp.get(Class.class.getCanonicalName()));
-                declaredMethod.addLocalVariable("annMethodObj", cp.get(Method.class.getCanonicalName()));
+                declaredMethod.addLocalVariable("annMethodObj", cp.get(CtMethod.class.getCanonicalName()));
                 declaredMethod.insertBefore("begin_hserver=System.currentTimeMillis();");
-                declaredMethod.insertBefore("annMethodObj = (java.lang.reflect.Method)top.hserver.core.ioc.ref.MemoryInitClass.annMapMethod.get(\"" + uuid + "\");");
+                declaredMethod.insertBefore("annMethodObj = (javassist.CtMethod)top.hserver.core.ioc.ref.MemoryInitClass.annMapMethod.get(\"" + uuid + "\");");
 
                 StringBuilder src = new StringBuilder();
                 src.append("end_hserver=System.currentTimeMillis();");

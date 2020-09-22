@@ -1,6 +1,6 @@
 package top.hserver.core.interfaces;
 
-import java.lang.reflect.Method;
+import javassist.CtMethod;
 
 /**
  * @author hxm
@@ -16,6 +16,6 @@ public interface TrackAdapter {
      * @param end
      * @throws Exception
      */
-    void track(Class clazz,Method method, StackTraceElement[] stackTraceElements, long start, long end) throws Exception;
+    void track(Class clazz, CtMethod method, StackTraceElement[] stackTraceElements, long start, long end) throws Exception;
 
 }
