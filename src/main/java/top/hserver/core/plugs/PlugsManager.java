@@ -3,10 +3,13 @@ package top.hserver.core.plugs;
 import top.hserver.core.interfaces.PluginAdapter;
 
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 /**
  * 插件管理器
+ *
  * @author hxm
  */
 public class PlugsManager implements PluginAdapter {
@@ -14,6 +17,13 @@ public class PlugsManager implements PluginAdapter {
     private Set<String> plugPackages = new HashSet<>();
     private Set<PluginAdapter> obj = new HashSet<>();
 
+    public PlugsManager() {
+        ServiceLoader<PluginAdapter> loadedParsers = ServiceLoader.load(PluginAdapter.class);
+        for (PluginAdapter pluginAdapter : loadedParsers) {
+            obj.add(pluginAdapter);
+            plugPackages.add(pluginAdapter.getClass().getPackage().getName());
+        }
+    }
 
     public Set<String> getPlugPackages() {
         return plugPackages;

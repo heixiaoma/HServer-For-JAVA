@@ -37,6 +37,7 @@ public class HServerApplication {
      *
      * @param plugsClass
      */
+    @Deprecated
     public static void addPlugins(Class... plugsClass) {
         PLUGS_MANAGER.addPlugins(plugsClass);
     }
