@@ -9,6 +9,7 @@ import top.hserver.core.server.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
+import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -116,7 +117,8 @@ public class StaticHandler {
 
     public static void onlineFile(String path) {
         try {
-            JarFile jarFile = new JarFile(path);
+            JarURLConnection jarURLConnection = (JarURLConnection) new URL(path).openConnection();
+            JarFile jarFile = jarURLConnection.getJarFile();
             Enumeration<JarEntry> entry = jarFile.entries();
             while (entry.hasMoreElements()) {
                 JarEntry jar = entry.nextElement();

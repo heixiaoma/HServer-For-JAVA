@@ -3,7 +3,10 @@ package top.hserver.core.server.util;
 import top.hserver.core.server.context.ConstConfig;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 
 /**
  * @author hxm
@@ -11,48 +14,50 @@ import java.net.URL;
 public class EnvironmentUtil {
 
     public static void init(Class clazz) throws Exception {
-      /**
-       * 测试模式
-       */
-      if (clazz!=null){
-          File f = new File(clazz.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-          ConstConfig.RUNJAR = false;
         /**
-         * 静态路径
+         * 测试模式
          */
-          ConstConfig.CLASSPATH = f.getPath();
-          return;
+        if (clazz != null) {
+            File f = new File(clazz.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+            ConstConfig.RUNJAR = false;
+            /**
+             * 静态路径
+             */
+            ConstConfig.CLASSPATH = f.getPath();
+            return;
         }
-
         /**
          * 运行方式
          */
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        Class<?> aClass=null;
+        Class<?> aClass = null;
         for (StackTraceElement stackTraceElement : stackTrace) {
             //如果是main
-            if ("main".equals(stackTraceElement.getMethodName())){
+            if ("main".equals(stackTraceElement.getMethodName())) {
                 try {
                     aClass = Class.forName(stackTraceElement.getClassName());
                     break;
-                }catch (Exception e){
+                } catch (Exception e) {
                     return;
                 }
             }
         }
-        if (aClass==null){
+        if (aClass == null) {
             return;
         }
-        File f = new File(aClass.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-        if (!f.getPath().endsWith(".jar")) {
-            ConstConfig.RUNJAR = false;
-        } else {
+        ProtectionDomain protectionDomain = aClass.getProtectionDomain();
+        CodeSource codeSource = protectionDomain.getCodeSource();
+        URI location = (codeSource == null ? null : codeSource.getLocation().toURI());
+        String path = (location == null ? null : location.getSchemeSpecificPart());
+        if (path.endsWith(".jar") || path.endsWith(".jar!/")) {
             ConstConfig.RUNJAR = true;
+        } else {
+            ConstConfig.RUNJAR = false;
         }
         /**
          * 静态路径
          */
-        ConstConfig.CLASSPATH = f.getPath();
+        ConstConfig.CLASSPATH = "jar:" + path;
     }
 
 }

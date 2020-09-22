@@ -3,6 +3,8 @@ package top.hserver.core.server.util;
 import top.hserver.core.server.context.ConstConfig;
 
 import java.io.File;
+import java.net.JarURLConnection;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.JarFile;
@@ -54,7 +56,8 @@ public class PackageUtil {
     private  static Set<String> onlineFile(String path) {
         Set<String> tmp = new HashSet<>();
         try {
-            JarFile jarFile = new JarFile(path);
+            JarURLConnection jarURLConnection = (JarURLConnection) new URL(path).openConnection();
+            JarFile jarFile = jarURLConnection.getJarFile();
             jarFile.stream().forEach(jarEntry -> {
                 try {
                     String name = jarEntry.getName();

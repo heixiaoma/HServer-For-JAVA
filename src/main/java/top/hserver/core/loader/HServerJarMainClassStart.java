@@ -1,25 +1,37 @@
 package top.hserver.core.loader;
 
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Enumeration;
-import java.util.jar.Manifest;
+import top.hserver.core.loader.archive.Archive;
+import top.hserver.core.loader.util.AsciiBytes;
+
+import java.util.List;
+
 
 /**
  * @author hxm
  */
-public class HServerJarMainClassStart {
-    public static void main(String[] args) throws Exception {
-        URLClassLoader classLoader = (URLClassLoader) Thread.currentThread().getContextClassLoader();
-        classLoader.getResources("META-INF/MANIFEST.MF");
-        Enumeration<URL> urls = classLoader.getResources("META-INF/MANIFEST.MF");
-        if (urls.hasMoreElements()) {
-            URL url = urls.nextElement();
-            Manifest manifest = new Manifest(url.openStream());
-            String startClass = manifest.getMainAttributes().getValue("Start-Class");
-            MainMethodRunner mainMethodRunner = new MainMethodRunner(startClass, args);
-            mainMethodRunner.run();
-        }
+public class HServerJarMainClassStart extends ExecutableArchiveLauncher {
+
+    private static final AsciiBytes LIB = new AsciiBytes("lib/");
+
+    public HServerJarMainClassStart() {
+    }
+
+    protected HServerJarMainClassStart(Archive archive) {
+        super(archive);
+    }
+
+    @Override
+    protected boolean isNestedArchive(Archive.Entry entry) {
+        return !entry.isDirectory() && entry.getName().startsWith(LIB);
+    }
+
+    @Override
+    protected void postProcessClassPathArchives(List<Archive> archives) throws Exception {
+        archives.add(0, getArchive());
+    }
+
+    public static void main(String[] args) {
+        new JarLauncher().launch(args);
     }
 
 }
