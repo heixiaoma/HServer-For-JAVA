@@ -45,19 +45,18 @@ public class EnvironmentUtil {
         if (aClass == null) {
             return;
         }
+
         ProtectionDomain protectionDomain = aClass.getProtectionDomain();
         CodeSource codeSource = protectionDomain.getCodeSource();
         URI location = (codeSource == null ? null : codeSource.getLocation().toURI());
         String path = (location == null ? null : location.getSchemeSpecificPart());
         if (path.endsWith(".jar") || path.endsWith(".jar!/")) {
             ConstConfig.RUNJAR = true;
+            ConstConfig.CLASSPATH = "jar:" + path;
         } else {
+            ConstConfig.CLASSPATH = new File(aClass.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getPath();
             ConstConfig.RUNJAR = false;
         }
-        /**
-         * 静态路径
-         */
-        ConstConfig.CLASSPATH = "jar:" + path;
     }
 
 }
