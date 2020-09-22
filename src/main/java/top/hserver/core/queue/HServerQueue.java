@@ -19,16 +19,16 @@ public class HServerQueue {
     }
 
 
-    /**
-     * 发送队列进行持久化
-     *
-     * @param queueName
-     * @param args
-     */
-    public static void sendSerializationQueue(String queueName, Object... args) {
-        QueueDispatcher.dispatcherSerializationQueue(queueName, args);
-    }
-
+//    /**
+//     * 发送队列进行持久化
+//     *
+//     * @param queueName
+//     * @param args
+//     */
+//    public static void sendSerializationQueue(String queueName, Object... args) {
+//        QueueDispatcher.dispatcherSerializationQueue(queueName, args);
+//    }
+//
 
     /**
      * 队列信息
