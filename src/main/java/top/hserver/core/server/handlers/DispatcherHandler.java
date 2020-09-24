@@ -105,6 +105,14 @@ public class DispatcherHandler {
      * @return
      */
     public static HServerContext filter(HServerContext hServerContext) {
+
+        /**
+         * 如果静态文件就跳过当前的处理，否则就去执行控制器的方法
+         */
+        if (hServerContext.isStaticFile()) {
+            return hServerContext;
+        }
+
         /**
          * 检测下Filter的过滤哈哈
          */
