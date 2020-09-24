@@ -1,15 +1,8 @@
 package top.hserver.core.server.context;
 
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 /**
  * @author hxm
@@ -27,8 +20,6 @@ public class HServerContext {
     private FullHttpRequest fullHttpRequest;
 
     private StaticFile staticFile;
-
-    private String result;
 
     private ChannelHandlerContext ctx;
 
@@ -70,14 +61,6 @@ public class HServerContext {
 
     public void setStaticFile(StaticFile staticFile) {
         this.staticFile = staticFile;
-    }
-
-    public String getResult() {
-        return result;
-    }
-
-    public void setResult(String result) {
-        this.result = result;
     }
 
 

@@ -122,7 +122,7 @@ public class InitBean {
                 try {
                     PropUtil instance = PropUtil.getInstance();
                     String s = instance.get(value == null ? field.getName() : value + "." + field.getName(), null);
-                    Object convert = ParameterUtil.convert(field, s);
+                    Object convert = ParameterUtil.convert(field.getType(), s);
                     if (convert != null) {
                         field.setAccessible(true);
                         field.set(o, convert);
@@ -232,6 +232,12 @@ public class InitBean {
             //检测这个Bean是否是track的
             if (FilterAdapter.class.isAssignableFrom(aClass)) {
                 IocUtil.addListBean(FilterAdapter.class.getName(), aClass.newInstance());
+                continue;
+            }
+
+            //检测这个Bean是否是response的
+            if (ResponseAdapter.class.isAssignableFrom(aClass)) {
+                IocUtil.addListBean(ResponseAdapter.class.getName(), aClass.newInstance());
                 continue;
             }
 
@@ -608,7 +614,7 @@ public class InitBean {
                 declaredField.setAccessible(true);
                 PropUtil instance = PropUtil.getInstance();
                 String s = instance.get(annotation.value());
-                Object convert = ParameterUtil.convert(declaredField, s);
+                Object convert = ParameterUtil.convert(declaredField.getType(), s);
                 declaredField.set(v, convert);
             } catch (Exception e) {
                 log.error("{}----->{}：@Value装配错误", v.getClass().getSimpleName(), v.getClass().getSimpleName());

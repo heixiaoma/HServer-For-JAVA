@@ -1,6 +1,5 @@
 package top.hserver.core.server.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javassist.*;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.interfaces.HttpResponse;
@@ -11,10 +10,11 @@ import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.context.HServerContext;
 import top.hserver.core.server.exception.ValidateException;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -54,53 +54,23 @@ public class ParameterUtil {
                 String typeName = strings[i];
                 Map<String, String> requestParams = hServerContext.getRequest().getRequestParams();
                 try {
-                    switch (parameterType.getType().getName()) {
-                        case "int":
-                        case "java.lang.Integer":
-                            objects[i] = Integer.parseInt(requestParams.get(typeName));
-                            break;
-
-                        case "double":
-                        case "java.lang.Double":
-                            objects[i] = Double.parseDouble(requestParams.get(typeName));
-                            break;
-
-                        case "long":
-                        case "java.lang.Long":
-                            objects[i] = Long.parseLong(requestParams.get(typeName));
-                            break;
-
-                        case "short":
-                        case "java.lang.java.lang.Short":
-                            objects[i] = Short.parseShort(requestParams.get(typeName));
-                            break;
-
-                        case "float":
-                        case "java.lang.Float":
-                            objects[i] = Float.parseFloat(requestParams.get(typeName));
-                            break;
-
-                        case "boolean":
-                        case "java.lang.Boolean":
-                            objects[i] = Boolean.valueOf(requestParams.get(typeName));
-                            break;
-                        case "java.lang.String":
-                            objects[i] = requestParams.get(typeName);
-                            break;
-                        default:
-                            //不是基础类型可能就是我来转换的类型，哈哈，有毒哦
-                            if (requestParams.size() > 0) {
-                                //正常的表单
-                                objects[i] = ConstConfig.OBJECT_MAPPER.convertValue(requestParams, parameterType.getType());
-                            } else {
-                                //raw
-                                String rawData = hServerContext.getRequest().getRawData();
-                                if (rawData != null) {
-                                    objects[i] = ConstConfig.OBJECT_MAPPER.readValue(rawData, parameterType.getType());
-                                }
+                    Object convert = convert(parameterType.getType(), requestParams.get(typeName));
+                    if (convert != null) {
+                        objects[i] = convert;
+                    } else {
+                        //不是基础类型可能就是我来转换的类型，哈哈，有毒哦
+                        if (requestParams.size() > 0) {
+                            //正常的表单
+                            objects[i] = ConstConfig.OBJECT_MAPPER.convertValue(requestParams, parameterType.getType());
+                        } else {
+                            //raw
+                            String rawData = hServerContext.getRequest().getRawData();
+                            if (rawData != null) {
+                                objects[i] = ConstConfig.OBJECT_MAPPER.readValue(rawData, parameterType.getType());
                             }
-                            ValidateUtil.validate(objects[i]);
-                            break;
+                        }
+                        //参数校验工具
+                        ValidateUtil.validate(objects[i]);
                     }
                 } catch (Exception e) {
                     if (e instanceof ValidateException) {
@@ -122,7 +92,6 @@ public class ParameterUtil {
         if (flag) {
             return null;
         }
-
         return objects;
     }
 
@@ -168,7 +137,7 @@ public class ParameterUtil {
 
     public static void addParam(Class cs, Method method) throws Exception {
         String[] paramNames = getParamNames(method);
-        if (method.getParameterTypes().length==paramNames.length) {
+        if (method.getParameterTypes().length == paramNames.length) {
             if (PARAM_NAME_MAP.containsKey(cs)) {
                 ConcurrentHashMap<Method, String[]> concurrentHashMap = PARAM_NAME_MAP.get(cs);
                 concurrentHashMap.put(method, paramNames);
@@ -178,19 +147,19 @@ public class ParameterUtil {
                 concurrentHashMap.put(method, paramNames);
                 PARAM_NAME_MAP.put(cs, concurrentHashMap);
             }
-        }else {
+        } else {
             throw new Exception("参数异常");
         }
     }
 
 
-    public static Object convert(Field field, String res) {
+    public static Object convert(Class<?> type, String res) {
         if (res == null) {
             return null;
         }
         Object object = null;
         try {
-            switch (field.getType().getName()) {
+            switch (type.getName()) {
                 case "int":
                 case "java.lang.Integer":
                     object = Integer.parseInt(res);
@@ -218,8 +187,22 @@ public class ParameterUtil {
 
                 case "boolean":
                 case "java.lang.Boolean":
-                    object = Boolean.valueOf(res);
+                    object = Boolean.parseBoolean(res);
                     break;
+
+                case "byte":
+                case "java.lang.Byte":
+                    object = Byte.parseByte(res);
+                    break;
+
+                case "java.lang.BigInteger":
+                    object = BigInteger.valueOf(Long.parseLong(res));
+                    break;
+
+                case "java.lang.BigDecimal":
+                    object = BigDecimal.valueOf(Long.parseLong(res));
+                    break;
+
                 case "java.lang.String":
                     object = res;
                     break;

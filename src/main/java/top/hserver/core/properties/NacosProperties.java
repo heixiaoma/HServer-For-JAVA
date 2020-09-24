@@ -100,7 +100,7 @@ public class NacosProperties {
                         Object bean = IocUtil.getBean(dataId + group);
                         if (bean == null) {
                             String content = configService.getConfig(dataId, group, 5000);
-                            Object convert = ParameterUtil.convert(k, content);
+                            Object convert = ParameterUtil.convert(k.getType(), content);
                             IocUtil.addBean(dataId + group, convert);
                             configService.addListener(dataId, group, LISTENER);
                         }
@@ -140,7 +140,7 @@ public class NacosProperties {
             Object o = classy.newInstance();
             for (Field field : classy.getDeclaredFields()) {
                 field.setAccessible(true);
-                field.set(o, ParameterUtil.convert(field, headMap.get(field.getName())));
+                field.set(o, ParameterUtil.convert(field.getType(), headMap.get(field.getName())));
             }
             return o;
         } catch (Exception ignored) {

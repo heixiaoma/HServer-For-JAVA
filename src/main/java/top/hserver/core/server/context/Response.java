@@ -27,7 +27,7 @@ public class Response implements HttpResponse {
 
   private String fileName;
 
-  private String jsonAndHtml = null;
+  private String result = null;
 
   private HttpResponseStatus httpResponseStatus;
 
@@ -37,7 +37,7 @@ public class Response implements HttpResponse {
   @Override
   public boolean hasData() {
     //重定向，json html 等
-    if (jsonAndHtml!=null){
+    if (result!=null){
       return true;
     }
     //下载文件
@@ -85,14 +85,14 @@ public class Response implements HttpResponse {
 
   @Override
   public void sendJsonString(String jsonStr) {
-    this.jsonAndHtml = jsonStr;
+    this.result = jsonStr;
     headers.put("content-type", "application/json;charset=UTF-8");
   }
 
   @Override
   public void sendJson(Object object) {
     try {
-      this.jsonAndHtml = ConstConfig.OBJECT_MAPPER.writeValueAsString(object);
+      this.result = ConstConfig.OBJECT_MAPPER.writeValueAsString(object);
       headers.put("content-type", "application/json;charset=UTF-8");
     } catch (Exception e) {
       e.printStackTrace();
@@ -101,13 +101,13 @@ public class Response implements HttpResponse {
 
   @Override
   public void sendHtml(String html) {
-    this.jsonAndHtml = html;
+    this.result = html;
     headers.put("content-type", "text/html;charset=UTF-8");
   }
 
   @Override
   public void sendText(String text) {
-    this.jsonAndHtml = text;
+    this.result = text;
     headers.put("content-type", "text/plain;charset=UTF-8");
   }
 
@@ -124,7 +124,7 @@ public class Response implements HttpResponse {
   @Override
   public void sendTemplate(String htmlPath, Map<String, Object> obj) {
     try {
-      this.jsonAndHtml = FreemarkerUtil.getTemplate(htmlPath, obj);
+      this.result = FreemarkerUtil.getTemplate(htmlPath, obj);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -169,7 +169,7 @@ public class Response implements HttpResponse {
 
   @Override
   public void redirect(String url) {
-    this.jsonAndHtml="";
+    this.result="";
     headers.put("location", url);
   }
 
@@ -196,8 +196,12 @@ public class Response implements HttpResponse {
     return fileName;
   }
 
-  public String getJsonAndHtml() {
-    return jsonAndHtml;
+  public String getResult() {
+    return result;
+  }
+
+  public void setResult(String result) {
+    this.result = result;
   }
 
   public HttpResponseStatus getHttpResponseStatus() {

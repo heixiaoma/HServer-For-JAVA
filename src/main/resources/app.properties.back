@@ -4,13 +4,10 @@ env=dev
 #taskPool定时任务线程池子配置，默认大小是cpu核心数+1
 taskPool=5
 
-#queuePool队列任务线程池子配置，默认大小是cpu核心数+1
-queuePool=5
-
 #bossPool Netty boss线程组大小 默认2，可以按cpu 核心数来
 bossPool=2
 
-#workerPool Netty boss线程组大小 默认4
+#workerPool Netty worker线程组大小 默认4
 workerPool=4
 
 #businessPool 业务线程大小，默是用的workerPool

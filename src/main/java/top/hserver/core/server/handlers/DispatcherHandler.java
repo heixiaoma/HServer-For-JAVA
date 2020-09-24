@@ -1,8 +1,6 @@
 package top.hserver.core.server.handlers;
 
-import top.hserver.core.interfaces.FilterAdapter;
-import top.hserver.core.interfaces.GlobalException;
-import top.hserver.core.interfaces.PermissionAdapter;
+import top.hserver.core.interfaces.*;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.*;
 import top.hserver.core.server.exception.BusinessException;
@@ -186,17 +184,16 @@ public class DispatcherHandler {
             res = method.invoke(bean, methodArgs);
             //调用结果进行设置
             if (res == null) {
-                hServerContext.setResult("");
+                hServerContext.getResponse().sendText("");
             } else if (String.class.getName().equals(res.getClass().getName())) {
-                hServerContext.setResult(res.toString());
+                hServerContext.getResponse().sendText(res.toString());
             } else {
                 //非字符串类型的将对象转换Json字符串
                 try {
-                    hServerContext.setResult(ConstConfig.OBJECT_MAPPER.writeValueAsString(res));
+                    hServerContext.getResponse().sendJson(res);
                 } catch (Exception e) {
                     throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "返回的数据非字符串被转换JSON异常", e, hServerContext.getWebkit());
                 }
-                hServerContext.getResponse().setHeader("content-type", "application/json;charset=UTF-8");
             }
         } catch (InvocationTargetException e) {
             throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "调用方法失败", e.getTargetException(), hServerContext.getWebkit());
@@ -214,7 +211,7 @@ public class DispatcherHandler {
      */
     static FullHttpResponse buildResponse(HServerContext hServerContext) {
         try {
-            FullHttpResponse response;
+            FullHttpResponse response = null;
             /**
              * 如果是文件特殊处理下,是静态文件，同时需要下载的文件
              */
@@ -224,7 +221,15 @@ public class DispatcherHandler {
             } else if (hServerContext.getResponse().isDownload()) {
                 //控制器下载文件的
                 response = BuildResponse.buildControllerDownloadType(hServerContext.getResponse());
-            } else if (hServerContext.getResponse().getJsonAndHtml() != null) {
+            } else if (hServerContext.getResponse().getResult() != null) {
+                String tempResult = hServerContext.getResponse().getResult();
+                List<ResponseAdapter> responseAdapters = IocUtil.getListBean(ResponseAdapter.class);
+                if (responseAdapters != null) {
+                    for (ResponseAdapter responseAdapter : responseAdapters) {
+                        tempResult = responseAdapter.result(hServerContext.getResponse().getResult());
+                    }
+                }
+                hServerContext.getResponse().setResult(tempResult);
                 //是否Response的
                 response = BuildResponse.buildHttpResponseData(hServerContext.getResponse());
             } else {
@@ -232,8 +237,6 @@ public class DispatcherHandler {
                 if (hServerContext.getResponse().isProxy()) {
                     return null;
                 }
-                //控制器调用的
-                response = BuildResponse.buildControllerResult(hServerContext);
             }
             return BuildResponse.buildEnd(response, hServerContext.getResponse());
         } catch (Exception e) {
@@ -254,7 +257,15 @@ public class DispatcherHandler {
         if (httpResponse.isDownload()) {
             //控制器下载文件的
             response = BuildResponse.buildControllerDownloadType(httpResponse);
-        } else if (httpResponse.getJsonAndHtml() != null) {
+        } else if (httpResponse.getResult() != null) {
+            String tempResult = httpResponse.getResult();
+            List<ResponseAdapter> responseAdapters = IocUtil.getListBean(ResponseAdapter.class);
+            if (responseAdapters != null) {
+                for (ResponseAdapter responseAdapter : responseAdapters) {
+                    tempResult = responseAdapter.result(httpResponse.getResult());
+                }
+            }
+            httpResponse.setResult(tempResult);
             //是否Response的
             response = BuildResponse.buildHttpResponseData(httpResponse);
         }
@@ -311,6 +322,12 @@ public class DispatcherHandler {
     static void writeResponse(ChannelHandlerContext ctx, CompletableFuture<HServerContext> future, FullHttpResponse msg) {
         //等于null 是让用户自己调度
         if (msg != null) {
+            List<ResponseAdapter> responseAdapters = IocUtil.getListBean(ResponseAdapter.class);
+            if (responseAdapters != null) {
+                for (ResponseAdapter responseAdapter : responseAdapters) {
+                    msg = responseAdapter.response(msg);
+                }
+            }
             ctx.writeAndFlush(msg);
             future.complete(null);
         }

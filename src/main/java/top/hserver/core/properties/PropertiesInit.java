@@ -23,10 +23,6 @@ public class PropertiesInit {
         if (taskPool != null) {
             ConstConfig.taskPool = taskPool;
         }
-        Integer queuePool = instance.getInt("queuePool");
-        if (taskPool != null) {
-            ConstConfig.queuePool = queuePool;
-        }
         Integer bossPool = instance.getInt("bossPool");
         if (bossPool != null) {
             ConstConfig.bossPool = bossPool;
