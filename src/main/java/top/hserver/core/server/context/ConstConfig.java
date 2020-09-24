@@ -4,14 +4,11 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.ssl.SslContext;
-import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.EventExecutorGroup;
-import top.hserver.core.server.util.NamedThreadFactory;
 
 import java.io.File;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadPoolExecutor;
+
+import static com.fasterxml.jackson.databind.DeserializationFeature.*;
 
 /**
  * @author hxm
@@ -77,8 +74,9 @@ public class ConstConfig {
      */
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
             .configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true)
+            .configure(ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
             .configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
 
     /**

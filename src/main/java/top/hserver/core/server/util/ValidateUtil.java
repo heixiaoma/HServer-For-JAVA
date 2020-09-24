@@ -20,6 +20,9 @@ public class ValidateUtil {
      * @throws ValidateException
      */
     public static void validate(Object object) throws ValidateException {
+        if (object == null) {
+            return;
+        }
         try {
             Field[] fields = object.getClass().getDeclaredFields();
             for (int i = 0; i < fields.length; i++) {
