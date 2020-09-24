@@ -92,24 +92,7 @@ public class BuildResponse {
         FullHttpResponse response = new DefaultFullHttpResponse(
                 HTTP_1_1,
                 HttpResponseStatus.OK,
-                Unpooled.wrappedBuffer(response1.getJsonAndHtml().getBytes(StandardCharsets.UTF_8)));
-        return response;
-    }
-
-
-    /**
-     * 构建控制器返回的数据
-     *
-     * @param hServerContext
-     * @return
-     */
-    public static FullHttpResponse buildControllerResult(HServerContext hServerContext) {
-        //是否是方法调用的
-        FullHttpResponse response = new DefaultFullHttpResponse(
-                HTTP_1_1,
-                HttpResponseStatus.OK,
-                Unpooled.wrappedBuffer(hServerContext.getResult().getBytes(StandardCharsets.UTF_8)));
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
+                Unpooled.wrappedBuffer(response1.getResult().getBytes(StandardCharsets.UTF_8)));
         return response;
     }
 
@@ -133,7 +116,7 @@ public class BuildResponse {
         Map<String, String> headers = response1.getHeaders();
         headers.forEach((a, b) -> {
             response.headers().set(a, b);
-            if (a.equals("location")) {
+            if (a.equalsIgnoreCase("location")) {
                 response.setStatus(FOUND);
             }
         });

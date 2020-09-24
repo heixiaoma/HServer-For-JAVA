@@ -235,6 +235,12 @@ public class InitBean {
                 continue;
             }
 
+            //检测这个Bean是否是response的
+            if (ResponseAdapter.class.isAssignableFrom(aClass)) {
+                IocUtil.addListBean(ResponseAdapter.class.getName(), aClass.newInstance());
+                continue;
+            }
+
             //检查注解里面是否有值
             Bean annotation = (Bean) aClass.getAnnotation(Bean.class);
             if (annotation.value().trim().length() > 0) {
