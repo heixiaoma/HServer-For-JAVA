@@ -38,17 +38,13 @@ public class ConstConfig {
     /**
      * 版本号
      */
-    public static final String VERSION = "2.9.48";
+    public static final String VERSION = "2.9.49";
     /**
      * 定时任务线程数配置
      */
     public static Integer taskPool = Runtime.getRuntime().availableProcessors() + 1;
 
-    /**
-     * 队列里面的线程数
-     */
-    public static Integer queuePool = Runtime.getRuntime().availableProcessors() + 1;
-    /**
+   /**
      * SSL 配置
      */
     public static SslContext sslContext = null;

@@ -9,8 +9,11 @@ QQ交流群：1065301527
 ### Hserver的理念 
 
 **极简、高性能、分布式**
+
 **极简** 代码只有200多KB 更多的案例会在gitee.com/Hserver 的组下给出案例源码.
+
 **高性能** 使用Netty网络库作为核心，比起传统的web容器性能高数十倍.
+
 **分布式** 支持RPC模式，可以实现分布式调用.
 
 ### 使用该框架的公司
@@ -748,37 +751,15 @@ public class test2 {
 }
 ```
 
-## **SSL配置**
 
-```
-  在app.properties配置文件添加
-  
-  #举栗子：nginx版本的证书下载可能会得到 (xxx.pem或者xxx.cert) xxx.key
-  #注意下载的证书中 key文件需要转换成 pk8 文件
-  #因为netty4不支持pkcs12格式的私钥, 所以需要将私钥转换成pkcs8格式.
-  #openssl pkcs8 -in my.key -topk8 -out my.pk8
-  #转换过程需要你设置一个密码.
-  
-  方案一：
-  #jar路径，证书文件应该放在\src\main\resources\ssl\ 目录里，打包会一起打包
-  certPath=hserver.pem
-  privateKeyPath=hserver.pk8
-  privateKeyPwd=123
-  
-  方案二：
-  #外置路径，指定一个绝对路径即可
-  certPath=/home/ssl/hserver.pem
-  privateKeyPath=/home/ssl/hserver.pk8
-  privateKeyPwd=123
-
-  然后监听443端口，你就能https 访问了。
-```
 
 ## **自定义Banner**
 
 resources文件夹里存放一个banner.txt 里面放入你图标就可以了.
 
-## **app.properties环境指定**
+## **app.properties配置文件说明**
+
+### 环境切换
 
 在app.properties文件中添加,env=dev
 
@@ -786,13 +767,110 @@ resources文件夹里存放一个banner.txt 里面放入你图标就可以了.
 
 或者java -jar -Denv=dev xxx.jar 启动参数指定env
 
+### SSL支持
+
+  在app.properties配置文件添加
+
+  #举栗子：nginx版本的证书下载可能会得到 (xxx.pem或者xxx.cert) xxx.key
+  #注意下载的证书中 key文件需要转换成 pk8 文件
+  #因为netty4不支持pkcs12格式的私钥, 所以需要将私钥转换成pkcs8格式.
+  #openssl pkcs8 -in my.key -topk8 -out my.pk8
+  #转换过程需要你设置一个密码.
+
+  方案一：
+
+```properties
+  #jar路径，证书文件应该放在\src\main\resources\ssl\ 目录里，打包会一起打包
+  certPath=hserver.pem
+  privateKeyPath=hserver.pk8
+  privateKeyPwd=123
+```
+
+
+
+  方案二：
+
+```properties
+  #外置路径，指定一个绝对路径即可
+  certPath=/home/ssl/hserver.pem
+  privateKeyPath=/home/ssl/hserver.pk8
+  privateKeyPwd=123
+```
+
+
+
+  然后监听443端口，你就能https 访问了。
+
+### 定时器线程数
+
+```properties
+#taskPool定时任务线程池子配置，默认大小是cpu核心数+1
+taskPool=5
+```
+
+
+
+### BOSS线程组大小
+
+```properties
+#bossPool Netty boss线程组大小 默认2，可以按cpu 核心数来
+bossPool=2
+```
+
+
+
+### worker线程组大小
+
+```properties
+#workerPool Netty worker线程组大小 默认4
+workerPool=4
+```
+
+### 业务线程数
+
+提示：使用了业务线程，整体QPS会有降低、
+        优点：可以处理更多的并发耗时任务
+        缺点：增加线程切换
+        建议:在非耗时任务情况下不建议配置此选项，当然更具业务而定
+
+```
+#businessPool 业务线程大小，默是用的workerPool，当添加这个配置，就视为生效
+businessPool=50
+```
+
+
+
+### EPOLL模式
+
+```
+#可以开启Epoll时是否开启epoll 默认true
+epoll=true
+```
+
+### **配置中心**
+
+```properties
+在app.properties文件中添加
+#配置中心地址
+app.nacos.config.address=127.0.0.1:8848
+就可以使用动态配置注解，配置中心更新，服务自动刷新.
+标记一个类
+@NacosClass
+标记一个字段
+@NacosValue
+
+目前Nacos中Text类型是@NacosValue使用，Json和properties 被@NacosClass使用
+```
+
+
+
 
 
 ## 配置类注解
 
 1. app.properties文件内容
 
-```
+```properties
 app.name=张三
 
 mysql.url=jdbc.....
@@ -829,34 +907,7 @@ private MysqlConfig mysqlConfig;
 
 ```
 
-## **业务线程**
-
-```
-在app.properties文件中添加
-#businessPool 业务线程大小，默是用的workerPool
-businessPool=50
-提示：使用了业务线程，整体QPS会有降低、
-        优点：可以处理更多的并发耗时任务
-        缺点：增加线程切换
-        建议:在非耗时任务情况下不建议配置此选项，当然更具业务而定
-```
-
-
-
-## **配置中心**
-
-```
-在app.properties文件中添加
-#配置中心地址
-app.nacos.config.address=127.0.0.1:8848
-就可以使用动态配置注解，配置中心更新，服务自动刷新.
-标记一个类
-@NacosClass
-标记一个字段
-@NacosValue
-
-目前Nacos中Text类型是@NacosValue使用，Json和properties 被@NacosClass使用
-```
+## 
 
 
 
@@ -943,11 +994,11 @@ public class BeetLSqlPlugin implements PluginAdapter {
 
 ### 在Controller层中定义的方法
 
-参数可以是基础数据类型或者bean对象，或者HttpRequest，HttpResponse，（需要是这个包下面的top.hserver.core.interfaces.的对象）当不是表单提交时，可以通过httpRequest.getRawData()，获取到请求的数据。
+参数可以是基础数据类型或者bean对象，或者HttpRequest，HttpResponse，（需要是这个包下面的top.hserver.core.interfaces.的对象）当不是表单提交时，可以通过httpRequest.getRawData()，获取到请求的数据。默认也会尝试将内容转成对象
 
 ### 打包jar
 
-只需要在pom.xml 添加打包命令即可
+只需要在pom.xml 添加打包命令即可，打包之前记得 *clean*
 
 ```xml
     <build>
@@ -986,3 +1037,6 @@ resources/template
 ```
 找到Maven的依赖包，在top.hserver.test.目录下是大量的测试案例和代码可以查询学习和使用。
 ```
+
+
+
