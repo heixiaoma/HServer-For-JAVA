@@ -26,12 +26,20 @@
 
 
 ### 介绍
-    QQ交流群：1065301527
-    HServer是一个基于Netty的一个高并发Webserver，8核Linux 虚拟机 23w+ qps， 它不仅仅是一个webserver，我们可以直接在这个基础上进行开发
-    它提供了相关的注解和一些方法，完全能够完成我们大大小小的项目。作为一名Java程序员写web程序spring是我们项目99%会用的。
-    spring的优点就不过多讲。Hserver是一个“tomcat”+“spring”的这样的小玩意。
-    它的qps比tomcat更快，这个是因为Hserver使用的Netty,注解比spring更简，这是因为，它还不够强大（滑稽，我会努力让它更智能点）
-    如果你是一个phper或者喜欢php，可以关注下 
+QQ交流群：*1065301527*
+
+HServer是一个基于Netty的一个高并发Webserver，8核Linux 虚拟机 23w+ qps， 它不仅仅是一个webserver，我们可以直接在这个基础上进行开发
+
+它提供了相关的注解和一些方法，完全能够完成我们大大小小的项目。作为一名Java程序员写web程序spring是我们项目99%会用的。
+
+spring的优点就不过多讲。HServer是一个“tomcat”+“spring”的这样的小玩意。
+
+它的qps比tomcat更快，这个是因为Hserver使用的Netty,注解比spring更简，这是因为，它还不够强大（滑稽，我会努力让它更智能点）
+
+不论你是使用它还是学习源码想必一定会给你带来收获.
+
+如果你是一个phper或者喜欢php，可以关注下 
+
 [![黑小马工作室/HServer](https://gitee.com/heixiaomas/HServer/widgets/widget_card.svg?colors=ffffff,ffffff,,e3e9ed,666666,9b9b9b)](https://gitee.com/heixiaomas/HServer)
     
 
@@ -59,16 +67,16 @@
 | HServer版本查询 | [点我](https://repo1.maven.org/maven2/top/hserver/HServer/) |
 
 ### 特点
-* 简便易用，10分钟即可掌握使用；
+* 简便易用5分钟即可掌握使用
 * TCP层上直接构建
 * Restful风格路由设计
 * Cron定时器
 * Filter拦截器
-* Queue队列
+* DisruptorQueue队列
 * HOOK组件
 * Track组件
 * Web Socket功能
-* Proxy 自由处理，
+* Proxy 自由处理
 * RPC组件
 * Nacos组件
 * ApiDoc文档组件
@@ -76,3 +84,93 @@
 * Plugin组件自由扩展
 * 高性能 100并发下8核qps 23w/s
 * 高度自由度控制
+
+### 主要优势
+
+* 使用Netty网络库作为核心，比起传统的web容器性能高数十倍
+
+* 业务线程模型自由选择.
+* 完善的Web功能
+* 学习成本抵,5分钟即可入门使用
+
+
+
+### 感受一个HelloWorld
+
+**1.建立一个maven项目，导入依赖**
+
+```xml
+<dependency>
+    <groupId>top.hserver</groupId>
+    <artifactId>HServer</artifactId>
+    <version>最新版</version>
+</dependency>
+```
+
+
+
+**2.建立一个java包，如 com.test**
+
+**3.建立一个主函数**
+
+```java
+public class WebApp {
+    public static void main(String[] args) {
+        HServerApplication.run(WebApp.class,8888,args);
+    }
+}
+```
+
+**4.建立一个控制器**
+
+```java
+@Controller
+public class HelloController {
+
+    @GET("/test1")
+    public JsonResult test() {
+        return JsonResult.ok();
+    }
+    
+    @POST("/test2")
+    public JsonResult b(HttpRequest request) {
+        return JsonResult.ok().put("data",request.getRequestParams());
+    }
+    
+    @RequestMapping(value = "/get", method = RequestMethod.GET)
+    public JsonResult get() {
+        return JsonResult.ok();
+    }
+
+    @RequestMapping(value = "/post", method = RequestMethod.POST)
+    public JsonResult post(HttpRequest httpRequest) {
+        return JsonResult.ok().put("data",httpRequest.getRequestParams());
+    }
+    
+    /**
+     * 模板测试
+     * @param httpResponse
+     */
+    @GET("/template")
+    public void template(HttpResponse httpResponse) {
+        User user = new User();
+        user.setAge(20);
+        user.setName("xx");
+        user.setSex("男");
+        Map<String,Object> obj=new HashMap<>();
+        obj.put("user",user);
+//        httpResponse.sendTemplate("/admin/user/list.ftl", obj);
+        httpResponse.sendTemplate("a.ftl", obj);
+    }
+}
+```
+
+**5.运行主函数，访问8888端口即可**
+
+
+
+### 许可证
+
+根据Apache许可证2.0版本（"许可证"）授权，为正常使用该服务，请确保许可证与本文件兼容。用户可通过以下链接获得许可证副本：
+
+http://www.apache.org/licenses/LICENSE-2.0
