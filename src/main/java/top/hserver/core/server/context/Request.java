@@ -14,9 +14,7 @@ import lombok.Setter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -31,7 +29,8 @@ public class Request implements HttpRequest {
     private String ip;
     private int port;
     private ChannelHandlerContext ctx;
-    private Map<String, String> requestParams = new ConcurrentHashMap<>();
+    private  Map<String, List<String>> requestParams = new ConcurrentHashMap<>();
+    private  Map<String, List<String>> urlParams = new ConcurrentHashMap<>();
     private HeadMap headers;
     private FullHttpRequest nettyRequest;
 
@@ -45,7 +44,12 @@ public class Request implements HttpRequest {
 
     @Override
     public String query(String name) {
-        return requestParams.get(name);
+        return requestParams.get(name) == null ? null : requestParams.get(name).get(0);
+    }
+
+    @Override
+    public String queryUrl(String name) {
+        return urlParams.get(name) == null ? null : urlParams.get(name).get(0);
     }
 
     @Override
@@ -126,8 +130,27 @@ public class Request implements HttpRequest {
      * @throws IOException
      */
     private void parseAttribute(Attribute attribute) throws IOException {
-        this.requestParams.put(attribute.getName(), attribute.getValue());
+        addReqParams(attribute.getName(), attribute.getValue());
     }
+
+    public void addReqParams(String key, String value) {
+        if (requestParams.containsKey(key)) {
+            requestParams.get(key).add(value);
+        } else {
+            List<String> data = new ArrayList<>();
+            data.add(value);
+            requestParams.put(key, data);
+        }
+    }
+
+    public void addReqUrlParams(String key, String value) {
+        if (urlParams.containsKey(key)) {
+            urlParams.get(key).add(value);
+        } else {
+            urlParams.put(key, Collections.singletonList(value));
+        }
+    }
+
 
     /**
      * httpContent 转化为文件

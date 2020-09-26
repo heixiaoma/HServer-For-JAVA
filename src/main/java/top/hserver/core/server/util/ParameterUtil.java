@@ -1,5 +1,7 @@
 package top.hserver.core.server.util;
 
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaders;
 import javassist.*;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.interfaces.HttpResponse;
@@ -8,6 +10,7 @@ import javassist.bytecode.LocalVariableAttribute;
 import javassist.bytecode.MethodInfo;
 import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.context.HServerContext;
+import top.hserver.core.server.context.MimeType;
 import top.hserver.core.server.exception.ValidateException;
 
 import java.lang.reflect.Method;
@@ -15,6 +18,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -52,22 +56,23 @@ public class ParameterUtil {
                 Parameter parameterType = parameterTypes[i];
                 //更具基础类型转换
                 String typeName = strings[i];
-                Map<String, String> requestParams = hServerContext.getRequest().getRequestParams();
+                Map<String, List<String>> requestParams = hServerContext.getRequest().getRequestParams();
                 try {
-                    Object convert = convert(parameterType.getType(), requestParams.get(typeName));
+                    Object convert = convert(parameterType.getType(), requestParams.get(typeName) == null ? null : requestParams.get(typeName).get(0));
                     if (convert != null) {
                         objects[i] = convert;
                     } else {
                         //不是基础类型可能就是我来转换的类型，哈哈，有毒哦
-                        if (requestParams.size() > 0) {
-                            //正常的表单
-                            objects[i] = ConstConfig.OBJECT_MAPPER.convertValue(requestParams, parameterType.getType());
-                        } else {
-                            //raw
+                        String type = hServerContext.getRequest().getHeader(HttpHeaderNames.CONTENT_TYPE.toString());
+                        if (type != null && type.contains(MimeType.get("json"))) {
+                            //payload
                             String rawData = hServerContext.getRequest().getRawData();
                             if (rawData != null) {
                                 objects[i] = ConstConfig.OBJECT_MAPPER.readValue(rawData, parameterType.getType());
                             }
+                        } else if (requestParams.size() > 0) {
+                            //正常的表单
+                            objects[i] = ConstConfig.OBJECT_MAPPER.convertValue(invokeData(requestParams), parameterType.getType());
                         }
                         //参数校验工具
                         ValidateUtil.validate(objects[i]);
@@ -75,26 +80,23 @@ public class ParameterUtil {
                 } catch (Exception e) {
                     if (e instanceof ValidateException) {
                         throw e;
-                    } else {
-                        objects[i] = null;
                     }
                 }
             }
         }
-        //数组都是null 返回null
-        boolean flag = true;
-        for (Object object : objects) {
-            if (object != null) {
-                flag = false;
-                break;
-            }
-        }
-        if (flag) {
-            return null;
-        }
         return objects;
     }
 
+
+    private static Map<String, String> invokeData(Map<String, List<String>> requestParams) {
+        Map<String, String> data = new ConcurrentHashMap<>();
+        requestParams.forEach((k, v) -> {
+            if (k != null && v.size() > 0) {
+                data.put(k, v.get(0));
+            }
+        });
+        return data;
+    }
 
     /**
      * 获取参数类型的名字

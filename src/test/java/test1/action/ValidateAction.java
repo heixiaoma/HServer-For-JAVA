@@ -13,4 +13,9 @@ public class ValidateAction {
         return JsonResult.ok().put("data", user);
     }
 
+    @RequestMapping("/int")
+    public JsonResult ints(Integer i) {
+        return JsonResult.ok().put("data", i);
+    }
+
 }

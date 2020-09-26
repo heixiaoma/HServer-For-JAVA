@@ -65,13 +65,16 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
 
 
     private void handlerUrl(Request request, FullHttpRequest req) {
-        Map<String, String> requestParams = new HashMap<>(1);
+        Map<String, List<String>> requestParams = request.getRequestParams();
+        Map<String, List<String>> urlParams = request.getUrlParams();
         QueryStringDecoder decoder = new QueryStringDecoder(req.uri());
         Map<String, List<String>> params = decoder.parameters();
         for (Map.Entry<String, List<String>> next : params.entrySet()) {
-            requestParams.put(next.getKey(), next.getValue().get(0));
+            requestParams.put(next.getKey(), next.getValue());
+            for (String s : next.getValue()) {
+                request.addReqUrlParams(next.getKey(),s);
+            }
         }
-        request.setRequestParams(requestParams);
     }
 
     private void handlerBody(Request request, FullHttpRequest req) {

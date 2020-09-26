@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.hserver.core.ioc.annotation.RequestMethod;
 import top.hserver.core.server.context.HServerContext;
 import top.hserver.core.server.context.PatternUri;
+import top.hserver.core.server.context.Request;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -146,7 +147,7 @@ public class RouterManager {
 
 
     public static RouterInfo getRouterInfo(String url, HttpMethod requestType, HServerContext hServerContext) {
-        Map<String, String> requestParams = hServerContext.getRequest().getRequestParams();
+        Request request = hServerContext.getRequest();
         Map<String, RouterInfo> router = router(requestType);
         if (router == null) {
             return null;
@@ -165,7 +166,8 @@ public class RouterManager {
                     //对控制器的参数进行拼装。这个里的这个拼装类似指针调用，这里put webContent也put了。
                     for (int i = 0; i < pattern.getKeys().size(); i++) {
                         try {
-                            requestParams.put(pattern.getKeys().get(i), URLDecoder.decode(matcher.group(i + 1), "UTF-8"));
+                            request.addReqParams(pattern.getKeys().get(i), URLDecoder.decode(matcher.group(i + 1), "UTF-8"));
+                            request.addReqUrlParams(pattern.getKeys().get(i), URLDecoder.decode(matcher.group(i + 1), "UTF-8"));
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }

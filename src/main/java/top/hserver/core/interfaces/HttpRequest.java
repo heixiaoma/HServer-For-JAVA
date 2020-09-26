@@ -6,6 +6,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import top.hserver.core.server.context.PartFile;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,49 +16,73 @@ public interface HttpRequest {
 
     /**
      * 获取URI，路由作用
+     *
      * @return
      */
     String getUri();
 
     /**
      * 获取Netty的URI 带get 参数的
+     *
      * @return
      */
     String getNettyUri();
 
     /**
      * 获取Netty的request
+     *
      * @return
      */
     FullHttpRequest getNettyRequest();
 
     /**
      * 请求方法类型
+     *
      * @return
      */
     HttpMethod getRequestType();
 
     /**
      * 请求参数
+     *
      * @return
      */
-    Map<String, String> getRequestParams();
+    Map<String, List<String>> getRequestParams();
+
+    /**
+     * 获取URL的参数
+     *
+     * @return
+     */
+    Map<String, List<String>> getUrlParams();
 
     /**
      * 查询一个参数
+     *
      * @param name
      * @return
      */
     String query(String name);
 
+
+    /**
+     * 查询一个参数，重URL里查询
+     *
+     * @param name
+     * @return
+     */
+    String queryUrl(String name);
+
     /**
      * 获取所有上传的文件
+     *
      * @return
      */
     Map<String, PartFile> getMultipartFile();
 
     /**
      * 更具名字查询一个文件对象
+     *
      * @param name
      * @return
      */
@@ -65,6 +90,7 @@ public interface HttpRequest {
 
     /**
      * 查询一个header头的值
+     *
      * @param headName
      * @return
      */
@@ -72,36 +98,42 @@ public interface HttpRequest {
 
     /**
      * 获取所有的header
+     *
      * @return
      */
     Map<String, String> getHeaders();
 
     /**
      * 获取Raw方式传来的值
+     *
      * @return
      */
     String getRawData();
 
     /**
      * 获取用户的IP
+     *
      * @return
      */
     String getIp();
 
     /**
      * 用户建立的端口
+     *
      * @return
      */
     int getPort();
 
     /**
      * Netty ctx 对象
+     *
      * @return
      */
     ChannelHandlerContext getCtx();
 
     /**
      * 获取Http的Body体
+     *
      * @return
      */
     byte[] getBody();
