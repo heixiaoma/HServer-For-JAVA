@@ -212,10 +212,13 @@ public class DispatcherHandler {
     static FullHttpResponse buildResponse(HServerContext hServerContext) {
         try {
             FullHttpResponse response = null;
+            if (hServerContext.getResponse().isProxy()) {
+                return null;
+            }
             /**
              * 如果是文件特殊处理下,是静态文件，同时需要下载的文件
              */
-            if (hServerContext.isStaticFile()) {
+            else if (hServerContext.isStaticFile()) {
                 //显示型的静态文件
                 response = BuildResponse.buildStaticShowType(hServerContext);
             } else if (hServerContext.getResponse().isDownload()) {
