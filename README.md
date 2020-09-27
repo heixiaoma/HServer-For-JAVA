@@ -62,7 +62,10 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 | HServer-BeetlSql-Plugin | [点我](https://gitee.com/HServer/hserver-plugs-beetlsql) |
 | HServer版本查询 | [点我](https://repo1.maven.org/maven2/top/hserver/HServer/) |
 
+
+
 ### 特点
+
 * 简便易用5分钟即可掌握使用
 * 快速构建高效API
 * TCP层上直接构建
@@ -83,6 +86,10 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 * 高度自由度控制
 
 
+
+### 原理与流程
+
+![原理](https://gitee.com/HServer/HServer/raw/master/doc/%E6%9E%B6%E6%9E%84%E8%AF%B4%E6%98%8E1.jpg)
 
 ### 感受一个HelloWorld
 
