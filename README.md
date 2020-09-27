@@ -28,15 +28,11 @@
 ### 介绍
 QQ交流群：*1065301527*
 
-HServer是一个基于Netty的一个高并发Webserver，8核Linux 虚拟机 23w+ qps， 它不仅仅是一个webserver，我们可以直接在这个基础上进行开发
+HServer是一个基于Netty的一个高并发Webserver，8核Linux 虚拟机 23w+ qps，像springboot一样开发的的webk框架，
 
 它提供了相关的注解和一些方法，完全能够完成我们大大小小的项目。作为一名Java程序员写web程序spring是我们项目99%会用的。
 
-spring的优点就不过多讲。HServer是一个“tomcat”+“spring”的这样的小玩意。
-
-它的qps比tomcat更快，这个是因为Hserver使用的Netty,注解比spring更简，这是因为，它还不够强大（滑稽，我会努力让它更智能点）
-
-不论你是使用它还是学习源码想必一定会给你带来收获.
+spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我们就用一个简单框架快捷的HServer框架吧，它的qps比Servlet的容器更快
 
 如果你是一个phper或者喜欢php，可以关注下 
 
@@ -68,6 +64,7 @@ spring的优点就不过多讲。HServer是一个“tomcat”+“spring”的这
 
 ### 特点
 * 简便易用5分钟即可掌握使用
+* 快速构建高效API
 * TCP层上直接构建
 * Restful风格路由设计
 * Cron定时器
@@ -84,14 +81,6 @@ spring的优点就不过多讲。HServer是一个“tomcat”+“spring”的这
 * Plugin组件自由扩展
 * 高性能 100并发下8核qps 23w/s
 * 高度自由度控制
-
-### 主要优势
-
-* 使用Netty网络库作为核心，比起传统的web容器性能高数十倍
-
-* 业务线程模型自由选择.
-* 完善的Web功能
-* 学习成本抵,5分钟即可入门使用
 
 
 
