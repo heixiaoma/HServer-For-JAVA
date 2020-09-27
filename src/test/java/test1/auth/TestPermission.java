@@ -16,7 +16,7 @@ public class TestPermission implements PermissionAdapter {
 
     @Override
     public void requiresPermissions(RequiresPermissions requiresPermissions, Webkit webkit) throws Exception {
-//            System.out.println(1/0);
+            System.out.println(1/0);
             webkit.httpResponse.sendJson(JsonResult.ok());
             System.out.println(requiresPermissions.value()[0]);
     }

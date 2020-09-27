@@ -5,12 +5,15 @@ import top.hserver.core.interfaces.GlobalException;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.ioc.annotation.Bean;
 import top.hserver.core.server.context.Webkit;
+import top.hserver.core.server.exception.NotFoundException;
 
 @Bean
 public class WebException implements GlobalException {
 
     @Override
     public void handler(Throwable throwable, int httpStatusCode, String errorDescription, Webkit webkit) {
+        System.out.println(throwable instanceof NotFoundException);
+        System.out.println(throwable.getClass());
         HttpRequest httpRequest = webkit.httpRequest;
         StringBuilder error = new StringBuilder();
         error.append("全局异常处理")

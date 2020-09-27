@@ -4,6 +4,7 @@ import top.hserver.core.interfaces.*;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.*;
 import top.hserver.core.server.exception.BusinessException;
+import top.hserver.core.server.exception.NotFoundException;
 import top.hserver.core.server.router.RouterInfo;
 import top.hserver.core.server.router.RouterManager;
 import top.hserver.core.server.router.RouterPermission;
@@ -166,7 +167,7 @@ public class DispatcherHandler {
                     .append(hServerContext.getRequest().getUri())
                     .append("，来源IP：")
                     .append(hServerContext.getRequest().getIp());
-            throw new BusinessException(HttpResponseStatus.NOT_FOUND.code(), error.toString(), new Exception("不能找到处理当前请求的资源"), hServerContext.getWebkit());
+            throw new BusinessException(HttpResponseStatus.NOT_FOUND.code(), error.toString(), new NotFoundException("不能找到处理当前请求的资源"), hServerContext.getWebkit());
         }
         Method method = routerInfo.getMethod();
         Class<?> aClass = routerInfo.getAClass();
