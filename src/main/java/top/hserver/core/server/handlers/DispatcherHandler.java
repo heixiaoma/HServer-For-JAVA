@@ -185,7 +185,9 @@ public class DispatcherHandler {
             res = method.invoke(bean, methodArgs);
             //调用结果进行设置
             if (res == null) {
-                hServerContext.getResponse().sendText("");
+                if (hServerContext.getResponse().getResult() == null) {
+                    hServerContext.getResponse().sendText("");
+                }
             } else if (String.class.getName().equals(res.getClass().getName())) {
                 hServerContext.getResponse().sendText(res.toString());
             } else {
