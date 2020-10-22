@@ -26,6 +26,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     private WebSocketHandler webSocketHandler;
     private String uri;
     private String uid;
+    private HttpRequest request;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) {
@@ -53,10 +54,11 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
                 WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
             } else {
                 this.handshake.handshake(ctx.channel(), req);
-                this.uri = req.uri();
+                this.uri =getReqUri(req);
+                this.request = req;
                 this.uid = UUID.randomUUID().toString();
                 initHandler();
-                CompletableFuture.completedFuture(new Ws(ctx, uid))
+                CompletableFuture.completedFuture(new Ws(ctx, uid, request))
                         .thenAcceptAsync(this.webSocketHandler::onConnect, ctx.executor());
             }
         } else {
@@ -65,10 +67,20 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         }
     }
 
+    private String getReqUri(HttpRequest req) {
+        int i = req.uri().indexOf("?");
+        if (i > 0) {
+            String uri = req.uri();
+            return uri.substring(0, i);
+        } else {
+            return req.uri();
+        }
+    }
+
     private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         if (frame instanceof CloseWebSocketFrame) {
             this.handshake.close(ctx.channel(), (CloseWebSocketFrame) frame.retain());
-            CompletableFuture.completedFuture(new Ws(ctx, uid))
+            CompletableFuture.completedFuture(new Ws(ctx, uid, request))
                     .thenAcceptAsync(this.webSocketHandler::disConnect, ctx.executor());
             return;
         }
@@ -80,13 +92,13 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         if (!(frame instanceof TextWebSocketFrame)) {
             throw new UnsupportedOperationException("unsupported frame type: " + frame.getClass().getName());
         }
-        CompletableFuture.completedFuture(new Ws(ctx, ((TextWebSocketFrame) frame).text(), uid))
+        CompletableFuture.completedFuture(new Ws(ctx, ((TextWebSocketFrame) frame).text(), uid, request))
                 .thenAcceptAsync(this.webSocketHandler::onMessage, ctx.executor());
     }
 
     private boolean isWebSocketRequest(HttpRequest req) {
         return req != null
-                && WebSocketRouter.get(req.uri()) != null
+                && WebSocketRouter.get(getReqUri(req)) != null
                 && req.decoderResult().isSuccess()
                 && "websocket".equals(req.headers().get("Upgrade"));
     }
