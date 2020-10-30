@@ -24,7 +24,7 @@ QQ交流群：1065301527
 
 ## 注解认识
 
-更具上面的例子，大家应该理解是非常容易的，和springboot很相似.接下我们了解哈注解这里注解只是做简单描述，具体使用在后面的章节会演示出来
+根据上面的例子，大家应该理解是非常容易的，和springboot很相似.接下我们了解下注解这里注解只是做简单描述，具体使用在后面的章节会演示出来
 
 |           注解           |                           描述信息                           |
 | :----------------------: | :----------------------------------------------------------: |
@@ -64,7 +64,7 @@ QQ交流群：1065301527
 | @NotEmpty |CharSequence 集合 map 数组 不是null 长度或者size 大于0|
 | @NotNull |字段不能为Null|
 | @Null |字段必须为Null|
-| @Pattern |段CharSequence 必须满足这个正则|
+| @Pattern |字段CharSequence 必须满足这个正则|
 | @Size |字段 CharSequence 集合 map 数组必须在这范围内|
 | @ApiImplicitParams |API生成标记|
 | @ApiImplicitParam |API生成标记|
