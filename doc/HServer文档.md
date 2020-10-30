@@ -48,7 +48,7 @@ QQ交流群：1065301527
 |      @RequiresRoles      |                           角色注解                           |
 |        @Resource         |               RPC对象的注入使用.可以按名字注入               |
 |       @RpcService        |         标记一个Service是一个RPC服务，可以给一个名字         |
-|          @Sign           | 作用在控制器方法上.可以更具他来实现sign检查当然你可以用拦截器自己处理 |
+|          @Sign           | 作用在控制器方法上.可以根据他来实现sign检查当然你可以用拦截器自己处理 |
 |          @Task           |                    定时器使用，具体看例子                    |
 |          @Track          | 链路跟踪注解，如果你想检查某些方法的耗时或者其他监控，可以用这个注解，具体看下面的介绍 |
 |          @Value          |             用来把Properties字段注入到类的字段里             |
@@ -427,7 +427,7 @@ public class HookTest2 implements HookAdapter {
 
 ```
 
-上面测试栗子都是HServer Test包里的Test1文件中，有兴趣的可以去运行体念哈
+上面测试例子都是HServer Test包里的Test1文件中，有兴趣的可以去运行体验哈
 
 ## Filter拦截器
 
@@ -676,7 +676,7 @@ public class TestPermission implements PermissionAdapter {
 
 hserver 提供了两种模式 第一种默认模式不需要注册中心 第二种模式是需要Nacos注册中心. 编码过程中没有什么差异
 
-主要差异是在配置上. 文档我怕将不清楚，这里给出了一个项目 master分支是使用的默认模式 nacos 分支是用的是nacos。
+主要差异是在配置上. 文档我怕讲不清楚，这里给出了一个项目 master分支是使用的默认模式 nacos 分支是用的是nacos。
 
 详细请下载源码学习使用 地址:https://gitee.com/HServer/hserver-for-java-rpc
 
@@ -716,7 +716,7 @@ class ApiController{}
 
 第三步
 
-HServer提供了一个叫ApiDoc的类，是可以对他进行实例化，就可以获取到生成的文档的对象，你可以进行自己的文档生成定制，
+HServer提供了一个叫ApiDoc的类，对他进行实例化，就可以获取到生成文档的对象，你可以进行自己的文档生成定制，
 
 或者使用HServer提供 的简洁版本的文档模板 hserver_doc.ftl 需要将依赖里的这个文件copy到你的模板里面.
 
@@ -964,7 +964,7 @@ resources文件夹里存放一个banner.txt 里面放入你图标就可以了.
 
   在app.properties配置文件添加
 
-  #举栗子：nginx版本的证书下载可能会得到 (xxx.pem或者xxx.cert) xxx.key
+  #举例：nginx版本的证书下载可能会得到 (xxx.pem或者xxx.cert) xxx.key
   #注意下载的证书中 key文件需要转换成 pk8 文件
   #因为netty4不支持pkcs12格式的私钥, 所以需要将私钥转换成pkcs8格式.
   #openssl pkcs8 -in my.key -topk8 -out my.pk8
@@ -1024,7 +1024,7 @@ workerPool=4
 提示：使用了业务线程，整体QPS会有降低、
         优点：可以处理更多的并发耗时任务
         缺点：增加线程切换
-        建议:在非耗时任务情况下不建议配置此选项，当然更具业务而定
+        建议:在非耗时任务情况下不建议配置此选项，当然根据业务而定
 
 ```
 #businessPool 业务线程大小，默是用的workerPool，当添加这个配置，就视为生效
@@ -1121,7 +1121,7 @@ private MysqlConfig mysqlConfig;
 | @NotEmpty    | CharSequence 集合 map 数组 不是null 长度或者size 大于0 |
 | @NotNull     | 字段不能为Null                                         |
 | @Null        | 字段必须为Null                                         |
-| @Pattern     | 段CharSequence 必须满足这个正则                        |
+| @Pattern     | 字段CharSequence 必须满足这个正则                        |
 | @Size        | 字段 CharSequence 集合 map 数组必须在这范围内          |
 
 
