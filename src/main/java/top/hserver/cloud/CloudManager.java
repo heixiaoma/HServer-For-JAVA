@@ -66,7 +66,6 @@ public class CloudManager {
                     if (appRpc.getIp() == null) {
                         throw new NullPointerException("Nacos模式，自己的IP不能为空");
                     }
-
                     /**
                      * nacos 客服端
                      */

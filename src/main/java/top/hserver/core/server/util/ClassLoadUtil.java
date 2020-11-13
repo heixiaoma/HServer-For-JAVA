@@ -49,7 +49,7 @@ public class ClassLoadUtil {
                 String protocol = url.getProtocol();
                 if ("file".equals(protocol)) {
                     String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
-                    findAndLoadClassesInPackageByFile(packageName, filePath,classes);
+                    findAndLoadClassesInPackageByFile(packageName, filePath, classes);
                 } else if ("jar".equals(protocol)) {
                     JarFile jar;
                     try {
@@ -81,33 +81,33 @@ public class ClassLoadUtil {
                                 }
                             }
                         }
-                    } catch (IOException e) {
+                    } catch (Throwable e) {
 //                        log.error(e.getMessage());
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (Throwable e) {
 //            log.error(e.getMessage());
         }
 
         return classes;
     }
 
-    private static void findAndLoadClassesInPackageByFile(String packageName, String packagePath,List<Class<?>> classes) {
+    private static void findAndLoadClassesInPackageByFile(String packageName, String packagePath, List<Class<?>> classes) {
         File dir = new File(packagePath);
         if (!dir.exists() || !dir.isDirectory()) {
             return;
         }
-        File[] dirfiles = dir.listFiles(file-> (file.isDirectory()) || (file.getName().endsWith(".class")));
-      assert dirfiles != null;
-      for (File file : dirfiles) {
+        File[] dirfiles = dir.listFiles(file -> (file.isDirectory()) || (file.getName().endsWith(".class")));
+        assert dirfiles != null;
+        for (File file : dirfiles) {
             if (file.isDirectory()) {
-                findAndLoadClassesInPackageByFile(packageName + "." + file.getName(), file.getAbsolutePath(),classes);
+                findAndLoadClassesInPackageByFile(packageName + "." + file.getName(), file.getAbsolutePath(), classes);
             } else {
                 String className = file.getName().substring(0, file.getName().length() - 6);
                 try {
                     classes.add(classLoader.loadClass(packageName + '.' + className));
-                } catch (ClassNotFoundException e) {
+                } catch (Throwable e) {
 //                    log.error(e.getMessage());
                 }
             }

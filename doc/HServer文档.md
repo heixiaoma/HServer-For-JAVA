@@ -579,6 +579,10 @@ public class WebSocketTest implements WebSocketHandler {
 }
 ```
 
+ws类提供了Netty原始的HttpRequest对象，你可以自由处理，同时提供了 query 函数，帮助你快速查找到websocket URL的参数
+
+
+
 
 
 ## **全局异常处理**
