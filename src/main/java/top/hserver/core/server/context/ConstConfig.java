@@ -35,7 +35,7 @@ public class ConstConfig {
     /**
      * 版本号
      */
-    public static final String VERSION = "2.9.53";
+    public static final String VERSION = "2.9.54";
     /**
      * 定时任务线程数配置
      */
@@ -50,11 +50,6 @@ public class ConstConfig {
      * git 地址反馈
      */
     public static final String BUG_ADDRESS = "https://gitee.com/HServer/HServer/issues";
-
-    /**
-     * 社区地址
-     */
-    public static final String COMMUNITY_ADDRESS = "https://gitee.com/HServer/HServer/wikis/pages";
 
 
     /**

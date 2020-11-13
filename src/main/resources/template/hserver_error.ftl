@@ -97,7 +97,7 @@
                 <a target="_blank" href="${business.bugAddress}">有Bug?反馈?</a>
             </div>
             <div>
-                <a target="_blank" href="${business.communityAddress}">这个问题需要社区力量？</a>
+                <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=_zBDA2Wsf851BI5zKr2fn_hvoH0n9vM5&jump_from=webapi"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="HServer扯皮交流群" title="HServer扯皮交流群"></a>
             </div>
         </div>
     </div>

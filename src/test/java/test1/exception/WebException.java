@@ -7,7 +7,7 @@ import top.hserver.core.ioc.annotation.Bean;
 import top.hserver.core.server.context.Webkit;
 import top.hserver.core.server.exception.NotFoundException;
 
-@Bean
+//@Bean
 public class WebException implements GlobalException {
 
     @Override
