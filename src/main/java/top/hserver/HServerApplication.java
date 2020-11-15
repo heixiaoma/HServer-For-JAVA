@@ -31,6 +31,7 @@ public class HServerApplication {
     private static Class clazz;
     private static Class mainClass;
     private static String[] packages;
+    private static Boolean IS_HOT = false;
 
     private static final PlugsManager PLUGS_MANAGER = new PlugsManager();
 
@@ -185,6 +186,11 @@ public class HServerApplication {
             return;
         }
         HServerLogConfig.init();
+
+        if (IS_HOT) {
+            HServerAgent.startAgent(mainClass);
+        }
+
         log.info("检查包文件");
         Set<String> scanPackage;
         if (mainClass == null) {
@@ -241,11 +247,10 @@ public class HServerApplication {
     }
 
     /**
-     *
+     * 热更新
      */
-
     public static void hotUpdate() {
-        HServerAgent.startAgent();
+        IS_HOT = true;
     }
 
 
