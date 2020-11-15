@@ -1,5 +1,6 @@
 package top.hserver;
 
+import top.hserver.core.agent.HServerAgent;
 import top.hserver.core.plugs.PlugsManager;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
@@ -15,6 +16,7 @@ import top.hserver.core.server.util.EnvironmentUtil;
 import top.hserver.core.server.util.PackageUtil;
 import top.hserver.core.task.TaskManager;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -226,7 +228,6 @@ public class HServerApplication {
         QueueDispatcher.startTaskThread();
     }
 
-
     /**
      * 重新初始化依赖关系
      */
@@ -238,5 +239,14 @@ public class HServerApplication {
         //重新加载一盘
         iocInit(HServerApplication.clazz, HServerApplication.mainClass, HServerApplication.packages);
     }
+
+    /**
+     *
+     */
+
+    public static void hotUpdate() {
+        HServerAgent.startAgent();
+    }
+
 
 }
