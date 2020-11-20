@@ -82,8 +82,19 @@ public class HServerAgent {
                 }
             }
             log.info("热更新 Agent 附加成功");
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
+            log.error("热更新开启失败");
+            log.error("默认环境检测失败，请导入 jdk中的 tools.jar");
+            System.out.println("===========导入pom.xm 例子===============");
+            System.out.println("<dependency>");
+            System.out.println("    <groupId>com.sun</groupId>");
+            System.out.println("    <artifactId>tools</artifactId>");
+            System.out.println("    <version>1.8</version>");
+            System.out.println("    <scope>system</scope>");
+            System.out.println("    <systemPath>${env.JAVA_HOME}/lib/tools.jar</systemPath>");
+            System.out.println("    <optional>true</optional>");
+            System.out.println("</dependency>");
+            System.out.println("========================================");
         }
     }
 }

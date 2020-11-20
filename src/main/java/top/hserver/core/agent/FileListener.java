@@ -13,12 +13,6 @@ import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 
 /**
- * 文件变化监听器
- * <p>
- * 在Apache的Commons-IO中有关于文件的监控功能的代码. 文件监控的原理如下：
- * 由文件监控类FileAlterationMonitor中的线程不停的扫描文件观察器FileAlterationObserver，
- * 如果有文件的变化，则根据相关的文件比较器，判断文件时新增，还是删除，还是更改。（默认为1000毫秒执行一次扫描）
- *
  * @author hxm
  */
 @Slf4j
@@ -26,8 +20,15 @@ public class FileListener extends FileAlterationListenerAdaptor {
 
     private Instrumentation instrumentation;
 
+    private String tempFilePath;
+
     FileListener(Instrumentation instrumentation) {
         this.instrumentation = instrumentation;
+    }
+
+    @Override
+    public void onFileDelete(File file) {
+        tempFilePath = file.getPath();
     }
 
     /**
@@ -35,8 +36,14 @@ public class FileListener extends FileAlterationListenerAdaptor {
      */
     @Override
     public void onFileCreate(File file) {
-        //重启IOC
-        HServerApplication.reInitIoc();
+
+        //表示修改的文件
+        if (file.getPath().equals(tempFilePath)) {
+            onFileChange(file);
+        } else {
+            log.info("[创建]:" + file.getAbsolutePath());
+            HServerApplication.reInitIoc();
+        }
     }
 
     /**
@@ -57,7 +64,7 @@ public class FileListener extends FileAlterationListenerAdaptor {
                     instrumentation.redefineClasses(classDefinition);
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
