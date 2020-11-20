@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+
+    <!--可视化的高亮样式-->
+    <property name="STDOUT_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %HServerHighlight(%5.5level) PID:[ %magenta(%pid)] 线程名: [%17.17thread] %cyan(%-40.40logger{39} [%4.4line]) : %msg%n"/>
+
+    <!--文件存储的样式-->
+    <property name="FILE_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5.5level %pid --- [%17.17thread] %-40.40logger{40} [%4.4line] : %msg%n"/>
+
+    <!--文件存储地址-->
+    <property name="LOGGINE_FILE_HOME" value="log"/>
+    <property name="LOGGINE_FILE_HOME_SAVE" value="log/log"/>
+
+    <!--控制台的显示-->
+    <appender name="STDOUT"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder
+                class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="top.hserver.core.log.HServerPatternLayout">
+                <pattern>
+                    ${logging.console.pattern:-${STDOUT_PATTERN}}
+                </pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <!--文件存储的显示-->
+    <appender name="FILE_VIEW"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logging.file.path:-${LOGGINE_FILE_HOME}}/${logging.file.name:-hserver}-view.log
+        </file>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${logging.file.path:-${LOGGINE_FILE_HOME_SAVE}}/${logging.file.name:-hserver}-view-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <maxFileSize>${logging.file.max.size:-100MB}</maxFileSize>
+            <maxHistory>${logging.file.max.history:-60}</maxHistory>
+            <totalSizeCap>${logging.file.total.size,cap:-20GB}</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder
+                class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="top.hserver.core.log.HServerPatternLayout">
+                <pattern>
+                    ${logging.console.pattern:-${STDOUT_PATTERN}}
+                </pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <!--文件存储-->
+    <appender name="FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logging.file.path:-${LOGGINE_FILE_HOME}}/${logging.file.name:-hserver}.log
+        </file>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${logging.file.path:-${LOGGINE_FILE_HOME_SAVE}}/${logging.file.name:-hserver}-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <maxFileSize>${logging.file.max.size:-100MB}</maxFileSize>
+            <maxHistory>${logging.file.max.history:-60}</maxHistory>
+            <totalSizeCap>${logging.file.total.size,cap:-20GB}</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder
+                class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="top.hserver.core.log.HServerPatternLayout">
+                <pattern>
+                    ${logging.file.pattern:-${FILE_PATTERN}}
+                </pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <!--错误的文件显示-->
+    <appender name="FILE_ERROR_VIEW"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logging.file.path:-${LOGGINE_FILE_HOME}}/${logging.file.name:-hserver}-error-view.log
+        </file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${logging.file.path:-${LOGGINE_FILE_HOME_SAVE}}/${logging.file.name:-hserver}-error-view-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <maxFileSize>${logging.file.max.size:-100MB}</maxFileSize>
+            <maxHistory>${logging.file.max.history:-60}</maxHistory>
+            <totalSizeCap>${logging.file.total.size,cap:-20GB}</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder
+                class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="top.hserver.core.log.HServerPatternLayout">
+                <pattern>
+                    ${logging.console.pattern:-${STDOUT_PATTERN}}
+                </pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <!--错误的文件-->
+    <appender name="FILE_ERROR"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logging.file.path:-${LOGGINE_FILE_HOME}}/${logging.file.name:-hserver}-error.log
+        </file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${logging.file.path:-${LOGGINE_FILE_HOME_SAVE}}/${logging.file.name:-hserver}-error-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <maxFileSize>${logging.file.max.size:-100MB}</maxFileSize>
+            <maxHistory>${logging.file.max.history:-60}</maxHistory>
+            <totalSizeCap>${logging.file.total.size,cap:-20GB}</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder
+                class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="top.hserver.core.log.HServerPatternLayout">
+                <pattern>
+                    ${logging.file.pattern:-${FILE_PATTERN}}
+                </pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+
+    <!--  异步配置  -->
+    <appender name ="ASYNC_STDOUT" class= "ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>512</queueSize>
+        <appender-ref ref ="STDOUT"/>
+    </appender>
+
+    <appender name ="ASYNC_FILE" class= "ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>512</queueSize>
+        <appender-ref ref ="FILE"/>
+    </appender>
+
+    <appender name ="ASYNC_FILE_VIEW" class= "ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>512</queueSize>
+        <appender-ref ref ="FILE_VIEW"/>
+    </appender>
+
+    <appender name ="ASYNC_FILE_ERROR" class= "ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>512</queueSize>
+        <appender-ref ref ="FILE_ERROR"/>
+    </appender>
+
+    <appender name ="ASYNC_FILE_ERROR_VIEW" class= "ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>512</queueSize>
+        <appender-ref ref ="FILE_ERROR_VIEW"/>
+    </appender>
+
+
+    <root level="${logging.level:-debug|-info}">
+        <appender-ref ref="ASYNC_STDOUT"/>
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="ASYNC_FILE_VIEW"/>
+        <appender-ref ref="ASYNC_FILE_ERROR"/>
+        <appender-ref ref="ASYNC_FILE_ERROR_VIEW"/>
+    </root>
+
+</configuration>
