@@ -19,7 +19,7 @@ public interface HRequest {
 
     HRequest requestBody(String body);
 
-    HRequest data(String key, String filename, InputStream inputStream, String contentType);
+    HRequest data(String key, String filename, InputStream inputStream);
 
     HRequest data(String key, String value);
 
