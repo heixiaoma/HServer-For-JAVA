@@ -7,6 +7,7 @@ package top.hserver.core.ioc.annotation.apidoc;
 public enum DataType {
   String,
   Integer,
+  Long,
   Double,
   Boolean,
   File;
