@@ -1,17 +1,13 @@
 package test8;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
-
-import java.net.SocketAddress;
-import java.net.URI;
+import io.netty.util.ReferenceCountUtil;
+import top.hserver.core.server.util.NamedThreadFactory;
 
 public class HConnection {
 
@@ -22,7 +18,7 @@ public class HConnection {
     public HConnection(String host, int port, int pool) {
         try {
             b = new Bootstrap();
-            workerGroup = new NioEventLoopGroup(pool);
+            workerGroup = new NioEventLoopGroup(new NamedThreadFactory("HClient"));
             b.group(workerGroup);
             b.channel(NioSocketChannel.class);
             b.option(ChannelOption.SO_KEEPALIVE, true);
@@ -36,7 +32,7 @@ public class HConnection {
                     ch.pipeline().addLast(new HttpClientInboundHandler());
                 }
             });
-            channelFuture = b.connect(host, port).sync();
+            channelFuture = b.connect(host, port);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,7 +58,11 @@ public class HConnection {
         }
     }
 
-    public void write(FullHttpRequest request) {
-        this.channelFuture.channel().pipeline().write(request);
+    public void write(DefaultFullHttpRequest request) {
+        try {
+            this.channelFuture.channel().pipeline().writeAndFlush(request);
+        } finally {
+            ReferenceCountUtil.release(request.content());
+        }
     }
 }

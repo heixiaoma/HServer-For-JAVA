@@ -4,7 +4,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import top.hserver.core.interfaces.ResponseAdapter;
 import top.hserver.core.ioc.annotation.Bean;
 
-@Bean
+//@Bean
 public class MyResponse implements ResponseAdapter {
     @Override
     public String result(String response) {

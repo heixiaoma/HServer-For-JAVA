@@ -2,7 +2,7 @@ package test8;
 
 import io.netty.handler.codec.http.HttpMethod;
 
-import java.io.InputStream;
+import java.io.File;
 import java.util.Map;
 
 public interface HRequest {
@@ -19,7 +19,9 @@ public interface HRequest {
 
     HRequest requestBody(String body);
 
-    HRequest data(String key, String filename, InputStream inputStream);
+    HRequest data(String key, String filename, File file);
+
+    HRequest data(String key, String filename, File file,String contentType);
 
     HRequest data(String key, String value);
 
