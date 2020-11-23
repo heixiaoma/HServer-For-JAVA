@@ -1,15 +1,21 @@
 package test8;
 
+import io.netty.handler.codec.http.HttpHeaders;
+
 public interface HResponse {
 
-    boolean isSuccess();
+    int getStatusCode();
 
-    Object complete();
+    HttpHeaders getHeader();
 
-    Throwable exception();
+    byte[] getBody();
+
+    String getBodyAsString();
+
+    Throwable getException();
 
     interface Listener {
-        void complete(Object arg);
+        void complete(HResponse arg);
 
         void exception(Throwable t);
     }

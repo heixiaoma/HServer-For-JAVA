@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class HReq implements HRequest {
 
@@ -113,11 +114,18 @@ public class HReq implements HRequest {
 
     @Override
     public void exec(HResponse.Listener listener) {
-        this.hConnection.write(buildRequest());
+        this.hConnection.write(buildRequest(), listener);
     }
 
     @Override
     public HResponse exec() {
+        HFuture write = this.hConnection.write(buildRequest(), null);
+        try {
+            write = write.get();
+            return write.getResponse();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -157,7 +165,7 @@ public class HReq implements HRequest {
                     e.printStackTrace();
                 }
             });
-             httpPostRequestEncoder.finalizeRequest();
+            httpPostRequestEncoder.finalizeRequest();
         } catch (Throwable e) {
             e.printStackTrace();
         }

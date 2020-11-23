@@ -1,29 +1,38 @@
 package test8;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.handler.codec.http.HttpContent;
-import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.util.ReferenceCountUtil;
+
+import static test8.HConnection.POOL;
 
 public class HttpClientInboundHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-//        if (msg instanceof HttpResponse)
-//        {
-//            HttpResponse response = (HttpResponse) msg;
-//            System.out.println("CONTENT_TYPE:" + response.headers().get(HttpHeaders.Names.CONTENT_TYPE));
-//        }
-//        if(msg instanceof HttpContent)
-//        {
-//            HttpContent content = (HttpContent)msg;
-//            ByteBuf buf = content.content();
-//            System.out.println(buf.toString(io.netty.util.CharsetUtil.UTF_8));
-//            buf.release();
-//        }
-        ReferenceCountUtil.release(msg);
+        POOL.execute(() -> {
+            try {
+                if (msg instanceof FullHttpResponse) {
+                    HFuture future = ChannelManager.attr(ctx.channel());
+                    System.out.println(future.getId());
+                    FullHttpResponse httpResponse = (FullHttpResponse) msg;
+                    future.setHttpHeaders(httpResponse.headers());
+                    future.setStatusCode(httpResponse.status().code());
+                    future.write(httpResponse.content());
+                    future.success();
+                }
+            } finally {
+                ReferenceCountUtil.release(msg);
+            }
+        });
+
     }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        HFuture future = ChannelManager.attr(ctx.channel());
+        future.error(cause);
+    }
+
 }

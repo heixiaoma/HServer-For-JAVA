@@ -11,6 +11,13 @@ import java.io.*;
  */
 public class ByteBufUtil {
 
+    public static byte[] byteBufToBytes(ByteBuf buf) {
+        int length =buf.readableBytes();
+        byte[] body =new byte[length];
+        buf.readBytes(body);
+        return body;
+    }
+
     public static ByteBuf fileToByteBuf(File file) {
         try {
             FileInputStream input = new FileInputStream(file);
