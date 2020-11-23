@@ -6,9 +6,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
-import io.netty.util.ReferenceCountUtil;
-import io.netty.util.concurrent.DefaultEventExecutorGroup;
-import io.netty.util.concurrent.EventExecutorGroup;
 import top.hserver.core.server.util.NamedThreadFactory;
 
 import java.util.UUID;
@@ -36,7 +33,7 @@ public class HConnection {
                 public void initChannel(SocketChannel ch) throws Exception {
                     ch.pipeline().addLast(new HttpClientCodec());
                     ch.pipeline().addLast(new HttpObjectAggregator(Integer.MAX_VALUE));
-                    ch.pipeline().addLast(new HttpClientInboundHandler());
+                    ch.pipeline().addLast(new HClientHandler());
                 }
             });
             channelFuture = b.connect(host, port).sync().addListener(re -> {
@@ -78,10 +75,8 @@ public class HConnection {
             } else {
                 future = new HFuture();
             }
-            future.setId(UUID.randomUUID().toString());
             ChannelManager.setAttr(this.channelFuture.channel(), future);
             this.channelFuture.channel().writeAndFlush(request);
-            System.out.println("发送成功");
         } else {
             System.out.println("离线了");
         }

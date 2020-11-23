@@ -7,7 +7,7 @@ import io.netty.util.ReferenceCountUtil;
 
 import static test8.HConnection.POOL;
 
-public class HttpClientInboundHandler extends ChannelInboundHandlerAdapter {
+public class HClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -15,7 +15,6 @@ public class HttpClientInboundHandler extends ChannelInboundHandlerAdapter {
             try {
                 if (msg instanceof FullHttpResponse) {
                     HFuture future = ChannelManager.attr(ctx.channel());
-                    System.out.println(future.getId());
                     FullHttpResponse httpResponse = (FullHttpResponse) msg;
                     future.setHttpHeaders(httpResponse.headers());
                     future.setStatusCode(httpResponse.status().code());
@@ -26,7 +25,6 @@ public class HttpClientInboundHandler extends ChannelInboundHandlerAdapter {
                 ReferenceCountUtil.release(msg);
             }
         });
-
     }
 
     @Override

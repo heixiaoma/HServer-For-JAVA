@@ -15,16 +15,6 @@ public class HFuture extends CompletableFuture<HFuture> {
     private Throwable e;
     private int statusCode;
 
-    private String id;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public HFuture() {
     }
 
@@ -41,9 +31,9 @@ public class HFuture extends CompletableFuture<HFuture> {
     }
 
     public void success() {
-        if (this.listener!=null) {
+        if (this.listener != null) {
             this.listener.complete(new HResp(data, httpHeaders, e, statusCode));
-        }else {
+        } else {
             super.complete(this);
         }
     }
@@ -58,9 +48,9 @@ public class HFuture extends CompletableFuture<HFuture> {
 
     public void error(Throwable e) {
         this.e = e;
-        if (this.listener!=null) {
+        if (this.listener != null) {
             this.listener.exception(e);
-        }else {
+        } else {
             super.complete(this);
         }
     }
