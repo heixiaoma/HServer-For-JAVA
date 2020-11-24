@@ -37,6 +37,7 @@
         <nacos.version>1.3.2</nacos.version>
         <disruptor.version>3.4.2</disruptor.version>
         <commons.version>2.8.0</commons.version>
+        <okhttp.version>3.10.0</okhttp.version>
     </properties>
 
     <dependencies>
@@ -170,6 +171,12 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okhttp.version}</version>
         </dependency>
 
     </dependencies>

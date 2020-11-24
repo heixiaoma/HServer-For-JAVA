@@ -1,15 +1,15 @@
 package test8;
 
-import io.netty.handler.codec.http.HttpHeaders;
+import top.hserver.core.server.context.HeadMap;
 
 public class HResp implements HResponse {
 
     private byte[] data;
-    private HttpHeaders headers;
+    private HeadMap headers;
     private Throwable e;
     private int statusCode;
 
-    public HResp(byte[] data, HttpHeaders headers, Throwable e, int statusCode) {
+    public HResp(byte[] data, HeadMap headers, Throwable e, int statusCode) {
         this.data = data;
         this.headers = headers;
         this.e = e;
@@ -22,7 +22,7 @@ public class HResp implements HResponse {
     }
 
     @Override
-    public HttpHeaders getHeader() {
+    public HeadMap getHeader() {
         return this.headers;
     }
 

@@ -1,33 +1,24 @@
 package test8;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.*;
-import io.netty.handler.codec.http.cookie.CookieEncoder;
-import io.netty.handler.codec.http.multipart.*;
-import io.netty.util.CharsetUtil;
+import okhttp3.*;
+import top.hserver.core.server.context.HeadMap;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
+import java.io.IOException;
+import java.util.*;
 
 public class HReq implements HRequest {
 
-    private static final String DefaultUploadType = "application/octet-stream";
+    private static OkHttpClient okHttpClient = new OkHttpClient();
 
-    private HConnection hConnection;
+    private final String contentType = "content-type";
 
     private HttpMethod method;
 
     private Map<String, String> cookies = new HashMap<>();
 
-    private HttpHeaders headers = new DefaultHttpHeaders();
+    private Map<String, String> headers = new HashMap<>();
 
     private Map<String, String> formData = new HashMap<>();
 
@@ -37,12 +28,12 @@ public class HReq implements HRequest {
 
     private String body;
 
-    public HReq(HConnection hConnection) {
-        this.hConnection = hConnection;
-        //默认参数设计
-        headers.add("Host", "127.0.0.1");
-        headers.add("Connection", "keep-alive");
+    private String baseAddress;
+
+    public HReq(String baseAddress) {
+        this.baseAddress = baseAddress;
     }
+
 
     @Override
     public HRequest uri(String uri) {
@@ -64,27 +55,20 @@ public class HReq implements HRequest {
 
     @Override
     public HRequest headers(Map<String, String> headers) {
-        headers.forEach((k, v) -> {
-            this.headers.add(k, v);
-        });
+        this.headers.putAll(headers);
         return this;
     }
 
     @Override
     public HRequest header(String key, String value) {
-        this.headers.add(key, value);
+        this.headers.put(key, value);
         return this;
     }
 
     @Override
-    public HRequest requestBody(String body) {
+    public HRequest requestBody(String body, String contentType) {
         this.body = body;
-        return this;
-    }
-
-    @Override
-    public HRequest data(String key, String filename, File file) {
-        this.files.add(new HFile(key, filename, file));
+        this.headers.put(this.contentType, contentType);
         return this;
     }
 
@@ -114,81 +98,105 @@ public class HReq implements HRequest {
 
     @Override
     public void exec(HResponse.Listener listener) {
-        this.hConnection.write(buildRequest(), listener);
+        okHttpClient.newCall(buildRequest()).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                listener.exception(e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                HResp hResp = new HResp(
+                        response.body().bytes(),
+                        buildHeader(response.headers()),
+                        null,
+                        response.code()
+                );
+                listener.complete(hResp);
+            }
+        });
     }
 
     @Override
     public HResponse exec() {
-        HFuture write = this.hConnection.write(buildRequest(), null);
         try {
-            write = write.get();
-            return write.getResponse();
-        } catch (Exception e) {
-            e.printStackTrace();
+            Response response = okHttpClient.newCall(buildRequest()).execute();
+            return new HResp(
+                    response.body().bytes(),
+                    buildHeader(response.headers()),
+                    null,
+                    response.code());
+
+        } catch (IOException e) {
+            return new HResp(
+                    null,
+                    null,
+                    e,
+                    -1);
         }
-        return null;
     }
 
-
-    private DefaultFullHttpRequest buildRequest() {
-        if (method == null) {
-            throw new RuntimeException("未设置请求类型");
+    private RequestBody buildBody() {
+        if (HttpMethod.GET == this.method) {
+            return null;
         }
-        if (uri == null) {
-            throw new RuntimeException("未设置请求URI");
-        }
-        DefaultFullHttpRequest defaultFullHttpRequest;
-        if (this.body != null) {
-            defaultFullHttpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, uri, Unpooled.wrappedBuffer(body.getBytes(StandardCharsets.UTF_8)));
+        RequestBody body = null;
+        if (formData.size() > 0 && files.size() == 0) {
+            FormBody.Builder builder = new FormBody.Builder();
+            formData.forEach(builder::add);
+            body = builder.build();
+        } else if (files.size() > 0) {
+            MultipartBody.Builder builder = new MultipartBody.Builder();
+            formData.forEach(builder::addFormDataPart);
+            for (HFile file : files) {
+                builder.addFormDataPart(
+                        file.getKey(),
+                        file.getFileName(),
+                        RequestBody.create(MediaType.parse(file.getContentType()), file.getFile())
+                );
+            }
+            body = builder.build();
+        } else if (this.body != null) {
+            body = RequestBody.create(MediaType.parse(headers.get(contentType)), this.body);
         } else {
-            defaultFullHttpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, uri);
+            body = new FormBody.Builder().build();
         }
-        try {
-            HttpPostRequestEncoder httpPostRequestEncoder = new HttpPostRequestEncoder(defaultFullHttpRequest, true);
-            formData.forEach((k, v) -> {
-                try {
-                    httpPostRequestEncoder.addBodyAttribute(k, v);
-                } catch (HttpPostRequestEncoder.ErrorDataEncoderException e) {
-                    e.printStackTrace();
-                }
-            });
-            //文件上传类的。
-            files.forEach(h -> {
-                try {
-                    String fileName = h.getFileName();
-                    if (fileName != null) {
-                        httpPostRequestEncoder.addBodyFileUpload(h.getKey(), h.getFileName(), h.getFile(), h.getContentType() == null ? DefaultUploadType : h.getContentType(), false);
-                    } else {
-                        httpPostRequestEncoder.addBodyFileUpload(h.getKey(), h.getFile(), h.getContentType() == null ? DefaultUploadType : h.getContentType(), false);
-                    }
-                } catch (HttpPostRequestEncoder.ErrorDataEncoderException e) {
-                    e.printStackTrace();
-                }
-            });
-            httpPostRequestEncoder.finalizeRequest();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-        String cookie = buildCookie();
-        if (cookie != null) {
-            headers.add("cookie", cookie);
-        }
-        defaultFullHttpRequest.headers().add(headers);
-        return defaultFullHttpRequest;
+        return body;
     }
+
+    private HeadMap buildHeader(Headers headers) {
+        Set<String> names = headers.names();
+        HeadMap headMap = new HeadMap();
+        for (String name : names) {
+            headMap.put(name, headers.get(name));
+        }
+        return headMap;
+    }
+
 
     private String buildCookie() {
         if (cookies.size() > 0) {
             StringBuilder stringBuilder = new StringBuilder();
-            cookies.forEach((k, v) -> {
-                stringBuilder.append(k).append("=").append(v).append(";");
-            });
+            cookies.forEach((k, v) -> stringBuilder.append(k).append("=").append(v).append(";"));
             if (stringBuilder.toString().trim().length() == 0) {
                 return null;
             }
             return stringBuilder.toString();
         }
         return null;
+    }
+
+    private Request buildRequest() {
+        Request.Builder builder = new Request.Builder();
+        builder.url(baseAddress + uri);
+        headers.forEach(builder::header);
+        String s = buildCookie();
+        if (s != null) {
+            builder.header("Cookie", s);
+        }
+        return builder
+                .method(this.method.name(), buildBody())
+                .build();
     }
 
 }

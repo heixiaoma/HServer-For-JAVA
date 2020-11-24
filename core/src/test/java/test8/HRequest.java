@@ -17,9 +17,7 @@ public interface HRequest {
 
     HRequest header(String key, String value);
 
-    HRequest requestBody(String body);
-
-    HRequest data(String key, String filename, File file);
+    HRequest requestBody(String body, String contentType);
 
     HRequest data(String key, String filename, File file, String contentType);
 

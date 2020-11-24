@@ -4,11 +4,11 @@ import java.io.File;
 
 public class HFile {
 
-    private File file;
+    private String key;
 
     private String fileName;
 
-    private String key;
+    private File file;
 
     private String contentType;
 

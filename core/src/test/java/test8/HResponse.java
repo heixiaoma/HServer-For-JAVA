@@ -1,12 +1,12 @@
 package test8;
 
-import io.netty.handler.codec.http.HttpHeaders;
+import top.hserver.core.server.context.HeadMap;
 
 public interface HResponse {
 
     int getStatusCode();
 
-    HttpHeaders getHeader();
+    HeadMap getHeader();
 
     byte[] getBody();
 
