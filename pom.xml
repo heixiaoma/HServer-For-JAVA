@@ -6,7 +6,7 @@
 
     <groupId>top.hserver</groupId>
     <artifactId>HServer-Parent</artifactId>
-    <version>2.9.54</version>
+    <version>1.0</version>
     <modules>
         <module>HServer</module>
         <module>test-web</module>
