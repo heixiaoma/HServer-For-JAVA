@@ -5,19 +5,17 @@ import com.alibaba.nacos.api.common.Constants;
 import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import lombok.extern.slf4j.Slf4j;
-import top.hserver.cloud.bean.ClientData;
+import top.hserver.cloud.client.RpcClient;
+import top.hserver.cloud.client.handler.RpcServerHandler;
 import top.hserver.cloud.config.AppRpc;
 import top.hserver.cloud.config.AppRpcNacos;
 import top.hserver.cloud.proxy.CloudProxy;
 import top.hserver.cloud.task.*;
 import top.hserver.core.ioc.IocUtil;
-import top.hserver.core.task.TaskManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -25,17 +23,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 @Slf4j
 public class CloudManager {
-    /**
-     * 服务提供的
-     */
-    private static Map<String, ClientData> serviceDataMap = new ConcurrentHashMap<>();
 
-    /**
-     * 消费者要消费的
-     */
-    private static Set<String> involve = new CopyOnWriteArraySet<>();
-
-
+    private static Set<String> ServerNames = new CopyOnWriteArraySet<>();
     /**
      * Nacos注册中心
      */
@@ -50,70 +39,39 @@ public class CloudManager {
         //清除启动的Map缓存
         CloudProxy.clearCache();
         try {
+            RpcClient.init();
             AppRpc appRpc = IocUtil.getBean(AppRpc.class);
-            //1.读取自己是不是开启了rpc
-            if (appRpc != null && appRpc.isOpen()) {
-                String name = appRpc.getName();
-                if (name == null) {
-                    throw new NullPointerException("app.rpc.name不能为空");
-                }
+            if (appRpc != null) {
                 if (appRpc.getMode() != null && "nacos".equalsIgnoreCase(appRpc.getMode())) {
-
                     AppRpcNacos appRpcNacos = IocUtil.getBean(AppRpcNacos.class);
                     if (appRpcNacos == null || appRpcNacos.getAddress() == null) {
                         throw new NullPointerException("Nacos注册中心不能为空");
                     }
-                    if (appRpc.getIp() == null) {
+                    if (appRpcNacos.getName() == null) {
+                        throw new NullPointerException("app.rpc.naocs.name不能为空");
+                    }
+                    if (appRpcNacos.getIp() == null) {
                         throw new NullPointerException("Nacos模式，自己的IP不能为空");
                     }
                     /**
                      * nacos 客服端
                      */
                     naming = NamingFactory.createNamingService(appRpcNacos.getAddress());
-
-                    if (appRpc.isType()) {
-                        log.info("我是消费者");
-                        SubProviderInfo.init();
-                        //维持长连接的任务
-                        TaskManager.addTask(KeepLiveTask.class.getName(), "5000", KeepLiveTask.class);
-                    } else {
-                        log.info("我是提供者");
-                    }
                     /**
                      * 不论是消费者还生产者都要去注册中心注册
                      */
-                    if (appRpc.getGroup() == null || appRpc.getGroup().trim().length() == 0) {
-                        appRpc.setGroup(Constants.DEFAULT_GROUP);
+                    if (appRpcNacos.getGroup() == null || appRpcNacos.getGroup().trim().length() == 0) {
+                        appRpcNacos.setGroup(Constants.DEFAULT_GROUP);
                     }
-                    if (CloudManager.isRpcService()) {
-                        for (String aClass : CloudManager.getClasses()) {
-                            naming.registerInstance(aClass, appRpc.getGroup(), appRpc.getIp(), port, name);
-                        }
-                    } else {
-                        naming.registerInstance(name, appRpc.getGroup(), appRpc.getIp(), port);
-                    }
+                    naming.registerInstance(appRpcNacos.getName(), appRpcNacos.getGroup(), appRpcNacos.getIp(), port, appRpcNacos.getName());
+                    /**
+                     * 订阅注册的数据
+                     */
+                    SubProviderInfo.init();
                 } else {
-                    if (appRpc.isType()) {
-
-                        String address = appRpc.getAddress();
-                        if (address == null) {
-                            throw new NullPointerException("app.rpc.address 不能为空");
-                        }
-
-                        log.info("我是消费者");
-                        /**
-                         * 消费者连接提供者
-                         * 服务提供者注册到消费中
-                         */
-                        TaskManager.addTask(Broadcast1V1ConsumerTask.class.getName(), "5000", Broadcast1V1ConsumerTask.class, address);
-                    } else {
-                        /**
-                         *  当有消费者进来的时候，
-                         *  发送自己的rpc信息给消费者
-                         *
-                         */
-                        TaskManager.addTask(Broadcast1V1ProviderTask.class.getName(), "5000", Broadcast1V1ProviderTask.class, name);
-                        log.info("我是提供者");
+                    String address = appRpc.getAddress();
+                    if (address != null) {
+                        RpcServerHandler.defaultReg(address);
                     }
                 }
             }
@@ -123,46 +81,17 @@ public class CloudManager {
         }
     }
 
-    /**
-     * 服务提供者的
-     *
-     * @param name
-     * @param classs
-     */
-    public static void add(String name, ClientData classs) {
-        if (serviceDataMap.containsKey(name)) {
-            log.warn("已经存在：{}Rpc服务", name);
-            return;
-        }
-        serviceDataMap.put(name, classs);
-    }
 
     /**
-     * 消费者涉及到的
+     * 消费者涉及，通过服务名去订阅Nacos
      *
      * @param name
      */
     public static void add(String name) {
-        involve.add(name);
+        ServerNames.add(name);
     }
 
-
-    public static boolean isRpcService() {
-        return serviceDataMap.size() > 0;
+    public static List<String> getServerNames() {
+        return new ArrayList<>(ServerNames);
     }
-
-    public static List<String> getClasses() {
-        List<String> list = new ArrayList<>();
-        serviceDataMap.forEach((a, b) -> list.add(b.getAClass()));
-        return list;
-    }
-
-    public static Set<String> getProviderClass() {
-        return involve;
-    }
-
-    public static ClientData get(String name) {
-        return serviceDataMap.get(name);
-    }
-
 }

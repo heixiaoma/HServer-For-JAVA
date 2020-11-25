@@ -1,17 +1,18 @@
 package top.hserver.cloud.client;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.pool.AbstractChannelPoolMap;
+import io.netty.channel.pool.ChannelPoolMap;
+import io.netty.channel.pool.FixedChannelPool;
+import io.netty.channel.pool.SimpleChannelPool;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
-import top.hserver.cloud.client.handler.RpcClientInitializer;
+import top.hserver.cloud.client.handler.HChannelPoolHandler;
+import top.hserver.core.server.util.NamedThreadFactory;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.net.InetSocketAddress;
 
 /**
  * @author hxm
@@ -19,30 +20,19 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class RpcClient {
 
-    public static Map<String, Channel> channels = new ConcurrentHashMap<>(1);
+    public static ChannelPoolMap<InetSocketAddress, SimpleChannelPool> channels;
 
-
-    public static void connect(String address) {
-         String host = String.valueOf(address.split(":")[0]);
-         int port = Integer.valueOf(address.split(":")[1]);
+    public static void init() {
         try {
-            final EventLoopGroup group = new NioEventLoopGroup();
-            Bootstrap b = new Bootstrap();
-            b.group(group).channel(NioSocketChannel.class);
-            b.handler(new RpcClientInitializer());
-            //发起异步连接请求，绑定连接端口和host信息
-            final ChannelFuture future = b.connect(host, port).sync();
-
-            future.addListener((ChannelFutureListener) arg0 -> {
-                if (future.isSuccess()) {
-                    log.debug("连接服务器成功");
-                    channels.put(address, future.channel());
-                } else {
-                    log.debug("连接服务器失败");
-                    future.cause().printStackTrace();
-                    group.shutdownGracefully(); //关闭线程组
+            final EventLoopGroup group = new NioEventLoopGroup(new NamedThreadFactory("Rpc-Client"));
+            final Bootstrap strap = new Bootstrap();
+            strap.group(group).channel(NioSocketChannel.class);
+            channels = new AbstractChannelPoolMap<InetSocketAddress, SimpleChannelPool>() {
+                @Override
+                protected SimpleChannelPool newPool(InetSocketAddress key) {
+                    return new FixedChannelPool(strap.remoteAddress(key), new HChannelPoolHandler(), 2);
                 }
-            });
+            };
         } catch (Exception e) {
             log.error(e.getMessage());
         }

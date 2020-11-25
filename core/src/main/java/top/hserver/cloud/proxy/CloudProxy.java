@@ -41,12 +41,13 @@ public class CloudProxy {
         ((ProxyObject)o1).setHandler((self, thismethod, proceed, args) -> {
             //这里实现远程调用啦！
             InvokeServiceData invokeServiceData = new InvokeServiceData();
-            invokeServiceData.setMethod(thismethod.getName());
+            invokeServiceData.setMethod(thismethod);
             if (resource.value().trim().length() > 0) {
                 invokeServiceData.setAClass(resource.value());
             } else {
                 invokeServiceData.setAClass(clazz.getName());
             }
+            invokeServiceData.setServerName(resource.serverName());
             invokeServiceData.setObjects(args);
             return RpcServerHandler.sendInvoker(invokeServiceData);
         });

@@ -17,20 +17,7 @@ public class DynamicRoundRobin {
     private AtomicInteger pos = new AtomicInteger(0);
 
     public void add(ServiceData t) {
-        for (int i = 0; i < list.size(); i++) {
-            ServiceData serviceData = list.get(i);
-            if (serviceData.getName().equals(t.getName())) {
-                if (serviceData.getChannel().isActive()) {
-                    return;
-                } else {
-                    list.remove(serviceData);
-                    break;
-                }
-            }
-        }
-        if (t.getChannel().isActive()) {
-            list.add(t);
-        }
+        list.add(t);
     }
 
     public List<ServiceData> getAll() {

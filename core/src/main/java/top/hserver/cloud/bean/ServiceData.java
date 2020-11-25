@@ -1,9 +1,8 @@
 package top.hserver.cloud.bean;
 
-import com.alibaba.nacos.api.naming.pojo.Instance;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
 import lombok.Data;
+
+import java.net.InetSocketAddress;
 
 /**
  * @author hxm
@@ -11,12 +10,14 @@ import lombok.Data;
 @Data
 public class ServiceData {
 
-    private Channel channel;
+    private String serverName;
 
-    private String name;
+    private String host;
 
-    /**
-     * 针对Nacos才会使用
-     */
-    private Instance instance;
+    private Integer port;
+
+    public InetSocketAddress getInetSocketAddress() {
+        return new InetSocketAddress(host, port);
+    }
+
 }

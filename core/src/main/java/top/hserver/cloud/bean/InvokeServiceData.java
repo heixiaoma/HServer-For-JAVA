@@ -3,7 +3,7 @@ package top.hserver.cloud.bean;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.concurrent.CompletableFuture;
+import java.lang.reflect.Method;
 
 /**
  * @author hxm
@@ -19,14 +19,14 @@ public class InvokeServiceData implements Serializable {
     private String requestId;
 
     /**
-     *  类名
+     * 类名
      */
     private String aClass;
 
     /**
      * 方法
      */
-    private String method;
+    private Method method;
 
     /**
      * 参数列表
@@ -34,8 +34,8 @@ public class InvokeServiceData implements Serializable {
     private Object[] objects;
 
     /**
-     * 是否是心跳
+     * 服务名
      */
-    private boolean isPingPing;
+    private String serverName;
 
 }

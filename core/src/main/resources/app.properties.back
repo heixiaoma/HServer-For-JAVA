@@ -25,26 +25,14 @@ privateKeyPath=hserver.pk8
 privateKeyPwd=123
 
 
-#配置中心
-app.nacos.config.address=127.0.0.1:8848
-
-
 #-----------------RPC-------------
-#是否开启RPC模式
-#app.rpc.open=false
-#模式,不填写采用默认模式
-app.rpc.mode=nacos
-#是否是消费者
-app.rpc.type=true
-#app.rpc.name=serverName
-#app.rpc.group=DEFAULT_GROUP
-
-
 #默认模式
-#消费者连接提供者的地址
-#app.rpc.address=127.0.0.1:8082,127.0.0.1:8083
+消费者的配置文件添加即可
+app.rpc.address=127.0.0.1:7777@provider1,127.0.0.1:7778@provider2
 
-#nacos
-#app.rpc.ip=127.0.0.1
-#app.rpc.nacos.address=127.0.0.1:8848
-#app.rpc.group=DEFAULT_GROUP
+#nacos模式
+app.rpc.mode=nacos
+app.rpc.nacos.name=provider
+app.rpc.nacos.ip=127.0.0.1
+app.rpc.nacos.address=127.0.0.1:8848
+app.rpc.nacos.group=DEFAULT_GROUP

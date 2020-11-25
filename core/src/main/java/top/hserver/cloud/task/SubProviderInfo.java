@@ -2,12 +2,12 @@ package top.hserver.cloud.task;
 
 import com.alibaba.nacos.api.naming.listener.EventListener;
 import com.alibaba.nacos.api.naming.listener.NamingEvent;
+import com.alibaba.nacos.api.naming.pojo.Instance;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.CloudManager;
-import top.hserver.cloud.client.NacosRpcClient;
+import top.hserver.cloud.client.handler.RpcServerHandler;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import static top.hserver.cloud.CloudManager.naming;
 
@@ -17,24 +17,21 @@ import static top.hserver.cloud.CloudManager.naming;
 @Slf4j
 public class SubProviderInfo {
 
-    private final static Map<String, EventListener> MAP = new HashMap<>();
-
     public static void init() {
         //注册中心的
-        CloudManager.getProviderClass().forEach(p -> {
+        CloudManager.getServerNames().forEach(p -> {
             try {
-                EventListener eventListener = MAP.get(p);
-                if (eventListener != null) {
-                    naming.unsubscribe(p, eventListener);
-                    MAP.remove(p);
-                }
                 EventListener listener = event -> {
                     if (event instanceof NamingEvent) {
                         NamingEvent evn = (NamingEvent) event;
-                        NacosRpcClient.connect(evn);
+                        List<Instance> instances = evn.getInstances();
+                        //节点变化，对上下线关系进行清除，重新设置
+                        RpcServerHandler.nacosClear(p);
+                        for (Instance instance : instances) {
+                            RpcServerHandler.nacosReg(instance.getIp(), instance.getPort(), p);
+                        }
                     }
                 };
-                MAP.put(p, listener);
                 naming.subscribe(p, listener);
             } catch (Exception e) {
                 log.warn(e.getMessage());

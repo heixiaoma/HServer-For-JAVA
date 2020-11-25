@@ -256,21 +256,14 @@ public class InitBean {
             RpcService rpcService = (RpcService) aClass.getAnnotation(RpcService.class);
             //说明是rpc服务，单独存储一份她的数据哦
             if (rpcService != null) {
-                ClientData clientData = new ClientData();
-                clientData.setClassName(aClass.getName());
-                clientData.setMethods(methods);
                 if (rpcService.value().trim().length() > 0) {
                     //自定义了Rpc服务名
-                    clientData.setAClass(rpcService.value());
-                    CloudManager.add(rpcService.value(), clientData);
                     IocUtil.addBean(rpcService.value(), aClass.newInstance());
                 } else {
                     //没有自定义服务名字
                     Class[] interfaces = aClass.getInterfaces();
                     if (interfaces != null && interfaces.length > 0) {
-                        clientData.setAClass(interfaces[0].getName());
                         IocUtil.addBean(interfaces[0].getName(), aClass.newInstance());
-                        CloudManager.add(interfaces[0].getName(), clientData);
                     } else {
                         log.error("RPC没有实现任何接口，预计调用过程会出现问题:{}", aClass.getSimpleName());
                     }
@@ -491,7 +484,8 @@ public class InitBean {
                                         }
                                     }
                                 }
-                            }catch (Throwable ignored){}
+                            } catch (Throwable ignored) {
+                            }
                         }
                     }
                 } else {
@@ -589,9 +583,8 @@ public class InitBean {
     private static void rpczr(Field declaredField, Object v) {
         Resource annotation = declaredField.getAnnotation(Resource.class);
         if (annotation != null) {
-            //对这个字段保存一份,用户nacos 拉去数据
-            CloudManager.add(annotation.value().trim().length() == 0 ? declaredField.getType().getName() : annotation.value());
             try {
+                CloudManager.add(annotation.serverName());
                 declaredField.setAccessible(true);
                 Object proxy = CloudProxy.getProxy(declaredField.getType(), annotation);
                 declaredField.set(v, proxy);

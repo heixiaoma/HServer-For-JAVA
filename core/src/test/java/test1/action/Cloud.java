@@ -8,7 +8,7 @@ import test1.service.RpcService;
 @Controller
 public class Cloud {
 
-  @Resource("Rpc")
+  @Resource(value = "Rpc",serverName = "mall")
   private RpcService rpcService;
 
   @GET("/rpc")
