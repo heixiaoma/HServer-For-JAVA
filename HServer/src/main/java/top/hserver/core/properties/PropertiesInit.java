@@ -31,7 +31,9 @@ public class PropertiesInit {
         if (workerPool != null) {
             ConstConfig.workerPool = workerPool;
         }
-        ConstConfig.EPOLL = Boolean.valueOf(instance.get("epoll"));
+        if (instance.get("epoll").trim().length() > 0) {
+            ConstConfig.EPOLL = Boolean.valueOf(instance.get("epoll"));
+        }
         Integer businessPool = instance.getInt("businessPool");
         if (businessPool != null) {
             ConstConfig.BUSINESS_EVENT = new DefaultEventExecutorGroup(businessPool, new NamedThreadFactory("hserver_business"));

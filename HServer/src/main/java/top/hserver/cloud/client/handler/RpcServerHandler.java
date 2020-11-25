@@ -89,22 +89,19 @@ public class RpcServerHandler {
                     // 连接放回连接池，这里一定记得放回去
                     pool.release(channel);
                 });
-
                 try {
                     ResultData response = resultDataCompletableFuture.get(5000, TimeUnit.MILLISECONDS);
                     RpcWrite.removeKey(response.getRequestId());
-                    switch (response.getCode().code()) {
-                        case 200:
-                            return response.getData();
-                        default:
-                            if (response.getError() != null) {
-                                throw new RpcException(response.getError());
-                            } else {
-                                throw new RpcException("远程调用异常");
-                            }
+                    if (response.getCode().code() == 200) {
+                        return response.getData();
                     }
-                } catch (TimeoutException e) {
-                    throw new RpcException("本地调用超时异常");
+                    if (response.getError() != null) {
+                        throw new RpcException(response.getError());
+                    } else {
+                        throw new RpcException("远程调用异常");
+                    }
+                } catch (Exception e) {
+                    throw new RpcException("本地调用异常");
                 }
 
             }

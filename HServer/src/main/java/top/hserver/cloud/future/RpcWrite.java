@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.*;
 
+/**
+ * @author hxm
+ */
 public class RpcWrite {
 
     public static Map<String, CompletableFuture<ResultData>> syncKey = new ConcurrentHashMap<>();
@@ -43,6 +46,7 @@ public class RpcWrite {
         msg.setData(invokeServiceData);
         channel.writeAndFlush(msg).addListener((ChannelFutureListener) future -> {
             if (!future.isSuccess()) {
+                //不成功返回异常
                 String requestId = invokeServiceData.getRequestId();
                 ResultData resultData = new ResultData();
                 resultData.setRequestId(requestId);

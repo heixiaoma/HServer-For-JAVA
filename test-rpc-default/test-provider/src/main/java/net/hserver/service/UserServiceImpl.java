@@ -7,11 +7,13 @@ import top.hserver.core.ioc.annotation.RpcService;
 @RpcService
 public class UserServiceImpl implements UserService {
 
+    @Override
     public String getUserInfo() {
 
         return "我是用户信息";
     }
 
+    @Override
     public void setUserInfo(String userInfo) {
         System.out.println("设置了用户信息:" + userInfo);
     }

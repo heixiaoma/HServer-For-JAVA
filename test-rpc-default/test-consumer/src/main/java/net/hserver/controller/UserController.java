@@ -15,8 +15,12 @@ public class UserController {
     @GET("/userInfo")
     public JsonResult getUserInfo() {
         try {
-            String userInfo = userService.getUserInfo();
-            return JsonResult.ok(userInfo);
+            int size = 100000;
+            long l = System.currentTimeMillis();
+            for (int i = 0; i < size; i++) {
+                String userInfo = userService.getUserInfo();
+            }
+            return JsonResult.ok().put("耗时", (System.currentTimeMillis() - l)/1000.0 + "/s");
         } catch (Exception e) {
             e.printStackTrace();
         }
