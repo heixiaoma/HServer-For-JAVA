@@ -9,7 +9,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String getUserInfo() {
-
         return "我是用户信息";
     }
 

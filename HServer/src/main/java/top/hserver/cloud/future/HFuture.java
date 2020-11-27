@@ -19,6 +19,20 @@ public class HFuture implements Future<ResultData> {
     }
 
     @Override
+    public ResultData get() throws InterruptedException, ExecutionException {
+        latch.wait();
+        return data;
+    }
+
+    @Override
+    public ResultData get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        if (latch.await(timeout, unit)) {
+            return data;
+        }
+        throw new TimeoutException("远程调用超时");
+    }
+
+    @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
         return false;
     }
@@ -33,17 +47,5 @@ public class HFuture implements Future<ResultData> {
         return false;
     }
 
-    @Override
-    public ResultData get() throws InterruptedException, ExecutionException {
-        latch.wait();
-        return data;
-    }
 
-    @Override
-    public ResultData get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        if (latch.await(timeout, unit)) {
-            return data;
-        }
-        return null;
-    }
 }

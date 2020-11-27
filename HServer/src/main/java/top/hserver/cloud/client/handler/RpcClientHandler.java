@@ -102,7 +102,7 @@ public class RpcClientHandler {
                         throw new RpcException("远程调用异常");
                     }
                 } catch (Exception e) {
-                    throw new RpcException("本地调用异常");
+                    throw new RpcException(e.getMessage());
                 } finally {
                     RpcWrite.removeKey(invokeServiceData.getRequestId());
                 }
