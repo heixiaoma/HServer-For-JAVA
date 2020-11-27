@@ -9,6 +9,7 @@ import top.hserver.cloud.bean.InvokeServiceData;
 import top.hserver.cloud.bean.ResultData;
 import top.hserver.cloud.bean.ServiceData;
 import top.hserver.cloud.client.RpcClient;
+import top.hserver.cloud.future.HFuture;
 import top.hserver.cloud.future.RpcWrite;
 import top.hserver.cloud.util.DynamicRoundRobin;
 import top.hserver.core.server.exception.RpcException;
@@ -80,18 +81,18 @@ public class RpcClientHandler {
         for (int i = 0; i < size; i++) {
             ServiceData serviceData = CLASS_STRING_MAP.get(invokeServiceData.getServerName()).choose();
             if (serviceData != null) {
-                CompletableFuture<ResultData> resultDataCompletableFuture = new CompletableFuture<>();
+                HFuture hFuture = new HFuture();
                 SimpleChannelPool pool = RpcClient.channels.get(serviceData.getInetSocketAddress());
                 Future<Channel> acquire = pool.acquire();
                 acquire.addListener((FutureListener<Channel>) future -> {
                     //给服务端发送数据
                     Channel channel = future.getNow();
-                    RpcWrite.writeAndSync(channel, invokeServiceData, resultDataCompletableFuture);
+                    RpcWrite.writeAndSync(channel, invokeServiceData, hFuture);
                     // 连接放回连接池，这里一定记得放回去
                     pool.release(channel);
                 });
                 try {
-                    ResultData response = resultDataCompletableFuture.get(5000, TimeUnit.MILLISECONDS);
+                    ResultData response = hFuture.get(5, TimeUnit.SECONDS);
                     if (response.getCode().code() == 200) {
                         return response.getData();
                     }

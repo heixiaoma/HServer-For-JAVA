@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.bean.ResultData;
 import top.hserver.cloud.common.MSG_TYPE;
 import top.hserver.cloud.common.Msg;
+import top.hserver.cloud.future.HFuture;
 import top.hserver.cloud.future.RpcWrite;
 
 import java.util.concurrent.CompletableFuture;
@@ -20,12 +21,12 @@ public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Msg msg) throws Exception {
-        channelHandlerContext.executor().submit(()->{
+        channelHandlerContext.executor().submit(() -> {
             if (msg.getMsg_type() == MSG_TYPE.RESULT) {
                 ResultData resultData = ((Msg<ResultData>) msg).getData();
                 String requestId = resultData.getRequestId();
-                CompletableFuture<ResultData> future = RpcWrite.syncKey.get(requestId);
-                future.complete(resultData);
+                HFuture future = RpcWrite.syncKey.get(requestId);
+                future.setData(resultData);
             }
         });
     }

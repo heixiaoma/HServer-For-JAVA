@@ -16,9 +16,9 @@ import java.util.concurrent.*;
  */
 public class RpcWrite {
 
-    public static Map<String, CompletableFuture<ResultData>> syncKey = new ConcurrentHashMap<>();
+    public static Map<String, HFuture> syncKey = new ConcurrentHashMap<>();
 
-    public static void writeAndSync(Channel channel, final InvokeServiceData invokeServiceData, CompletableFuture<ResultData> future) throws Exception {
+    public static void writeAndSync(Channel channel, final InvokeServiceData invokeServiceData, HFuture future) throws Exception {
         if (channel == null) {
             throw new NullPointerException("channel");
         }
@@ -37,7 +37,7 @@ public class RpcWrite {
     }
 
 
-    private static void doWriteAndSync(Channel channel, final InvokeServiceData invokeServiceData, final CompletableFuture<ResultData> writeFuture) throws Exception {
+    private static void doWriteAndSync(Channel channel, final InvokeServiceData invokeServiceData, final HFuture writeFuture) throws Exception {
         Msg<InvokeServiceData> msg = new Msg<>();
         msg.setMsg_type(MSG_TYPE.INVOKER);
         msg.setData(invokeServiceData);
@@ -48,7 +48,7 @@ public class RpcWrite {
                 ResultData resultData = new ResultData();
                 resultData.setRequestId(requestId);
                 resultData.setError(future.cause());
-                writeFuture.complete(resultData);
+                writeFuture.setData(resultData);
             }
         });
     }
