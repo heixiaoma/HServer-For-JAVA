@@ -3,7 +3,7 @@
 
     <!--可视化的高亮样式-->
     <property name="STDOUT_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %HServerHighlight(%5.5level) PID:[ %magenta(%pid)] 线程名: [%17.17thread] %cyan(%-40.40logger{39} [%4.4line]) : %msg%n"/>
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %HServerHighlight(%5.5level) PID:[ %magenta(%pid)] 线程名: [%17.17thread] %cyan(%-40.40logger{39} 行号:[%4.4line]) : %msg%n"/>
 
     <!--文件存储的样式-->
     <property name="FILE_PATTERN"
@@ -142,30 +142,35 @@
         <discardingThreshold>0</discardingThreshold>
         <queueSize>512</queueSize>
         <appender-ref ref ="STDOUT"/>
+        <includeCallerData>true</includeCallerData>
     </appender>
 
     <appender name ="ASYNC_FILE" class= "ch.qos.logback.classic.AsyncAppender">
         <discardingThreshold>0</discardingThreshold>
         <queueSize>512</queueSize>
         <appender-ref ref ="FILE"/>
+        <includeCallerData>true</includeCallerData>
     </appender>
 
     <appender name ="ASYNC_FILE_VIEW" class= "ch.qos.logback.classic.AsyncAppender">
         <discardingThreshold>0</discardingThreshold>
         <queueSize>512</queueSize>
         <appender-ref ref ="FILE_VIEW"/>
+        <includeCallerData>true</includeCallerData>
     </appender>
 
     <appender name ="ASYNC_FILE_ERROR" class= "ch.qos.logback.classic.AsyncAppender">
         <discardingThreshold>0</discardingThreshold>
         <queueSize>512</queueSize>
         <appender-ref ref ="FILE_ERROR"/>
+        <includeCallerData>true</includeCallerData>
     </appender>
 
     <appender name ="ASYNC_FILE_ERROR_VIEW" class= "ch.qos.logback.classic.AsyncAppender">
         <discardingThreshold>0</discardingThreshold>
         <queueSize>512</queueSize>
         <appender-ref ref ="FILE_ERROR_VIEW"/>
+        <includeCallerData>true</includeCallerData>
     </appender>
 
 
