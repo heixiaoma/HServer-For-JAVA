@@ -6,14 +6,18 @@ import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.bean.InvokeServiceData;
 import top.hserver.cloud.common.Msg;
 
+/**
+ * @author hxm
+ */
 @Slf4j
-public class ServerHandler extends SimpleChannelInboundHandler<Msg> {
-
+public class RpcServerHandler extends SimpleChannelInboundHandler<Msg> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Msg msg) throws Exception {
-        InvokeServiceData invokeServiceData = InvokerHandler.buildContext(channelHandlerContext, msg);
-        InvokerHandler.invoker(invokeServiceData,channelHandlerContext);
+        channelHandlerContext.executor().submit(()->{
+            InvokeServiceData invokeServiceData = InvokerHandler.buildContext(channelHandlerContext, msg);
+            InvokerHandler.invoker(invokeServiceData,channelHandlerContext);
+        });
     }
 
     @Override

@@ -2,14 +2,18 @@ package top.hserver.cloud.proxy;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.bean.InvokeServiceData;
-import top.hserver.cloud.client.handler.RpcServerHandler;
+import top.hserver.cloud.client.handler.RpcClientHandler;
 import top.hserver.core.ioc.annotation.Resource;
 
+/**
+ * @author hxm
+ */
 @Slf4j
 public class CloudProxy {
 
@@ -38,18 +42,20 @@ public class CloudProxy {
         }
 
         Object o1 = proxyFactory.createClass().newInstance();
-        ((ProxyObject)o1).setHandler((self, thismethod, proceed, args) -> {
+        ((ProxyObject)o1).setHandler((self, thisMethod, proceed, args) -> {
             //这里实现远程调用啦！
             InvokeServiceData invokeServiceData = new InvokeServiceData();
-            invokeServiceData.setMethod(thismethod);
+            invokeServiceData.setMethod(thisMethod);
             if (resource.value().trim().length() > 0) {
                 invokeServiceData.setAClass(resource.value());
             } else {
                 invokeServiceData.setAClass(clazz.getName());
             }
+            String requestId = UUID.randomUUID().toString();
+            invokeServiceData.setRequestId(requestId);
             invokeServiceData.setServerName(resource.serverName());
             invokeServiceData.setObjects(args);
-            return RpcServerHandler.sendInvoker(invokeServiceData);
+            return RpcClientHandler.sendInvoker(invokeServiceData);
         });
 
         if (value.trim().length() > 0) {

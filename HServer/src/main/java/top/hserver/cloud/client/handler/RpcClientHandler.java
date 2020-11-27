@@ -14,6 +14,7 @@ import top.hserver.cloud.util.DynamicRoundRobin;
 import top.hserver.core.server.exception.RpcException;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +24,7 @@ import java.util.concurrent.TimeoutException;
  * @author hxm
  */
 @Slf4j
-public class RpcServerHandler {
+public class RpcClientHandler {
 
     //服务名，List<服务集群host和IP>
     public final static Map<String, DynamicRoundRobin> CLASS_STRING_MAP = new ConcurrentHashMap<>();
@@ -91,7 +92,6 @@ public class RpcServerHandler {
                 });
                 try {
                     ResultData response = resultDataCompletableFuture.get(5000, TimeUnit.MILLISECONDS);
-                    RpcWrite.removeKey(response.getRequestId());
                     if (response.getCode().code() == 200) {
                         return response.getData();
                     }
@@ -102,6 +102,8 @@ public class RpcServerHandler {
                     }
                 } catch (Exception e) {
                     throw new RpcException("本地调用异常");
+                } finally {
+                    RpcWrite.removeKey(invokeServiceData.getRequestId());
                 }
 
             }

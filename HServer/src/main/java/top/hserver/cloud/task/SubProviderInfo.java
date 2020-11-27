@@ -5,7 +5,7 @@ import com.alibaba.nacos.api.naming.listener.NamingEvent;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.CloudManager;
-import top.hserver.cloud.client.handler.RpcServerHandler;
+import top.hserver.cloud.client.handler.RpcClientHandler;
 
 import java.util.List;
 
@@ -26,9 +26,9 @@ public class SubProviderInfo {
                         NamingEvent evn = (NamingEvent) event;
                         List<Instance> instances = evn.getInstances();
                         //节点变化，对上下线关系进行清除，重新设置
-                        RpcServerHandler.nacosClear(p);
+                        RpcClientHandler.nacosClear(p);
                         for (Instance instance : instances) {
-                            RpcServerHandler.nacosReg(instance.getIp(), instance.getPort(), p);
+                            RpcClientHandler.nacosReg(instance.getIp(), instance.getPort(), p);
                         }
                     }
                 };

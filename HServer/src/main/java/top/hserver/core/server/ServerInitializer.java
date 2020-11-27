@@ -12,10 +12,10 @@ import io.netty.handler.ssl.OptionalSslHandler;
 import top.hserver.cloud.common.Msg;
 import top.hserver.cloud.common.codec.RpcDecoder;
 import top.hserver.cloud.common.codec.RpcEncoder;
-import top.hserver.cloud.server.handler.ServerHandler;
+import top.hserver.cloud.server.handler.RpcServerHandler;
 import top.hserver.core.server.context.ConstConfig;
-import top.hserver.core.server.handlers.ActionHandler;
 import top.hserver.core.server.handlers.HServerContentHandler;
+import top.hserver.core.server.handlers.RouterHandler;
 import top.hserver.core.server.handlers.WebSocketServerHandler;
 
 import java.util.List;
@@ -73,10 +73,10 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
             pipeline.addLast(new HttpObjectAggregator(Integer.MAX_VALUE));
             //有websocket才走他
             if (WebSocketServerHandler.WebSocketRouter.size() > 0) {
-                pipeline.addLast(ConstConfig.BUSINESS_EVENT,new WebSocketServerHandler());
+                pipeline.addLast(ConstConfig.BUSINESS_EVENT, new WebSocketServerHandler());
             }
             pipeline.addLast(new HServerContentHandler());
-            pipeline.addLast(ConstConfig.BUSINESS_EVENT,new ActionHandler());
+            pipeline.addLast(ConstConfig.BUSINESS_EVENT, new RouterHandler());
             pipeline.remove(this);
             ctx.fireChannelActive();
         }
@@ -85,7 +85,7 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
             ChannelPipeline pipeline = ctx.pipeline();
             pipeline.addLast(new RpcDecoder(Msg.class));
             pipeline.addLast(new RpcEncoder(Msg.class));
-            pipeline.addLast("RpcServerProviderHandler", new ServerHandler());
+            pipeline.addLast(ConstConfig.BUSINESS_EVENT, "RpcServerProviderHandler", new RpcServerHandler());
             pipeline.remove(this);
             ctx.fireChannelActive();
         }

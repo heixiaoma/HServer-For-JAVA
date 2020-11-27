@@ -8,6 +8,7 @@ import top.hserver.cloud.common.codec.RpcDecoder;
 import top.hserver.cloud.common.codec.RpcEncoder;
 
 public class HChannelPoolHandler implements ChannelPoolHandler {
+
     @Override
     public void channelReleased(Channel channel) throws Exception {
 

@@ -25,9 +25,6 @@ public class RpcWrite {
         if (invokeServiceData == null) {
             throw new NullPointerException("invokeServiceData");
         }
-        String requestId = UUID.randomUUID().toString();
-        //设置调用ID
-        invokeServiceData.setRequestId(requestId);
         //map里添加一个异步回调等待
         syncKey.put(invokeServiceData.getRequestId(), future);
         //开始远程调用等待

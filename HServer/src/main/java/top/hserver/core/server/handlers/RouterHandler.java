@@ -14,7 +14,7 @@ import java.util.concurrent.Executor;
  * @author hxm
  */
 @Slf4j
-public class ActionHandler extends SimpleChannelInboundHandler<HServerContext> {
+public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HServerContext hServerContext) throws Exception {

@@ -6,7 +6,7 @@ import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.client.RpcClient;
-import top.hserver.cloud.client.handler.RpcServerHandler;
+import top.hserver.cloud.client.handler.RpcClientHandler;
 import top.hserver.cloud.config.AppRpc;
 import top.hserver.cloud.config.AppRpcNacos;
 import top.hserver.cloud.proxy.CloudProxy;
@@ -71,7 +71,7 @@ public class CloudManager {
                 } else {
                     String address = appRpc.getAddress();
                     if (address != null) {
-                        RpcServerHandler.defaultReg(address);
+                        RpcClientHandler.defaultReg(address);
                     }
                 }
             }

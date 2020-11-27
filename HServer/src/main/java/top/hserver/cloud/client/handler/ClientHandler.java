@@ -20,12 +20,14 @@ public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Msg msg) throws Exception {
-        if (msg.getMsg_type() == MSG_TYPE.RESULT) {
-            ResultData resultData = ((Msg<ResultData>) msg).getData();
-            String requestId = resultData.getRequestId();
-            CompletableFuture<ResultData> future = RpcWrite.syncKey.get(requestId);
-            future.complete(resultData);
-        }
+        channelHandlerContext.executor().submit(()->{
+            if (msg.getMsg_type() == MSG_TYPE.RESULT) {
+                ResultData resultData = ((Msg<ResultData>) msg).getData();
+                String requestId = resultData.getRequestId();
+                CompletableFuture<ResultData> future = RpcWrite.syncKey.get(requestId);
+                future.complete(resultData);
+            }
+        });
     }
 
     @Override
