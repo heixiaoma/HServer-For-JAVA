@@ -77,9 +77,8 @@ public class RpcClientHandler {
 
     public static Object sendInvoker(InvokeServiceData invokeServiceData) throws Exception {
         DynamicRoundRobin dynamicRoundRobin = CLASS_STRING_MAP.get(invokeServiceData.getServerName());
-        int size = dynamicRoundRobin != null ? dynamicRoundRobin.size() : 0;
-        for (int i = 0; i < size; i++) {
-            ServiceData serviceData = CLASS_STRING_MAP.get(invokeServiceData.getServerName()).choose();
+        if (dynamicRoundRobin != null) {
+            ServiceData serviceData = dynamicRoundRobin.choose();
             if (serviceData != null) {
                 HFuture hFuture = new HFuture();
                 SimpleChannelPool pool = RpcClient.channels.get(serviceData.getInetSocketAddress());
@@ -106,7 +105,6 @@ public class RpcClientHandler {
                 } finally {
                     RpcWrite.removeKey(invokeServiceData.getRequestId());
                 }
-
             }
         }
         throw new RpcException("暂无服务");
