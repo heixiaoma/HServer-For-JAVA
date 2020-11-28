@@ -17,13 +17,13 @@ import java.util.concurrent.CompletableFuture;
  * @author hxm
  */
 @Slf4j
-public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
+public class ClientHandler extends SimpleChannelInboundHandler<Msg<ResultData>> {
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Msg msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Msg<ResultData> msg) throws Exception {
         channelHandlerContext.executor().submit(() -> {
             if (msg.getMsg_type() == MSG_TYPE.RESULT) {
-                ResultData resultData = ((Msg<ResultData>) msg).getData();
+                ResultData resultData = msg.getData();
                 String requestId = resultData.getRequestId();
                 HFuture future = RpcWrite.syncKey.get(requestId);
                 future.setData(resultData);
