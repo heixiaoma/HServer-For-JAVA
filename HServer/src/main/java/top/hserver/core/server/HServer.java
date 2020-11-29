@@ -1,5 +1,6 @@
 package top.hserver.core.server;
 
+import io.netty.channel.ChannelOption;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -50,13 +51,16 @@ public class HServer {
             ServerBootstrap bootstrap = new ServerBootstrap();
             if (EpollUtil.check() && EPOLL) {
                 bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
-                bootstrap.option(EpollChannelOption.TCP_NODELAY, true);
                 bootstrap.option(EpollChannelOption.TCP_QUICKACK, true);
+                bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+                bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
                 bossGroup = new EpollEventLoopGroup(bossPool, new NamedThreadFactory("hserver_epoll_boss"));
                 workerGroup = new EpollEventLoopGroup(workerPool, new NamedThreadFactory("hserver_epoll_worker"));
                 bootstrap.group(bossGroup, workerGroup).channel(EpollServerSocketChannel.class);
                 typeName = "Epoll";
             } else {
+                bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+                bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
                 bossGroup = new NioEventLoopGroup(bossPool, new NamedThreadFactory("hserver_boss"));
                 workerGroup = new NioEventLoopGroup(workerPool, new NamedThreadFactory("hserver_worker"));
                 bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
