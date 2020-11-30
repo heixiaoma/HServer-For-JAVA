@@ -1,9 +1,10 @@
 package top.hserver.core.ioc.ref;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.core.ioc.annotation.*;
 import top.hserver.core.ioc.annotation.queue.QueueListener;
 import top.hserver.core.server.util.ClassLoadUtil;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -12,9 +13,7 @@ import java.util.*;
 /**
  * @author hxm
  */
-@Slf4j
 public class ClasspathPackageScanner implements PackageScanner {
-
     private Map<Class, List<Class<?>>> annotationClass = new HashMap<>();
 
     /**

@@ -4,7 +4,6 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
-import lombok.extern.slf4j.Slf4j;
 import java.io.StringWriter;
 import java.util.Map;
 
@@ -12,7 +11,6 @@ import java.util.Map;
 /**
  * @author hxm
  */
-@Slf4j
 public class FreemarkerUtil {
 
     private static final Configuration CFG = new Configuration(Configuration.VERSION_2_3_27);

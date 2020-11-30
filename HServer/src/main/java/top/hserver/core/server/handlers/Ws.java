@@ -7,20 +7,15 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import lombok.Getter;
-import lombok.Setter;
-import top.hserver.core.server.util.ByteBufUtil;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
 
 /**
  * @author hxm
  */
-@Getter
-@Setter
 public class Ws {
     private ChannelHandlerContext ctx;
     private String message;
@@ -72,4 +67,43 @@ public class Ws {
         }
     }
 
+    public ChannelHandlerContext getCtx() {
+        return ctx;
+    }
+
+    public void setCtx(ChannelHandlerContext ctx) {
+        this.ctx = ctx;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public HttpRequest getRequest() {
+        return request;
+    }
+
+    public void setRequest(HttpRequest request) {
+        this.request = request;
+    }
+
+    public Map<String, List<String>> getReqData() {
+        return reqData;
+    }
+
+    public void setReqData(Map<String, List<String>> reqData) {
+        this.reqData = reqData;
+    }
 }

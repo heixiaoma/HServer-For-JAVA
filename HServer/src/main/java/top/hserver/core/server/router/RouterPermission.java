@@ -1,7 +1,6 @@
 package top.hserver.core.server.router;
 
 import io.netty.handler.codec.http.HttpMethod;
-import lombok.Data;
 import top.hserver.core.ioc.annotation.RequiresPermissions;
 import top.hserver.core.ioc.annotation.RequiresRoles;
 import top.hserver.core.ioc.annotation.Sign;
@@ -9,7 +8,6 @@ import top.hserver.core.ioc.annotation.Sign;
 /**
  * @author hxm
  */
-@Data
 public class RouterPermission {
     private String url;
     private RequiresPermissions requiresPermissions;
@@ -19,4 +17,59 @@ public class RouterPermission {
     private String controllerPackageName;
     private String controllerName;
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public RequiresPermissions getRequiresPermissions() {
+        return requiresPermissions;
+    }
+
+    public void setRequiresPermissions(RequiresPermissions requiresPermissions) {
+        this.requiresPermissions = requiresPermissions;
+    }
+
+    public RequiresRoles getRequiresRoles() {
+        return requiresRoles;
+    }
+
+    public void setRequiresRoles(RequiresRoles requiresRoles) {
+        this.requiresRoles = requiresRoles;
+    }
+
+    public Sign getSign() {
+        return sign;
+    }
+
+    public void setSign(Sign sign) {
+        this.sign = sign;
+    }
+
+    public HttpMethod getReqMethodName() {
+        return reqMethodName;
+    }
+
+    public void setReqMethodName(HttpMethod reqMethodName) {
+        this.reqMethodName = reqMethodName;
+    }
+
+    public String getControllerPackageName() {
+        return controllerPackageName;
+    }
+
+    public void setControllerPackageName(String controllerPackageName) {
+        this.controllerPackageName = controllerPackageName;
+    }
+
+    public String getControllerName() {
+        return controllerName;
+    }
+
+    public void setControllerName(String controllerName) {
+        this.controllerName = controllerName;
+    }
 }

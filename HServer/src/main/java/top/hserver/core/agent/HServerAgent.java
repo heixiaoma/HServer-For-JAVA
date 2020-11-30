@@ -2,27 +2,25 @@ package top.hserver.core.agent;
 
 import com.sun.tools.attach.VirtualMachine;
 import com.sun.tools.attach.VirtualMachineDescriptor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
-import top.hserver.HServerApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.core.server.context.ConstConfig;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.instrument.Instrumentation;
-import java.nio.file.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author hxm
  */
-@Slf4j
 public class HServerAgent {
+    private static final Logger log = LoggerFactory.getLogger(HServerAgent.class);
 
     public static void agentmain(String args, Instrumentation inst) {
 

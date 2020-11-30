@@ -2,7 +2,6 @@ package top.hserver.cloud.server.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.bean.InvokeServiceData;
 import top.hserver.cloud.bean.ResultData;
 import top.hserver.cloud.common.MSG_TYPE;
@@ -14,12 +13,11 @@ import java.lang.reflect.Method;
 /**
  * @author hxm
  */
-@Slf4j
 public class InvokerHandler {
 
     static void invoker(InvokeServiceData data, ChannelHandlerContext ctx) {
         if (data != null) {
-            String aClass = data.getAClass();
+            String aClass = data.getaClass();
             Object bean = IocUtil.getBean(aClass);
             Method method = data.getMethod();
             try {

@@ -1,5 +1,7 @@
 package top.hserver;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.core.agent.HServerAgent;
 import top.hserver.core.plugs.PlugsManager;
 import top.hserver.core.queue.QueueDispatcher;
@@ -10,13 +12,11 @@ import top.hserver.core.ioc.ref.MemoryInitClass;
 import top.hserver.core.log.HServerLogConfig;
 import top.hserver.core.properties.PropertiesInit;
 import top.hserver.core.server.HServer;
-import lombok.extern.slf4j.Slf4j;
 import top.hserver.core.server.router.RouterManager;
 import top.hserver.core.server.util.EnvironmentUtil;
 import top.hserver.core.server.util.PackageUtil;
 import top.hserver.core.task.TaskManager;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,9 +25,8 @@ import java.util.Set;
 /**
  * @author hxm
  */
-@Slf4j
 public class HServerApplication {
-
+    private static final Logger log = LoggerFactory.getLogger(HServerApplication.class);
     private static Class clazz;
     private static Class mainClass;
     private static String[] packages;

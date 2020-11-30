@@ -4,13 +4,13 @@ import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.core.ioc.annotation.Auto;
 import top.hserver.core.ioc.annotation.Track;
 import top.hserver.core.server.util.ClassLoadUtil;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.UUID;
@@ -20,9 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author hxm
  * 有些操作需要处理内存处理哈
  */
-@Slf4j
 public class MemoryInitClass {
-
+    private static final Logger log = LoggerFactory.getLogger(MemoryInitClass.class);
     public static final ConcurrentHashMap<String, Object> annMapMethod = new ConcurrentHashMap<>();
 
 

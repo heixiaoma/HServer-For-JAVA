@@ -8,7 +8,8 @@ import io.netty.channel.pool.ChannelPoolMap;
 import io.netty.channel.pool.FixedChannelPool;
 import io.netty.channel.pool.SimpleChannelPool;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.cloud.client.handler.HChannelPoolHandler;
 import top.hserver.core.server.util.NamedThreadFactory;
 
@@ -17,9 +18,8 @@ import java.net.InetSocketAddress;
 /**
  * @author hxm
  */
-@Slf4j
 public class RpcClient {
-
+    private static final Logger log = LoggerFactory.getLogger(RpcClient.class);
     public static ChannelPoolMap<InetSocketAddress, SimpleChannelPool> channels;
 
     public static void init() {

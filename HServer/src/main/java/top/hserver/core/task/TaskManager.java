@@ -1,6 +1,7 @@
 package top.hserver.core.task;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.core.interfaces.TaskJob;
 import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.util.NamedThreadFactory;
@@ -12,8 +13,8 @@ import java.util.concurrent.*;
 /**
  * @author hxm
  */
-@Slf4j
 public class TaskManager {
+    private static final Logger log = LoggerFactory.getLogger(TaskManager.class);
 
     public static Boolean IS_OK = false;
 
@@ -33,7 +34,7 @@ public class TaskManager {
 
         try {
             if (CRON_TASK.containsKey(name)) {
-                log.warn("{}任务名已经存在",name);
+                log.warn("{}任务名已经存在", name);
                 return;
             }
             TaskJob taskJob1 = taskJob.newInstance();
@@ -72,10 +73,11 @@ public class TaskManager {
 
     /**
      * 存在任务？
+     *
      * @param name
      * @return
      */
-    public static boolean existTask(String name){
+    public static boolean existTask(String name) {
         return CRON_TASK.containsKey(name);
     }
 
@@ -91,7 +93,7 @@ public class TaskManager {
      */
     public static void initTask(String name, String time, String className, Method method, Object... args) {
         if (CRON_TASK.containsKey(name)) {
-            log.warn("{}任务名已经存在",name);
+            log.warn("{}任务名已经存在", name);
             return;
         }
         try {

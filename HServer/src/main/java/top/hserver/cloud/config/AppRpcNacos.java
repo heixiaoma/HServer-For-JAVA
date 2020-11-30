@@ -1,9 +1,7 @@
 package top.hserver.cloud.config;
 
-import lombok.Data;
 import top.hserver.core.ioc.annotation.ConfigurationProperties;
 
-@Data
 @ConfigurationProperties(prefix = "app.rpc.nacos")
 public class AppRpcNacos {
     /**
@@ -26,4 +24,36 @@ public class AppRpcNacos {
      * 能访问到自己的IP地址，nacos 才用
      */
     private String ip;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
 }

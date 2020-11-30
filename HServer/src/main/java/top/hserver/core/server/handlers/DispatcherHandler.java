@@ -1,5 +1,7 @@
 package top.hserver.core.server.handlers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.core.interfaces.*;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.*;
@@ -12,7 +14,6 @@ import top.hserver.core.server.util.ExceptionUtil;
 import top.hserver.core.server.util.ParameterUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
-import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -24,9 +25,8 @@ import java.util.concurrent.CompletableFuture;
  *
  * @author hxm
  */
-@Slf4j
 public class DispatcherHandler {
-
+    private static final Logger log = LoggerFactory.getLogger(DispatcherHandler.class);
     private final static StaticHandler STATIC_HANDLER = new StaticHandler();
 
     /**
@@ -170,7 +170,7 @@ public class DispatcherHandler {
             throw new BusinessException(HttpResponseStatus.NOT_FOUND.code(), error.toString(), new NotFoundException("不能找到处理当前请求的资源"), hServerContext.getWebkit());
         }
         Method method = routerInfo.getMethod();
-        Class<?> aClass = routerInfo.getAClass();
+        Class<?> aClass = routerInfo.getaClass();
         Object bean = IocUtil.getBean(aClass);
         //检查下方法参数
         Object res;

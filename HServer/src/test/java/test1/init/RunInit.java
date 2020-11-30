@@ -1,6 +1,7 @@
 package test1.init;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import test1.bean.User;
 import test1.log.Log;
 import top.hserver.core.interfaces.InitRunner;
@@ -8,10 +9,9 @@ import top.hserver.core.ioc.annotation.Autowired;
 import top.hserver.core.ioc.annotation.Bean;
 import top.hserver.core.ioc.annotation.Value;
 
-@Slf4j
 @Bean
 public class RunInit implements InitRunner {
-
+  private static final Logger log = LoggerFactory.getLogger(RunInit.class);
   @Value("ENDPOINT")
   private String env;
 

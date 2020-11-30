@@ -1,6 +1,5 @@
 package top.hserver.cloud.bean;
 
-import lombok.Data;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -8,7 +7,6 @@ import java.lang.reflect.Method;
 /**
  * @author hxm
  */
-@Data
 public class InvokeServiceData implements Serializable {
 
     private static final long SerialVersionUID = 1L;
@@ -38,4 +36,43 @@ public class InvokeServiceData implements Serializable {
      */
     private String serverName;
 
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
+    public String getaClass() {
+        return aClass;
+    }
+
+    public void setaClass(String aClass) {
+        this.aClass = aClass;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
+    }
+
+    public Object[] getObjects() {
+        return objects;
+    }
+
+    public void setObjects(Object[] objects) {
+        this.objects = objects;
+    }
+
+    public String getServerName() {
+        return serverName;
+    }
+
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
+    }
 }

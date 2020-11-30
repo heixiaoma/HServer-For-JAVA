@@ -7,6 +7,9 @@ import top.hserver.cloud.common.Msg;
 import top.hserver.cloud.common.codec.RpcDecoder;
 import top.hserver.cloud.common.codec.RpcEncoder;
 
+/**
+ * @author hxm
+ */
 public class HChannelPoolHandler implements ChannelPoolHandler {
 
     @Override

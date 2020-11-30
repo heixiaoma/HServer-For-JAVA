@@ -2,16 +2,14 @@ package top.hserver.core.server.handlers;
 
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.multipart.*;
-import org.apache.http.entity.ContentType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.core.server.context.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
-import lombok.extern.slf4j.Slf4j;
 import top.hserver.core.server.util.HServerIpUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,9 +17,8 @@ import java.util.Map;
 /**
  * @author hxm
  */
-@Slf4j
 public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
-
+    private static final Logger log = LoggerFactory.getLogger(HServerContentHandler.class);
     private final static DefaultHttpDataFactory FACTORY = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
 
     @Override

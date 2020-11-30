@@ -3,7 +3,8 @@ package top.hserver.cloud.task;
 import com.alibaba.nacos.api.naming.listener.EventListener;
 import com.alibaba.nacos.api.naming.listener.NamingEvent;
 import com.alibaba.nacos.api.naming.pojo.Instance;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.cloud.CloudManager;
 import top.hserver.cloud.client.handler.RpcClientHandler;
 
@@ -14,8 +15,8 @@ import static top.hserver.cloud.CloudManager.naming;
 /**
  * @author hxm
  */
-@Slf4j
 public class SubProviderInfo {
+    private static final Logger log = LoggerFactory.getLogger(SubProviderInfo.class);
 
     public static void init() {
         //注册中心的

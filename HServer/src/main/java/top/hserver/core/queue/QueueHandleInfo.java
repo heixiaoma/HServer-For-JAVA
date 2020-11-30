@@ -1,6 +1,5 @@
 package top.hserver.core.queue;
 
-import lombok.Data;
 import top.hserver.core.ioc.annotation.queue.QueueHandlerType;
 
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.List;
  *
  * @author hxm
  */
-@Data
 public class QueueHandleInfo {
 
     private QueueFactory queueFactory;
@@ -26,6 +24,42 @@ public class QueueHandleInfo {
 
     public void add(QueueHandleMethod eventHandleMethod) {
         this.queueHandleMethods.add(eventHandleMethod);
+    }
+
+    public QueueFactory getQueueFactory() {
+        return queueFactory;
+    }
+
+    public void setQueueFactory(QueueFactory queueFactory) {
+        this.queueFactory = queueFactory;
+    }
+
+    public String getQueueName() {
+        return queueName;
+    }
+
+    public void setQueueName(String queueName) {
+        this.queueName = queueName;
+    }
+
+    public int getBufferSize() {
+        return bufferSize;
+    }
+
+    public void setBufferSize(int bufferSize) {
+        this.bufferSize = bufferSize;
+    }
+
+    public QueueHandlerType getQueueHandlerType() {
+        return queueHandlerType;
+    }
+
+    public void setQueueHandlerType(QueueHandlerType queueHandlerType) {
+        this.queueHandlerType = queueHandlerType;
+    }
+
+    public List<QueueHandleMethod> getQueueHandleMethods() {
+        return queueHandleMethods;
     }
 
 }

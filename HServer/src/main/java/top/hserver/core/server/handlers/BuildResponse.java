@@ -138,15 +138,15 @@ public class BuildResponse {
      */
     public static FullHttpResponse buildError(BusinessException e) {
         HttpRequest httpRequest = e.getWebkit().httpRequest;
-        BusinessBean build = BusinessBean.builder().args(httpRequest.getRequestParams().toString())
-                .code(e.getHttpCode())
-                .errorDesc(e.getErrorDescription())
-                .errorMsg(ExceptionUtil.getHtmlMessage(e.getThrowable()))
-                .method(httpRequest.getRequestType().name())
-                .url(httpRequest.getUri())
-                .version(ConstConfig.VERSION)
-                .bugAddress(ConstConfig.BUG_ADDRESS)
-                .build();
+        BusinessBean build = new BusinessBean();
+        build.setArgs(httpRequest.getRequestParams().toString());
+        build.setCode(e.getHttpCode());
+        build.setErrorDesc(e.getErrorDescription());
+        build.setErrorMsg(ExceptionUtil.getHtmlMessage(e.getThrowable()));
+        build.setMethod(httpRequest.getRequestType().name());
+        build.setUrl(httpRequest.getUri());
+        build.setVersion(ConstConfig.VERSION);
+        build.setBugAddress(ConstConfig.BUG_ADDRESS);
 
         Map data = new HashMap<>();
         data.put("business", build);

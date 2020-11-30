@@ -1,7 +1,8 @@
 package top.hserver.core.ioc;
 
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,9 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author hxm
  */
-@Slf4j
 public class HServerIoc implements Ioc {
-
+    private static final Logger log = LoggerFactory.getLogger(HServerIoc.class);
     private static final Map<String, Object> POOL = new ConcurrentHashMap<>(32);
 
     @Override

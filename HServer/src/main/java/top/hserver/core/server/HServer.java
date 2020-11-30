@@ -4,6 +4,8 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.handler.ssl.SslContextBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.cloud.CloudManager;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
@@ -19,7 +21,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.util.List;
@@ -30,8 +31,10 @@ import static top.hserver.core.server.context.ConstConfig.*;
 /**
  * @author hxm
  */
-@Slf4j
+
 public class HServer {
+
+    private static final Logger log = LoggerFactory.getLogger(HServer.class);
 
     private final int port;
 

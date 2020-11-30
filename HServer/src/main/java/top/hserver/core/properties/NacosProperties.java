@@ -3,7 +3,8 @@ package top.hserver.core.properties;
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.HServerApplication;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.ioc.annotation.nacos.NacosClass;
@@ -21,8 +22,9 @@ import java.util.concurrent.Executor;
 /**
  * @author hxm
  */
-@Slf4j
 public class NacosProperties {
+
+    private static final Logger log = LoggerFactory.getLogger(NacosProperties.class);
 
     private static ConfigService configService;
 

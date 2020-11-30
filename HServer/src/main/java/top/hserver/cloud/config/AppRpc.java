@@ -1,12 +1,10 @@
 package top.hserver.cloud.config;
 
-import lombok.Data;
 import top.hserver.core.ioc.annotation.ConfigurationProperties;
 
 /**
  * RPC基础配置信息
  */
-@Data
 @ConfigurationProperties(prefix = "app.rpc")
 public class AppRpc {
 
@@ -21,5 +19,19 @@ public class AppRpc {
 
     private String address;
 
+    public String getMode() {
+        return mode;
+    }
 
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 }

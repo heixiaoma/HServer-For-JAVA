@@ -1,13 +1,11 @@
 package top.hserver.core.api;
 
-import lombok.Data;
 
 import java.util.List;
 
 /**
  * @author hxm
  */
-@Data
 public class ApiResult {
   /**
    * 控制器名字
@@ -17,4 +15,20 @@ public class ApiResult {
    * 控制器下的所有方法
    */
   private List<ApiData> apiData;
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public List<ApiData> getApiData() {
+    return apiData;
+  }
+
+  public void setApiData(List<ApiData> apiData) {
+    this.apiData = apiData;
+  }
 }

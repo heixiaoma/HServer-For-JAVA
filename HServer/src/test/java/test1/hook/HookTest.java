@@ -1,17 +1,19 @@
 package test1.hook;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.core.interfaces.HookAdapter;
 import top.hserver.core.ioc.annotation.Autowired;
 import top.hserver.core.ioc.annotation.Hook;
 import test1.service.HelloService;
 import test1.service.Test;
-import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
 
-@Slf4j
 @Hook(Test.class)
 public class HookTest implements HookAdapter {
+
+    private static final Logger log = LoggerFactory.getLogger(HookTest.class);
 
     @Autowired
     private HelloService helloService;

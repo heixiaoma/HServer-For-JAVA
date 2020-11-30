@@ -7,7 +7,6 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.ReferenceCountUtil;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.UUID;
@@ -17,7 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author hxm
  */
-@Slf4j
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
 
     public static final Map<String, String> WebSocketRouter = new ConcurrentHashMap<>();

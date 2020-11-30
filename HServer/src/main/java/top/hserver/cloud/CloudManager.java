@@ -4,7 +4,8 @@ package top.hserver.cloud;
 import com.alibaba.nacos.api.common.Constants;
 import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.cloud.client.RpcClient;
 import top.hserver.cloud.client.handler.RpcClientHandler;
 import top.hserver.cloud.config.AppRpc;
@@ -21,9 +22,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * @author hxm
  */
-@Slf4j
 public class CloudManager {
-
+    private static final Logger log = LoggerFactory.getLogger(CloudManager.class);
     private static Set<String> ServerNames = new CopyOnWriteArraySet<>();
     /**
      * Nacos注册中心

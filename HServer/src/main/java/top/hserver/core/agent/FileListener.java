@@ -1,23 +1,21 @@
 package top.hserver.core.agent;
 
 import javassist.bytecode.ClassFile;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.HServerApplication;
-import top.hserver.core.server.context.ConstConfig;
 
 import java.io.*;
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.Instrumentation;
-import java.lang.instrument.UnmodifiableClassException;
 
 /**
  * @author hxm
  */
-@Slf4j
 public class FileListener extends FileAlterationListenerAdaptor {
-
+    private static final Logger log = LoggerFactory.getLogger(FileListener.class);
     private Instrumentation instrumentation;
 
     private String tempFilePath;

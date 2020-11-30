@@ -7,6 +7,9 @@ import top.hserver.cloud.util.SerializationUtil;
 
 import java.util.List;
 
+/**
+ * @author hxm
+ */
 public class RpcDecoder extends ByteToMessageDecoder {
 
     private Class<?> genericClass;

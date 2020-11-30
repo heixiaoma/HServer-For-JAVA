@@ -1,7 +1,8 @@
 package top.hserver.core.properties;
 
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.util.NamedThreadFactory;
 import top.hserver.core.server.util.PropUtil;
@@ -14,8 +15,9 @@ import static top.hserver.core.properties.NacosProperties.nacosConfig;
  * @author hxm
  */
 
-@Slf4j
 public class PropertiesInit {
+
+    private static final Logger log = LoggerFactory.getLogger(PropertiesInit.class);
 
     public static void configFile(Set<String> scanPackage) {
         PropUtil instance = PropUtil.getInstance();

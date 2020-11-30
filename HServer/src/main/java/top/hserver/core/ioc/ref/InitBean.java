@@ -1,8 +1,9 @@
 package top.hserver.core.ioc.ref;
 
 import javassist.util.proxy.ProxyObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.cloud.CloudManager;
-import top.hserver.cloud.bean.ClientData;
 import top.hserver.cloud.proxy.CloudProxy;
 import top.hserver.core.proxy.HookProxyFactory;
 import top.hserver.core.queue.QueueDispatcher;
@@ -19,7 +20,6 @@ import top.hserver.core.server.util.ParameterUtil;
 import top.hserver.core.server.util.PropUtil;
 import top.hserver.core.task.TaskManager;
 import io.netty.handler.codec.http.HttpMethod;
-import lombok.extern.slf4j.Slf4j;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -29,9 +29,9 @@ import java.util.*;
 /**
  * @author hxm
  */
-@Slf4j
 public class InitBean {
 
+    private static final Logger log = LoggerFactory.getLogger(InitBean.class);
     /**
      * 加载所有bean进容器
      */
@@ -323,7 +323,7 @@ public class InitBean {
                         RouterInfo routerInfo = new RouterInfo();
                         method.setAccessible(true);
                         routerInfo.setMethod(method);
-                        routerInfo.setAClass(aClass);
+                        routerInfo.setaClass(aClass);
                         routerInfo.setUrl(path);
                         routerInfo.setReqMethodName(HttpMethod.valueOf(aClass1.getSimpleName()));
                         RouterManager.addRouter(routerInfo);
@@ -365,7 +365,7 @@ public class InitBean {
                         method.setAccessible(true);
                         routerInfo.setMethod(method);
                         routerInfo.setUrl(path);
-                        routerInfo.setAClass(aClass);
+                        routerInfo.setaClass(aClass);
                         routerInfo.setReqMethodName(HttpMethod.valueOf(s));
                         RouterManager.addRouter(routerInfo);
                         //检查权限

@@ -6,7 +6,6 @@ import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.context.StaticFile;
 import top.hserver.core.server.context.HServerContext;
 import top.hserver.core.server.exception.BusinessException;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.net.JarURLConnection;
@@ -22,7 +21,6 @@ import java.util.jar.JarFile;
  * @author hxm
  */
 
-@Slf4j
 public class StaticHandler {
 
     private final static String BASE = "static";

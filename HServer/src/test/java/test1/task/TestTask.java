@@ -1,11 +1,11 @@
 package test1.task;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.core.interfaces.TaskJob;
 
-@Slf4j
 public class TestTask implements TaskJob {
-
+    private static final Logger log = LoggerFactory.getLogger(TestTask.class);
     @Override
     public void exec(Object... args) {
         String args_ = "";

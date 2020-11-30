@@ -3,10 +3,8 @@ package top.hserver.core.server.util;
 
 import javassist.ClassPool;
 import javassist.Loader;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -20,7 +18,6 @@ import java.util.jar.JarFile;
  *
  * @author hxm
  */
-@Slf4j
 public class ClassLoadUtil {
 
     private static ClassLoader classLoader;

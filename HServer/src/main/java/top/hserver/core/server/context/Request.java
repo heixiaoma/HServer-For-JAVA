@@ -8,9 +8,6 @@ import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.multipart.*;
 import io.netty.util.CharsetUtil;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -20,8 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author hxm
  */
-@Getter
-@Setter
 public class Request implements HttpRequest {
     private String uri;
     private String nettyUri;
@@ -33,6 +28,7 @@ public class Request implements HttpRequest {
     private  Map<String, List<String>> urlParams = new ConcurrentHashMap<>();
     private HeadMap headers;
     private FullHttpRequest nettyRequest;
+
 
     /**
      * 文件处理
@@ -177,4 +173,85 @@ public class Request implements HttpRequest {
         }
     }
 
+    @Override
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public void setNettyUri(String nettyUri) {
+        this.nettyUri = nettyUri;
+    }
+
+    @Override
+    public HttpMethod getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(HttpMethod requestType) {
+        this.requestType = requestType;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void setCtx(ChannelHandlerContext ctx) {
+        this.ctx = ctx;
+    }
+
+    @Override
+    public Map<String, List<String>> getRequestParams() {
+        return requestParams;
+    }
+
+    public void setRequestParams(Map<String, List<String>> requestParams) {
+        this.requestParams = requestParams;
+    }
+
+    @Override
+    public Map<String, List<String>> getUrlParams() {
+        return urlParams;
+    }
+
+    public void setUrlParams(Map<String, List<String>> urlParams) {
+        this.urlParams = urlParams;
+    }
+
+    @Override
+    public HeadMap getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(HeadMap headers) {
+        this.headers = headers;
+    }
+
+    public void setNettyRequest(FullHttpRequest nettyRequest) {
+        this.nettyRequest = nettyRequest;
+    }
+
+    public static ByteBuf getEmptyBuf() {
+        return EMPTY_BUF;
+    }
+
+    @Override
+    public Map<String, PartFile> getMultipartFile() {
+        return multipartFile;
+    }
+
+    public void setMultipartFile(Map<String, PartFile> multipartFile) {
+        this.multipartFile = multipartFile;
+    }
+
+    public static String getTempPath() {
+        return TEMP_PATH;
+    }
 }

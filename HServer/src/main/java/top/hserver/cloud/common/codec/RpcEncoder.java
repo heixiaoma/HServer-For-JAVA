@@ -5,6 +5,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import top.hserver.cloud.util.SerializationUtil;
 
+/**
+ * @author hxm
+ */
 public class RpcEncoder extends MessageToByteEncoder {
 
     private Class<?> genericClass;

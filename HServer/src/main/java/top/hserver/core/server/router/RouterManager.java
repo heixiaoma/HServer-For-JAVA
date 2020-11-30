@@ -1,7 +1,8 @@
 package top.hserver.core.server.router;
 
 import io.netty.handler.codec.http.HttpMethod;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.core.ioc.annotation.RequestMethod;
 import top.hserver.core.server.context.HServerContext;
 import top.hserver.core.server.context.PatternUri;
@@ -20,8 +21,9 @@ import java.util.regex.Pattern;
 /**
  * @author hxm
  */
-@Slf4j
 public class RouterManager {
+
+    private static final Logger log = LoggerFactory.getLogger(RouterManager.class);
 
     /**
      * 路由线程池，关系映射
@@ -33,7 +35,7 @@ public class RouterManager {
     /**
      * 清除
      */
-    public static synchronized void clearRouterManager(){
+    public static synchronized void clearRouterManager() {
         router.clear();
         routerPermission.clear();
     }
@@ -87,13 +89,13 @@ public class RouterManager {
                         s = s.replaceAll("\\{" + pattern.get(i) + "\\}", "(.+?)");
                     }
                 }
-                Map<String, PatternUri> ispauri = ISPAURI(routerInfo.reqMethodName);
+                Map<String, PatternUri> ispauri = ISPAURI(routerInfo.getReqMethodName());
                 if (ispauri != null) {
-                    s="^"+s;
+                    s = "^" + s;
                     ispauri.put(s, new PatternUri(pattern, url, s));
                 }
             }
-            Map<String, RouterInfo> router = router(routerInfo.reqMethodName);
+            Map<String, RouterInfo> router = router(routerInfo.getReqMethodName());
             if (router != null) {
                 if (router.containsKey(url)) {
                     log.warn("url< {} >映射已经存在，可能会影响程序使用", url);

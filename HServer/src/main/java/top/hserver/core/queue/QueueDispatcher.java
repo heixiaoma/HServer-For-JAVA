@@ -1,6 +1,7 @@
 package top.hserver.core.queue;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.cloud.util.SerializationUtil;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.ioc.annotation.queue.QueueHandler;
@@ -17,8 +18,10 @@ import java.util.concurrent.*;
 /**
  * @author hxm
  */
-@Slf4j
 public class QueueDispatcher {
+
+    private static final Logger log = LoggerFactory.getLogger(QueueDispatcher.class);
+
     private static Map<String, QueueHandleInfo> handleMethodMap = new ConcurrentHashMap<>();
 
     private QueueDispatcher() {

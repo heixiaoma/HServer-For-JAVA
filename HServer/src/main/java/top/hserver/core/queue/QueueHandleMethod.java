@@ -1,7 +1,5 @@
 package top.hserver.core.queue;
 
-import lombok.Data;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
@@ -10,7 +8,6 @@ import java.lang.reflect.Method;
  *
  * @author hxm
  */
-@Data
 public class QueueHandleMethod implements Serializable {
     /**
      * 级别
@@ -37,4 +34,15 @@ public class QueueHandleMethod implements Serializable {
         return size;
     }
 
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
+    }
 }

@@ -4,7 +4,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.pool.SimpleChannelPool;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.FutureListener;
-import lombok.extern.slf4j.Slf4j;
 import top.hserver.cloud.bean.InvokeServiceData;
 import top.hserver.cloud.bean.ResultData;
 import top.hserver.cloud.bean.ServiceData;
@@ -15,16 +14,12 @@ import top.hserver.cloud.util.DynamicRoundRobin;
 import top.hserver.core.server.exception.RpcException;
 
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * @author hxm
  */
-@Slf4j
 public class RpcClientHandler {
 
     //服务名，List<服务集群host和IP>

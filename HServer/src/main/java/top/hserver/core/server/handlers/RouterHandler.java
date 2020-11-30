@@ -4,7 +4,6 @@ import io.netty.util.ReferenceCountUtil;
 import top.hserver.core.server.context.HServerContext;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -13,7 +12,6 @@ import java.util.concurrent.Executor;
 /**
  * @author hxm
  */
-@Slf4j
 public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
 
     @Override

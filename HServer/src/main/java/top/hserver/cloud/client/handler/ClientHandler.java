@@ -3,7 +3,8 @@ package top.hserver.cloud.client.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.cloud.bean.ResultData;
 import top.hserver.cloud.common.MSG_TYPE;
 import top.hserver.cloud.common.Msg;
@@ -16,7 +17,6 @@ import java.util.concurrent.CompletableFuture;
 /**
  * @author hxm
  */
-@Slf4j
 public class ClientHandler extends SimpleChannelInboundHandler<Msg<ResultData>> {
 
     @Override

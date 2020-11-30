@@ -1,6 +1,7 @@
 package test1.action;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import test1.bean.User;
 import test1.log.Log;
 import test1.service.TService;
@@ -23,9 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 @Controller
 public class Hello {
+
+    private static final Logger log = LoggerFactory.getLogger(Hello.class);
 
     @Autowired
     private Test test1q;
@@ -74,7 +76,7 @@ public class Hello {
 
     @GET("/t")
     public JsonResult r() {
-        return JsonResult.ok(tService.t()+tService2.t());
+        return JsonResult.ok(tService.t() + tService2.t());
     }
 
     @GET("/test1")
@@ -91,7 +93,6 @@ public class Hello {
         }
         return JsonResult.ok();
     }
-
 
 
     @Track
@@ -149,7 +150,7 @@ public class Hello {
 
     @POST("/raw")
     public Map raw(User user) {
-        return JsonResult.ok().put("data",user);
+        return JsonResult.ok().put("data", user);
     }
 
     /**

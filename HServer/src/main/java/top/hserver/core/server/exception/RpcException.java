@@ -1,5 +1,8 @@
 package top.hserver.core.server.exception;
 
+/**
+ * @author hxm
+ */
 public class RpcException extends Exception {
 
     public RpcException() {

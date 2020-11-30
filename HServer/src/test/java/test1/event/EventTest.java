@@ -1,6 +1,7 @@
 package test1.event;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import test1.service.HelloService;
 import top.hserver.core.ioc.annotation.Autowired;
 import top.hserver.core.ioc.annotation.queue.QueueHandler;
@@ -8,9 +9,10 @@ import top.hserver.core.ioc.annotation.queue.QueueListener;
 
 import java.util.concurrent.atomic.LongAdder;
 
-@Slf4j
 @QueueListener(queueName = "Queue")
 public class EventTest {
+
+    private static final Logger log = LoggerFactory.getLogger(EventTest.class);
 
     @Autowired
     private HelloService helloService;

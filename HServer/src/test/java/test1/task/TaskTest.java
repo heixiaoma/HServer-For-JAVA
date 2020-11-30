@@ -1,6 +1,7 @@
 package test1.task;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.core.ioc.annotation.Autowired;
 import top.hserver.core.ioc.annotation.Bean;
 import top.hserver.core.ioc.annotation.Task;
@@ -10,10 +11,9 @@ import test1.service.TestService;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@Slf4j
 @Bean
 public class TaskTest {
-
+    private static final Logger log = LoggerFactory.getLogger(TaskTest.class);
     @Autowired
     private TestService testService;
 

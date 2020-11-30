@@ -6,7 +6,8 @@ import java.util.UUID;
 
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.cloud.bean.InvokeServiceData;
 import top.hserver.cloud.client.handler.RpcClientHandler;
 import top.hserver.core.ioc.annotation.Resource;
@@ -14,8 +15,9 @@ import top.hserver.core.ioc.annotation.Resource;
 /**
  * @author hxm
  */
-@Slf4j
 public class CloudProxy {
+
+    private static final Logger log = LoggerFactory.getLogger(CloudProxy.class);
 
     private static Map<String, Object> IOC = new HashMap<>();
 
@@ -47,9 +49,9 @@ public class CloudProxy {
             InvokeServiceData invokeServiceData = new InvokeServiceData();
             invokeServiceData.setMethod(thisMethod);
             if (resource.value().trim().length() > 0) {
-                invokeServiceData.setAClass(resource.value());
+                invokeServiceData.setaClass(resource.value());
             } else {
-                invokeServiceData.setAClass(clazz.getName());
+                invokeServiceData.setaClass(clazz.getName());
             }
             String requestId = UUID.randomUUID().toString();
             invokeServiceData.setRequestId(requestId);
