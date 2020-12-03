@@ -1,7 +1,7 @@
 
 
 <p align="center">
-<a href="https://hserver.top">
+<a href="https://doc.hserver.top">
 <img src="https://gitee.com/HServer/HServer/raw/master/doc/hserver.png" width="500" />
 </a>
 </p>
@@ -10,7 +10,7 @@
         <img src="https://img.shields.io/badge/Build-Java8-red.svg?style=flat" />
     </a>
      <a >
-          <img src="https://img.shields.io/badge/HServer-2.9.53-yeoll.svg?style=flat" />
+          <img src="https://img.shields.io/badge/HServer-2.9.54-yeoll.svg?style=flat" />
       </a>
     <a >
         <img src="https://img.shields.io/badge/Netty-4.1.53.Final-blue.svg" alt="flat">
@@ -44,7 +44,7 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 <dependency>
     <groupId>top.hserver</groupId>
     <artifactId>HServer</artifactId>
-    <version>2.9.53</version>
+    <version>2.9.54</version>
 </dependency>
 ```
 
@@ -110,6 +110,7 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 **3.建立一个主函数**
 
 ```java
+@HServerBoot
 public class WebApp {
     public static void main(String[] args) {
         HServerApplication.run(WebApp.class,8888,args);
