@@ -54,7 +54,6 @@ public class HServer {
             ServerBootstrap bootstrap = new ServerBootstrap();
             if (EpollUtil.check() && EPOLL) {
                 bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
-                bootstrap.option(EpollChannelOption.TCP_QUICKACK, true);
                 bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
                 bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
                 bossGroup = new EpollEventLoopGroup(bossPool, new NamedThreadFactory("hserver_epoll_boss"));

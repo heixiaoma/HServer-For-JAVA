@@ -82,6 +82,9 @@ public class MemoryInitClass {
         for (CtMethod declaredMethod : methods) {
             Object annotation = declaredMethod.getAnnotation(Track.class);
             if (annotation != null) {
+                //提前放进去不然Linux下报错
+                cp.insertClassPath(new ClassClassPath(CtMethod.class));
+
                 String uuid = UUID.randomUUID().toString();
                 annMapMethod.put(uuid, method);
                 log.debug("被链路跟踪的方法：{}", declaredMethod.getName());
