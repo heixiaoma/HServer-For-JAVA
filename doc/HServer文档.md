@@ -247,6 +247,7 @@ QQ交流群：1065301527
 **3.建立一个主函数**
 
 ```java
+@HServerBoot
 public class WebApp {
     public static void main(String[] args) {
         HServerApplication.run(WebApp.class,8888,args);
@@ -1203,7 +1204,7 @@ public class BeetLSqlPlugin implements PluginAdapter {
             <plugin>
                 <groupId>net.hserver.plugins.maven</groupId>
                 <artifactId>hserver-maven-plugin</artifactId>
-                <version>1.0</version>
+                <version>2.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -1234,6 +1235,16 @@ resources/template
 ```
 找到Maven的依赖包，在top.hserver.test.目录下是大量的测试案例和代码可以查询学习和使用。
 ```
-
+###	热更新（Idea 快捷键 Ctrl+9）
+```java
+@HServerBoot
+public class App {
+    public static void main(String[] args) {
+    	//开启热更新
+        HServerApplication.hotUpdate();
+        HServerApplication.run(App.class, 8888, args);
+    }
+}
+```
 
 
