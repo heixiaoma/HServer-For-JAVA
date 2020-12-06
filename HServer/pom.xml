@@ -42,6 +42,7 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>${netty.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!--  日志类      -->
@@ -49,24 +50,28 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>${logback.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-access</artifactId>
             <version>${logback.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!-- JSON处理 -->
@@ -74,18 +79,21 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>${jackson.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>${jackson.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!--   字节码处理     -->
@@ -93,6 +101,7 @@
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
             <version>${javassist.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!--   模板引擎     -->
@@ -100,6 +109,7 @@
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
             <version>${freemarker.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!--序列化-->
@@ -107,18 +117,21 @@
             <groupId>com.dyuproject.protostuff</groupId>
             <artifactId>protostuff-core</artifactId>
             <version>${protostuff.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>com.dyuproject.protostuff</groupId>
             <artifactId>protostuff-runtime</artifactId>
             <version>${protostuff.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.objenesis</groupId>
             <artifactId>objenesis</artifactId>
             <version>${objenesis.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!--单元测试-->
@@ -126,6 +139,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!-- 队列disruptor -->
@@ -133,6 +147,7 @@
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
             <version>${disruptor.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!--注册配置中心-->
@@ -158,6 +173,7 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons.version}</version>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>
