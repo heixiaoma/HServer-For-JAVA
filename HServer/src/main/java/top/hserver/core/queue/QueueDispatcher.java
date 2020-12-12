@@ -2,7 +2,6 @@ package top.hserver.core.queue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.hserver.cloud.util.SerializationUtil;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.ioc.annotation.queue.QueueHandler;
 import top.hserver.core.ioc.annotation.queue.QueueListener;
@@ -98,12 +97,12 @@ public class QueueDispatcher {
      * @param args
      */
     public static void dispatcherSerializationQueue(String queueName, Object... args) {
-        QueueSerialization instance = new QueueSerialization();
-        try {
-            instance.cacheQueue(SerializationUtil.serialize(new QueueData(queueName, args)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        QueueSerialization instance = new QueueSerialization();
+//        try {
+//            instance.cacheQueue(SerializationUtil.serialize(new QueueData(queueName, args)));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public static QueueInfo queueInfo(String queueName) {
