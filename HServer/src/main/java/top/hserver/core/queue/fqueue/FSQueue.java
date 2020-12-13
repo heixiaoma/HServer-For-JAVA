@@ -8,12 +8,16 @@ import top.hserver.core.queue.fqueue.internal.Index;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 基于文件的先进先出的读写队列
- *
  */
 public class FSQueue {
+
+    private List<File> files = new ArrayList<>();
+
     private int entityLimitLength;
     private String path = null;
     /**
@@ -134,7 +138,8 @@ public class FSQueue {
             readerHandle.reset();
             File deleteFile = readerHandle.getFile();
             readerHandle.close();
-            deleteFile.delete();
+            files.add(deleteFile);
+            removeFile();
             // 更新下一次读取的位置和索引
             idx.putReaderPosition(Entity.MESSAGE_START_POSITION);
             idx.putReaderIndex(nextFileNumber);
@@ -154,6 +159,17 @@ public class FSQueue {
         }
         return bytes;
     }
+
+
+    private void removeFile(){
+        for (int i = 0; i < files.size(); i++) {
+            File file = files.get(i);
+            if (file.delete()){
+                files.remove(file);
+            }
+        }
+    }
+
 
     /**
      * 读取队列头的数据，但不移除。

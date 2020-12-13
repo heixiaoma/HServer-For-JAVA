@@ -23,4 +23,19 @@ public class EventAction {
         return JsonResult.ok().put("data", queueInfo);
     }
 
+    @GET("/event2")
+    public JsonResult event2() {
+        HServerQueue.sendSerializationQueue("Queue", "666");
+        return JsonResult.ok();
+    }
+
+    @GET("/event3")
+    public JsonResult event3() {
+        long l = System.currentTimeMillis();
+        for (int i = 0; i < 100000; i++) {
+            HServerQueue.sendSerializationQueue("Queue", "666---》" + i);
+        }
+        return JsonResult.ok("10w耗时：" + ((System.currentTimeMillis() - l) / 1000.0) + "s");
+    }
+
 }

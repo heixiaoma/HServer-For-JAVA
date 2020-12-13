@@ -41,7 +41,7 @@ public class ConstConfig {
      */
     public static Integer taskPool = Runtime.getRuntime().availableProcessors() + 1;
 
-   /**
+    /**
      * SSL 配置
      */
     public static SslContext sslContext = null;
@@ -88,4 +88,6 @@ public class ConstConfig {
      * 业务线程池子
      */
     public static EventExecutorGroup BUSINESS_EVENT;
+
+    public static String EndurancePath = PATH + "data";
 }

@@ -18,15 +18,15 @@ public class EventTest {
     @QueueHandler(level = 1, size = 2)
     public void aa(String name) {
         atomicLong.increment();
-        System.out.println(atomicLong + "---------" + Thread.currentThread().getName());
-        throw new NullPointerException("try test");
+//        System.out.println(atomicLong + "---------" + Thread.currentThread().getName());
+//        System.out.println(name);
     }
 
 
     @QueueHandler(level = 2, size = 2)
     public void cc(String name) {
         atomicLong.increment();
-        System.out.println(atomicLong + "---------" + Thread.currentThread().getName());
-        throw new NullPointerException("try test");
+//        System.out.println(name);
+//        System.out.println(atomicLong + "---------" + Thread.currentThread().getName());
     }
 }

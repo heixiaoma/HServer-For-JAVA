@@ -2,16 +2,21 @@ package top.hserver.core.queue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.hserver.cloud.util.SerializationUtil;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.ioc.annotation.queue.QueueHandler;
 import top.hserver.core.ioc.annotation.queue.QueueListener;
 import top.hserver.core.ioc.ref.PackageScanner;
+import top.hserver.core.queue.fqueue.FQueue;
+import top.hserver.core.queue.fqueue.exception.FileFormatException;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+
+import static top.hserver.core.server.context.ConstConfig.EndurancePath;
 
 
 /**
@@ -22,6 +27,16 @@ public class QueueDispatcher {
     private static final Logger log = LoggerFactory.getLogger(QueueDispatcher.class);
 
     private static Map<String, QueueHandleInfo> handleMethodMap = new ConcurrentHashMap<>();
+
+    private static FQueue fQueue;
+
+    static {
+        try {
+            fQueue = new FQueue(EndurancePath);
+        } catch (IOException | FileFormatException e) {
+            e.printStackTrace();
+        }
+    }
 
     private QueueDispatcher() {
     }
@@ -61,6 +76,7 @@ public class QueueDispatcher {
             }
             handleMethodMap.put(queueListener.queueName(), eventHandleInfo);
         }
+
     }
 
     /**
@@ -72,6 +88,25 @@ public class QueueDispatcher {
             queueFactory.createQueue(v.getQueueName(), v.getBufferSize(), v.getQueueHandlerType(), v.getQueueHandleMethods());
             v.setQueueFactory(queueFactory);
         });
+
+        Thread thread = new Thread(() -> {
+            try {
+                while (true) {
+                    byte[] poll = fQueue.poll();
+                    if (poll == null) {
+                        Thread.sleep(1000);
+                    } else {
+                        QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
+                        dispatcherQueue(deserialize.getQueueName(), deserialize.getArgs());
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        thread.setName("SerializationQueue");
+        thread.start();
+
     }
 
     /**
@@ -97,12 +132,7 @@ public class QueueDispatcher {
      * @param args
      */
     public static void dispatcherSerializationQueue(String queueName, Object... args) {
-//        QueueSerialization instance = new QueueSerialization();
-//        try {
-//            instance.cacheQueue(SerializationUtil.serialize(new QueueData(queueName, args)));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        fQueue.offer(SerializationUtil.serialize(new QueueData(queueName, args)));
     }
 
     public static QueueInfo queueInfo(String queueName) {

@@ -17,7 +17,6 @@ import java.nio.channels.FileChannel;
 public class Entity {
 
     public static final byte WRITESUCCESS = 1;
-    public static final byte WRITEFAILURE = 2;
     public static final byte WRITEFULL = 3;
     public static final String MAGIC = "FQueuefs";
     private static final String DB_FILE_PREFIX = "fq_";
