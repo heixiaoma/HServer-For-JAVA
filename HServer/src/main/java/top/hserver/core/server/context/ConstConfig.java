@@ -89,5 +89,8 @@ public class ConstConfig {
      */
     public static EventExecutorGroup BUSINESS_EVENT;
 
-    public static String EndurancePath = PATH + "data";
+    /**
+     * 持久化文件存储位置
+     */
+    public static String EndurancePath = PATH + "queue";
 }
