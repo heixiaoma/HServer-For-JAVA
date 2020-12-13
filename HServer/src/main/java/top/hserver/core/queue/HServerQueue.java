@@ -25,7 +25,7 @@ public class HServerQueue {
      * @param queueName
      * @param args
      */
-    public static void sendSerializationQueue(String queueName, Object... args) {
+    public static void sendPersistQueue(String queueName, Object... args) {
         QueueDispatcher.dispatcherSerializationQueue(queueName, args);
     }
 

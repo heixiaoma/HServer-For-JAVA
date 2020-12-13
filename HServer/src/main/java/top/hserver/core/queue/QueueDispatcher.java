@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
-import static top.hserver.core.server.context.ConstConfig.EndurancePath;
+import static top.hserver.core.server.context.ConstConfig.PERSIST_PATH;
 
 
 /**
@@ -32,7 +32,7 @@ public class QueueDispatcher {
 
     static {
         try {
-            fQueue = new FQueue(EndurancePath);
+            fQueue = new FQueue(PERSIST_PATH);
         } catch (IOException | FileFormatException e) {
             e.printStackTrace();
         }

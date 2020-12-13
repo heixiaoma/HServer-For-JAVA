@@ -92,5 +92,6 @@ public class ConstConfig {
     /**
      * 持久化文件存储位置
      */
-    public static String EndurancePath = PATH + "queue";
+    public static String PERSIST_PATH = PATH + "queue";
+
 }
