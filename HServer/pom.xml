@@ -29,7 +29,7 @@
         <protostuff.version>1.0.10</protostuff.version>
         <freemarker.version>2.3.28</freemarker.version>
         <objenesis.version>3.1</objenesis.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <nacos.version>1.3.2</nacos.version>
         <disruptor.version>3.4.2</disruptor.version>
         <commons.version>2.8.0</commons.version>
