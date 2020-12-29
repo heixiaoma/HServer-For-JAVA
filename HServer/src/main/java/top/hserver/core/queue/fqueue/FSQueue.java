@@ -49,7 +49,7 @@ public class FSQueue {
     }
 
     public FSQueue(File dir) throws IOException, FileFormatException {
-        this(dir, 1024 * 1024 * 2);
+        this(dir, 1024 * 1024 * 50);
     }
 
     /**
