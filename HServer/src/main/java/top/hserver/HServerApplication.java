@@ -207,6 +207,7 @@ public class HServerApplication {
         PropertiesInit.configFile(scanPackage);
         log.info("初始化配置完成");
         log.info("Class动态修改开始...");
+        MemoryInitClass.closeCache();
         for (String s : scanPackage) {
             MemoryInitClass.init(s);
         }

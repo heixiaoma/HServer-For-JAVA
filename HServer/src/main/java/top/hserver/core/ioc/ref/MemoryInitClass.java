@@ -12,6 +12,7 @@ import top.hserver.core.server.util.ClassLoadUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MemoryInitClass {
     private static final Logger log = LoggerFactory.getLogger(MemoryInitClass.class);
     public static final ConcurrentHashMap<String, Object> annMapMethod = new ConcurrentHashMap<>();
-
+    private static final List<String> cache = new ArrayList<>();
 
     public static void init(String packageName) {
         if (packageName == null) {
@@ -50,6 +51,11 @@ public class MemoryInitClass {
                         Annotation[] annotations1 = annotation1.annotationType().getAnnotations();
                         for (Annotation annotation2 : annotations1) {
                             if (annotation2.annotationType().getName().equals(Auto.class.getName())) {
+                                if (cache.contains(aClass.getName())) {
+                                    continue;
+                                } else {
+                                    cache.add(aClass.getName());
+                                }
                                 cc = cp.get(aClass.getName());
                                 cc.freeze();
                                 cc.defrost();
@@ -76,6 +82,13 @@ public class MemoryInitClass {
         }
     }
 
+    /**
+     * 清除缓存
+     */
+    public static void closeCache() {
+        cache.clear();
+    }
+
 
     private static void initTrack(CtClass cc, ClassPool cp, CtMethod method) throws Exception {
         CtMethod[] methods = cc.getMethods();
@@ -84,7 +97,6 @@ public class MemoryInitClass {
             if (annotation != null) {
                 //提前放进去不然Linux下报错
                 cp.insertClassPath(new ClassClassPath(CtMethod.class));
-
                 String uuid = UUID.randomUUID().toString();
                 annMapMethod.put(uuid, method);
                 log.debug("被链路跟踪的方法：{}", declaredMethod.getName());

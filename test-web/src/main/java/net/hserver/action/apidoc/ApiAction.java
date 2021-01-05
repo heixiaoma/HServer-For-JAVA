@@ -1,6 +1,6 @@
 package net.hserver.action.apidoc;
 
-import net.hserver.TestWebApp;
+import net.hserver.App;
 import top.hserver.core.api.ApiDoc;
 import top.hserver.core.api.ApiResult;
 import top.hserver.core.interfaces.HttpResponse;
@@ -16,7 +16,7 @@ public class ApiAction {
 
   @GET("/api")
   public void getApiData(HttpResponse httpResponse) {
-    ApiDoc apiDoc = new ApiDoc(TestWebApp.class);
+    ApiDoc apiDoc = new ApiDoc(App.class);
     try {
       List<ApiResult> apiData = apiDoc.getApiData();
       HashMap<String,Object> stringObjectHashMap=new HashMap<>();

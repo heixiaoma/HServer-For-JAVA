@@ -60,6 +60,7 @@ public class Hello {
      */
     @GET("/hello")
     @Log
+    @Track
     public Map hello(HttpRequest request, String name) {
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
@@ -69,7 +70,7 @@ public class Hello {
         return res;
     }
 
-
+    @Track
     @GET("/t")
     public JsonResult r() {
         return JsonResult.ok(tService.t()+tService2.t());
