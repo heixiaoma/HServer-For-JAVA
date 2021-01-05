@@ -32,6 +32,7 @@ import java.util.*;
 public class InitBean {
 
     private static final Logger log = LoggerFactory.getLogger(InitBean.class);
+
     /**
      * 加载所有bean进容器
      */
@@ -646,10 +647,14 @@ public class InitBean {
                         int tempCode = 0;
                         boolean flag = false;
                         for (Class aClass : allClassByInterface) {
+                            Object bean1 = IocUtil.getBean(aClass);
+                            if (bean1 == null) {
+                                continue;
+                            }
                             if (tempCode == 0) {
-                                tempCode = IocUtil.getBean(aClass).hashCode();
+                                tempCode = bean1.hashCode();
                             } else {
-                                if (tempCode != IocUtil.getBean(aClass).hashCode()) {
+                                if (tempCode != bean1.hashCode()) {
                                     flag = true;
                                     break;
                                 }
