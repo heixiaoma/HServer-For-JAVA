@@ -183,6 +183,11 @@ public class Hello {
         response.setDownloadFile(fileInputStream, "README.md");
     }
 
+    @GET("/null")
+    public void nullMethod(HttpRequest request, HttpResponse response) throws Exception {
+
+    }
+
     /**
      * javaBean和基础数据类型测试
      *

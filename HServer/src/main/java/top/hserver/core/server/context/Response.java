@@ -111,6 +111,13 @@ public class Response implements HttpResponse {
     headers.put("content-type", "text/plain;charset=UTF-8");
   }
 
+  /**
+   * 设置一个空字符
+   */
+  public void sendNull() {
+    this.result = "";
+  }
+
   @Override
   public void sendStatusCode(HttpResponseStatus httpResponseStatus) {
     this.httpResponseStatus = httpResponseStatus;

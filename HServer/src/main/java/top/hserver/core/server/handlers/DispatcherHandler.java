@@ -186,7 +186,7 @@ public class DispatcherHandler {
             //调用结果进行设置
             if (res == null) {
                 if (hServerContext.getResponse().getResult() == null) {
-                    hServerContext.getResponse().sendText("");
+                    hServerContext.getResponse().sendNull();
                 }
             } else if (String.class.getName().equals(res.getClass().getName())) {
                 hServerContext.getResponse().sendText(res.toString());
