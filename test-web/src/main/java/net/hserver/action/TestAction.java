@@ -17,6 +17,10 @@ public class TestAction {
 
     @POST("/testPost")
     public JsonResult post(HttpRequest request){
+
+        JsonResult.ok().put("data","").put("data2","data");
+        JsonResult.error().put("data","").put("data2","data");
+
         return  JsonResult.ok();
     }
 }

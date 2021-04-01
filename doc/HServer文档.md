@@ -399,7 +399,7 @@ import top.hserver.core.interfaces.HookAdapter;
 import top.hserver.core.ioc.annotation.*;
 import java.lang.reflect.Method;
 /**
- * hook 指定用了@Log的类，只要用的@Log的类都会被Hook住。这个功能主要用途在做一些 自定义注解时比较常用.比如做一个@log 日志打印注解 或者 耗时统计注解.
+ * hook 指定用了@Log的类，只要用的@Log的类都会被Hook住,或者作用在方法得注解也会生效。这个功能主要用途在做一些 自定义注解时比较常用.比如做一个@log 日志打印注解 或者 耗时统计注解.
  */
 @Slf4j
 @Hook(value = Log.class)
