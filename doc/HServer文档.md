@@ -30,7 +30,7 @@ QQ交流群：1065301527
 | :----------------------: | :----------------------------------------------------------: |
 |          @Bean           | 将当前类加入IOC中，类似spring的@Component注解，可以名字放入ioc 如@Bean("Test") |
 |        @Autowired        | 将ioc里的某个对象注入给某个字段，和spring用法类似,可以名字注入ioc 如@Autowired("Test") |
-|     @RequestMapping      |                 这个和springmvc的注解很相识                  |
+|     @RequestMapping      |                 这个和springmvc的注解很相似                  |
 |           @GET           |                 请求类型注解类似@GetMapping                  |
 |          @POST           |                         请求类型注解                         |
 |           @PUT           |                         请求类型注解                         |
@@ -40,7 +40,7 @@ QQ交流群：1065301527
 |         @OPTIONS         |                         请求类型注解                         |
 |         @CONNECT         |                         请求类型注解                         |
 |          @TRACE          |                         请求类型注解                         |
-|      @Configuration      | 配置注解，这个和springboot有相识之处（这个类中可以注入 @NacosClass,@NacosValue,@Value,@ConfigurationProperties这些注解产生的对象） |
+|      @Configuration      | 配置注解，这个和springboot有相似之处（这个类中可以注入 @NacosClass,@NacosValue,@Value,@ConfigurationProperties这些注解产生的对象） |
 | @ConfigurationProperties |     配置类，和springboot相似 将Properties转为对象放入IOC     |
 |       @Controller        |  标记类为控制器 @Controller 参数可以指定一个URL 和 一个名字  |
 |          @Hook           |                         AOP操作使用                          |
