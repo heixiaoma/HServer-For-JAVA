@@ -94,4 +94,11 @@ public class ConstConfig {
      */
     public static String PERSIST_PATH = PATH + "queue";
 
+    /**
+     * 流量整形
+     */
+    public static Long WRITE_LIMIT = null;
+
+    public static Long READ_LIMIT = null;
+
 }

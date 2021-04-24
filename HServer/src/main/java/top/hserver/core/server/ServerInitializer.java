@@ -9,6 +9,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.ssl.OptionalSslHandler;
+import io.netty.handler.traffic.GlobalTrafficShapingHandler;
 import top.hserver.cloud.common.Msg;
 import top.hserver.cloud.common.codec.RpcDecoder;
 import top.hserver.cloud.common.codec.RpcEncoder;
@@ -24,7 +25,6 @@ import java.util.List;
  * @author hxm
  */
 public class ServerInitializer extends ChannelInitializer<Channel> {
-
 
     @Override
     protected void initChannel(Channel ch) throws Exception {
@@ -68,6 +68,10 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
 
             if (ConstConfig.sslContext != null) {
                 pipeline.addLast(new OptionalSslHandler(ConstConfig.sslContext));
+            }
+
+            if (ConstConfig.WRITE_LIMIT!=null&&ConstConfig.READ_LIMIT!=null) {
+                pipeline.addLast(new GlobalTrafficShapingHandler(ctx.executor().parent(), ConstConfig.WRITE_LIMIT, ConstConfig.READ_LIMIT));
             }
             pipeline.addLast(new HttpServerCodec());
             pipeline.addLast(new HttpObjectAggregator(Integer.MAX_VALUE));

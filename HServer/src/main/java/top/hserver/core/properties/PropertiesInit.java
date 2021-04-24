@@ -36,6 +36,15 @@ public class PropertiesInit {
         if (instance.get("epoll").trim().length() > 0) {
             ConstConfig.EPOLL = Boolean.valueOf(instance.get("epoll"));
         }
+
+        if (instance.get("readLimit").trim().length() > 0) {
+            ConstConfig.READ_LIMIT = Long.valueOf(instance.get("readLimit"));
+        }
+
+        if (instance.get("writeLimit").trim().length() > 0) {
+            ConstConfig.WRITE_LIMIT = Long.valueOf(instance.get("writeLimit"));
+        }
+
         Integer businessPool = instance.getInt("businessPool");
         if (businessPool != null) {
             ConstConfig.BUSINESS_EVENT = new DefaultEventExecutorGroup(businessPool, new NamedThreadFactory("hserver_business"));
