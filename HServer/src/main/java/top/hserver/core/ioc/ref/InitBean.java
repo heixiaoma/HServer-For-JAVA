@@ -33,6 +33,36 @@ public class InitBean {
 
     private static final Logger log = LoggerFactory.getLogger(InitBean.class);
 
+
+    private static void sortOrder() {
+        Class<?>[] order = new Class[]{FilterAdapter.class, GlobalException.class, InitRunner.class, ResponseAdapter.class};
+        for (Class<?> aClass : order) {
+            List<?> listBean = IocUtil.getListBean(aClass);
+            List newObjectList = new ArrayList<>();
+            if (listBean != null && listBean.size() > 1) {
+                int temp = 1;
+                for (Object o : listBean) {
+                    Order annotation = o.getClass().getAnnotation(Order.class);
+                    if (annotation != null) {
+                        if (temp > annotation.value()) {
+                            //向后添加
+                            newObjectList.add(0, o);
+                        } else {
+                            //向前添加
+                            newObjectList.add(o);
+                        }
+                    }
+                }
+                IocUtil.remove(aClass);
+                IocUtil.addBean(aClass.getName(), newObjectList);
+            }
+
+
+        }
+
+    }
+
+
     /**
      * 加载所有bean进容器
      */
@@ -108,6 +138,9 @@ public class InitBean {
                 e.printStackTrace();
             }
         });
+
+        //排序
+        sortOrder();
     }
 
     private static void initConfigurationProperties(PackageScanner scanner) throws Exception {

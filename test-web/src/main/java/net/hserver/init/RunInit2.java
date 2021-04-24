@@ -9,15 +9,11 @@ import top.hserver.core.ioc.annotation.Order;
 import top.hserver.core.ioc.annotation.Value;
 
 @Bean
-@Order(1)
-public class RunInit implements InitRunner {
-
-
-  @Autowired
-  private User user;
+@Order(2)
+public class RunInit2 implements InitRunner {
 
   @Override
   public void init(String[] args) {
-    System.out.println("初始化方法：1-->"+user.getName());
+    System.out.println("初始化方法：2");
   }
 }

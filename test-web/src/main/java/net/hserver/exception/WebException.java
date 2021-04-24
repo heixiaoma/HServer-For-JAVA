@@ -3,10 +3,12 @@ package net.hserver.exception;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import top.hserver.core.interfaces.GlobalException;
 import top.hserver.core.interfaces.HttpRequest;
+import top.hserver.core.ioc.annotation.Order;
 import top.hserver.core.server.context.Webkit;
 import top.hserver.core.server.exception.NotFoundException;
 
 //@Bean
+@Order(1)
 public class WebException implements GlobalException {
 
     @Override
