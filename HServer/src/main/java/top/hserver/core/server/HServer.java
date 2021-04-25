@@ -7,6 +7,7 @@ import io.netty.handler.ssl.SslContextBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.cloud.CloudManager;
+import top.hserver.core.client.HServerWebSocketClient;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
@@ -99,6 +100,7 @@ public class HServer {
             }
         }
         QueueDispatcher.startTaskThread();
+        new HServerWebSocketClient().start();
     }
 
 

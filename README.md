@@ -73,6 +73,7 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 * HOOK组件
 * Track组件
 * Web Socket功能
+* Web Socket Client功能
 * Proxy 自由处理
 * RPC组件
 * Nacos组件
