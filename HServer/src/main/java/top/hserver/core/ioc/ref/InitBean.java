@@ -47,9 +47,11 @@ public class InitBean {
                         if (temp > annotation.value()) {
                             //向后添加
                             newObjectList.add(0, o);
+                            temp=annotation.value();
                         } else {
                             //向前添加
                             newObjectList.add(o);
+                            temp=annotation.value();
                         }
                     }
                 }
