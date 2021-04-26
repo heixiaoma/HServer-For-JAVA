@@ -169,6 +169,39 @@ QQ交流群：1065301527
     public class WebSocketTest implements WebSocketHandler {}
     //这样就可以完成基本的通信了
 
+    
+    //WebSocketClient 客服端
+    @WebSocketClient(url = "ws://123.207.136.134:9010/ajaxchattest")
+    public class WebSocketClientTest implements WebSocketClientHandler {
+    
+        @Override
+        public void onConnect(Wsc wsc) {
+            System.out.println("-----连接了");
+            wsc.send("{\"sub\":\"market.overview\"}");
+        }
+    
+        @Override
+        public void onMessage(Wsc wsc) {
+            System.out.println("-----来消息了：" + wsc.getText());
+            wsc.send(String.valueOf(System.currentTimeMillis()));
+        }
+    
+        @Override
+        public void disConnect(Wsc wsc) {
+            System.out.println("-----断开了");
+        }
+    
+        @Override
+        public void pong(Wsc wsc) {
+            System.out.println("-----来心跳了");
+        }
+    
+        @Override
+        public void throwable(Wsc wsc, Throwable e) {
+            System.out.println("-----异常了");
+        }
+
+
 
 	//@Configuration
 	//自定配置注解，需要配合@Bean注解一起使用，最后会把方法里面的返回的对象
@@ -1022,6 +1055,20 @@ bossPool=2
 ```properties
 #workerPool Netty worker线程组大小 默认4
 workerPool=4
+```
+
+### 日志级别设置
+```properties
+level=error
+```
+
+### 全局流量整形
+```properties
+#读取限制 byte 单位
+readLimit=100
+
+#写出限制 byte 单位
+writeLimit=100
 ```
 
 ### 业务线程数
