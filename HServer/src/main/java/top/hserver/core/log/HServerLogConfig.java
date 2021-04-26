@@ -1,7 +1,11 @@
 package top.hserver.core.log;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import org.slf4j.impl.StaticLoggerBinder;
+import top.hserver.core.server.context.ConstConfig;
+import top.hserver.core.server.util.PropUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +21,7 @@ public class HServerLogConfig {
 
     public static void init() {
         try {
-            if (existConfig()){
+            if (existConfig()) {
                 return;
             }
             loadConfiguration(HServerLogConfig.class.getResourceAsStream("/logback-hserver.xml"));
@@ -26,10 +30,10 @@ public class HServerLogConfig {
         }
     }
 
-    private static boolean existConfig(){
+    private static boolean existConfig() {
         for (String s : getStandardConfigLocations()) {
             InputStream resourceAsStream = HServerLogConfig.class.getResourceAsStream("/" + s);
-            if (resourceAsStream!=null){
+            if (resourceAsStream != null) {
                 try {
                     resourceAsStream.close();
                 } catch (IOException ignored) {
@@ -46,12 +50,17 @@ public class HServerLogConfig {
     }
 
     private static void loadConfiguration(InputStream in) throws Exception {
-        LoggerContext loggerContext = (LoggerContext)StaticLoggerBinder.getSingleton().getLoggerFactory();
+        LoggerContext loggerContext = (LoggerContext) StaticLoggerBinder.getSingleton().getLoggerFactory();
         stopAndReset(loggerContext);
         ch.qos.logback.classic.joran.JoranConfigurator configurator = new ch.qos.logback.classic.joran.JoranConfigurator();
         configurator.setContext(loggerContext);
         configurator.doConfigure(in);
         in.close();
+        Logger root = loggerContext.getLogger("ROOT");
+        if (root != null) {
+            if (PropUtil.getInstance().get("level").trim().length() > 0) {
+                root.setLevel(Level.toLevel(PropUtil.getInstance().get("level").trim()));
+            }
+        }
     }
-
 }

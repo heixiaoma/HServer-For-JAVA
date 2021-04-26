@@ -1,5 +1,6 @@
 package top.hserver.core.server.context;
 
+import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -100,5 +101,10 @@ public class ConstConfig {
     public static Long WRITE_LIMIT = null;
 
     public static Long READ_LIMIT = null;
+
+    /**
+     * 日志级别
+     */
+    public static Level LEVEL = Level.toLevel("DEBUG");
 
 }
