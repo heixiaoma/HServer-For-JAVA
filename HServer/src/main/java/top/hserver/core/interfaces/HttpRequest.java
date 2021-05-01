@@ -138,4 +138,11 @@ public interface HttpRequest {
      */
     byte[] getBody();
 
+
+    /**
+     * 获取创建请求的时间
+     * @return
+     */
+    long getCreateTime();
+
 }

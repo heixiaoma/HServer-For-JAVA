@@ -8,6 +8,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.multipart.*;
 import io.netty.util.CharsetUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -24,11 +25,11 @@ public class Request implements HttpRequest {
     private String ip;
     private int port;
     private ChannelHandlerContext ctx;
-    private  Map<String, List<String>> requestParams = new ConcurrentHashMap<>();
-    private  Map<String, List<String>> urlParams = new ConcurrentHashMap<>();
+    private Map<String, List<String>> requestParams = new ConcurrentHashMap<>();
+    private Map<String, List<String>> urlParams = new ConcurrentHashMap<>();
     private HeadMap headers;
     private FullHttpRequest nettyRequest;
-
+    private long createTime = System.currentTimeMillis();
 
     /**
      * 文件处理
@@ -37,6 +38,12 @@ public class Request implements HttpRequest {
     private byte[] body = null;
     private Map<String, PartFile> multipartFile = new HashMap<>(8);
     private static final String TEMP_PATH = System.getProperty("java.io.tmpdir") + File.separator;
+
+
+    @Override
+    public long getCreateTime() {
+        return createTime;
+    }
 
     @Override
     public String query(String name) {

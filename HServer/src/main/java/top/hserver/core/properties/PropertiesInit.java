@@ -53,7 +53,10 @@ public class PropertiesInit {
         if (businessPool != null) {
             ConstConfig.BUSINESS_EVENT = new DefaultEventExecutorGroup(businessPool, new NamedThreadFactory("hserver_business"));
         }
-
+        Integer timeOut = instance.getInt("timeOut");
+        if (timeOut != null) {
+            ConstConfig.DEFAULT_STALE_CONNECTION_TIMEOUT = timeOut;
+        }
         String config = instance.get("app.nacos.config.address", null);
 
         if (config != null) {

@@ -2,6 +2,7 @@ package top.hserver.core.server.handlers;
 
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.multipart.*;
+import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.core.server.context.*;
@@ -12,13 +13,14 @@ import top.hserver.core.server.util.HServerIpUtil;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 
 /**
  * @author hxm
  */
 public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
-    private static final Logger log = LoggerFactory.getLogger(HServerContentHandler.class);
     private final static DefaultHttpDataFactory FACTORY = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
 
     @Override
@@ -62,6 +64,17 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         BuildResponse.writeException(ctx, cause);
     }
 
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof IdleStateEvent) {
+            IdleStateEvent evt1 = (IdleStateEvent) evt;
+            boolean first = evt1.isFirst();
+            if (first) {
+                BuildResponse.writeException(ctx, new TimeoutException(), HttpResponseStatus.REQUEST_TIMEOUT);
+            }
+        }
+    }
 
     private void handlerUrl(Request request, FullHttpRequest req) {
         Map<String, List<String>> requestParams = request.getRequestParams();

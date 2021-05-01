@@ -64,7 +64,7 @@ public class Hello {
     public Map hello(HttpRequest request, String name) {
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(20000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

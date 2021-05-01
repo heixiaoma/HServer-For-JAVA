@@ -1033,7 +1033,6 @@ resources文件夹里存放一个banner.txt 里面放入你图标就可以了.
   然后监听443端口，你就能https 访问了。
 
 ### 定时器线程数
-
 ```properties
 #taskPool定时任务线程池子配置，默认大小是cpu核心数+1
 taskPool=5
@@ -1042,7 +1041,6 @@ taskPool=5
 
 
 ### BOSS线程组大小
-
 ```properties
 #bossPool Netty boss线程组大小 默认2，可以按cpu 核心数来
 bossPool=2
@@ -1051,7 +1049,6 @@ bossPool=2
 
 
 ### worker线程组大小
-
 ```properties
 #workerPool Netty worker线程组大小 默认4
 workerPool=4
@@ -1072,11 +1069,9 @@ writeLimit=100
 ```
 
 ### 业务线程数
-
 提示：使用了业务线程，整体QPS会有降低、
         优点：可以处理更多的并发耗时任务
         缺点：增加线程切换
-        建议:在非耗时任务情况下不建议配置此选项，当然根据业务而定
 
 ```
 #businessPool 业务线程大小，默是用的workerPool，当添加这个配置，就视为生效
@@ -1084,16 +1079,29 @@ businessPool=50
 ```
 
 
+### 超时配置
+```properties
+#一定要配置业务线程池大小，不然不生效
+businessPool=50
+
+#10秒超时
+timeOut=10000
+```
+
+### 消息体大小，可以用于文件上传限制大小
+```properties
+#消息体最大值 默认int.maxValue
+httpContentSize=999999
+```
+
 
 ### EPOLL模式
-
 ```
 #可以开启Epoll时是否开启epoll 默认true
 epoll=true
 ```
 
 ### **配置中心**
-
 ```properties
 在app.properties文件中添加
 #配置中心地址

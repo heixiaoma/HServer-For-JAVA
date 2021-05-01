@@ -9,6 +9,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.ssl.OptionalSslHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.handler.traffic.GlobalTrafficShapingHandler;
 import top.hserver.cloud.common.Msg;
 import top.hserver.cloud.common.codec.RpcDecoder;
@@ -20,6 +21,7 @@ import top.hserver.core.server.handlers.RouterHandler;
 import top.hserver.core.server.handlers.WebSocketServerHandler;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author hxm
@@ -70,7 +72,7 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
                 pipeline.addLast(new OptionalSslHandler(ConstConfig.sslContext));
             }
 
-            if (ConstConfig.WRITE_LIMIT!=null&&ConstConfig.READ_LIMIT!=null) {
+            if (ConstConfig.WRITE_LIMIT != null && ConstConfig.READ_LIMIT != null) {
                 pipeline.addLast(new GlobalTrafficShapingHandler(ctx.executor().parent(), ConstConfig.WRITE_LIMIT, ConstConfig.READ_LIMIT));
             }
             pipeline.addLast(new HttpServerCodec());
@@ -78,6 +80,9 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
             //有websocket才走他
             if (WebSocketServerHandler.WebSocketRouter.size() > 0) {
                 pipeline.addLast(ConstConfig.BUSINESS_EVENT, new WebSocketServerHandler());
+            }
+            if (ConstConfig.DEFAULT_STALE_CONNECTION_TIMEOUT != null) {
+                pipeline.addLast(new IdleStateHandler(0, ConstConfig.DEFAULT_STALE_CONNECTION_TIMEOUT, 0, TimeUnit.MILLISECONDS));
             }
             pipeline.addLast(new HServerContentHandler());
             pipeline.addLast(ConstConfig.BUSINESS_EVENT, new RouterHandler());

@@ -41,7 +41,7 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 <dependency>
     <groupId>top.hserver</groupId>
     <artifactId>HServer</artifactId>
-    <version>2.9.59</version>
+    <version>2.9.60</version>
 </dependency>
 ```
 

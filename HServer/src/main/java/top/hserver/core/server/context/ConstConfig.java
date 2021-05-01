@@ -107,4 +107,10 @@ public class ConstConfig {
      */
     public static Integer HTTP_CONTENT_SIZE=Integer.MAX_VALUE;
 
+    /**
+     * 超时大小
+     */
+    public static Integer DEFAULT_STALE_CONNECTION_TIMEOUT;
+
+
 }
