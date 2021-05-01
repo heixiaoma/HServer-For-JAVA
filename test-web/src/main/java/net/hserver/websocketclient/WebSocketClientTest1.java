@@ -7,7 +7,7 @@ import top.hserver.core.server.handlers.Wsc;
 /**
  * @author hxm
  */
-@WebSocketClient(url = "ws://123.207.136.134:9010/ajaxchattest")
+//@WebSocketClient(url = "ws://123.207.136.134:9010/ajaxchattest")
 public class WebSocketClientTest1 implements WebSocketClientHandler {
 
     @Override

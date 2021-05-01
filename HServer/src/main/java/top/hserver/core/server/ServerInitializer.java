@@ -74,7 +74,7 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
                 pipeline.addLast(new GlobalTrafficShapingHandler(ctx.executor().parent(), ConstConfig.WRITE_LIMIT, ConstConfig.READ_LIMIT));
             }
             pipeline.addLast(new HttpServerCodec());
-            pipeline.addLast(new HttpObjectAggregator(Integer.MAX_VALUE));
+            pipeline.addLast(new HttpObjectAggregator(ConstConfig.HTTP_CONTENT_SIZE));
             //有websocket才走他
             if (WebSocketServerHandler.WebSocketRouter.size() > 0) {
                 pipeline.addLast(ConstConfig.BUSINESS_EVENT, new WebSocketServerHandler());

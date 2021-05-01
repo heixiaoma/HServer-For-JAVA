@@ -36,7 +36,7 @@ public class ConstConfig {
     /**
      * 版本号
      */
-    public static final String VERSION = "2.9.59";
+    public static final String VERSION = "2.9.60";
     /**
      * 定时任务线程数配置
      */
@@ -103,8 +103,8 @@ public class ConstConfig {
     public static Long READ_LIMIT = null;
 
     /**
-     * 日志级别
+     * 默认消息大小
      */
-    public static Level LEVEL = Level.toLevel("DEBUG");
+    public static Integer HTTP_CONTENT_SIZE=Integer.MAX_VALUE;
 
 }

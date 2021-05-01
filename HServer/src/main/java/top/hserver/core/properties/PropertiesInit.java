@@ -45,6 +45,10 @@ public class PropertiesInit {
             ConstConfig.WRITE_LIMIT = Long.valueOf(instance.get("writeLimit"));
         }
 
+        if (instance.get("httpContentSize").trim().length() > 0) {
+            ConstConfig.HTTP_CONTENT_SIZE = instance.getInt("httpContentSize");
+        }
+
         Integer businessPool = instance.getInt("businessPool");
         if (businessPool != null) {
             ConstConfig.BUSINESS_EVENT = new DefaultEventExecutorGroup(businessPool, new NamedThreadFactory("hserver_business"));

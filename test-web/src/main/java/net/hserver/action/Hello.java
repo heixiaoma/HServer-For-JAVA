@@ -62,6 +62,13 @@ public class Hello {
     @Log
     @Track
     public Map hello(HttpRequest request, String name) {
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         Map<String, Object> res = new HashMap<>();
         res.put("code", 200);
         res.put("res", request.getRequestParams());
