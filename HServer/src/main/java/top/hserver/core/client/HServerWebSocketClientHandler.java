@@ -10,10 +10,12 @@ import top.hserver.core.server.handlers.Wsc;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author hxm
  */
+@ChannelHandler.Sharable
 public class HServerWebSocketClientHandler extends SimpleChannelInboundHandler<Object> {
 
     public static final Set<String> beanName = new HashSet<>();
@@ -25,9 +27,16 @@ public class HServerWebSocketClientHandler extends SimpleChannelInboundHandler<O
     private WebSocketClientHandler webSocketClientHandler;
 
 
+    private HServerWebSocketClient.ImConnection imConnection;
+
+
+    public void setImConnection(HServerWebSocketClient.ImConnection imConnection) {
+        this.imConnection = imConnection;
+    }
+
     public HServerWebSocketClientHandler(String name, WebSocketClientHandshaker handshaker) {
         this.handshaker = handshaker;
-        this.webSocketClientHandler= (WebSocketClientHandler) IocUtil.getBean(name);
+        this.webSocketClientHandler = (WebSocketClientHandler) IocUtil.getBean(name);
 
     }
 
@@ -45,10 +54,6 @@ public class HServerWebSocketClientHandler extends SimpleChannelInboundHandler<O
         handshaker.handshake(ctx.channel());
     }
 
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) {
-        webSocketClientHandler.disConnect(new Wsc(ctx));
-    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -59,7 +64,7 @@ public class HServerWebSocketClientHandler extends SimpleChannelInboundHandler<O
                 webSocketClientHandler.onConnect(new Wsc(ctx));
                 handshakeFuture.setSuccess();
             } catch (WebSocketHandshakeException e) {
-                webSocketClientHandler.throwable(new Wsc(ctx),e);
+                webSocketClientHandler.throwable(new Wsc(ctx), e);
                 handshakeFuture.setFailure(e);
             }
             return;
@@ -67,25 +72,34 @@ public class HServerWebSocketClientHandler extends SimpleChannelInboundHandler<O
 
         if (msg instanceof FullHttpResponse) {
             FullHttpResponse response = (FullHttpResponse) msg;
-            throw new IllegalStateException(
-                    "Unexpected FullHttpResponse (getStatus=" + response.status() +
-                            ", content=" + response.content().toString(CharsetUtil.UTF_8) + ')');
+            return;
         }
 
         WebSocketFrame frame = (WebSocketFrame) msg;
         if (frame instanceof TextWebSocketFrame) {
             TextWebSocketFrame textFrame = (TextWebSocketFrame) frame;
-            webSocketClientHandler.onMessage(new Wsc(ctx,textFrame));
-        }else if (frame instanceof BinaryWebSocketFrame){
+            webSocketClientHandler.onMessage(new Wsc(ctx, textFrame));
+        } else if (frame instanceof BinaryWebSocketFrame) {
             BinaryWebSocketFrame binaryWebSocketFrame = (BinaryWebSocketFrame) frame;
-            webSocketClientHandler.onMessage(new Wsc(ctx,binaryWebSocketFrame));
-        }
-        else if (frame instanceof PongWebSocketFrame) {
+            webSocketClientHandler.onMessage(new Wsc(ctx, binaryWebSocketFrame));
+        } else if (frame instanceof PongWebSocketFrame) {
         } else if (frame instanceof CloseWebSocketFrame) {
             webSocketClientHandler.disConnect(new Wsc(ctx));
             ch.close();
         }
     }
 
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        webSocketClientHandler.throwable(new Wsc(ctx), cause);
+        handshakeFuture.setFailure(cause);
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        webSocketClientHandler.disConnect(new Wsc(ctx));
+        imConnection.doConnect();
+    }
 
 }

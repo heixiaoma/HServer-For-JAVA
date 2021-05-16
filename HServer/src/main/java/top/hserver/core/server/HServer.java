@@ -93,14 +93,14 @@ public class HServer {
         CloudManager.run(port);
         //初始化完成可以放开任务了
         TaskManager.IS_OK = true;
+        QueueDispatcher.startTaskThread();
+        new HServerWebSocketClient().start();
         List<InitRunner> listBean = IocUtil.getListBean(InitRunner.class);
         if (listBean != null) {
             for (InitRunner initRunner : listBean) {
                 initRunner.init(args);
             }
         }
-        QueueDispatcher.startTaskThread();
-        new HServerWebSocketClient().start();
     }
 
 

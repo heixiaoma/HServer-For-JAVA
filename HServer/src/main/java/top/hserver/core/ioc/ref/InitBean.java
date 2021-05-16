@@ -54,6 +54,8 @@ public class InitBean {
                             newObjectList.add(o);
                             temp = annotation.value();
                         }
+                    }else {
+                        newObjectList.add(o);
                     }
                 }
                 IocUtil.remove(aClass);

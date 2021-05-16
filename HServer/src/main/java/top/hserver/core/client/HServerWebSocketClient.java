@@ -1,10 +1,7 @@
 package top.hserver.core.client;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -34,7 +31,7 @@ public class HServerWebSocketClient extends Thread {
                 if (bean != null) {
                     WebSocketClient annotation = bean.getClass().getAnnotation(WebSocketClient.class);
                     if (annotation != null) {
-                        new Client(annotation.url(),e).start();
+                        new Client(annotation.url(), e).start();
                     }
                 }
             });
@@ -55,6 +52,8 @@ public class HServerWebSocketClient extends Thread {
 
         @Override
         public void run() {
+            EventLoopGroup group = new NioEventLoopGroup();
+            Bootstrap b = new Bootstrap();
             try {
                 URI uri = new URI(url);
                 String scheme = uri.getScheme() == null ? "ws" : uri.getScheme();
@@ -83,40 +82,80 @@ public class HServerWebSocketClient extends Thread {
                 } else {
                     sslCtx = null;
                 }
-                EventLoopGroup group = new NioEventLoopGroup();
-                try {
-                    final HServerWebSocketClientHandler handler =
-                            new HServerWebSocketClientHandler(name,
-                                    WebSocketClientHandshakerFactory.newHandshaker(
-                                            uri, WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
+                 HServerWebSocketClientHandler handler =
+                        new HServerWebSocketClientHandler(name,
+                                WebSocketClientHandshakerFactory.newHandshaker(
+                                        uri, WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
 
-                    Bootstrap b = new Bootstrap();
-                    b.group(group)
-                            .channel(NioSocketChannel.class)
-                            .handler(new ChannelInitializer<SocketChannel>() {
-                                @Override
-                                protected void initChannel(SocketChannel ch) {
-                                    ChannelPipeline p = ch.pipeline();
-                                    if (sslCtx != null) {
-                                        p.addLast(sslCtx.newHandler(ch.alloc(), host, port));
-                                    }
-                                    p.addLast(
-                                            new HttpClientCodec(),
-                                            new HttpObjectAggregator(Integer.MAX_VALUE),
-                                            WebSocketClientCompressionHandler.INSTANCE,
-                                            handler);
+                b.group(group)
+                        .channel(NioSocketChannel.class)
+                        .handler(new ChannelInitializer<SocketChannel>() {
+                            @Override
+                            protected void initChannel(SocketChannel ch) {
+                                ChannelPipeline p = ch.pipeline();
+                                if (sslCtx != null) {
+                                    p.addLast(sslCtx.newHandler(ch.alloc(), host, port));
                                 }
-                            });
-                    Channel channel = b.connect(uri.getHost(), port).sync().channel();
-                    handler.handshakeFuture().sync();
-                    channel.closeFuture().sync();
-                } finally {
-                    group.shutdownGracefully();
-                }
+                                p.addLast(
+                                        new HttpClientCodec(),
+                                        new HttpObjectAggregator(Integer.MAX_VALUE),
+                                        WebSocketClientCompressionHandler.INSTANCE,
+                                        handler);
+                            }
+                        });
+                new ImConnection(uri.getHost(), port, b, handler).doConnect();
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
+    public static class ImConnection {
+        private String host;
+        private Integer port;
+        private Bootstrap b;
+        private HServerWebSocketClientHandler handler;
+
+        public ImConnection(String host, Integer port, Bootstrap b, HServerWebSocketClientHandler handler) {
+            this.host = host;
+            this.port = port;
+            this.b = b;
+            this.handler = handler;
+        }
+
+        public void doConnect() {
+            try {
+                handler.setImConnection(this);
+                Channel channel = b.connect(host, port).addListener(new ConnectionListener(this)).sync().channel();
+                handler.handshakeFuture().sync();
+                channel.closeFuture().sync();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
 
+    }
+
+    public static class ConnectionListener implements ChannelFutureListener {
+
+        private ImConnection imConnection;
+
+        public ConnectionListener(ImConnection imConnection) {
+            this.imConnection = imConnection;
+        }
+
+        @Override
+        public void operationComplete(ChannelFuture channelFuture) throws Exception {
+            if (!channelFuture.isSuccess()) {
+                try {
+                    Thread.sleep(1000);
+                    imConnection.doConnect();
+                } catch (Exception e) {
+
+                }
+            }
         }
     }
+
+
 }
