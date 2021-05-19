@@ -31,9 +31,6 @@ public class ClasspathPackageScanner implements PackageScanner {
             if (aClass.getAnnotation(WebSocket.class) != null) {
                 add(aClass, WebSocket.class);
             }
-            if (aClass.getAnnotation(WebSocketClient.class) != null) {
-                add(aClass, WebSocketClient.class);
-            }
             if (aClass.getAnnotation(Configuration.class) != null) {
                 add(aClass, Configuration.class);
             }

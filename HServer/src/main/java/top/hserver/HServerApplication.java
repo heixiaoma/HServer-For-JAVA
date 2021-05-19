@@ -19,6 +19,7 @@ import top.hserver.core.task.TaskManager;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -227,11 +228,13 @@ public class HServerApplication {
     private static void initOK(String[] args) {
         //初始化完成可以放开任务了
         TaskManager.IS_OK = true;
-        InitRunner bean = IocUtil.getBean(InitRunner.class);
-        if (bean != null) {
-            bean.init(args);
-        }
         QueueDispatcher.startTaskThread();
+        List<InitRunner> listBean = IocUtil.getListBean(InitRunner.class);
+        if (listBean != null) {
+            for (InitRunner initRunner : listBean) {
+                initRunner.init(args);
+            }
+        }
     }
 
     /**

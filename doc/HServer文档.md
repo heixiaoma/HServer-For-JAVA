@@ -170,39 +170,6 @@ QQ交流群：1065301527
     //这样就可以完成基本的通信了
 
     
-    //WebSocketClient 客服端
-    @WebSocketClient(url = "ws://123.207.136.134:9010/ajaxchattest")
-    public class WebSocketClientTest implements WebSocketClientHandler {
-    
-        @Override
-        public void onConnect(Wsc wsc) {
-            System.out.println("-----连接了");
-            wsc.send("{\"sub\":\"market.overview\"}");
-        }
-    
-        @Override
-        public void onMessage(Wsc wsc) {
-            System.out.println("-----来消息了：" + wsc.getText());
-            wsc.send(String.valueOf(System.currentTimeMillis()));
-        }
-    
-        @Override
-        public void disConnect(Wsc wsc) {
-            System.out.println("-----断开了");
-        }
-    
-        @Override
-        public void pong(Wsc wsc) {
-            System.out.println("-----来心跳了");
-        }
-    
-        @Override
-        public void throwable(Wsc wsc, Throwable e) {
-            System.out.println("-----异常了");
-        }
-
-
-
 	//@Configuration
 	//自定配置注解，需要配合@Bean注解一起使用，最后会把方法里面的返回的对象
 	//存储到IOC容器中，同时可以通过Autowired注解注入

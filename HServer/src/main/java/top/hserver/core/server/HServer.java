@@ -7,7 +7,6 @@ import io.netty.handler.ssl.SslContextBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.cloud.CloudManager;
-import top.hserver.core.client.HServerWebSocketClient;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
@@ -94,7 +93,6 @@ public class HServer {
         //初始化完成可以放开任务了
         TaskManager.IS_OK = true;
         QueueDispatcher.startTaskThread();
-        new HServerWebSocketClient().start();
         List<InitRunner> listBean = IocUtil.getListBean(InitRunner.class);
         if (listBean != null) {
             for (InitRunner initRunner : listBean) {

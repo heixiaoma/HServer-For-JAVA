@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.cloud.CloudManager;
 import top.hserver.cloud.proxy.CloudProxy;
-import top.hserver.core.client.HServerWebSocketClientHandler;
 import top.hserver.core.proxy.HookProxyFactory;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.*;
@@ -222,13 +221,6 @@ public class InitBean {
             WebSocket annotation = (WebSocket) aClass.getAnnotation(WebSocket.class);
             IocUtil.addBean(aClass.getName(), aClass.newInstance());
             WebSocketServerHandler.WebSocketRouter.put(annotation.value(), aClass.getName());
-        }
-
-        List<Class<?>> annotationList = scan.getAnnotationList(WebSocketClient.class);
-        for (Class aClass : annotationList) {
-            //检查注解里面是否有值
-            IocUtil.addBean(aClass.getName(), aClass.newInstance());
-            HServerWebSocketClientHandler.beanName.add(aClass.getName());
         }
 
     }
