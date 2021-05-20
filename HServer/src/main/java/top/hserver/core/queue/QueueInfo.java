@@ -8,6 +8,16 @@ public class QueueInfo {
 
     private long cursor;
 
+    private long fqueue;
+
+    public long getFqueue() {
+        return fqueue;
+    }
+
+    public void setFqueue(long fqueue) {
+        this.fqueue = fqueue;
+    }
+
     public long getQueueSize() {
         return queueSize;
     }

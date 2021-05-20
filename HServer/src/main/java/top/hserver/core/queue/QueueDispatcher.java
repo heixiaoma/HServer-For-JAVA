@@ -138,9 +138,10 @@ public class QueueDispatcher {
     public static QueueInfo queueInfo(String queueName) {
         QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
         if (queueHandleInfo != null) {
-            return queueHandleInfo.getQueueFactory().queueInfo();
+            QueueInfo queueInfo = queueHandleInfo.getQueueFactory().queueInfo();
+            queueInfo.setFqueue(fQueue.size());
+            return queueInfo;
         }
         return null;
     }
-
 }
