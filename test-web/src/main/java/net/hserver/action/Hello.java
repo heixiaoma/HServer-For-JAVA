@@ -80,7 +80,7 @@ public class Hello {
     @Track
     @GET("/t")
     public JsonResult r() {
-        return JsonResult.ok(tService.t()+tService2.t());
+        return JsonResult.ok(tService.t() + tService2.t());
     }
 
     @GET("/test1")
@@ -97,7 +97,6 @@ public class Hello {
         }
         return JsonResult.ok();
     }
-
 
 
     @Track
@@ -155,7 +154,7 @@ public class Hello {
 
     @POST("/raw")
     public Map raw(User user) {
-        return JsonResult.ok().put("data",user);
+        return JsonResult.ok().put("data", user);
     }
 
     /**
@@ -286,6 +285,11 @@ public class Hello {
         obj.put("user1", userService.getUser1());
         obj.put("user2", userService.getUser2());
         return obj;
+    }
+
+    @GET("/par")
+    public JsonResult par(String name, int info) {
+        return JsonResult.ok();
     }
 
 }
