@@ -44,6 +44,12 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         ctx.flush();
     }
 
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        CompletableFuture.completedFuture(new Ws(ctx, uid, request))
+                .thenAcceptAsync(this.webSocketHandler::disConnect, ctx.executor());
+    }
+
     private void handleHttpRequest(ChannelHandlerContext ctx, HttpRequest req) {
         if (isWebSocketRequest(req)) {
             WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(req.uri(), null, true);
@@ -52,7 +58,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
                 WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
             } else {
                 this.handshake.handshake(ctx.channel(), req);
-                this.uri =getReqUri(req);
+                this.uri = getReqUri(req);
                 this.request = req;
                 this.uid = UUID.randomUUID().toString();
                 initHandler();
