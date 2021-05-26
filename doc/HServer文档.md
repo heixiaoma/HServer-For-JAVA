@@ -583,7 +583,24 @@ public class WebSocketTest implements WebSocketHandler {
 ws类提供了Netty原始的HttpRequest对象，你可以自由处理，同时提供了 query 函数，帮助你快速查找到websocket URL的参数
 
 
+## **Mqtt**
 
+请继承MqttAdapter类 并用@Bean 标记
+其他操作可以重写父类的一些方法
+
+```java
+
+@Bean
+public class Mqtt extends MqttAdapter {
+
+    @Override
+    public void message(MqttMessageType mqttMessageType, MqttMessage mqttMessage, ChannelHandlerContext channelHandlerContext) {
+        System.out.println(mqttMessageType);
+    }
+}
+
+
+```
 
 
 ## **全局异常处理**

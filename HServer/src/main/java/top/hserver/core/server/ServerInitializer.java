@@ -8,6 +8,8 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.mqtt.MqttDecoder;
+import io.netty.handler.codec.mqtt.MqttEncoder;
 import io.netty.handler.ssl.OptionalSslHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.handler.traffic.GlobalTrafficShapingHandler;
@@ -17,6 +19,7 @@ import top.hserver.cloud.common.codec.RpcEncoder;
 import top.hserver.cloud.server.handler.RpcServerHandler;
 import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.handlers.HServerContentHandler;
+import top.hserver.core.server.handlers.MqttHeartBeatBrokerHandler;
 import top.hserver.core.server.handlers.RouterHandler;
 import top.hserver.core.server.handlers.WebSocketServerHandler;
 
@@ -47,10 +50,17 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
             final int magic2 = in.getByte(readerIndex + 1);
             if (isHttp(magic1, magic2)) {
                 dispatchHttp(ctx);
+            } else if (isMqtt(magic1, magic2)) {
+                dispatchMqtt(ctx);
             } else {
                 dispatchRpc(ctx);
             }
         }
+
+        private boolean isMqtt(int magic1, int magic2) {
+            return magic1 == 16 && magic2 == 44;
+        }
+
 
         private boolean isHttp(int magic1, int magic2) {
             return
@@ -86,6 +96,15 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
             }
             pipeline.addLast(new HServerContentHandler());
             pipeline.addLast(ConstConfig.BUSINESS_EVENT, new RouterHandler());
+            pipeline.remove(this);
+            ctx.fireChannelActive();
+        }
+
+        private void dispatchMqtt(ChannelHandlerContext ctx) {
+            ChannelPipeline pipeline = ctx.pipeline();
+            pipeline.addLast(MqttEncoder.INSTANCE);
+            pipeline.addLast( new MqttDecoder());
+              pipeline.addLast(ConstConfig.BUSINESS_EVENT, MqttHeartBeatBrokerHandler.INSTANCE);
             pipeline.remove(this);
             ctx.fireChannelActive();
         }
