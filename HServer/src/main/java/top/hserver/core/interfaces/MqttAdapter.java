@@ -13,6 +13,14 @@ import io.netty.handler.timeout.IdleStateEvent;
  */
 public abstract class MqttAdapter {
 
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    }
+
+
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    }
+
+
     public void connect(MqttMessage mqttMessage, ChannelHandlerContext ctx) {
         MqttFixedHeader connackFixedHeader =
                 new MqttFixedHeader(MqttMessageType.CONNACK, false, MqttQoS.AT_MOST_ONCE, false, 0);
