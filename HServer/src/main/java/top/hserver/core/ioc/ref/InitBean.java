@@ -35,7 +35,7 @@ public class InitBean {
 
 
     private static void sortOrder() {
-        Class<?>[] order = new Class[]{FilterAdapter.class, GlobalException.class, InitRunner.class, ResponseAdapter.class};
+        Class<?>[] order = new Class[]{FilterAdapter.class, GlobalException.class, InitRunner.class, ResponseAdapter.class,ProtocolDispatcherAdapter.class};
         for (Class<?> aClass : order) {
             List<?> listBean = IocUtil.getListBean(aClass);
             List newObjectList = new ArrayList<>();
@@ -279,7 +279,10 @@ public class InitBean {
                 IocUtil.addListBean(ResponseAdapter.class.getName(), aClass.newInstance());
                 continue;
             }
-
+            if (ProtocolDispatcherAdapter.class.isAssignableFrom(aClass)) {
+                IocUtil.addListBean(ProtocolDispatcherAdapter.class.getName(), aClass.newInstance());
+                continue;
+            }
             //检测这个Bean是否是Mqtt的
             if (MqttAdapter.class.isAssignableFrom(aClass)) {
                 IocUtil.addBean(MqttAdapter.class.getName(), aClass.newInstance());
