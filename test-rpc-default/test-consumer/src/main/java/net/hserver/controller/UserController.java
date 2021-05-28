@@ -27,4 +27,14 @@ public class UserController {
         return JsonResult.ok();
     }
 
+    @GET("/userInfo1")
+    public JsonResult getUserInfo1() {
+        try {
+            String userInfo = userService.getUserInfo();
+            return JsonResult.ok().put("data", userInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return JsonResult.ok();
+    }
 }

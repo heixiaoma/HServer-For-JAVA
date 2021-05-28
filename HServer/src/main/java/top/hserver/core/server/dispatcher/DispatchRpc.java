@@ -21,11 +21,14 @@ public class DispatchRpc implements ProtocolDispatcherAdapter {
 
     @Override
     public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers, ServerInitializer.ProtocolDispatcher protocolDispatcher) {
-        pipeline.addLast(new RpcDecoder(Msg.class));
-        pipeline.addLast(new RpcEncoder(Msg.class));
-        pipeline.addLast(ConstConfig.BUSINESS_EVENT, "RpcServerProviderHandler", new RpcServerHandler());
-        pipeline.remove(protocolDispatcher);
-        ctx.fireChannelActive();
-        return true;
+        if (headers[3] == 'R' && headers[7] == 'P' && headers[11] == 'C' ) {
+            pipeline.addLast(new RpcDecoder(Msg.class));
+            pipeline.addLast(new RpcEncoder(Msg.class));
+            pipeline.addLast(ConstConfig.BUSINESS_EVENT, "RpcServerProviderHandler", new RpcServerHandler());
+            pipeline.remove(protocolDispatcher);
+            ctx.fireChannelActive();
+            return true;
+        }
+        return false;
     }
 }

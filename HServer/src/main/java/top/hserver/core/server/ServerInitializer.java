@@ -31,7 +31,10 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
             if (in.readableBytes() < 5) {
                 return;
             }
-            ByteBuf copy = in.copy();
+            /**
+             * copy 最多512个字节作为消息头数据判断
+             */
+            ByteBuf copy = in.copy(0, Math.min(in.readableBytes(), 512));
             try {
                 byte[] bytes = ByteBufUtil.byteBufToBytes(copy);
                 List<ProtocolDispatcherAdapter> listBean = IocUtil.getListBean(ProtocolDispatcherAdapter.class);
