@@ -20,7 +20,8 @@ public class RpcDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-        if (in.readableBytes() < 4) {
+        //因为之前编码的时候写入4个Int型，4个字节来表示长度
+        if (in.readableBytes() < 4*4) {
             return;
         }
         in.markReaderIndex();
