@@ -1058,7 +1058,7 @@ writeLimit=100
         缺点：增加线程切换
 
 ```
-#businessPool 业务线程大小，默是用的workerPool，当添加这个配置，就视为生效
+#businessPool 业务线程大小，默是50，当添加这个配置，就视为生效,小于0 使用woker线程池（性能最高，一旦阻塞就完蛋）
 businessPool=50
 ```
 

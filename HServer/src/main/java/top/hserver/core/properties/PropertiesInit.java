@@ -50,8 +50,13 @@ public class PropertiesInit {
         }
 
         Integer businessPool = instance.getInt("businessPool");
-        if (businessPool != null) {
+        if (businessPool != null && businessPool > 0) {
             ConstConfig.BUSINESS_EVENT = new DefaultEventExecutorGroup(businessPool, new NamedThreadFactory("hserver_business"));
+        }
+        if (businessPool != null && businessPool < 0) {
+            ConstConfig.BUSINESS_EVENT = null;
+        } else {
+            ConstConfig.BUSINESS_EVENT = new DefaultEventExecutorGroup(50, new NamedThreadFactory("hserver_business"));
         }
         Integer timeOut = instance.getInt("timeOut");
         if (timeOut != null) {
