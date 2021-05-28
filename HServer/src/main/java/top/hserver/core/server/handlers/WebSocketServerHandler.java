@@ -46,8 +46,10 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        CompletableFuture.completedFuture(new Ws(ctx, uid, request))
-                .thenAcceptAsync(this.webSocketHandler::disConnect, ctx.executor());
+        if (request!=null) {
+            CompletableFuture.completedFuture(new Ws(ctx, uid, request))
+                    .thenAcceptAsync(this.webSocketHandler::disConnect, ctx.executor());
+        }
     }
 
     private void handleHttpRequest(ChannelHandlerContext ctx, HttpRequest req) {

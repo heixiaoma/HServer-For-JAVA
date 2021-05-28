@@ -60,10 +60,12 @@ public class Ws {
 
 
     private void initReqData() {
-        QueryStringDecoder decoder = new QueryStringDecoder(request.uri());
-        Map<String, List<String>> params = decoder.parameters();
-        for (Map.Entry<String, List<String>> next : params.entrySet()) {
-            reqData.put(next.getKey(), next.getValue());
+        if (request!=null) {
+            QueryStringDecoder decoder = new QueryStringDecoder(request.uri());
+            Map<String, List<String>> params = decoder.parameters();
+            for (Map.Entry<String, List<String>> next : params.entrySet()) {
+                reqData.put(next.getKey(), next.getValue());
+            }
         }
     }
 
