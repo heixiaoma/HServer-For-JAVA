@@ -1277,16 +1277,4 @@ resources/template
 ```
 找到Maven的依赖包，在top.hserver.test.目录下是大量的测试案例和代码可以查询学习和使用。
 ```
-###	热更新（Idea 快捷键 Ctrl+9）
-```java
-@HServerBoot
-public class App {
-    public static void main(String[] args) {
-    	//开启热更新
-        HServerApplication.hotUpdate();
-        HServerApplication.run(App.class, 8888, args);
-    }
-}
-```
-
 
