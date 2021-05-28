@@ -54,6 +54,12 @@ public class ConstConfig {
 
 
     /**
+     * rpcTimeOut rpc超时时间设置
+     */
+
+    public static Integer rpcTimeOut = 5000;
+
+    /**
      * webServer  bossThreadCount
      */
 

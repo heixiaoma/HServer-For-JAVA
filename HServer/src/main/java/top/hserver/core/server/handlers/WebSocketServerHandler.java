@@ -10,7 +10,6 @@ import io.netty.util.ReferenceCountUtil;
 
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -47,8 +46,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         if (request != null && uid != null) {
-            CompletableFuture.completedFuture(new Ws(ctx, uid, request))
-                    .thenAcceptAsync(this.webSocketHandler::disConnect, ctx.executor());
+            this.webSocketHandler.disConnect(new Ws(ctx, uid, request));
         }
     }
 
@@ -64,8 +62,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
                 this.request = req;
                 this.uid = UUID.randomUUID().toString();
                 initHandler();
-                CompletableFuture.completedFuture(new Ws(ctx, uid, request))
-                        .thenAcceptAsync(this.webSocketHandler::onConnect, ctx.executor());
+                this.webSocketHandler.onConnect(new Ws(ctx, uid, request));
             }
         } else {
             ReferenceCountUtil.retain(req);
@@ -86,20 +83,17 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         if (frame instanceof CloseWebSocketFrame) {
             this.handshake.close(ctx.channel(), (CloseWebSocketFrame) frame.retain());
-            CompletableFuture.completedFuture(new Ws(ctx, uid, request))
-                    .thenAcceptAsync(this.webSocketHandler::disConnect, ctx.executor());
+            this.webSocketHandler.disConnect(new Ws(ctx, uid, request));
             return;
         }
         if (frame instanceof PingWebSocketFrame) {
             ctx.channel().write(new PongWebSocketFrame(frame.content().retain()));
             return;
         }
-
         if (!(frame instanceof TextWebSocketFrame)) {
             throw new UnsupportedOperationException("unsupported frame type: " + frame.getClass().getName());
         }
-        CompletableFuture.completedFuture(new Ws(ctx, ((TextWebSocketFrame) frame).text(), uid, request))
-                .thenAcceptAsync(this.webSocketHandler::onMessage, ctx.executor());
+        this.webSocketHandler.onMessage(new Ws(ctx, ((TextWebSocketFrame) frame).text(), uid, request));
     }
 
     private boolean isWebSocketRequest(HttpRequest req) {

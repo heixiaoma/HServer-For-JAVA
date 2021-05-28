@@ -11,6 +11,7 @@ import top.hserver.cloud.client.RpcClient;
 import top.hserver.cloud.future.HFuture;
 import top.hserver.cloud.future.RpcWrite;
 import top.hserver.cloud.util.DynamicRoundRobin;
+import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.exception.RpcException;
 
 import java.util.Map;
@@ -69,7 +70,6 @@ public class RpcClientHandler {
 
     }
 
-
     public static Object sendInvoker(InvokeServiceData invokeServiceData) throws Exception {
         DynamicRoundRobin dynamicRoundRobin = CLASS_STRING_MAP.get(invokeServiceData.getServerName());
         if (dynamicRoundRobin != null) {
@@ -86,7 +86,7 @@ public class RpcClientHandler {
                     pool.release(channel);
                 });
                 try {
-                    ResultData response = hFuture.get(5, TimeUnit.SECONDS);
+                    ResultData response = hFuture.get(ConstConfig.rpcTimeOut, TimeUnit.MILLISECONDS);
                     if (response.getCode().code() == 200) {
                         return response.getData();
                     }
@@ -97,7 +97,7 @@ public class RpcClientHandler {
                     }
                 } catch (Exception e) {
                     throw new RpcException(e.getMessage());
-                } finally {
+                }finally {
                     RpcWrite.removeKey(invokeServiceData.getRequestId());
                 }
             }

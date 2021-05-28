@@ -12,10 +12,8 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<Msg> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Msg msg) throws Exception {
-        channelHandlerContext.executor().submit(()->{
-            InvokeServiceData invokeServiceData = InvokerHandler.buildContext(channelHandlerContext, msg);
-            InvokerHandler.invoker(invokeServiceData,channelHandlerContext);
-        });
+        InvokeServiceData invokeServiceData = InvokerHandler.buildContext(channelHandlerContext, msg);
+        InvokerHandler.invoker(invokeServiceData, channelHandlerContext);
     }
 
     @Override

@@ -62,6 +62,12 @@ public class PropertiesInit {
         if (timeOut != null) {
             ConstConfig.DEFAULT_STALE_CONNECTION_TIMEOUT = timeOut;
         }
+
+        Integer rpcTimeOut = instance.getInt("rpcTimeOut");
+        if (rpcTimeOut != null) {
+            ConstConfig.rpcTimeOut = rpcTimeOut;
+        }
+
         String config = instance.get("app.nacos.config.address", null);
 
         if (config != null) {
