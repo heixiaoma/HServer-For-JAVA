@@ -2,7 +2,6 @@ package top.hserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.hserver.core.agent.HServerAgent;
 import top.hserver.core.plugs.PlugsManager;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
@@ -31,7 +30,6 @@ public class HServerApplication {
     private static Class clazz;
     private static Class mainClass;
     private static String[] packages;
-    private static Boolean IS_HOT = false;
 
     private static final PlugsManager PLUGS_MANAGER = new PlugsManager();
 
@@ -187,10 +185,6 @@ public class HServerApplication {
         }
         HServerLogConfig.init();
 
-        if (IS_HOT) {
-            HServerAgent.startAgent(mainClass);
-        }
-
         log.info("检查包文件");
         Set<String> scanPackage;
         if (mainClass == null) {
@@ -248,13 +242,5 @@ public class HServerApplication {
         //重新加载一盘
         iocInit(HServerApplication.clazz, HServerApplication.mainClass, HServerApplication.packages);
     }
-
-    /**
-     * 热更新
-     */
-    public static void hotUpdate() {
-        IS_HOT = true;
-    }
-
 
 }
