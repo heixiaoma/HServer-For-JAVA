@@ -25,7 +25,7 @@
 ### 介绍
 QQ交流群：*1065301527*
 
-HServer是一个基于Netty的一个高并发Webserver，8核Linux 虚拟机 23w+ qps，像springboot一样开发的的web框架，
+HServer是一个基于Netty的一个高并发Webserver，8核Linux 虚拟机 10w+ qps，像springboot一样开发的的web框架，
 
 它提供了相关的注解和一些方法，完全能够完成我们大大小小的项目。作为一名Java程序员写web程序spring是我们项目99%会用的。
 
@@ -81,7 +81,7 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 * ApiDoc文档组件
 * 权限组件
 * Plugin组件自由扩展
-* 高性能 100并发下8核qps 23w/s
+* 高性能 100并发下8核qps 10w/s
 * 高度自由度控制
 * 流量整形
 * Netty 原生响应支持自己扩展

@@ -94,3 +94,56 @@
 
 ###  HServer Jmeter压测
 ![AB测试](https://gitee.com/HServer/HServer/raw/master/doc/jm.png)
+
+### HServer2.9.66版本
+环境 虚拟机Centos 8h2g i7-9700k
+
+最简测试
+```java
+    @GET("/test")
+    public JsonResult get() {
+        return JsonResult.ok();
+    }
+    
+    
+    @POST("/p")
+    public JsonResult get(User user) {
+        return JsonResult.ok().put("data", user);
+    }
+    
+    GET /
+    不带业务线程池 Requests per second:    191730.55 [#/sec] (mean)
+    带业务线程池 Requests per second:    111862.35 [#/sec] (mean)
+    
+    POST /
+    不带业务线程池 Requests per second:    210008.68 [#/sec] (mean)
+    带业务线程池 Requests per second:    89394.74 [#/sec] (mean)
+```
+
+Redis测试
+```java
+
+    @Autowired
+    private RedissonClient redissonClient;
+
+    @GET("/gget")
+    public JsonResult get() {
+        RBucket<Object> name = redissonClient.getBucket("name");
+        return JsonResult.ok().put("data", name.get());
+    }
+
+    @GET("/gset")
+    public JsonResult set() {
+        RBucket<Object> name = redissonClient.getBucket("name");
+        name.set("name");
+        return JsonResult.ok();
+    }
+    
+    GET /
+    不带业务线程池 Requests per second:    8788.00 [#/sec] (mean)
+    带业务线程池 Requests per second:    37069.18 [#/sec] (mean)
+    
+    SET /
+    不带业务线程池 Requests per second:    8802.95 [#/sec] (mean)
+    带业务线程池 Requests per second:    36966.21 [#/sec] (mean)
+```
