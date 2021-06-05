@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 public class DispatchHttp implements ProtocolDispatcherAdapter {
 
     @Override
-    public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers, ServerInitializer.ProtocolDispatcher protocolDispatcher) {
+    public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers) {
         if (isHttp(headers[0], headers[1])) {
             if (ConstConfig.sslContext != null) {
                 pipeline.addLast(new OptionalSslHandler(ConstConfig.sslContext));
@@ -50,8 +50,6 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
             }
             pipeline.addLast(new HServerContentHandler());
             pipeline.addLast(ConstConfig.BUSINESS_EVENT, new RouterHandler());
-            pipeline.remove(protocolDispatcher);
-            ctx.fireChannelActive();
             return true;
         }
         return false;

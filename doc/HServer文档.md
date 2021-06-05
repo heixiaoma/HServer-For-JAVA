@@ -953,9 +953,6 @@ public class DispatchWebSocketMqtt implements ProtocolDispatcherAdapter {
             pipeline.addLast(MqttEncoder.INSTANCE);
             pipeline.addLast(new MqttDecoder());
             pipeline.addLast(ConstConfig.BUSINESS_EVENT, MqttHeartBeatBrokerHandler.INSTANCE);
-            //下面固定写法，回头移交到内部管理
-            pipeline.remove(protocolDispatcher);
-            ctx.fireChannelActive();
             return true;
         }
         return false;

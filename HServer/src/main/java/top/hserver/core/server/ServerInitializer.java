@@ -38,8 +38,11 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
             try {
                 byte[] bytes = ByteBufUtil.byteBufToBytes(copy);
                 List<ProtocolDispatcherAdapter> listBean = IocUtil.getListBean(ProtocolDispatcherAdapter.class);
+                ChannelPipeline pipeline = ctx.pipeline();
                 for (ProtocolDispatcherAdapter protocolDispatcherAdapter : listBean) {
-                    if (protocolDispatcherAdapter.dispatcher(ctx, ctx.pipeline(), bytes, this)) {
+                    if (protocolDispatcherAdapter.dispatcher(ctx, pipeline, bytes)) {
+                        ctx.pipeline().remove(this);
+                        ctx.fireChannelActive();
                         return;
                     }
                 }

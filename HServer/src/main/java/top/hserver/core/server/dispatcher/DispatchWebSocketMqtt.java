@@ -32,13 +32,11 @@ import java.util.concurrent.TimeUnit;
 public class DispatchWebSocketMqtt implements ProtocolDispatcherAdapter {
 
     @Override
-    public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers, ServerInitializer.ProtocolDispatcher protocolDispatcher) {
+    public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers) {
         if (headers[0] == 'G' && headers[1] == 'E' && new String(headers).indexOf("Sec-WebSocket-Protocol: mqtt") > 0) {
             pipeline.addLast(MqttEncoder.INSTANCE);
             pipeline.addLast(new MqttDecoder());
             pipeline.addLast(ConstConfig.BUSINESS_EVENT, MqttHeartBeatBrokerHandler.INSTANCE);
-            pipeline.remove(protocolDispatcher);
-            ctx.fireChannelActive();
             return true;
         }
         return false;

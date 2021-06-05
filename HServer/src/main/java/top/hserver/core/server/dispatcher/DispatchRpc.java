@@ -9,7 +9,6 @@ import top.hserver.cloud.server.handler.RpcServerHandler;
 import top.hserver.core.interfaces.ProtocolDispatcherAdapter;
 import top.hserver.core.ioc.annotation.Bean;
 import top.hserver.core.ioc.annotation.Order;
-import top.hserver.core.server.ServerInitializer;
 import top.hserver.core.server.context.ConstConfig;
 
 /**
@@ -20,13 +19,11 @@ import top.hserver.core.server.context.ConstConfig;
 public class DispatchRpc implements ProtocolDispatcherAdapter {
 
     @Override
-    public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers, ServerInitializer.ProtocolDispatcher protocolDispatcher) {
+    public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers) {
         if (headers[3] == 'R' && headers[7] == 'P' && headers[11] == 'C' ) {
             pipeline.addLast(new RpcDecoder(Msg.class));
             pipeline.addLast(new RpcEncoder(Msg.class));
             pipeline.addLast(ConstConfig.BUSINESS_EVENT, "RpcServerProviderHandler", new RpcServerHandler());
-            pipeline.remove(protocolDispatcher);
-            ctx.fireChannelActive();
             return true;
         }
         return false;

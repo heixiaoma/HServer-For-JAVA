@@ -24,9 +24,8 @@ import top.hserver.core.server.handlers.MqttHeartBeatBrokerHandler;
 public class DispatchMqtt implements ProtocolDispatcherAdapter {
 
     @Override
-    public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers, ServerInitializer.ProtocolDispatcher protocolDispatcher) {
+    public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers) {
         if (isMqtt(headers[0], headers[1])) {
-            System.out.println(new String(headers));
             pipeline.addLast(new HttpServerCodec());
             pipeline.addLast(new HttpObjectAggregator(ConstConfig.HTTP_CONTENT_SIZE));
             pipeline.addLast(new HttpContentCompressor());
@@ -35,8 +34,6 @@ public class DispatchMqtt implements ProtocolDispatcherAdapter {
             pipeline.addLast(new MqttDecoder());
             pipeline.addLast(MqttEncoder.INSTANCE);
             pipeline.addLast(ConstConfig.BUSINESS_EVENT, MqttHeartBeatBrokerHandler.INSTANCE);
-            pipeline.remove(protocolDispatcher);
-            ctx.fireChannelActive();
             return true;
         }
         return false;

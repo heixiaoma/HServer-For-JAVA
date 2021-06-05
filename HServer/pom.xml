@@ -6,7 +6,7 @@
 
     <groupId>top.hserver</groupId>
     <artifactId>HServer</artifactId>
-    <version>2.9.66</version>
+    <version>2.9.67</version>
     <packaging>jar</packaging>
     <name>HServer</name>
     <url>https://gitee.com/HServer/HServer</url>
@@ -20,7 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skipTests>true</skipTests>
 
-        <netty.version>4.1.65.Final</netty.version>
+        <netty.version>4.1.53.Final</netty.version>
         <slf4j.version>1.7.30</slf4j.version>
         <logback.version>1.2.3</logback.version>
         <jackson.version>2.12.3</jackson.version>
