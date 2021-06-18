@@ -71,14 +71,17 @@ public class NacosMode implements RpcAdapter {
     }
 
     private void subProviderInfo(NamingService naming) {
-        //注册中心的
-        CloudManager.getServerNames().forEach(regServerName->{
+        /**
+         *        按需订阅属于自己的需要的服务
+         *
+         */
+        CloudManager.getServerNames().forEach(regServerName -> {
             try {
                 EventListener listener = event -> {
                     if (event instanceof NamingEvent) {
                         NamingEvent evn = (NamingEvent) event;
                         List<Instance> instances = evn.getInstances();
-                        log.info("服务变化："+instances);
+                        log.info("服务变化：" + instances);
                         //节点变化，主动对上下线关系进行清除，重新设置
                         RpcClientHandler.clear(regServerName);
                         for (Instance instance : instances) {
