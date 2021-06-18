@@ -10,7 +10,7 @@
         <img src="https://img.shields.io/badge/Build-Java8-red.svg?style=flat" />
     </a>
     <a >
-        <img src="https://img.shields.io/badge/Netty-4.1.53.Final-blue.svg" alt="flat">
+        <img src="https://img.shields.io/badge/Netty-4.1.65.Final-blue.svg" alt="flat">
     </a>
     <a >
         <img src="https://img.shields.io/badge/Licence-Apache2.0-green.svg?style=flat" />
@@ -41,7 +41,7 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 <dependency>
     <groupId>top.hserver</groupId>
     <artifactId>HServer</artifactId>
-    <version>2.9.67</version>
+    <version>2.9.68</version>
 </dependency>
 ```
 

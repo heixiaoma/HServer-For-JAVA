@@ -182,6 +182,7 @@ public class DispatcherHandler {
             } catch (Exception e) {
                 throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "控制器方法调用时传入的参数异常", e, hServerContext.getWebkit());
             }
+            method.setAccessible(true);
             res = method.invoke(bean, methodArgs);
             //调用结果进行设置
             if (res == null) {

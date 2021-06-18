@@ -5,6 +5,7 @@ import io.netty.handler.codec.http.multipart.*;
 import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.hserver.HServerApplication;
 import top.hserver.core.server.context.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -21,6 +22,8 @@ import java.util.concurrent.TimeoutException;
  * @author hxm
  */
 public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+    private static final Logger log = LoggerFactory.getLogger(HServerApplication.class);
+
     private final static DefaultHttpDataFactory FACTORY = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
 
     @Override
@@ -77,14 +80,18 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
     }
 
     private void handlerUrl(Request request, FullHttpRequest req) {
-        Map<String, List<String>> requestParams = request.getRequestParams();
-        QueryStringDecoder decoder = new QueryStringDecoder(req.uri());
-        Map<String, List<String>> params = decoder.parameters();
-        for (Map.Entry<String, List<String>> next : params.entrySet()) {
-            requestParams.put(next.getKey(), next.getValue());
-            for (String s : next.getValue()) {
-                request.addReqUrlParams(next.getKey(), s);
+        try {
+            Map<String, List<String>> requestParams = request.getRequestParams();
+            QueryStringDecoder decoder = new QueryStringDecoder(req.uri());
+            Map<String, List<String>> params = decoder.parameters();
+            for (Map.Entry<String, List<String>> next : params.entrySet()) {
+                requestParams.put(next.getKey(), next.getValue());
+                for (String s : next.getValue()) {
+                    request.addReqUrlParams(next.getKey(), s);
+                }
             }
+        }catch (Exception e){
+            log.warn(e.getMessage());
         }
     }
 
@@ -94,7 +101,8 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
             List<InterfaceHttpData> bodyHttpDates = decoder.getBodyHttpDatas();
             bodyHttpDates.forEach(request::writeHttpData);
             decoder.destroy();
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            log.warn(e.getMessage());
         }
         byte[] b = new byte[req.content().readableBytes()];
         req.content().readBytes(b);

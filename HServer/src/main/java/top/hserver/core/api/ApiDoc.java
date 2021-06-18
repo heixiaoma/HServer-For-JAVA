@@ -93,6 +93,7 @@ public class ApiDoc {
       if (annotation != null) {
         try {
           Method value = annotation.getClass().getMethod("value");
+          value.setAccessible(true);
           Object invoke = value.invoke(annotation);
           apiData.setUrl(controllerPath + invoke.toString().trim());
         } catch (Exception ignored) {

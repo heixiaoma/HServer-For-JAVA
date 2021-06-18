@@ -30,6 +30,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
                     time = expression.getNextValidTimeAfter(now);
                     if (IS_OK) {
                         try {
+                            method.setAccessible(true);
                             method.invoke(IocUtil.getBean(className), args);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -77,6 +78,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
         Runnable scheduleTask = () -> {
                 if (IS_OK) {
                     try {
+                        method.setAccessible(true);
                         method.invoke(IocUtil.getBean(className), args);
                     } catch (Exception e) {
                         e.printStackTrace();

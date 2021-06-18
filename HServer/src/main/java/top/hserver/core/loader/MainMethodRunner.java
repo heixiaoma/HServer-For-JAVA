@@ -50,6 +50,7 @@ public class MainMethodRunner implements Runnable {
 				throw new IllegalStateException(
 						this.mainClassName + " does not have a main method");
 			}
+			mainMethod.setAccessible(true);
 			mainMethod.invoke(null, new Object[] { this.args });
 		}
 		catch (Exception ex) {

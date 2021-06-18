@@ -33,6 +33,7 @@ public class ProxyTest {
                     public Object invoke(Object self, Method thisMethod,
                                          Method proceed, Object[] args) throws Throwable {
                         String before = "before ";
+                        thisMethod.setAccessible(true);
                         Object str = thisMethod.invoke(test, args);
                         String after = " after";
                         return before + str + after;

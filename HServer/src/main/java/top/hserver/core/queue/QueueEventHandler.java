@@ -37,6 +37,7 @@ public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<Q
     private void invoke(QueueData queueData) {
         Object[] args = queueData.getArgs();
         try {
+            method.setAccessible(true);
             method.invoke(IocUtil.getBean(queueName), args);
         } catch (Exception e) {
             log.error(e.getMessage());

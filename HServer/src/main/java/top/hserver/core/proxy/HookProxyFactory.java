@@ -36,6 +36,7 @@ public class HookProxyFactory {
                         }
                     }
                     try {
+                        proceed.setAccessible(true);
                         Object result = proceed.invoke(self, args);
                         for (HookAdapter hookAdapter : listBean) {
                             if (check(hookAdapter, self.getClass(), thismethod)) {
@@ -59,6 +60,7 @@ public class HookProxyFactory {
                     }
                 }
             }
+            proceed.setAccessible(true);
             return proceed.invoke(self, args);
         });
         return o;
