@@ -33,9 +33,8 @@ public class InitBean {
 
     private static final Logger log = LoggerFactory.getLogger(InitBean.class);
 
-
     private static void sortOrder() {
-        Class<?>[] order = new Class[]{FilterAdapter.class, GlobalException.class, InitRunner.class, ResponseAdapter.class,ProtocolDispatcherAdapter.class};
+        Class<?>[] order = new Class[]{FilterAdapter.class, GlobalException.class, InitRunner.class,ReInitRunner.class, ResponseAdapter.class,ProtocolDispatcherAdapter.class};
         for (Class<?> aClass : order) {
             List<?> listBean = IocUtil.getListBean(aClass);
             List newObjectList = new ArrayList<>();
@@ -253,6 +252,12 @@ public class InitBean {
             //检测这个Bean是否是初始化的类
             if (InitRunner.class.isAssignableFrom(aClass)) {
                 IocUtil.addListBean(InitRunner.class.getName(), aClass.newInstance());
+                continue;
+            }
+
+            //检测这个Bean是否是初始化的类
+            if (ReInitRunner.class.isAssignableFrom(aClass)) {
+                IocUtil.addListBean(ReInitRunner.class.getName(), aClass.newInstance());
                 continue;
             }
 

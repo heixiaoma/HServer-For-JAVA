@@ -24,6 +24,15 @@ public class HServerLogConfig {
             if (existConfig()) {
                 return;
             }
+            if (PropUtil.getInstance().get("logbackName").trim().length() > 0) {
+                InputStream logbackName = HServerLogConfig.class.getResourceAsStream("/" + PropUtil.getInstance().get("logbackName").trim());
+                if (logbackName != null) {
+                    loadConfiguration(logbackName);
+                    return;
+                } else {
+                    System.err.println(PropUtil.getInstance().get("logbackName").trim() + "文件未读取到，请将文件放置在 resources目录下");
+                }
+            }
             loadConfiguration(HServerLogConfig.class.getResourceAsStream("/logback-hserver.xml"));
         } catch (Exception e) {
             e.printStackTrace();

@@ -2,6 +2,7 @@ package top.hserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.hserver.core.interfaces.ReInitRunner;
 import top.hserver.core.plugs.PlugsManager;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
@@ -235,6 +236,12 @@ public class HServerApplication {
      * 重新初始化依赖关系
      */
     public synchronized static void reInitIoc() {
+        List<ReInitRunner> listBean = IocUtil.getListBean(ReInitRunner.class);
+        if (listBean != null) {
+            for (ReInitRunner reInitRunner : listBean) {
+                reInitRunner.reInit();
+            }
+        }
         //IOC清除，
         IocUtil.clearAll();
         //URLMapper 清除

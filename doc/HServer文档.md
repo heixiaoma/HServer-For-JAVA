@@ -1082,9 +1082,10 @@ bossPool=2
 workerPool=4
 ```
 
-### 日志级别设置
+### 日志设置
 ```properties
 level=error
+logbackName=logback-dev.xml
 ```
 
 ### 全局流量整形
