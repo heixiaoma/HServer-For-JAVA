@@ -40,6 +40,7 @@ QQ交流群：1065301527
 |         @OPTIONS         |                         请求类型注解                         |
 |         @CONNECT         |                         请求类型注解                         |
 |          @TRACE          |                         请求类型注解                         |
+|      @Order      | 排序注解 值越小，优先级越高 (FilterAdapter, GlobalException, InitRunner,ReInitRunner, ResponseAdapter,ProtocolDispatcherAdapter,RpcAdapter) 这些子类支持排序 |
 |      @Configuration      | 配置注解，这个和springboot有相似之处（这个类中可以注入 @NacosClass,@NacosValue,@Value,@ConfigurationProperties这些注解产生的对象） |
 | @ConfigurationProperties |     配置类，和springboot相似 将Properties转为对象放入IOC     |
 |       @Controller        |  标记类为控制器 @Controller 参数可以指定一个URL 和 一个名字  |
@@ -649,6 +650,21 @@ public class WebException implements GlobalException {
  }
 ```
 
+## **服务器IOC重新初始化执行的方法**
+
+ 类必须要被@Bean注解，同时实现ReInitRunner接口，
+
+```java
+ @Bean
+ public class ReInit implements ReInitRunner {
+ 
+     @Override
+     public void reInit() {
+         System.out.println("重新初始化之前，这个方法被执行，可以关闭一些线程或者或者叫资源，比如Redisson的相关内容");
+     }
+ }
+```
+
 ## **鉴权认证相关操作**
 
 @RequiresPermissions
@@ -696,12 +712,9 @@ public class TestPermission implements PermissionAdapter {
 
 ## **RPC调用**
 
-hserver 提供了两种模式 第一种默认模式不需要注册中心 第二种模式是需要Nacos注册中心. 编码过程中没有什么差异
-
-主要差异是在配置上. 文档我怕讲不清楚，这里给出了一个项目 master分支是使用的默认模式 nacos 分支是用的是nacos。
-
-详细请下载源码学习使用 地址:https://gitee.com/HServer/hserver-for-java-rpc
-
+hserver 提供了RpcAdapter类，详细看代码里的实现 支持自定义注册中心完成RPC
+目前提供了两种模式 第一种默认模式不需要注册中心 第二种模式是需要Nacos注册中心. 编码过程中没有什么差异
+主要差异是在配置上. 文档我怕讲不清楚，详情看 test-rpc-*
 
 
 ## **ApiDoc生成功能**
