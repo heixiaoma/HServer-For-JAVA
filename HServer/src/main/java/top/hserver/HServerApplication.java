@@ -118,7 +118,7 @@ public class HServerApplication {
      */
     public static void run(String[] packageName, String... args) {
         iocInit(packageName);
-        initOK(args);
+        initTestOK(args);
     }
 
 
@@ -129,7 +129,7 @@ public class HServerApplication {
      */
     public static void run(String... args) {
         iocInit();
-        initOK(args);
+        initTestOK(args);
     }
 
     /**
@@ -139,7 +139,7 @@ public class HServerApplication {
      */
     public static void runTest(String testPackageName, Class clazz) {
         iocInit(clazz, null, testPackageName);
-        initOK(null);
+        initTestOK(null);
     }
 
     /**
@@ -220,7 +220,7 @@ public class HServerApplication {
         log.info("IOC 全部装配完成");
     }
 
-    private static void initOK(String[] args) {
+    private static void initTestOK(String[] args) {
         //初始化完成可以放开任务了
         TaskManager.IS_OK = true;
         QueueDispatcher.startTaskThread();

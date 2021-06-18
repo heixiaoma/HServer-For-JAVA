@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.cloud.CloudManager;
 import top.hserver.cloud.proxy.CloudProxy;
+import top.hserver.cloud.rpc.RpcAdapter;
 import top.hserver.core.proxy.HookProxyFactory;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.*;
@@ -34,7 +35,7 @@ public class InitBean {
     private static final Logger log = LoggerFactory.getLogger(InitBean.class);
 
     private static void sortOrder() {
-        Class<?>[] order = new Class[]{FilterAdapter.class, GlobalException.class, InitRunner.class,ReInitRunner.class, ResponseAdapter.class,ProtocolDispatcherAdapter.class};
+        Class<?>[] order = new Class[]{FilterAdapter.class, GlobalException.class, InitRunner.class,ReInitRunner.class, ResponseAdapter.class,ProtocolDispatcherAdapter.class,RpcAdapter.class};
         for (Class<?> aClass : order) {
             List<?> listBean = IocUtil.getListBean(aClass);
             List newObjectList = new ArrayList<>();
@@ -286,6 +287,10 @@ public class InitBean {
             }
             if (ProtocolDispatcherAdapter.class.isAssignableFrom(aClass)) {
                 IocUtil.addListBean(ProtocolDispatcherAdapter.class.getName(), aClass.newInstance());
+                continue;
+            }
+            if (RpcAdapter.class.isAssignableFrom(aClass)) {
+                IocUtil.addListBean(RpcAdapter.class.getName(), aClass.newInstance());
                 continue;
             }
             //检测这个Bean是否是Mqtt的
