@@ -1,8 +1,10 @@
 package top.hserver.core.server.handlers;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.multipart.*;
 import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.HServerApplication;
@@ -10,6 +12,7 @@ import top.hserver.core.server.context.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
+import top.hserver.core.server.util.ByteBufUtil;
 import top.hserver.core.server.util.HServerIpUtil;
 
 import java.util.List;
@@ -90,12 +93,14 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
                     request.addReqUrlParams(next.getKey(), s);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             log.warn(e.getMessage());
         }
     }
 
     private void handlerBody(Request request, FullHttpRequest req) {
+        ByteBuf body = req.content().duplicate();
+        request.setBody(ByteBufUtil.byteBufToBytes(body));
         try {
             HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(FACTORY, req);
             List<InterfaceHttpData> bodyHttpDates = decoder.getBodyHttpDatas();
@@ -104,9 +109,6 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         } catch (Exception e) {
             log.warn(e.getMessage());
         }
-        byte[] b = new byte[req.content().readableBytes()];
-        req.content().readBytes(b);
-        request.setBody(b);
     }
 
 }

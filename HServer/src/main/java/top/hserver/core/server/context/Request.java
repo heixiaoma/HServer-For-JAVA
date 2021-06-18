@@ -168,6 +168,7 @@ public class Request implements HttpRequest {
             partFile.setFileName(fileUpload.getFilename());
             String s = TEMP_PATH + "h_server_" + UUID.randomUUID() + "_upload";
             if (s.contains("../")) {
+                fileUpload.delete();
                 return;
             }
             File file = new File(s);
