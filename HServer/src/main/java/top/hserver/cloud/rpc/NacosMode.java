@@ -9,6 +9,7 @@ import com.alibaba.nacos.api.naming.listener.NamingEvent;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.hserver.cloud.CloudManager;
 import top.hserver.cloud.bean.ServiceData;
 import top.hserver.cloud.client.handler.RpcClientHandler;
 import top.hserver.cloud.config.AppRpc;
@@ -27,10 +28,6 @@ public class NacosMode implements RpcAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(NacosMode.class);
 
-    /**
-     * Nacos注册中心
-     */
-    private NamingService naming;
 
     @Override
     public boolean rpcMode(AppRpc appRpc, Integer port) throws NacosException {
@@ -48,7 +45,7 @@ public class NacosMode implements RpcAdapter {
             /**
              * nacos 客服端
              */
-            naming = NamingFactory.createNamingService(appRpcNacos.getAddress());
+            NamingService naming = NamingFactory.createNamingService(appRpcNacos.getAddress());
             /**
              * 不论是消费者还生产者都要去注册中心注册
              */
@@ -59,7 +56,7 @@ public class NacosMode implements RpcAdapter {
             /**
              * 订阅注册的数据
              */
-            subProviderInfo(appRpcNacos.getName());
+            subProviderInfo(naming);
             return true;
         }
         return false;
@@ -73,23 +70,26 @@ public class NacosMode implements RpcAdapter {
         return serviceData;
     }
 
-    private void subProviderInfo(String regName) {
+    private void subProviderInfo(NamingService naming) {
         //注册中心的
-        try {
-            EventListener listener = event -> {
-                if (event instanceof NamingEvent) {
-                    NamingEvent evn = (NamingEvent) event;
-                    List<Instance> instances = evn.getInstances();
-                    //节点变化，主动对上下线关系进行清除，重新设置
-                    RpcClientHandler.clear(regName);
-                    for (Instance instance : instances) {
-                        RpcClientHandler.reg(nacosReg(instance.getIp(), instance.getPort(), regName));
+        CloudManager.getServerNames().forEach(regServerName->{
+            try {
+                EventListener listener = event -> {
+                    if (event instanceof NamingEvent) {
+                        NamingEvent evn = (NamingEvent) event;
+                        List<Instance> instances = evn.getInstances();
+                        log.info("服务变化："+instances);
+                        //节点变化，主动对上下线关系进行清除，重新设置
+                        RpcClientHandler.clear(regServerName);
+                        for (Instance instance : instances) {
+                            RpcClientHandler.reg(nacosReg(instance.getIp(), instance.getPort(), regServerName));
+                        }
                     }
-                }
-            };
-            naming.subscribe(regName, listener);
-        } catch (Exception e) {
-            log.warn(e.getMessage());
-        }
+                };
+                naming.subscribe(regServerName, listener);
+            } catch (Exception e) {
+                log.warn(e.getMessage());
+            }
+        });
     }
 }
