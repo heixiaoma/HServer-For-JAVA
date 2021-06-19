@@ -10,12 +10,7 @@ import ch.qos.logback.core.pattern.color.ForegroundCompositeConverterBase;
  */
 public class HServerHighlightingCompositeConverter extends ForegroundCompositeConverterBase<ILoggingEvent> {
 
-    /**
-     * (non-Javadoc)
-     * 
-     * @see ForegroundCompositeConverterBase#
-     *      getForegroundColorCode(java.lang.Object)
-     */
+
     @Override
     protected String getForegroundColorCode(ILoggingEvent event) {
         switch (event.getLevel().toInt()) {

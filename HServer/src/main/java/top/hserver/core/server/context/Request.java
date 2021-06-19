@@ -8,6 +8,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.multipart.*;
 import io.netty.util.CharsetUtil;
+import top.hserver.core.server.util.IpUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author hxm
  */
 public class Request implements HttpRequest {
+    private String requestId;
     private String uri;
     private String nettyUri;
     private HttpMethod requestType;
@@ -39,6 +41,16 @@ public class Request implements HttpRequest {
     private Map<String, PartFile> multipartFile = new HashMap<>(8);
     private static final String TEMP_PATH = System.getProperty("java.io.tmpdir") + File.separator;
 
+
+    @Override
+    public String getRequestId() {
+        return requestId;
+    }
+
+    @Override
+    public String getIpAddress() {
+        return IpUtil.getIpAddr(this);
+    }
 
     @Override
     public long getCreateTime() {
@@ -261,5 +273,9 @@ public class Request implements HttpRequest {
 
     public static String getTempPath() {
         return TEMP_PATH;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 }

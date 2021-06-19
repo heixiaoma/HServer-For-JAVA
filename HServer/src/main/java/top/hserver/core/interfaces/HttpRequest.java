@@ -15,6 +15,12 @@ import java.util.Map;
 public interface HttpRequest {
 
     /**
+     * 获取请求ID
+     * @return
+     */
+    String getRequestId();
+
+    /**
      * 获取URI，路由作用
      *
      * @return
@@ -116,6 +122,12 @@ public interface HttpRequest {
      * @return
      */
     String getIp();
+
+    /**
+     * 获取真实的IP地址，有可能被代理之类的都获取
+     * @return
+     */
+    String getIpAddress();
 
     /**
      * 用户建立的端口

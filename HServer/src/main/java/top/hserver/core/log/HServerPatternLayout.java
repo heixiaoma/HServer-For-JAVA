@@ -140,6 +140,7 @@ public class HServerPatternLayout extends PatternLayoutBase<ILoggingEvent> {
 
         defaultConverterMap.put("HServerHighlight", HServerHighlightingCompositeConverter.class.getName());
         defaultConverterMap.put("pid", ProcessIdClassicConverter.class.getName());
+        defaultConverterMap.put("requestId", RequestIdClassicConverter.class.getName());
 
     }
 

@@ -7,7 +7,9 @@ import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.util.NamedThreadFactory;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.*;
 
 /**
@@ -56,6 +58,14 @@ public class TaskManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 获取所有任务名字，可以和自己数据表建立关系
+     * @return
+     */
+    public static Set<String> getAllTaskName() {
+        return CRON_TASK.keySet();
     }
 
     /**

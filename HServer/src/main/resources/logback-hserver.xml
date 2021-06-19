@@ -3,11 +3,11 @@
 
     <!--可视化的高亮样式-->
     <property name="STDOUT_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %HServerHighlight(%5.5level) PID:[ %magenta(%pid)] 线程名: [%17.17thread] %cyan(%-40.40logger{39} 行号:[%4.4line]) : %msg%n"/>
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %HServerHighlight(%5.5level) PID:[ %magenta(%pid)] 线程名: [%17.17thread] %cyan(%-40.40logger{39} 行号:[%4.4line]) 请求ID： [%requestId] : %msg%n"/>
 
     <!--文件存储的样式-->
     <property name="FILE_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5.5level %pid --- [%17.17thread] %-40.40logger{40} [%4.4line] : %msg%n"/>
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5.5level %pid --- [%17.17thread] %-40.40logger{40} [%4.4line] [%requestId] : %msg%n"/>
 
     <!--文件存储地址-->
     <property name="LOGGINE_FILE_HOME" value="log"/>
@@ -25,7 +25,6 @@
             </layout>
         </encoder>
     </appender>
-
 
     <!--文件存储-->
     <appender name="FILE"
@@ -82,34 +81,10 @@
         </encoder>
     </appender>
 
-
-    <!--  异步配置  -->
-    <appender name ="ASYNC_STDOUT" class= "ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold>
-        <queueSize>512</queueSize>
-        <appender-ref ref ="STDOUT"/>
-        <includeCallerData>true</includeCallerData>
-    </appender>
-
-    <appender name ="ASYNC_FILE" class= "ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold>
-        <queueSize>512</queueSize>
-        <appender-ref ref ="FILE"/>
-        <includeCallerData>true</includeCallerData>
-    </appender>
-
-    <appender name ="ASYNC_FILE_ERROR" class= "ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold>
-        <queueSize>512</queueSize>
-        <appender-ref ref ="FILE_ERROR"/>
-        <includeCallerData>true</includeCallerData>
-    </appender>
-
-
     <root level="${logging.level:-debug}">
-        <appender-ref ref="ASYNC_STDOUT"/>
-        <appender-ref ref="ASYNC_FILE"/>
-        <appender-ref ref="ASYNC_FILE_ERROR"/>
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="FILE_ERROR"/>
     </root>
 
 </configuration>

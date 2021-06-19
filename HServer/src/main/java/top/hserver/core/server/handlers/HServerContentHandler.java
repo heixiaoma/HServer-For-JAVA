@@ -14,6 +14,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import top.hserver.core.server.util.ByteBufUtil;
 import top.hserver.core.server.util.HServerIpUtil;
+import top.hserver.core.server.util.RequestIdGen;
 
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         hServerContext.setFullHttpRequest(req);
         Request request = new Request();
         hServerContext.setRequest(request);
+        request.setRequestId(RequestIdGen.getId());
         request.setIp(HServerIpUtil.getClientIp(channelHandlerContext));
         request.setPort(HServerIpUtil.getClientPort(channelHandlerContext));
         request.setCtx(channelHandlerContext);

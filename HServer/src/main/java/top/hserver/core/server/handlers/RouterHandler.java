@@ -4,6 +4,7 @@ import io.netty.util.ReferenceCountUtil;
 import top.hserver.core.server.context.HServerContext;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import top.hserver.core.server.context.HServerContextHolder;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -17,6 +18,7 @@ public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HServerContext hServerContext) throws Exception {
         try {
+            HServerContextHolder.setWebKit(hServerContext.getWebkit());
             CompletableFuture<HServerContext> future = CompletableFuture.completedFuture(hServerContext);
             Executor executor = ctx.executor();
             future.thenApplyAsync(req -> DispatcherHandler.staticFile(hServerContext), executor)
@@ -25,8 +27,8 @@ public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
                     .thenApplyAsync(DispatcherHandler::findController, executor)
                     .thenApplyAsync(DispatcherHandler::buildResponse, executor)
                     .exceptionally(DispatcherHandler::handleException)
-                    .thenAcceptAsync(msg -> DispatcherHandler.writeResponse(ctx, future, msg),executor);
-        }finally {
+                    .thenAcceptAsync(msg -> DispatcherHandler.writeResponse(ctx, future, msg), executor);
+        } finally {
             ReferenceCountUtil.release(hServerContext);
         }
     }
@@ -39,6 +41,6 @@ public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-      BuildResponse.writeException(ctx,cause);
+        BuildResponse.writeException(ctx, cause);
     }
 }
