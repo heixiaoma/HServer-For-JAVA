@@ -93,14 +93,14 @@ QQ交流群：1065301527
     private TestService testService;
     //按Bean名字注入
     @Autowired("testServer1")
-    private TestService testService; 
+    private TestService testService;
     
 	//@Controller
 	//控制器注解，将控制器加入IOC容器中，类似Spring mvc
 	//注解在类上面直接加上即可比如
     //Index控制器
     @Controller
-    class IndexController{}、
+    class IndexController{}
     
 	//@GET,@POST,@RequestMapping
 	//方法注解，在@Controller注解类类中使用，标注一个方法为GET或者POST方法，例如
@@ -346,6 +346,16 @@ public class HelloController {
         return res;
     }
 ```
+
+## 全局request,response获取
+```text
+       只能在和控制器同级别的线程才能获取。
+       Webkit webKit = HServerContextHolder.getWebKit();
+            if (webKit != null) {
+                return webKit.httpRequest.getRequestId();
+            }
+```
+
 
 ## Hook操作
 
