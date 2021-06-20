@@ -9,6 +9,7 @@ import top.hserver.core.ioc.annotation.queue.QueueListener;
 import top.hserver.core.ioc.ref.PackageScanner;
 import top.hserver.core.queue.fqueue.FQueue;
 import top.hserver.core.queue.fqueue.exception.FileFormatException;
+import top.hserver.core.server.util.NamedThreadFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -88,10 +89,9 @@ public class QueueDispatcher {
             queueFactory.createQueue(v.getQueueName(), v.getBufferSize(), v.getQueueHandlerType(), v.getQueueHandleMethods());
             v.setQueueFactory(queueFactory);
         });
-
-        Thread thread = new Thread(() -> {
-            try {
-                while (true) {
+        Thread thread = new NamedThreadFactory("hserver_queue").newThread(() -> {
+            while (true) {
+                try {
                     byte[] poll = fQueue.poll();
                     if (poll == null) {
                         Thread.sleep(1000);
@@ -99,14 +99,12 @@ public class QueueDispatcher {
                         QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
                         dispatcherQueue(deserialize.getQueueName(), deserialize.getArgs());
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         });
-        thread.setName("SerializationQueue");
         thread.start();
-
     }
 
     /**
