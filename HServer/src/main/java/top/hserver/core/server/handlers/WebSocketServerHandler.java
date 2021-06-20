@@ -7,9 +7,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.ReferenceCountUtil;
+import top.hserver.core.server.util.ByteBufUtil;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -17,20 +17,21 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
 
-    public static final Map<String, String> WebSocketRouter = new ConcurrentHashMap<>();
+    public static final Map<String, String> WEB_SOCKET_ROUTER = new ConcurrentHashMap<>();
 
     private WebSocketServerHandshaker handshake;
     private WebSocketHandler webSocketHandler;
-    private String uri;
     private String uid;
     private HttpRequest request;
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) {
         if (msg instanceof HttpRequest) {
+            /**
+             * 看看是不是第一次握手。
+             */
             handleHttpRequest(ctx, (HttpRequest) msg);
         } else if (msg instanceof WebSocketFrame) {
-            initHandler();
             handleWebSocketFrame(ctx, (WebSocketFrame) msg);
         } else {
             ReferenceCountUtil.retain(msg);
@@ -46,7 +47,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         if (request != null && uid != null) {
-            this.webSocketHandler.disConnect(new Ws(ctx, uid, request));
+            this.webSocketHandler.disConnect(new Ws(ctx, uid, request,"CLOSE"));
         }
     }
 
@@ -58,11 +59,11 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
                 WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
             } else {
                 this.handshake.handshake(ctx.channel(), req);
-                this.uri = getReqUri(req);
+                String uri = getReqUri(req);
                 this.request = req;
-                this.uid = UUID.randomUUID().toString();
-                initHandler();
-                this.webSocketHandler.onConnect(new Ws(ctx, uid, request));
+                this.uid = ctx.channel().id().asLongText();
+                this.webSocketHandler = (WebSocketHandler) IocUtil.getBean(WEB_SOCKET_ROUTER.get(uri));
+                this.webSocketHandler.onConnect(new Ws(ctx, uid, request,"INIT"));
             }
         } else {
             ReferenceCountUtil.retain(req);
@@ -83,27 +84,20 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         if (frame instanceof CloseWebSocketFrame) {
             this.handshake.close(ctx.channel(), (CloseWebSocketFrame) frame.retain());
-            this.webSocketHandler.disConnect(new Ws(ctx, uid, request));
-            return;
-        }
-        if (frame instanceof PingWebSocketFrame) {
+            this.webSocketHandler.disConnect(new Ws(ctx, uid, request,"CLOSE"));
+        } else if (frame instanceof PingWebSocketFrame) {
             ctx.channel().write(new PongWebSocketFrame(frame.content().retain()));
-            return;
+        } else if (frame instanceof TextWebSocketFrame) {
+            this.webSocketHandler.onMessage(new Ws(ctx, ((TextWebSocketFrame) frame).text(), uid, request,"TEXT"));
+        } else if (frame instanceof BinaryWebSocketFrame) {
+            this.webSocketHandler.onMessage(new Ws(ctx, ByteBufUtil.byteBufToBytes(frame.content()), uid, request,"BINARY"));
         }
-        if (!(frame instanceof TextWebSocketFrame)) {
-            throw new UnsupportedOperationException("unsupported frame type: " + frame.getClass().getName());
-        }
-        this.webSocketHandler.onMessage(new Ws(ctx, ((TextWebSocketFrame) frame).text(), uid, request));
     }
 
     private boolean isWebSocketRequest(HttpRequest req) {
         return req != null
-                && WebSocketRouter.get(getReqUri(req)) != null
+                && WEB_SOCKET_ROUTER.get(getReqUri(req)) != null
                 && req.decoderResult().isSuccess()
                 && "websocket".equals(req.headers().get("Upgrade"));
-    }
-
-    private void initHandler() {
-        this.webSocketHandler = (WebSocketHandler) IocUtil.getBean(WebSocketRouter.get(uri));
     }
 }

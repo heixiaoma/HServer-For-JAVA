@@ -28,9 +28,6 @@ level=debug
 #消息体大小 默认int.maxValue
 #httpContentSize=999999
 
-#超时时间，使用该功能 需要配置业务线程池才会生效 1秒
-timeOut=1000
-
 #Rpc调用超时时间设置 5秒
 rpcTimeOut=5000
 

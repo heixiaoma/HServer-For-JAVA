@@ -7,6 +7,9 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import top.hserver.HServerApplication;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,25 +20,48 @@ import java.util.Map;
  * @author hxm
  */
 public class Ws {
+    private static final Logger log = LoggerFactory.getLogger(Ws.class);
+
     private ChannelHandlerContext ctx;
     private String message;
+    private byte[] binary;
     private String uid;
     private HttpRequest request;
     private Map<String, List<String>> reqData = new HashMap<>();
+    private String type;
 
-    public Ws(ChannelHandlerContext ctx, String uid, HttpRequest request) {
+    public Ws(ChannelHandlerContext ctx, String uid, HttpRequest request,String type) {
         this.ctx = ctx;
         this.uid = uid;
         this.request = request;
+        this.type=type;
         initReqData();
     }
 
-    public Ws(ChannelHandlerContext ctx, String message, String uid, HttpRequest request) {
+    public Ws(ChannelHandlerContext ctx, String message, String uid, HttpRequest request,String type) {
         this.ctx = ctx;
         this.message = message;
         this.uid = uid;
         this.request = request;
+        this.type=type;
         initReqData();
+    }
+
+    public Ws(ChannelHandlerContext ctx, byte[] binary, String uid, HttpRequest request,String type) {
+        this.ctx = ctx;
+        this.binary = binary;
+        this.uid = uid;
+        this.request = request;
+        this.type=type;
+        initReqData();
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void send(String msg) {
@@ -60,11 +86,15 @@ public class Ws {
 
 
     private void initReqData() {
-        if (request!=null) {
-            QueryStringDecoder decoder = new QueryStringDecoder(request.uri());
-            Map<String, List<String>> params = decoder.parameters();
-            for (Map.Entry<String, List<String>> next : params.entrySet()) {
-                reqData.put(next.getKey(), next.getValue());
+        if (request != null) {
+            try {
+                QueryStringDecoder decoder = new QueryStringDecoder(request.uri());
+                Map<String, List<String>> params = decoder.parameters();
+                for (Map.Entry<String, List<String>> next : params.entrySet()) {
+                    reqData.put(next.getKey(), next.getValue());
+                }
+            } catch (Exception e) {
+                log.warn(e.getMessage());
             }
         }
     }
@@ -107,5 +137,13 @@ public class Ws {
 
     public void setReqData(Map<String, List<String>> reqData) {
         this.reqData = reqData;
+    }
+
+    public byte[] getBinary() {
+        return binary;
+    }
+
+    public void setBinary(byte[] binary) {
+        this.binary = binary;
     }
 }

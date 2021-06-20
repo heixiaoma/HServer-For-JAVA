@@ -18,7 +18,6 @@ public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HServerContext hServerContext) throws Exception {
         try {
-            HServerContextHolder.setWebKit(hServerContext.getWebkit());
             CompletableFuture<HServerContext> future = CompletableFuture.completedFuture(hServerContext);
             Executor executor = ctx.executor();
             future.thenApplyAsync(req -> DispatcherHandler.staticFile(hServerContext), executor)

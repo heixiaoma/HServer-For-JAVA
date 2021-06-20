@@ -40,7 +40,7 @@ QQ交流群：1065301527
 |         @OPTIONS         |                         请求类型注解                         |
 |         @CONNECT         |                         请求类型注解                         |
 |          @TRACE          |                         请求类型注解                         |
-|      @Order      | 排序注解 值越小，优先级越高 (FilterAdapter, GlobalException, InitRunner,ReInitRunner, ResponseAdapter,ProtocolDispatcherAdapter,RpcAdapter) 这些子类支持排序 |
+|      @Order      | 排序注解 值越小，优先级越高 (FilterAdapter, GlobalException, InitRunner,ReInitRunner, ResponseAdapter,ProtocolDispatcherAdapter,RpcAdapter,ServerCloseAdapter) 这些子类支持排序 |
 |      @Configuration      | 配置注解，这个和springboot有相似之处（这个类中可以注入 @NacosClass,@NacosValue,@Value,@ConfigurationProperties这些注解产生的对象） |
 | @ConfigurationProperties |     配置类，和springboot相似 将Properties转为对象放入IOC     |
 |       @Controller        |  标记类为控制器 @Controller 参数可以指定一个URL 和 一个名字  |
@@ -1136,8 +1136,6 @@ businessPool=50
 #一定要配置业务线程池大小，不然不生效,默认值 50
 businessPool=50
 
-#10秒超时 http超时
-timeOut=10000
 
 #rpc超时配置 默认5秒
 rpcTimeOut=5000

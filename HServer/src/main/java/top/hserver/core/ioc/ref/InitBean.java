@@ -35,7 +35,7 @@ public class InitBean {
     private static final Logger log = LoggerFactory.getLogger(InitBean.class);
 
     private static void sortOrder() {
-        Class<?>[] order = new Class[]{FilterAdapter.class, GlobalException.class, InitRunner.class,ReInitRunner.class, ResponseAdapter.class,ProtocolDispatcherAdapter.class,RpcAdapter.class};
+        Class<?>[] order = new Class[]{FilterAdapter.class, GlobalException.class, InitRunner.class,ReInitRunner.class, ResponseAdapter.class,ProtocolDispatcherAdapter.class,RpcAdapter.class,ServerCloseAdapter.class};
         for (Class<?> aClass : order) {
             List<?> listBean = IocUtil.getListBean(aClass);
             List newObjectList = new ArrayList<>();
@@ -220,7 +220,7 @@ public class InitBean {
             //检查注解里面是否有值
             WebSocket annotation = (WebSocket) aClass.getAnnotation(WebSocket.class);
             IocUtil.addBean(aClass.getName(), aClass.newInstance());
-            WebSocketServerHandler.WebSocketRouter.put(annotation.value(), aClass.getName());
+            WebSocketServerHandler.WEB_SOCKET_ROUTER.put(annotation.value(), aClass.getName());
         }
 
     }
@@ -256,11 +256,18 @@ public class InitBean {
                 continue;
             }
 
-            //检测这个Bean是否是初始化的类
+            //检测这个Bean是否是重新初始化的类
             if (ReInitRunner.class.isAssignableFrom(aClass)) {
                 IocUtil.addListBean(ReInitRunner.class.getName(), aClass.newInstance());
                 continue;
             }
+
+            //检测这个Bean是否是关闭服务的的类
+            if (ServerCloseAdapter.class.isAssignableFrom(aClass)) {
+                IocUtil.addListBean(ServerCloseAdapter.class.getName(), aClass.newInstance());
+                continue;
+            }
+
 
             //检测这个Bean是否是权限认证的
             if (PermissionAdapter.class.isAssignableFrom(aClass)) {

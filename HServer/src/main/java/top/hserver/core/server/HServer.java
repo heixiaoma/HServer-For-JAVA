@@ -7,6 +7,7 @@ import io.netty.handler.ssl.SslContextBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.cloud.CloudManager;
+import top.hserver.core.interfaces.ServerCloseAdapter;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
@@ -16,7 +17,6 @@ import top.hserver.core.server.util.EpollUtil;
 import top.hserver.core.server.util.PropUtil;
 import top.hserver.core.task.TaskManager;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -40,54 +40,67 @@ public class HServer {
 
     private final String[] args;
 
+    private EventLoopGroup bossGroup = null;
+
+    private EventLoopGroup workerGroup = null;
+
     public HServer(int port, String[] args) {
         this.port = port;
         this.args = args;
     }
 
     public void run() throws Exception {
-        EventLoopGroup bossGroup = null;
-        EventLoopGroup workerGroup = null;
-
         String typeName;
-        try {
-            ServerBootstrap bootstrap = new ServerBootstrap();
-            if (EpollUtil.check() && EPOLL) {
-                bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
-                bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-                bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-                bossGroup = new EpollEventLoopGroup(bossPool, new NamedThreadFactory("hserver_epoll_boss"));
-                workerGroup = new EpollEventLoopGroup(workerPool, new NamedThreadFactory("hserver_epoll_worker"));
-                bootstrap.group(bossGroup, workerGroup).channel(EpollServerSocketChannel.class);
-                typeName = "Epoll";
-            } else {
-                bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-                bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-                bossGroup = new NioEventLoopGroup(bossPool, new NamedThreadFactory("hserver_boss"));
-                workerGroup = new NioEventLoopGroup(workerPool, new NamedThreadFactory("hserver_worker"));
-                bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
-                typeName = "Nio";
-            }
-            //看看有没有SSL
-            initSSl();
-            bootstrap.childHandler(new ServerInitializer());
-            Channel ch = bootstrap.bind(port).sync().channel();
-            log.info("HServer 启动完成");
-            System.out.println();
-            System.out.println(getHello(typeName, port));
-            System.out.println();
-            initOK();
-            ch.closeFuture().sync();
-
-        } finally {
-            assert bossGroup != null;
-            bossGroup.shutdownGracefully();
-            assert workerGroup != null;
-            workerGroup.shutdownGracefully();
+        ServerBootstrap bootstrap = new ServerBootstrap();
+        if (EpollUtil.check() && EPOLL) {
+            bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
+            bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+            bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
+            bossGroup = new EpollEventLoopGroup(bossPool, new NamedThreadFactory("hserver_epoll_boss"));
+            workerGroup = new EpollEventLoopGroup(workerPool, new NamedThreadFactory("hserver_epoll_worker"));
+            bootstrap.group(bossGroup, workerGroup).channel(EpollServerSocketChannel.class);
+            typeName = "Epoll";
+        } else {
+            bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+            bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
+            bossGroup = new NioEventLoopGroup(bossPool, new NamedThreadFactory("hserver_boss"));
+            workerGroup = new NioEventLoopGroup(workerPool, new NamedThreadFactory("hserver_worker"));
+            bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
+            typeName = "Nio";
         }
+        //看看有没有SSL
+        initSSl();
+        bootstrap.childHandler(new ServerInitializer());
+        bootstrap.bind(port).sync().channel();
+        log.info("HServer 启动完成");
+        System.out.println();
+        System.out.println(getHello(typeName, port));
+        System.out.println();
+        initOk();
+        shutdownHook();
     }
 
-    private void initOK() {
+
+    private void shutdownHook() {
+        Thread shutdown = new NamedThreadFactory("hserver_shutdown").newThread(() -> {
+            log.warn("服务即将关闭");
+            List<ServerCloseAdapter> listBean = IocUtil.getListBean(ServerCloseAdapter.class);
+            if (listBean!=null) {
+                for (ServerCloseAdapter serverCloseAdapter : listBean) {
+                    serverCloseAdapter.close();
+                }
+            }
+            if (this.bossGroup != null) {
+                this.bossGroup.shutdownGracefully();
+            }
+            if (this.workerGroup != null) {
+                this.workerGroup.shutdownGracefully();
+            }
+        });
+        Runtime.getRuntime().addShutdownHook(shutdown);
+    }
+
+    private void initOk() {
         //云启动
         CloudManager.run(port);
         //初始化完成可以放开任务了
@@ -101,11 +114,9 @@ public class HServer {
         }
     }
 
-
     private String getHello(String typeName, int port) {
         InputStream banner = HServer.class.getResourceAsStream("/banner.txt");
         try {
-
             if (banner != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(banner);
                 String result = new BufferedReader(inputStreamReader)

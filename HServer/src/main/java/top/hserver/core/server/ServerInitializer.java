@@ -35,16 +35,19 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
              * copy 最多512个字节作为消息头数据判断
              */
             ByteBuf slice = in.slice(0, Math.min(in.readableBytes(), 512));
-                byte[] bytes = ByteBufUtil.byteBufToBytes(slice);
-                List<ProtocolDispatcherAdapter> listBean = IocUtil.getListBean(ProtocolDispatcherAdapter.class);
-                ChannelPipeline pipeline = ctx.pipeline();
-                for (ProtocolDispatcherAdapter protocolDispatcherAdapter : listBean) {
-                    if (protocolDispatcherAdapter.dispatcher(ctx, pipeline, bytes)) {
-                        ctx.pipeline().remove(this);
-                        ctx.fireChannelActive();
-                        return;
-                    }
+            byte[] bytes = ByteBufUtil.byteBufToBytes(slice);
+            ChannelPipeline pipeline = ctx.pipeline();
+            List<ProtocolDispatcherAdapter> listBean = IocUtil.getListBean(ProtocolDispatcherAdapter.class);
+            if (listBean==null){
+                return;
+            }
+            for (ProtocolDispatcherAdapter protocolDispatcherAdapter : listBean) {
+                if (protocolDispatcherAdapter.dispatcher(ctx, pipeline, bytes)) {
+                    ctx.pipeline().remove(this);
+                    ctx.fireChannelActive();
+                    return;
                 }
+            }
         }
     }
 

@@ -33,9 +33,11 @@ public class CloudManager {
             AppRpc appRpc = IocUtil.getBean(AppRpc.class);
             if (appRpc != null) {
                 List<RpcAdapter> listBean = IocUtil.getListBean(RpcAdapter.class);
-                for (RpcAdapter rpcAdapter : listBean) {
-                    if (rpcAdapter.rpcMode(appRpc, port)) {
-                        return;
+                if (listBean!=null) {
+                    for (RpcAdapter rpcAdapter : listBean) {
+                        if (rpcAdapter.rpcMode(appRpc, port)) {
+                            return;
+                        }
                     }
                 }
             }

@@ -26,6 +26,7 @@ import java.util.concurrent.TimeoutException;
  * @author hxm
  */
 public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+
     private static final Logger log = LoggerFactory.getLogger(HServerApplication.class);
 
     private final static DefaultHttpDataFactory FACTORY = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
@@ -64,24 +65,13 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         webkit.httpRequest = hServerContext.getRequest();
         webkit.httpResponse = hServerContext.getResponse();
         hServerContext.setWebkit(webkit);
+        HServerContextHolder.setWebKit(webkit);
         channelHandlerContext.fireChannelRead(hServerContext);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         BuildResponse.writeException(ctx, cause);
-    }
-
-
-    @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof IdleStateEvent) {
-            IdleStateEvent evt1 = (IdleStateEvent) evt;
-            boolean first = evt1.isFirst();
-            if (first) {
-                BuildResponse.writeException(ctx, new TimeoutException(), HttpResponseStatus.REQUEST_TIMEOUT);
-            }
-        }
     }
 
     private void handlerUrl(Request request, FullHttpRequest req) {

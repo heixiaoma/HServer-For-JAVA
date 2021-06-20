@@ -36,7 +36,7 @@ public class ConstConfig {
     /**
      * 版本号
      */
-    public static final String VERSION = "2.9.70";
+    public static final String VERSION = "2.9.71";
     /**
      * 定时任务线程数配置
      */
@@ -112,11 +112,5 @@ public class ConstConfig {
      * 默认消息大小
      */
     public static Integer HTTP_CONTENT_SIZE=Integer.MAX_VALUE;
-
-    /**
-     * 超时大小
-     */
-    public static Integer DEFAULT_STALE_CONNECTION_TIMEOUT;
-
 
 }

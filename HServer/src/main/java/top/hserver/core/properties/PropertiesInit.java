@@ -58,10 +58,6 @@ public class PropertiesInit {
         } else {
             ConstConfig.BUSINESS_EVENT = new DefaultEventExecutorGroup(50, new NamedThreadFactory("hserver_business"));
         }
-        Integer timeOut = instance.getInt("timeOut");
-        if (timeOut != null) {
-            ConstConfig.DEFAULT_STALE_CONNECTION_TIMEOUT = timeOut;
-        }
 
         Integer rpcTimeOut = instance.getInt("rpcTimeOut");
         if (rpcTimeOut != null) {
