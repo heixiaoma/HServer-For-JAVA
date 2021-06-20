@@ -36,14 +36,14 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 [![黑小马工作室/HServer](https://gitee.com/heixiaomas/HServer/widgets/widget_card.svg?colors=ffffff,ffffff,,e3e9ed,666666,9b9b9b)](https://gitee.com/heixiaomas/HServer)
     
 
-### 最新中央仓库版本
-```xml
-<dependency>
-    <groupId>top.hserver</groupId>
-    <artifactId>HServer</artifactId>
-    <version>2.9.70</version>
-</dependency>
-```
+### 最新央仓库统一版本
+| 资源名 | 地址 |
+| :----:| :----: |
+| HServer版本 | 2.9.71  |
+| HServer-Beetlsql版本 | 3.3 |
+| HServer-Maven 打包版本 | 3.0 |
+
+
 
 ### 资源菜单
 
