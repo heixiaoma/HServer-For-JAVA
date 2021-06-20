@@ -642,7 +642,7 @@ public class WebException implements GlobalException {
 
 ```
 
-## **服务器启动完成是执行的方法**
+## **服务器启动完成执行的方法**
 
  类必须要被@Bean注解，同时实现InitRunner接口，
 
@@ -673,6 +673,27 @@ public class WebException implements GlobalException {
          System.out.println("重新初始化之前，这个方法被执行，可以关闭一些线程或者或者叫资源，比如Redisson的相关内容");
      }
  }
+```
+
+## **服务器关闭回调执行的方法**
+
+ 类必须要被@Bean注解，同时实现ServerCloseAdapter接口，
+
+```java
+@Bean
+public class Close implements ServerCloseAdapter {
+    @Override
+    public void close() {
+        System.out.println("服务开始关闭了，可以提前关闭资源或者有些没用处理完的，处理下");
+        System.out.println("延时5秒关闭");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("关闭了");
+    }
+}
 ```
 
 ## **鉴权认证相关操作**
