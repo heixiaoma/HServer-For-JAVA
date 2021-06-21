@@ -166,7 +166,7 @@ public class DispatcherHandler {
                     .append("，请求路径：")
                     .append(hServerContext.getRequest().getUri())
                     .append("，来源IP：")
-                    .append(hServerContext.getRequest().getIp());
+                    .append(hServerContext.getRequest().getIpAddress());
             throw new BusinessException(HttpResponseStatus.NOT_FOUND.code(), error.toString(), new NotFoundException("不能找到处理当前请求的资源"), hServerContext.getWebkit());
         }
         Method method = routerInfo.getMethod();
