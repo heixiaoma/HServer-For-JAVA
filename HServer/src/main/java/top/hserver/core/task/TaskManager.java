@@ -62,6 +62,7 @@ public class TaskManager {
 
     /**
      * 获取所有任务名字，可以和自己数据表建立关系
+     *
      * @return
      */
     public static Set<String> getAllTaskName() {
@@ -74,9 +75,11 @@ public class TaskManager {
     public static boolean removeTask(String name) {
         ScheduledFuture<?> scheduledFuture = CRON_TASK.get(name);
         if (scheduledFuture != null) {
-            scheduledFuture.cancel(true);
-            CRON_TASK.remove(name);
-            return true;
+            boolean cancel = scheduledFuture.cancel(true);
+            if (cancel) {
+                CRON_TASK.remove(name);
+                return true;
+            }
         }
         return false;
     }
