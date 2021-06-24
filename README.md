@@ -49,7 +49,7 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 
 | 资源名 | 地址 |
 | :----:| :----: |
-| 文档 | [点我](doc/HServer文档.md)  |
+| 教程文档 | [点我](doc/HServer文档.md)  |
 | 压测文档 | [点我](doc/PM.md) |
 | Redis操作源码 | [点我](https://gitee.com/HServer/hserver-for-java-redis) |
 | MYSQL-BeetlSQL 插件(推荐)源码 | [点我](https://gitee.com/HServer/hserver-for-java-beetlsql) |
