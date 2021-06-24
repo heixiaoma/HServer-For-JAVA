@@ -52,11 +52,12 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 | 文档 | [点我](doc/HServer文档.md)  |
 | 压测文档 | [点我](doc/PM.md) |
 | Redis操作源码 | [点我](https://gitee.com/HServer/hserver-for-java-redis) |
-| MYSQL-BeetlSQL(推荐)源码 | [点我](https://gitee.com/HServer/hserver-for-java-beetlsql) |
+| MYSQL-BeetlSQL 插件(推荐)源码 | [点我](https://gitee.com/HServer/hserver-for-java-beetlsql) |
 | MYSQL-NEO 源码 |  [点我](https://gitee.com/HServer/hserver-for-java-mysql) |
 | RPC操作源码 | [点我](https://gitee.com/HServer/hserver-for-java-rpc) |
 | HServer-Maven-Plugin | [点我](https://gitee.com/HServer/hserver-maven-plugin) |
 | HServer-BeetlSql-Plugin | [点我](https://gitee.com/HServer/hserver-plugs-beetlsql) |
+| HServer-Mybatis-Plugin | [点我](https://gitee.com/HServer/hserver-plugin-mybatis) |
 | HServer版本查询 | [点我](https://repo1.maven.org/maven2/top/hserver/HServer/) |
 
 
