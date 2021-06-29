@@ -11,6 +11,7 @@ import top.hserver.core.queue.fqueue.FQueue;
 import top.hserver.core.queue.fqueue.exception.FileFormatException;
 import top.hserver.core.server.util.NamedThreadFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -24,20 +25,9 @@ import static top.hserver.core.server.context.ConstConfig.PERSIST_PATH;
  * @author hxm
  */
 public class QueueDispatcher {
-
     private static final Logger log = LoggerFactory.getLogger(QueueDispatcher.class);
-
     private static Map<String, QueueHandleInfo> handleMethodMap = new ConcurrentHashMap<>();
-
-    private static FQueue fQueue;
-
-    static {
-        try {
-            fQueue = new FQueue(PERSIST_PATH);
-        } catch (IOException | FileFormatException e) {
-            e.printStackTrace();
-        }
-    }
+    private static Map<String, FQueue> FQ = new ConcurrentHashMap<>();
 
     private QueueDispatcher() {
     }
@@ -84,27 +74,49 @@ public class QueueDispatcher {
      * 创建队列
      */
     public static void startTaskThread() {
+        /**
+         * 检查历史是否有，有的话先关闭掉
+         */
+        FQ.forEach((k, v) -> {
+            try {
+                v.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        FQ.clear();
         handleMethodMap.forEach((k, v) -> {
+            try {
+                FQueue fQueue = new FQueue(PERSIST_PATH + File.separator + v.getQueueName());
+                FQ.put(v.getQueueName(), fQueue);
+            } catch (Exception ignored) {
+            }
             QueueFactory queueFactory = new QueueFactoryImpl();
             queueFactory.createQueue(v.getQueueName(), v.getBufferSize(), v.getQueueHandlerType(), v.getQueueHandleMethods());
             v.setQueueFactory(queueFactory);
         });
-        Thread thread = new NamedThreadFactory("hserver_queue").newThread(() -> {
-            while (true) {
-                try {
-                    byte[] poll = fQueue.poll();
-                    if (poll == null) {
-                        Thread.sleep(1000);
-                    } else {
-                        QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
-                        dispatcherQueue(deserialize.getQueueName(), deserialize.getArgs());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+        if (FQ.size() > 0) {
+            Thread thread = new NamedThreadFactory("hserver_queue").newThread(() -> {
+                while (true) {
+                    FQ.forEach((k, v) -> {
+                        try {
+                            byte[] poll = v.poll();
+                            if (poll == null) {
+                                Thread.sleep(1000);
+                            } else {
+                                QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
+                                dispatcherQueue(deserialize.getQueueName(), deserialize.getArgs());
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+
                 }
-            }
-        });
-        thread.start();
+            });
+            thread.start();
+        }
     }
 
     /**
@@ -130,6 +142,10 @@ public class QueueDispatcher {
      * @param args
      */
     public static void dispatcherSerializationQueue(String queueName, Object... args) {
+        FQueue fQueue = FQ.get(queueName);
+        if (fQueue == null) {
+            throw new NullPointerException(queueName + "不存在");
+        }
         fQueue.offer(SerializationUtil.serialize(new QueueData(queueName, args)));
     }
 
@@ -137,7 +153,7 @@ public class QueueDispatcher {
         QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
         if (queueHandleInfo != null) {
             QueueInfo queueInfo = queueHandleInfo.getQueueFactory().queueInfo();
-            queueInfo.setFqueue(fQueue.size());
+            queueInfo.setFqueue(FQ.get(queueName).size());
             return queueInfo;
         }
         return null;
