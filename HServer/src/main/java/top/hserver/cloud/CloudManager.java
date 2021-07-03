@@ -35,7 +35,7 @@ public class CloudManager {
                 List<RpcAdapter> listBean = IocUtil.getListBean(RpcAdapter.class);
                 if (listBean!=null) {
                     for (RpcAdapter rpcAdapter : listBean) {
-                        if (rpcAdapter.rpcMode(appRpc, port)) {
+                        if (rpcAdapter.rpcMode(appRpc, port,getServerNames())) {
                             return;
                         }
                     }

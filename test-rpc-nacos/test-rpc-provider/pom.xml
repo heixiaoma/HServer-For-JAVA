@@ -13,15 +13,8 @@
     <dependencies>
         <dependency>
             <groupId>top.hserver</groupId>
-            <artifactId>HServer</artifactId>
-            <version>2.9.72</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>top.hserver</groupId>
             <artifactId>test-rpc-common</artifactId>
             <version>1.0</version>
-
             <scope>compile</scope>
         </dependency>
     </dependencies>

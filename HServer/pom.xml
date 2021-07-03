@@ -6,7 +6,7 @@
 
     <groupId>top.hserver</groupId>
     <artifactId>HServer</artifactId>
-    <version>2.9.72</version>
+    <version>2.9.73</version>
     <packaging>jar</packaging>
     <name>HServer</name>
     <url>https://gitee.com/HServer/HServer</url>
@@ -29,7 +29,7 @@
         <freemarker.version>2.3.31</freemarker.version>
         <objenesis.version>3.2</objenesis.version>
         <junit.version>4.13.2</junit.version>
-        <nacos.version>1.3.2</nacos.version>
+        <nacos.version>2.0.2</nacos.version>
         <disruptor.version>3.4.4</disruptor.version>
     </properties>
 

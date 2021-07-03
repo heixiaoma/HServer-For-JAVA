@@ -15,7 +15,7 @@ public class UserController {
     @GET("/userInfo")
     public JsonResult getUserInfo() {
         try {
-            int size = 10000;
+            int size = 100;
             long l = System.currentTimeMillis();
             for (int i = 0; i < size; i++) {
                 String userInfo = userService.getUserInfo();

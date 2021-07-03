@@ -12,12 +12,7 @@
 
     <artifactId>test-consumer</artifactId>
     <dependencies>
-        <dependency>
-            <groupId>top.hserver</groupId>
-            <artifactId>HServer</artifactId>
-            <version>2.9.72</version>
-            <scope>compile</scope>
-        </dependency>
+
         <dependency>
             <groupId>top.hserver</groupId>
             <artifactId>test-common</artifactId>

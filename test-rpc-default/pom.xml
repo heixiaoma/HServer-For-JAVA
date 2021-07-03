@@ -17,5 +17,14 @@
         <module>test-common</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>top.hserver</groupId>
+            <artifactId>HServer</artifactId>
+            <version>2.9.73</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
 
 </project>

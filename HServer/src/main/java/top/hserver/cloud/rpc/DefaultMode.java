@@ -7,6 +7,8 @@ import top.hserver.cloud.client.handler.RpcClientHandler;
 import top.hserver.cloud.config.AppRpc;
 import top.hserver.core.ioc.annotation.Bean;
 
+import java.util.List;
+
 /**
  * @author hxm
  */
@@ -16,11 +18,11 @@ public class DefaultMode implements RpcAdapter {
     private static final Logger log = LoggerFactory.getLogger(DefaultMode.class);
 
     @Override
-    public boolean rpcMode(AppRpc appRpc, Integer port) {
-        if (appRpc.getMode()==null||appRpc.getMode().trim().length() == 0) {
+    public boolean rpcMode(AppRpc appRpc, Integer port, List<String> serverNames) {
+        if (appRpc.getMode() == null || appRpc.getMode().trim().length() == 0) {
             String address = appRpc.getAddress();
             if (address != null) {
-                ServiceData serviceData = defaultReg(address);
+                ServiceData serviceData = defaultReg(address, serverNames);
                 if (serviceData != null) {
                     RpcClientHandler.reg(serviceData);
                 } else {
@@ -33,7 +35,7 @@ public class DefaultMode implements RpcAdapter {
     }
 
 
-    private ServiceData defaultReg(String addressData) throws RuntimeException {
+    private ServiceData defaultReg(String addressData, List<String> serverNames) throws RuntimeException {
         try {
             String[] split = addressData.split(",");
             for (String s : split) {
@@ -42,6 +44,9 @@ public class DefaultMode implements RpcAdapter {
                 String[] split2 = split1[0].split(":");
                 String address = split2[0];
                 String port = split2[1];
+                if (!serverNames.contains(name)) {
+                    log.warn("{} 服务没用上建议不配置",name);
+                }
                 ServiceData serviceData = new ServiceData();
                 serviceData.setHost(address);
                 serviceData.setPort(Integer.parseInt(port));

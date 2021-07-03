@@ -30,7 +30,7 @@ public class NacosMode implements RpcAdapter {
 
 
     @Override
-    public boolean rpcMode(AppRpc appRpc, Integer port) throws NacosException {
+    public boolean rpcMode(AppRpc appRpc, Integer port, List<String> serverNames) throws NacosException {
         if (appRpc.getMode() != null && "nacos".equalsIgnoreCase(appRpc.getMode())) {
             AppRpcNacos appRpcNacos = IocUtil.getBean(AppRpcNacos.class);
             if (appRpcNacos == null || appRpcNacos.getAddress() == null) {
@@ -56,7 +56,7 @@ public class NacosMode implements RpcAdapter {
             /**
              * 订阅注册的数据
              */
-            subProviderInfo(naming);
+            subProviderInfo(naming,serverNames);
             return true;
         }
         return false;
@@ -70,12 +70,12 @@ public class NacosMode implements RpcAdapter {
         return serviceData;
     }
 
-    private void subProviderInfo(NamingService naming) {
+    private void subProviderInfo(NamingService naming,List<String> serverNames) {
         /**
          *        按需订阅属于自己的需要的服务
          *
          */
-        CloudManager.getServerNames().forEach(regServerName -> {
+        serverNames.forEach(regServerName -> {
             try {
                 EventListener listener = event -> {
                     if (event instanceof NamingEvent) {
