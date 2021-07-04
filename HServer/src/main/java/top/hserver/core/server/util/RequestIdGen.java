@@ -28,32 +28,47 @@ public class RequestIdGen {
 
     // 将ip转换为定长8个字符的16进制表示形式：255.255.255.255 -> FFFFFFFF
     private static String hexIp(String ip) {
-        StringBuilder sb = new StringBuilder();
-        for (String seg : ip.split("\\.")) {
-            String h = Integer.toHexString(Integer.parseInt(seg));
-            if (h.length() == 1) {
-                sb.append("0");
+        try {
+            StringBuilder sb = new StringBuilder();
+            for (String seg : ip.split("\\.")) {
+                String h = Integer.toHexString(Integer.parseInt(seg));
+                if (h.length() == 1) {
+                    sb.append("0");
+                }
+                sb.append(h);
             }
-            sb.append(h);
+            return sb.toString();
+        } catch (Exception e) {
         }
-        return sb.toString();
+        //127.0.0.1
+        return "7f000001";
     }
 
     private static String getHostIp() {
         try {
-            for (Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces(); interfaces.hasMoreElements(); ) {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            String lastMatchIP = null;
+            while (interfaces.hasMoreElements()) {
                 NetworkInterface networkInterface = interfaces.nextElement();
-                if (networkInterface.isLoopback() || networkInterface.isVirtual() || !networkInterface.isUp()) {
-                    continue;
-                }
                 Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
-                if (addresses.hasMoreElements()) {
-                    return addresses.nextElement().getHostAddress();
+                while (addresses.hasMoreElements()) {
+                    InetAddress addr = addresses.nextElement();
+                    if (addr.isLoopbackAddress()) {
+                        continue;
+                    }
+                    lastMatchIP = addr.getHostAddress();
+                    if (!lastMatchIP.contains(":")) {
+                        return lastMatchIP;// return IPv4 addr
+                    }
                 }
             }
+            if (lastMatchIP != null && lastMatchIP.trim().length() > 0) {
+                return InetAddress.getLocalHost().getHostAddress();
+            } else {
+                return lastMatchIP;
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            return "127.0.0.1";
         }
-        return "127.0.0.1";
     }
 }
