@@ -31,10 +31,6 @@ HServer是一个基于Netty的一个高并发Webserver，8核Linux 虚拟机 10w
 
 spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我们就用一个简单框架快捷的HServer框架吧，它的qps比Servlet的容器更快
 
-如果你是一个phper或者喜欢php，可以关注下 
-
-[![黑小马工作室/HServer](https://gitee.com/heixiaomas/HServer/widgets/widget_card.svg?colors=ffffff,ffffff,,e3e9ed,666666,9b9b9b)](https://gitee.com/heixiaomas/HServer)
-    
 
 ### 最新央仓库统一版本
 | 资源名 | 地址 |
@@ -82,7 +78,7 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 * ApiDoc文档组件
 * 权限组件
 * Plugin组件自由扩展
-* 高性能 100并发下8核qps 10w/s
+* 高性能 100并发下8核qps 10+w/s
 * 高度自由度控制
 * 流量整形
 * Netty 原生响应支持自己扩展
@@ -91,6 +87,19 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 ### 原理与流程
 
 ![原理](https://gitee.com/HServer/HServer/raw/master/doc/%E6%9E%B6%E6%9E%84%E8%AF%B4%E6%98%8E1.jpg)
+
+
+### 压测数据 DeePin 8h 16g i7-9700k
+
+worker线程池
+![原理](https://gitee.com/HServer/HServer/raw/master/doc/w.png)
+
+默认配置50个业务线程池
+![原理](https://gitee.com/HServer/HServer/raw/master/doc/b.png)
+
+
+
+
 
 ### 感受一个HelloWorld
 
