@@ -11,11 +11,9 @@ import java.lang.management.RuntimeMXBean;
  */
 public class ProcessIdClassicConverter extends ClassicConverter {
 
-    private static final String PID=ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
-
     @Override
     public String convert(ILoggingEvent event) {
-        return PID;
+        return ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
     }
 
 }

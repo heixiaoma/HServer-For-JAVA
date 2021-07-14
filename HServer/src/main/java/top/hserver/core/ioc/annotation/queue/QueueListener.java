@@ -17,7 +17,7 @@ public @interface QueueListener {
      *
      * @return
      */
-    String queueName();
+    String queueName() default "";
 
     /**
      * 消费者类型
@@ -28,6 +28,7 @@ public @interface QueueListener {
 
     /**
      * 队列默认长度
+     *
      * @return
      */
     int bufferSize() default 1024;
