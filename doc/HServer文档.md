@@ -856,7 +856,7 @@ public @interface QueueListener {
      *
      * @return
      */
-    String queueName();
+    String queueName() default "";
 
     /**
      * 消费者类型
@@ -930,6 +930,33 @@ public class EventTest {
 }
 
 ```
+
+动态Queue使用方法
+```java
+
+@QueueListener
+public class QueueTest2 {
+
+    @Autowired
+    private TestService testService;
+
+    @QueueHandler
+    public void aVoid(String a) {
+        String name = testService.getName();
+        System.out.println(name + a);
+    }
+}
+
+
+//动态queue中 QueueListener 不需要指定queueName
+HServerQueue.addQueueListener("A", QueueTest2.class);
+for (int i = 0; i < 10; i++) {
+    HServerQueue.sendQueue("A", i + "");
+}
+HServerQueue.removeQueue("A");
+
+```
+
 
 
 
@@ -1149,17 +1176,6 @@ writeLimit=100
 ```
 #businessPool 业务线程大小，默是50，当添加这个配置，就视为生效,小于0 使用woker线程池（性能最高，一旦阻塞就完蛋，这将对编程有一定的要求，如果在控制器层全部设计成异步操作，使用这个配置是最香的）
 businessPool=50
-```
-
-
-### 超时配置
-```properties
-#一定要配置业务线程池大小，不然不生效,默认值 50
-businessPool=50
-
-
-#rpc超时配置 默认5秒
-rpcTimeOut=5000
 ```
 
 ### 消息体大小，可以用于文件上传限制大小
