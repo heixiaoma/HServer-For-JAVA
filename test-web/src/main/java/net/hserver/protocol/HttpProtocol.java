@@ -14,8 +14,9 @@ import top.hserver.core.server.dispatcher.DispatchHttp;
 @Order(3)
 @Bean
 public class HttpProtocol extends DispatchHttp {
+
     @Override
-    public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers, ServerInitializer.ProtocolDispatcher protocolDispatcher) {
-        return super.dispatcher(ctx, pipeline, headers, protocolDispatcher);
+    public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers) {
+        return super.dispatcher(ctx, pipeline, headers);
     }
 }

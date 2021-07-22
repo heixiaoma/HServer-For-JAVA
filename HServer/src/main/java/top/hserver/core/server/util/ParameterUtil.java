@@ -1,5 +1,8 @@
 package top.hserver.core.server.util;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import javassist.*;
@@ -13,9 +16,8 @@ import top.hserver.core.server.context.HServerContext;
 import top.hserver.core.server.context.MimeType;
 import top.hserver.core.server.exception.ValidateException;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
@@ -68,7 +70,11 @@ public class ParameterUtil {
                             //payload
                             String rawData = hServerContext.getRequest().getRawData();
                             if (rawData != null) {
-                                objects[i] = ConstConfig.OBJECT_MAPPER.readValue(rawData, parameterType.getType());
+                                if (parameterType.getType().isAssignableFrom(List.class)){
+                                    objects[i] = ConstConfig.OBJECT_MAPPER.readValue(rawData, getCollectionType(parameterType));
+                                }else {
+                                    objects[i] = ConstConfig.OBJECT_MAPPER.readValue(rawData, parameterType.getType());
+                                }
                             }
                         } else if (requestParams.size() > 0) {
                             //正常的表单
@@ -87,6 +93,15 @@ public class ParameterUtil {
         return objects;
     }
 
+    public static JavaType getCollectionType(Parameter parameter) {
+        ParameterizedType parameterizedType =(ParameterizedType) parameter.getParameterizedType();
+        Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+        Class[] classes = new Class[actualTypeArguments.length];
+        for (int i = 0; i < actualTypeArguments.length; i++) {
+            classes[i]=(Class) actualTypeArguments[i];
+        }
+        return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(List.class, classes);
+    }
 
     private static Map<String, String> invokeData(Map<String, List<String>> requestParams) {
         Map<String, String> data = new ConcurrentHashMap<>();
