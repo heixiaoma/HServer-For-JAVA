@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.ssl.SslContext;
 import io.netty.util.concurrent.EventExecutorGroup;
+import top.hserver.core.server.json.JsonAdapter;
 
 import java.io.File;
 
@@ -85,6 +86,11 @@ public class ConstConfig {
      * 另外JSON一个名字，兼容以前的
      */
     public static final ObjectMapper JSON = OBJECT_MAPPER;
+
+    /**
+     * 通用JSON适配器
+     */
+    public static JsonAdapter JSONADAPTER;
 
     /**
      * 配置文件
