@@ -12,6 +12,8 @@ import top.hserver.core.ioc.ref.MemoryInitClass;
 import top.hserver.core.log.HServerLogConfig;
 import top.hserver.core.properties.PropertiesInit;
 import top.hserver.core.server.HServer;
+import top.hserver.core.server.context.ConstConfig;
+import top.hserver.core.server.json.JsonAdapter;
 import top.hserver.core.server.router.RouterManager;
 import top.hserver.core.server.util.EnvironmentUtil;
 import top.hserver.core.server.util.PackageUtil;
@@ -248,6 +250,11 @@ public class HServerApplication {
         RouterManager.clearRouterManager();
         //重新加载一盘
         iocInit(HServerApplication.clazz, HServerApplication.mainClass, HServerApplication.packages);
+    }
+
+
+    public static void setJson(JsonAdapter jsonAdapter){
+        ConstConfig.JSONADAPTER=jsonAdapter;
     }
 
 }

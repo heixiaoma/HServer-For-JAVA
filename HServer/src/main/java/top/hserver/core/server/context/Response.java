@@ -92,7 +92,7 @@ public class Response implements HttpResponse {
   @Override
   public void sendJson(Object object) {
     try {
-      this.result = ConstConfig.OBJECT_MAPPER.writeValueAsString(object);
+      this.result = ConstConfig.JSONADAPTER.convertString(object);
       headers.put("content-type", "application/json;charset=UTF-8");
     } catch (Exception e) {
       e.printStackTrace();

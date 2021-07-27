@@ -37,7 +37,6 @@ public class ParameterUtil {
     private final static ConcurrentHashMap<Class, ConcurrentHashMap<Method, String[]>> PARAM_NAME_MAP = new ConcurrentHashMap<>();
 
     public static Object[] getMethodArgs(Class cs, Method method, HServerContext hServerContext) throws Exception {
-
         Parameter[] parameterTypes = method.getParameters();
         if (parameterTypes.length == 0) {
             return null;
@@ -47,7 +46,6 @@ public class ParameterUtil {
         if (parameterTypes.length != strings.length) {
             throw new Exception(method.getName() + "-方法参数获取异常");
         }
-
         for (int i = 0; i < parameterTypes.length; i++) {
             //构建方法参数
             if (parameterTypes[i].getParameterizedType() == HttpRequest.class) {
@@ -70,15 +68,11 @@ public class ParameterUtil {
                             //payload
                             String rawData = hServerContext.getRequest().getRawData();
                             if (rawData != null) {
-                                if (parameterType.getType().isAssignableFrom(List.class)){
-                                    objects[i] = ConstConfig.OBJECT_MAPPER.readValue(rawData, getCollectionType(parameterType));
-                                }else {
-                                    objects[i] = ConstConfig.OBJECT_MAPPER.readValue(rawData, parameterType.getType());
-                                }
+                                objects[i] = ConstConfig.JSONADAPTER.convertObject(rawData, parameterType);
                             }
                         } else if (requestParams.size() > 0) {
                             //正常的表单
-                            objects[i] = ConstConfig.OBJECT_MAPPER.convertValue(invokeData(requestParams), parameterType.getType());
+                            objects[i] = ConstConfig.JSONADAPTER.convertMapToObject(invokeData(requestParams), parameterType.getType());
                         }
                         //参数校验工具
                         ValidateUtil.validate(objects[i]);
@@ -93,15 +87,7 @@ public class ParameterUtil {
         return objects;
     }
 
-    public static JavaType getCollectionType(Parameter parameter) {
-        ParameterizedType parameterizedType =(ParameterizedType) parameter.getParameterizedType();
-        Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-        Class[] classes = new Class[actualTypeArguments.length];
-        for (int i = 0; i < actualTypeArguments.length; i++) {
-            classes[i]=(Class) actualTypeArguments[i];
-        }
-        return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(List.class, classes);
-    }
+
 
     private static Map<String, String> invokeData(Map<String, List<String>> requestParams) {
         Map<String, String> data = new ConcurrentHashMap<>();

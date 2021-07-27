@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.ssl.SslContext;
 import io.netty.util.concurrent.EventExecutorGroup;
+import top.hserver.core.server.json.JackSonJsonAdapter;
 import top.hserver.core.server.json.JsonAdapter;
 
 import java.io.File;
@@ -90,7 +91,7 @@ public class ConstConfig {
     /**
      * 通用JSON适配器
      */
-    public static JsonAdapter JSONADAPTER;
+    public static JsonAdapter JSONADAPTER = new JackSonJsonAdapter();
 
     /**
      * 配置文件
@@ -117,6 +118,6 @@ public class ConstConfig {
     /**
      * 默认消息大小
      */
-    public static Integer HTTP_CONTENT_SIZE=Integer.MAX_VALUE;
+    public static Integer HTTP_CONTENT_SIZE = Integer.MAX_VALUE;
 
 }

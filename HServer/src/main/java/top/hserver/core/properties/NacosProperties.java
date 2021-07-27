@@ -121,7 +121,7 @@ public class NacosProperties {
 
     private static Object toJSon(String content, Class classy) {
         try {
-            return ConstConfig.JSON.readValue(content, classy);
+            return ConstConfig.JSONADAPTER.convertObject(content, classy);
         } catch (Exception ignored) {
         }
         return null;
