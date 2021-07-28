@@ -6,8 +6,10 @@ import top.hserver.core.server.context.ConstConfig;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author hxm
@@ -17,7 +19,7 @@ public class JackSonJsonAdapter implements JsonAdapter {
     @Override
     public Object convertObject(String data, Parameter type) {
         try {
-            if (type.getType().isAssignableFrom(List.class)) {
+            if (Collection.class.isAssignableFrom(type.getType())) {
                 return ConstConfig.OBJECT_MAPPER.readValue(data, getCollectionType(type));
             } else {
                 return ConstConfig.OBJECT_MAPPER.readValue(data, type.getType());
@@ -57,6 +59,6 @@ public class JackSonJsonAdapter implements JsonAdapter {
         for (int i = 0; i < actualTypeArguments.length; i++) {
             classes[i] = (Class) actualTypeArguments[i];
         }
-        return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(List.class, classes);
+        return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(parameter.getType(), classes);
     }
 }
