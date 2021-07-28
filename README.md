@@ -37,7 +37,7 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 | :----:| :----: |
 | HServer版本 | 2.9.74  |
 | HServer-Beetlsql版本 | 3.3 |
-| HServer-Mybatis版本(1.0是原生mybatis,2.0开始mybatisPlus支持) | 2.0 |
+| HServer-Mybatis版本(1.0是原生mybatis,2.0开始mybatisPlus支持) | 2.1 |
 | HServer-Maven 打包版本 | 3.0 |
 
 
