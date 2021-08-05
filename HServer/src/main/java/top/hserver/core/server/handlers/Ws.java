@@ -10,6 +10,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.HServerApplication;
+import top.hserver.core.server.context.WsType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,9 +29,9 @@ public class Ws {
     private String uid;
     private HttpRequest request;
     private Map<String, List<String>> reqData = new HashMap<>();
-    private String type;
+    private WsType type;
 
-    public Ws(ChannelHandlerContext ctx, String uid, HttpRequest request,String type) {
+    public Ws(ChannelHandlerContext ctx, String uid, HttpRequest request,WsType type) {
         this.ctx = ctx;
         this.uid = uid;
         this.request = request;
@@ -38,7 +39,7 @@ public class Ws {
         initReqData();
     }
 
-    public Ws(ChannelHandlerContext ctx, String message, String uid, HttpRequest request,String type) {
+    public Ws(ChannelHandlerContext ctx, String message, String uid, HttpRequest request, WsType type) {
         this.ctx = ctx;
         this.message = message;
         this.uid = uid;
@@ -47,7 +48,7 @@ public class Ws {
         initReqData();
     }
 
-    public Ws(ChannelHandlerContext ctx, byte[] binary, String uid, HttpRequest request,String type) {
+    public Ws(ChannelHandlerContext ctx, byte[] binary, String uid, HttpRequest request,WsType type) {
         this.ctx = ctx;
         this.binary = binary;
         this.uid = uid;
@@ -56,11 +57,11 @@ public class Ws {
         initReqData();
     }
 
-    public String getType() {
+    public WsType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(WsType type) {
         this.type = type;
     }
 

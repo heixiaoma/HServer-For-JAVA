@@ -7,6 +7,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.ReferenceCountUtil;
+import top.hserver.core.server.context.WsType;
 import top.hserver.core.server.util.ByteBufUtil;
 
 import java.util.Map;
@@ -47,7 +48,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         if (request != null && uid != null) {
-            this.webSocketHandler.disConnect(new Ws(ctx, uid, request,"CLOSE"));
+            this.webSocketHandler.disConnect(new Ws(ctx, uid, request, WsType.CLOSE));
         }
     }
 
@@ -63,7 +64,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
                 this.request = req;
                 this.uid = ctx.channel().id().asLongText();
                 this.webSocketHandler = (WebSocketHandler) IocUtil.getBean(WEB_SOCKET_ROUTER.get(uri));
-                this.webSocketHandler.onConnect(new Ws(ctx, uid, request,"INIT"));
+                this.webSocketHandler.onConnect(new Ws(ctx, uid, request,WsType.INIT));
             }
         } else {
             ReferenceCountUtil.retain(req);
@@ -84,13 +85,12 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         if (frame instanceof CloseWebSocketFrame) {
             this.handshake.close(ctx.channel(), (CloseWebSocketFrame) frame.retain());
-            this.webSocketHandler.disConnect(new Ws(ctx, uid, request,"CLOSE"));
         } else if (frame instanceof PingWebSocketFrame) {
             ctx.channel().write(new PongWebSocketFrame(frame.content().retain()));
         } else if (frame instanceof TextWebSocketFrame) {
-            this.webSocketHandler.onMessage(new Ws(ctx, ((TextWebSocketFrame) frame).text(), uid, request,"TEXT"));
+            this.webSocketHandler.onMessage(new Ws(ctx, ((TextWebSocketFrame) frame).text(), uid, request,WsType.TEXT));
         } else if (frame instanceof BinaryWebSocketFrame) {
-            this.webSocketHandler.onMessage(new Ws(ctx, ByteBufUtil.byteBufToBytes(frame.content()), uid, request,"BINARY"));
+            this.webSocketHandler.onMessage(new Ws(ctx, ByteBufUtil.byteBufToBytes(frame.content()), uid, request,WsType.BINARY));
         }
     }
 
