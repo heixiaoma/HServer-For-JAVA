@@ -60,7 +60,7 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
 
     private boolean isHttps(int magic1, int magic2, int magic3) {
         /**
-         * https 交互式按 client hello ->sever hello 开头式估计协议表达
+         * https 交互按 client hello ->sever hello 开头协议表达
          * （22,3,1）转为16进制为 1603010
          */
         return magic1 == 22 && magic2 == 3 && magic3 == 1;
