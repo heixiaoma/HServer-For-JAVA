@@ -86,7 +86,7 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 
 ### 原理与流程
 
-![原理](https://gitee.com/HServer/HServer/raw/master/doc/%E6%9E%B6%E6%9E%84%E8%AF%B4%E6%98%8E1.jpg)
+![原理](https://gitee.com/HServer/HServer/raw/master/doc/架构图2.jpg)
 
 
 ### 压测数据 DeePin 8h 16g i7-9700k
