@@ -17,10 +17,10 @@ QQ交流群：1065301527
 **分布式** 支持RPC模式，可以实现分布式调用.
 
 ### 使用该框架的公司
-深圳市快读科技，深圳市聚美良品科技，广州家庭医生在线，上海互软集团，深圳市巨和网络
+深圳市快读科技，深圳市聚美良品科技，广州家庭医生在线，上海互软集团，深圳市巨和网络...
 
 ## 原理与流程
-![原理](https://gitee.com/HServer/HServer/raw/master/doc/%E6%9E%B6%E6%9E%84%E8%AF%B4%E6%98%8E1.jpg)
+![原理](https://gitee.com/HServer/HServer/raw/master/doc/架构图2.jpg)
 
 ## 注解认识
 
