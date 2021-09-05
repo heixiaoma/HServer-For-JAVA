@@ -1,5 +1,9 @@
 package top.hserver.core.server.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import top.hserver.core.server.HServer;
+import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.context.HeadMap;
 
 import java.io.*;
@@ -11,6 +15,7 @@ import static top.hserver.core.server.context.ConstConfig.profiles;
  * @author hxm
  */
 public class PropUtil {
+    private static final Logger log = LoggerFactory.getLogger(PropUtil.class);
 
     private static PropUtil propUtil;
 
@@ -37,7 +42,7 @@ public class PropUtil {
         Properties p = new Properties();
         try {
             String name = "/app.properties";
-            InputStream is = PropUtil.class.getResourceAsStream(name);
+            InputStream is = getFileStream(name);
             if (is == null) {
                 return;
             }
@@ -53,7 +58,7 @@ public class PropUtil {
         }
         if (profiles != null) {
             try {
-                InputStream is2 = PropUtil.class.getResourceAsStream(getProFiles(profiles));
+                InputStream is2 = getFileStream(getProFiles(profiles));
                 p.clear();
                 if (is2 == null) {
                     return;
@@ -119,6 +124,17 @@ public class PropUtil {
             return true;
         } else {
             return true;
+        }
+    }
+
+
+    private static InputStream getFileStream(String path) {
+        //先检查外部文件，在检查内部文件，外部优先级最高
+        String rootPath=System.getProperty("user.dir");
+        try {
+            return new FileInputStream(rootPath + path);
+        }catch (FileNotFoundException e){
+            return PropUtil.class.getResourceAsStream(path);
         }
     }
 

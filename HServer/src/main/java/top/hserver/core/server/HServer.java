@@ -4,6 +4,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.cloud.CloudManager;
@@ -45,7 +46,8 @@ public class HServer {
     private EventLoopGroup workerGroup = null;
 
     public HServer(int port, String[] args) {
-        this.port = port;
+        Integer port1 = PropUtil.getInstance().getInt("port");
+        this.port = port1==null?port:port1;
         this.args = args;
     }
 
@@ -152,7 +154,7 @@ public class HServer {
             File cfile = new File(certFilePath);
             File pfile = new File(privateKeyPath);
             if (cfile.isFile() && pfile.isFile()) {
-                ConstConfig.sslContext = SslContextBuilder.forServer(cfile, pfile, privateKeyPwd).build();
+                ConstConfig.sslContext = SslContextBuilder.forServer(cfile, pfile, privateKeyPwd).sslProvider(SslProvider.JDK).build();
                 return;
             }
 
@@ -161,7 +163,7 @@ public class HServer {
             InputStream pinput = HServer.class.getResourceAsStream("/ssl/" + privateKeyPath);
 
             if (cinput != null && pinput != null) {
-                ConstConfig.sslContext = SslContextBuilder.forServer(cinput, pinput, privateKeyPwd).build();
+                ConstConfig.sslContext = SslContextBuilder.forServer(cinput, pinput, privateKeyPwd).sslProvider(SslProvider.JDK).build();
                 cinput.close();
                 pinput.close();
             }
