@@ -1,8 +1,6 @@
 package top.hserver.core.server.context;
 
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
  * @author hxm
@@ -17,11 +15,7 @@ public class HServerContext {
 
     private boolean isStaticFile;
 
-    private FullHttpRequest fullHttpRequest;
-
     private StaticFile staticFile;
-
-    private ChannelHandlerContext ctx;
 
     public Request getRequest() {
         return request;
@@ -47,29 +41,12 @@ public class HServerContext {
         isStaticFile = staticFile;
     }
 
-    public FullHttpRequest getFullHttpRequest() {
-        return fullHttpRequest;
-    }
-
-    public void setFullHttpRequest(FullHttpRequest fullHttpRequest) {
-        this.fullHttpRequest = fullHttpRequest;
-    }
-
     public StaticFile getStaticFile() {
         return staticFile;
     }
 
     public void setStaticFile(StaticFile staticFile) {
         this.staticFile = staticFile;
-    }
-
-
-    public ChannelHandlerContext getCtx() {
-        return ctx;
-    }
-
-    public void setCtx(ChannelHandlerContext ctx) {
-        this.ctx = ctx;
     }
 
     public Webkit getWebkit() {

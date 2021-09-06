@@ -3,8 +3,6 @@ package top.hserver.core.server.handlers;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.multipart.*;
-import io.netty.handler.timeout.IdleStateEvent;
-import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.HServerApplication;
@@ -18,8 +16,6 @@ import top.hserver.core.server.util.RequestIdGen;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 
 /**
@@ -34,7 +30,6 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpRequest req) throws Exception {
         HServerContext hServerContext = new HServerContext();
-        hServerContext.setFullHttpRequest(req);
         Request request = new Request();
         hServerContext.setRequest(request);
         request.setRequestId(RequestIdGen.getId());
@@ -42,7 +37,6 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         request.setPort(HServerIpUtil.getClientPort(channelHandlerContext));
         request.setCtx(channelHandlerContext);
         request.setNettyUri(req.uri());
-        hServerContext.setCtx(channelHandlerContext);
         request.setNettyRequest(new DefaultFullHttpRequest(req.protocolVersion(), req.method(), req.uri(), Unpooled.copiedBuffer(req.content()), req.headers(), req.trailingHeaders()));
         handlerUrl(request, req);
         handlerBody(request, req);
