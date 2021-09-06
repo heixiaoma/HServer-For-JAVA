@@ -1,5 +1,6 @@
 package top.hserver.core.server.context;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import top.hserver.core.interfaces.HttpRequest;
@@ -8,6 +9,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.multipart.*;
 import io.netty.util.CharsetUtil;
+import top.hserver.core.server.handlers.HServerContentHandler;
 import top.hserver.core.server.util.IpUtil;
 
 import java.io.File;
@@ -32,6 +34,7 @@ public class Request implements HttpRequest {
     private HeadMap headers;
     private FullHttpRequest nettyRequest;
     private long createTime = System.currentTimeMillis();
+    private HServerContentHandler handler;
 
     /**
      * 文件处理
@@ -277,5 +280,19 @@ public class Request implements HttpRequest {
 
     public void setRequestId(String requestId) {
         this.requestId = requestId;
+    }
+
+    public void setHandler(HServerContentHandler handler) {
+        this.handler = handler;
+    }
+
+    @Override
+    public Channel getOutboundChannel() {
+        return handler.outboundChannel;
+    }
+
+    @Override
+    public void setOutboundChannel(Channel channel) {
+        handler.outboundChannel = channel;
     }
 }

@@ -1,6 +1,7 @@
 package top.hserver.core.interfaces;
 
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
@@ -16,6 +17,7 @@ public interface HttpRequest {
 
     /**
      * 获取请求ID
+     *
      * @return
      */
     String getRequestId();
@@ -125,6 +127,7 @@ public interface HttpRequest {
 
     /**
      * 获取真实的IP地址，有可能被代理之类的都获取
+     *
      * @return
      */
     String getIpAddress();
@@ -153,8 +156,23 @@ public interface HttpRequest {
 
     /**
      * 获取创建请求的时间
+     *
      * @return
      */
     long getCreateTime();
+
+
+    /**
+     * 代理中会使用
+     * 出站outboundChannel
+     * @return
+     */
+    Channel getOutboundChannel();
+
+    /**
+     * 设置出站
+     * @param channel
+     */
+    void setOutboundChannel(Channel channel);
 
 }

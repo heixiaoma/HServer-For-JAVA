@@ -2,6 +2,7 @@ package top.hserver.core.server.handlers;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.handler.codec.http.multipart.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +28,15 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
 
     private final static DefaultHttpDataFactory FACTORY = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
 
+    public Channel outboundChannel;
+
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpRequest req) throws Exception {
+
         HServerContext hServerContext = new HServerContext();
         Request request = new Request();
         hServerContext.setRequest(request);
+        request.setHandler(this);
         request.setRequestId(RequestIdGen.getId());
         request.setIp(HServerIpUtil.getClientIp(channelHandlerContext));
         request.setPort(HServerIpUtil.getClientPort(channelHandlerContext));
