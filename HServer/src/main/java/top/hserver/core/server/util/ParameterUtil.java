@@ -88,7 +88,6 @@ public class ParameterUtil {
     }
 
 
-
     private static Map<String, String> invokeData(Map<String, List<String>> requestParams) {
         Map<String, String> data = new ConcurrentHashMap<>();
         requestParams.forEach((k, v) -> {
@@ -245,7 +244,7 @@ public class ParameterUtil {
                     object = res;
                     break;
                 default:
-                    return null;
+                    return ConstConfig.JSONADAPTER.convertObject(res, type);
             }
         } catch (Exception ignored) {
         }
