@@ -16,9 +16,10 @@ public class JackSonJsonAdapter implements JsonAdapter {
 
 
     /**
-     * 常见对象转换，不支持 List<Map> 复杂类型和套娃
-     *
+     * 常见对象转换
+     * <p>
      * </>
+     *
      * @param data
      * @param type
      * @return
@@ -27,7 +28,7 @@ public class JackSonJsonAdapter implements JsonAdapter {
     public Object convertObject(String data, Parameter type) {
         try {
             if (Collection.class.isAssignableFrom(type.getType()) || Map.class.isAssignableFrom(type.getType())) {
-                return ConstConfig.OBJECT_MAPPER.readValue(data, getCollectionType(type));
+                return ConstConfig.OBJECT_MAPPER.readValue(data, getParameterizedTypeImplType(null, (ParameterizedType) type.getParameterizedType()));
             } else {
                 return ConstConfig.OBJECT_MAPPER.readValue(data, type.getType());
             }
@@ -59,19 +60,34 @@ public class JackSonJsonAdapter implements JsonAdapter {
         }
     }
 
-    private JavaType getCollectionType(Parameter parameter) {
-        ParameterizedType parameterizedType = (ParameterizedType) parameter.getParameterizedType();
-        Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-        Class[] classes = new Class[actualTypeArguments.length];
-        for (int i = 0; i < actualTypeArguments.length; i++) {
-            if (actualTypeArguments[i] instanceof ParameterizedTypeImpl) {
-                classes[i] = ((ParameterizedTypeImpl) actualTypeArguments[i]).getRawType();
-            } else {
-                //if (actualTypeArguments[i] instanceof Class)
-                classes[i] = ((Class) actualTypeArguments[i]);
-            }
+    private Class<?> getTypeClass(Type rawType) {
+        if (rawType instanceof ParameterizedTypeImpl) {
+            return ((ParameterizedTypeImpl) rawType).getRawType();
+        } else {
+            return (Class<?>) rawType;
         }
-        return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(parameter.getType(), classes);
     }
 
+    private JavaType getParameterizedTypeImplType(JavaType javaType, ParameterizedType parameterizedType) {
+        Type rawType = parameterizedType.getRawType();
+        Class<?> typeClass = getTypeClass(rawType);
+        if (Collection.class.isAssignableFrom(typeClass)) {
+            Type listActualTypeArgument = parameterizedType.getActualTypeArguments()[0];
+            if (listActualTypeArgument instanceof ParameterizedType) {
+                return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(List.class, getParameterizedTypeImplType(javaType, (ParameterizedType) listActualTypeArgument));
+            } else {
+                return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(List.class, getTypeClass(parameterizedType.getActualTypeArguments()[0]));
+            }
+        } else if (Map.class.isAssignableFrom(typeClass)) {
+            Type mapActualTypeArgument = parameterizedType.getActualTypeArguments()[1];
+            if (mapActualTypeArgument instanceof ParameterizedType) {
+                JavaType keyType = ConstConfig.OBJECT_MAPPER.getTypeFactory().constructType(getTypeClass(parameterizedType.getActualTypeArguments()[0]));
+                return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(Map.class, keyType, getParameterizedTypeImplType(javaType, (ParameterizedType) mapActualTypeArgument));
+
+            } else {
+                return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(Map.class, getTypeClass(parameterizedType.getActualTypeArguments()[0]), getTypeClass(parameterizedType.getActualTypeArguments()[1]));
+            }
+        }
+        return null;
+    }
 }
