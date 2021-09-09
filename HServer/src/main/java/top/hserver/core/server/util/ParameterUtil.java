@@ -244,7 +244,7 @@ public class ParameterUtil {
                     object = res;
                     break;
                 default:
-                    return ConstConfig.JSONADAPTER.convertObject(res, type);
+                   return null;
             }
         } catch (Exception ignored) {
         }

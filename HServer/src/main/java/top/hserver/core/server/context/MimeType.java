@@ -1,6 +1,7 @@
 package top.hserver.core.server.context;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -167,6 +168,21 @@ public interface MimeType {
         put("htc", "text/x-component");
         put("vcf", "text/x-vcard");
     }};
+
+    static String getFileType(String fileName) {
+        int i = fileName.lastIndexOf(".");
+        if (i == -1) {
+            return APPLICATION;
+        } else {
+            String ext = fileName.substring(i + 1);
+            String s = ext.toLowerCase();
+            if (mimeTypes.containsKey(s)) {
+                return mimeTypes.get(s);
+            } else {
+                return APPLICATION;
+            }
+        }
+    }
 
     static String get(String ext) {
         if (mimeTypes.containsKey(ext)) {

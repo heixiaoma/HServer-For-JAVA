@@ -8,6 +8,7 @@ import io.netty.handler.codec.http.*;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.context.HServerContext;
+import top.hserver.core.server.context.MimeType;
 import top.hserver.core.server.context.Response;
 import top.hserver.core.server.exception.BusinessBean;
 import top.hserver.core.server.exception.BusinessException;
@@ -79,7 +80,8 @@ public class BuildResponse {
                     HttpResponseStatus.OK,
                     Unpooled.wrappedBuffer(Objects.requireNonNull(ByteBufUtil.fileToByteBuf(response1.getFile()))));
         }
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/octet-stream;charset=UTF-8");
+
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, MimeType.getFileType(response1.getFileName()) + ";charset=UTF-8");
         response.headers().add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", response1.getFileName()));
         return response;
     }
@@ -180,7 +182,7 @@ public class BuildResponse {
     }
 
     public static void writeException(ChannelHandlerContext ctx, Throwable cause) {
-        writeException(ctx,cause,HttpResponseStatus.SERVICE_UNAVAILABLE);
+        writeException(ctx, cause, HttpResponseStatus.SERVICE_UNAVAILABLE);
     }
 
     public static void writeException(ChannelHandlerContext ctx, Throwable cause, HttpResponseStatus status) {
