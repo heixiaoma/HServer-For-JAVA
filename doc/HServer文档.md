@@ -1050,6 +1050,9 @@ public class TrackImpl implements TrackAdapter {
 
 
 ## **自定义协议**
+
+案例：https://gitee.com/HServer/hsvevr-for-custom-protocol
+
 HServer实现的是同端口多协议处理方式，如果有需要还可以构建其他协议。
 构建协议特点，需要包含包头用于区分协议，选择对应的解码器处理。
 HServer默认集成 websocket http rpc mqtt websocketmqtt协议，
