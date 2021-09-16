@@ -1096,6 +1096,9 @@ public class DispatchWebSocketMqtt implements ProtocolDispatcherAdapter {
 非常重要一点，一定不要在这里面有阻塞操作，不然会卡的批爆。切记切记。
 
 
+## **代理功能**
+如果想实现网关代理，http/https协议代理得直接上地址
+https://gitee.com/HServer/http-proxy
 
 
 ## **单元测试**
