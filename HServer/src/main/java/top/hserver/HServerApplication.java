@@ -54,7 +54,12 @@ public class HServerApplication {
      */
     public static void run(String[] packageName, Integer port, String... args) {
         iocInit(packageName);
-        startServer(port, args);
+        startServer(new Integer[]{port}, args);
+    }
+
+    public static void run(String[] packageName, Integer[] ports, String... args) {
+        iocInit(packageName);
+        startServer(ports, args);
     }
 
     /**
@@ -66,7 +71,13 @@ public class HServerApplication {
      */
     public static void run(Class mainClass, Integer port, String... args) {
         iocInit(mainClass);
-        startServer(port, args);
+        startServer(new Integer[]{port}, args);
+    }
+
+
+    public static void run(Class mainClass, Integer[] ports, String... args) {
+        iocInit(mainClass);
+        startServer(ports, args);
     }
 
     /**
@@ -77,7 +88,7 @@ public class HServerApplication {
      */
     public static void run(Class mainClass, Integer port) {
         iocInit(mainClass);
-        startServer(port, null);
+        startServer(new Integer[]{port}, null);
     }
 
     /**
@@ -88,7 +99,7 @@ public class HServerApplication {
      */
     public static void run(Integer port, String... args) {
         iocInit();
-        startServer(port, args);
+        startServer(new Integer[]{port}, args);
     }
 
 
@@ -99,7 +110,7 @@ public class HServerApplication {
      */
     public static void run(String[] packageName, Integer port) {
         iocInit(packageName);
-        startServer(port, null);
+        startServer(new Integer[]{port}, null);
     }
 
 
@@ -110,7 +121,7 @@ public class HServerApplication {
      */
     public static void run(Integer port) {
         iocInit();
-        startServer(port, null);
+        startServer(new Integer[]{port}, null);
     }
 
     /**
@@ -152,11 +163,11 @@ public class HServerApplication {
      */
     public static void runTest(String testPackageName, Integer port, Class clazz) {
         iocInit(clazz, null, testPackageName);
-        startServer(port, null);
+        startServer(new Integer[]{port}, null);
     }
 
 
-    private static void startServer(int port, String[] args) {
+    private static void startServer(Integer[] port, String[] args) {
         try {
             new HServer(port, args).run();
         } catch (Exception e) {

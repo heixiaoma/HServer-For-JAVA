@@ -37,7 +37,7 @@ public class HServer {
 
     private static final Logger log = LoggerFactory.getLogger(HServer.class);
 
-    private final int port;
+    private final Integer[] ports;
 
     private final String[] args;
 
@@ -45,9 +45,17 @@ public class HServer {
 
     private EventLoopGroup workerGroup = null;
 
-    public HServer(int port, String[] args) {
-        Integer port1 = PropUtil.getInstance().getInt("port");
-        this.port = port1==null?port:port1;
+    public HServer(Integer[] port, String[] args) {
+        String portsStr = PropUtil.getInstance().get("ports");
+        if (portsStr.trim().length() > 0) {
+            String[] portStrs = portsStr.split(",");
+            ports = new Integer[portStrs.length];
+            for (int i = 0; i < portStrs.length; i++) {
+                ports[i] = Integer.parseInt(portStrs[i]);
+            }
+        } else {
+            this.ports = port;
+        }
         this.args = args;
     }
 
@@ -73,10 +81,15 @@ public class HServer {
         //看看有没有SSL
         initSSl();
         bootstrap.childHandler(new ServerInitializer());
-        bootstrap.bind(port).sync().channel();
+        String portStr = "";
+        for (Integer port : ports) {
+            portStr = portStr + (port + " ");
+            bootstrap.bind(port).sync().channel();
+        }
         log.info("HServer 启动完成");
         System.out.println();
-        System.out.println(getHello(typeName, port));
+
+        System.out.println(getHello(typeName, portStr));
         System.out.println();
         initOk();
         shutdownHook();
@@ -87,7 +100,7 @@ public class HServer {
         Thread shutdown = new NamedThreadFactory("hserver_shutdown").newThread(() -> {
             log.warn("服务即将关闭");
             List<ServerCloseAdapter> listBean = IocUtil.getListBean(ServerCloseAdapter.class);
-            if (listBean!=null) {
+            if (listBean != null) {
                 for (ServerCloseAdapter serverCloseAdapter : listBean) {
                     serverCloseAdapter.close();
                 }
@@ -104,7 +117,7 @@ public class HServer {
 
     private void initOk() {
         //云启动
-        CloudManager.run(port);
+        CloudManager.run(ports[0]);
         //初始化完成可以放开任务了
         TaskManager.IS_OK = true;
         QueueDispatcher.startTaskThread();
@@ -116,7 +129,7 @@ public class HServer {
         }
     }
 
-    private String getHello(String typeName, int port) {
+    private String getHello(String typeName, String port) {
         InputStream banner = HServer.class.getResourceAsStream("/banner.txt");
         try {
             if (banner != null) {
