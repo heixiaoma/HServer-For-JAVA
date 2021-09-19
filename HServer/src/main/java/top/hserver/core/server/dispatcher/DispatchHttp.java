@@ -28,11 +28,10 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
 
     @Override
     public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers) {
-
         //如果是https
         if (isHttps(headers[0], headers[1], headers[2])) {
             if (ConstConfig.sslContext != null) {
-                pipeline.addLast(new OptionalSslHandler(ConstConfig.sslContext));
+                pipeline.addLast(ConstConfig.sslContext.newHandler(ctx.alloc()));
                 if (ConstConfig.openHttp2) {
                     //分发协商处理是否支持http2 不支持就 用http1.1
                     pipeline.addLast(new Http2OrHttpHandler());
@@ -42,7 +41,6 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
             }
             return true;
         }
-
         //如果是http
         if (isHttp(headers[0], headers[1])) {
             httpHandler(ctx);
@@ -75,9 +73,9 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
         ctx.pipeline().addLast(new HttpToHttp2ConnectionHandlerBuilder()
                 .frameListener(listener)
                 .connection(connection).build());
-        //有websocket才走他
-        if (WebSocketServerHandler.WEB_SOCKET_ROUTER.size() > 0) {
-            ctx.pipeline().addLast(ConstConfig.BUSINESS_EVENT, new WebSocketServerHandler());
+
+        if (ConstConfig.WRITE_LIMIT != null && ConstConfig.READ_LIMIT != null) {
+            ctx.pipeline().addLast(ConstConfig.BUSINESS_EVENT, new GlobalTrafficShapingHandler(ctx.executor().parent(), ConstConfig.WRITE_LIMIT, ConstConfig.READ_LIMIT));
         }
         ctx.pipeline().addLast(ConstConfig.BUSINESS_EVENT, new HServerContentHandler(true));
         ctx.pipeline().addLast(ConstConfig.BUSINESS_EVENT, new RouterHandler());
