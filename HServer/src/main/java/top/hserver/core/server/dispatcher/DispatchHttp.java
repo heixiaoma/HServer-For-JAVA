@@ -31,7 +31,7 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
         //如果是https
         if (isHttps(headers[0], headers[1], headers[2])) {
             if (ConstConfig.sslContext != null) {
-                pipeline.addLast(ConstConfig.sslContext.newHandler(ctx.alloc()));
+                pipeline.addLast(new OptionalSslHandler(ConstConfig.sslContext));
                 if (ConstConfig.openHttp2) {
                     //分发协商处理是否支持http2 不支持就 用http1.1
                     pipeline.addLast(new Http2OrHttpHandler());

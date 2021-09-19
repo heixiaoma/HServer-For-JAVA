@@ -38,7 +38,7 @@ public class ConstConfig {
     /**
      * 打开http2 配置
      */
-    public static Boolean openHttp2 = true;
+    public static Boolean openHttp2 = false;
 
     /**
      * 版本号
