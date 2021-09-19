@@ -3,8 +3,8 @@ package top.hserver.core.server;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
-import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.SslProvider;
+import io.netty.handler.ssl.*;
+import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.cloud.CloudManager;
@@ -27,6 +27,7 @@ import java.io.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static io.netty.handler.codec.http2.Http2SecurityUtil.CIPHERS;
 import static top.hserver.core.server.context.ConstConfig.*;
 
 /**
@@ -154,7 +155,6 @@ public class HServer {
     }
 
     private void initSSl() {
-
         PropUtil instance = PropUtil.getInstance();
         String certFilePath = instance.get("certPath");
         String privateKeyPath = instance.get("privateKeyPath");
@@ -163,11 +163,21 @@ public class HServer {
             return;
         }
         try {
+            ApplicationProtocolConfig apn = new ApplicationProtocolConfig(
+                    ApplicationProtocolConfig.Protocol.ALPN,
+                    // NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
+                    ApplicationProtocolConfig.SelectorFailureBehavior.NO_ADVERTISE,
+                    // ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
+                    ApplicationProtocolConfig.SelectedListenerFailureBehavior.ACCEPT,
+                    ApplicationProtocolNames.HTTP_2,
+                    ApplicationProtocolNames.HTTP_1_1);
             //检查下是不是外部路径。
             File cfile = new File(certFilePath);
             File pfile = new File(privateKeyPath);
             if (cfile.isFile() && pfile.isFile()) {
-                ConstConfig.sslContext = SslContextBuilder.forServer(cfile, pfile, privateKeyPwd).sslProvider(SslProvider.JDK).build();
+                ConstConfig.sslContext = SslContextBuilder.forServer(cfile, pfile, privateKeyPwd).sslProvider(SslProvider.JDK)
+                        .ciphers(CIPHERS, SupportedCipherSuiteFilter.INSTANCE)
+                        .applicationProtocolConfig(apn).build();
                 return;
             }
 
@@ -176,7 +186,9 @@ public class HServer {
             InputStream pinput = HServer.class.getResourceAsStream("/ssl/" + privateKeyPath);
 
             if (cinput != null && pinput != null) {
-                ConstConfig.sslContext = SslContextBuilder.forServer(cinput, pinput, privateKeyPwd).sslProvider(SslProvider.JDK).build();
+                ConstConfig.sslContext = SslContextBuilder.forServer(cinput, pinput, privateKeyPwd).sslProvider(SslProvider.JDK)
+                        .ciphers(CIPHERS, SupportedCipherSuiteFilter.INSTANCE)
+                        .applicationProtocolConfig(apn).build();
                 cinput.close();
                 pinput.close();
             }

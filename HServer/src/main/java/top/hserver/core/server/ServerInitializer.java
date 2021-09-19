@@ -6,7 +6,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.util.ReferenceCountUtil;
 import top.hserver.core.interfaces.ProtocolDispatcherAdapter;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.util.ByteBufUtil;
