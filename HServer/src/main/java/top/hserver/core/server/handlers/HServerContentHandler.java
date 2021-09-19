@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.multipart.*;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.HServerApplication;
@@ -28,14 +29,23 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
 
     private final static DefaultHttpDataFactory FACTORY = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
 
+    private boolean isHttp2 = false;
+
+    public HServerContentHandler(boolean isHttp2) {
+        this.isHttp2 = isHttp2;
+    }
+
     public Channel outboundChannel;
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpRequest req) throws Exception {
-
         HServerContext hServerContext = new HServerContext();
         Request request = new Request();
         hServerContext.setRequest(request);
+        if (isHttp2) {
+            String streamId = req.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
+            request.setStreamId(streamId);
+        }
         request.setHandler(this);
         request.setRequestId(RequestIdGen.getId());
         request.setIp(HServerIpUtil.getClientIp(channelHandlerContext));

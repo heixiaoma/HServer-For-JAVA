@@ -245,7 +245,7 @@ public class DispatcherHandler {
                     return null;
                 }
             }
-            return BuildResponse.buildEnd(response, hServerContext.getResponse());
+            return BuildResponse.buildEnd(hServerContext.getRequest(),response, hServerContext.getResponse());
         } catch (Exception e) {
             throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "构建Response对象异常", e, hServerContext.getWebkit());
         }
@@ -279,7 +279,7 @@ public class DispatcherHandler {
         if (response == null) {
             response = BuildResponse.buildString("你开启了全局异常处理，但是你没有处理.");
         }
-        return BuildResponse.buildEnd(response, httpResponse);
+        return BuildResponse.buildEnd((Request) webkit.httpRequest,response, httpResponse);
     }
 
     /**

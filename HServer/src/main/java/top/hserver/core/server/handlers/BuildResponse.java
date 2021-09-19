@@ -5,11 +5,9 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 import top.hserver.core.interfaces.HttpRequest;
-import top.hserver.core.server.context.ConstConfig;
-import top.hserver.core.server.context.HServerContext;
-import top.hserver.core.server.context.MimeType;
-import top.hserver.core.server.context.Response;
+import top.hserver.core.server.context.*;
 import top.hserver.core.server.exception.BusinessBean;
 import top.hserver.core.server.exception.BusinessException;
 import top.hserver.core.server.util.ByteBufUtil;
@@ -108,9 +106,12 @@ public class BuildResponse {
      * @param response1
      * @return
      */
-    public static FullHttpResponse buildEnd(FullHttpResponse response, Response response1) {
+    public static FullHttpResponse buildEnd(Request request, FullHttpResponse response, Response response1) {
         if (response1.getHttpResponseStatus() != null) {
             response.setStatus(response1.getHttpResponseStatus());
+        }
+        if (request.getStreamId()!=null){
+            response.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),request.getStreamId());
         }
         response.headers().set(HttpHeaderNames.SERVER, "HServer");
         response.headers().set("HServer", ConstConfig.VERSION);

@@ -2,6 +2,7 @@ package net.hserver.protocol;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.socket.SocketChannel;
 import top.hserver.core.interfaces.ProtocolDispatcherAdapter;
 import top.hserver.core.ioc.annotation.Bean;
 import top.hserver.core.ioc.annotation.Order;
@@ -17,6 +18,6 @@ public class HttpProtocol extends DispatchHttp {
 
     @Override
     public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers) {
-        return super.dispatcher(ctx, pipeline, headers);
+        return super.dispatcher(ctx,pipeline, headers);
     }
 }

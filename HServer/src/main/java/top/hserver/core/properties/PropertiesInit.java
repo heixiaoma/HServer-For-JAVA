@@ -36,19 +36,18 @@ public class PropertiesInit {
         if (instance.get("epoll").trim().length() > 0) {
             ConstConfig.EPOLL = Boolean.valueOf(instance.get("epoll"));
         }
-
+        if (instance.get("openHttp2").trim().length() > 0) {
+            ConstConfig.openHttp2 = Boolean.valueOf(instance.get("openHttp2"));
+        }
         if (instance.get("readLimit").trim().length() > 0) {
             ConstConfig.READ_LIMIT = Long.valueOf(instance.get("readLimit"));
         }
-
         if (instance.get("writeLimit").trim().length() > 0) {
             ConstConfig.WRITE_LIMIT = Long.valueOf(instance.get("writeLimit"));
         }
-
         if (instance.get("httpContentSize").trim().length() > 0) {
             ConstConfig.HTTP_CONTENT_SIZE = instance.getInt("httpContentSize");
         }
-
         Integer businessPool = instance.getInt("businessPool");
         if (businessPool != null && businessPool > 0) {
             ConstConfig.BUSINESS_EVENT = new DefaultEventExecutorGroup(businessPool, new NamedThreadFactory("hserver_business"));
@@ -58,12 +57,10 @@ public class PropertiesInit {
         } else {
             ConstConfig.BUSINESS_EVENT = new DefaultEventExecutorGroup(50, new NamedThreadFactory("hserver_business"));
         }
-
         Integer rpcTimeOut = instance.getInt("rpcTimeOut");
         if (rpcTimeOut != null) {
             ConstConfig.rpcTimeOut = rpcTimeOut;
         }
-
         String config = instance.get("app.nacos.config.address", null);
 
         if (config != null) {

@@ -16,6 +16,7 @@ import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.util.NamedThreadFactory;
 import top.hserver.core.server.util.EpollUtil;
 import top.hserver.core.server.util.PropUtil;
+import top.hserver.core.server.util.SslContextUtil;
 import top.hserver.core.task.TaskManager;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
@@ -80,7 +81,7 @@ public class HServer {
             typeName = "Nio";
         }
         //看看有没有SSL
-        initSSl();
+        SslContextUtil.setSsl();
         bootstrap.childHandler(new ServerInitializer());
         String portStr = "";
         for (Integer port : ports) {
@@ -152,50 +153,6 @@ public class HServer {
                 "\\    Y    /        \\  ___/|  | \\/\\   /\\  ___/|  | \\/\n" +
                 " \\___|_  /_______  /\\___  >__|    \\_/  \\___  >__|   \n" +
                 "       \\/        \\/     \\/                 \\/       ";
-    }
-
-    private void initSSl() {
-        PropUtil instance = PropUtil.getInstance();
-        String certFilePath = instance.get("certPath");
-        String privateKeyPath = instance.get("privateKeyPath");
-        String privateKeyPwd = instance.get("privateKeyPwd");
-        if (privateKeyPath == null || certFilePath == null || privateKeyPath.trim().length() == 0 || certFilePath.trim().length() == 0) {
-            return;
-        }
-        try {
-            ApplicationProtocolConfig apn = new ApplicationProtocolConfig(
-                    ApplicationProtocolConfig.Protocol.ALPN,
-                    // NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
-                    ApplicationProtocolConfig.SelectorFailureBehavior.NO_ADVERTISE,
-                    // ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
-                    ApplicationProtocolConfig.SelectedListenerFailureBehavior.ACCEPT,
-                    ApplicationProtocolNames.HTTP_2,
-                    ApplicationProtocolNames.HTTP_1_1);
-            //检查下是不是外部路径。
-            File cfile = new File(certFilePath);
-            File pfile = new File(privateKeyPath);
-            if (cfile.isFile() && pfile.isFile()) {
-                ConstConfig.sslContext = SslContextBuilder.forServer(cfile, pfile, privateKeyPwd).sslProvider(SslProvider.JDK)
-                        .ciphers(CIPHERS, SupportedCipherSuiteFilter.INSTANCE)
-                        .applicationProtocolConfig(apn).build();
-                return;
-            }
-
-            //看看是不是resources里面的
-            InputStream cinput = HServer.class.getResourceAsStream("/ssl/" + certFilePath);
-            InputStream pinput = HServer.class.getResourceAsStream("/ssl/" + privateKeyPath);
-
-            if (cinput != null && pinput != null) {
-                ConstConfig.sslContext = SslContextBuilder.forServer(cinput, pinput, privateKeyPwd).sslProvider(SslProvider.JDK)
-                        .ciphers(CIPHERS, SupportedCipherSuiteFilter.INSTANCE)
-                        .applicationProtocolConfig(apn).build();
-                cinput.close();
-                pinput.close();
-            }
-        } catch (Exception s) {
-            log.error(s.getMessage());
-            s.printStackTrace();
-        }
     }
 
 }

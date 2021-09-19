@@ -36,6 +36,11 @@ public class ConstConfig {
     public static Boolean EPOLL = true;
 
     /**
+     * 打开http2 配置
+     */
+    public static Boolean openHttp2 = true;
+
+    /**
      * 版本号
      */
     public static final String VERSION = "2.9.78";
