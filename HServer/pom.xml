@@ -31,6 +31,7 @@
         <junit.version>4.13.2</junit.version>
         <nacos.version>2.0.2</nacos.version>
         <disruptor.version>3.4.4</disruptor.version>
+        <guava.version>30.1.1-jre</guava.version>
     </properties>
 
     <dependencies>
@@ -147,6 +148,14 @@
             <version>${nacos.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <!--   谷歌工具库     -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+
 
     </dependencies>
 

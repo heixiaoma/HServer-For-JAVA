@@ -35,7 +35,7 @@ public class InitBean {
     private static final Logger log = LoggerFactory.getLogger(InitBean.class);
 
     private static void sortOrder() {
-        Class<?>[] order = new Class[]{FilterAdapter.class, GlobalException.class, InitRunner.class,ReInitRunner.class, ResponseAdapter.class,ProtocolDispatcherAdapter.class,RpcAdapter.class,ServerCloseAdapter.class};
+        Class<?>[] order = new Class[]{LimitAdapter.class, FilterAdapter.class, GlobalException.class, InitRunner.class, ReInitRunner.class, ResponseAdapter.class, ProtocolDispatcherAdapter.class, RpcAdapter.class, ServerCloseAdapter.class};
         for (Class<?> aClass : order) {
             List<?> listBean = IocUtil.getListBean(aClass);
             List newObjectList = new ArrayList<>();
@@ -53,7 +53,7 @@ public class InitBean {
                             newObjectList.add(o);
                             temp = annotation.value();
                         }
-                    }else {
+                    } else {
                         newObjectList.add(o);
                     }
                 }
@@ -281,8 +281,14 @@ public class InitBean {
                 continue;
             }
 
-            //检测这个Bean是否是track的
+            //检测这个Bean是否是FilterAdapter的
             if (FilterAdapter.class.isAssignableFrom(aClass)) {
+                IocUtil.addListBean(FilterAdapter.class.getName(), aClass.newInstance());
+                continue;
+            }
+
+            //检测这个Bean是否是LimitAdapter的
+            if (LimitAdapter.class.isAssignableFrom(aClass)) {
                 IocUtil.addListBean(FilterAdapter.class.getName(), aClass.newInstance());
                 continue;
             }
