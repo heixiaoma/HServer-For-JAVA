@@ -971,7 +971,7 @@ import top.hserver.core.server.util.JsonResult;
 public class TestLimit extends GlobalLimit{
 
     public TestLimit() {
-        //限制100
+        //限制 qps = 100/s 
         super(100);
     }
 

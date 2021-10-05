@@ -113,6 +113,30 @@ public class DispatcherHandler {
         }
 
         /**
+         * 检查限流操作
+         */
+        if (IocUtil.getListBean(LimitAdapter.class) != null) {
+            try {
+                List<LimitAdapter> listBean = IocUtil.getListBean(LimitAdapter.class);
+                for (LimitAdapter limitAdapter : listBean) {
+                    limitAdapter.doLimit(hServerContext.getWebkit());
+                    if (hServerContext.getWebkit().httpResponse.hasData()) {
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "拦截器异常", e, hServerContext.getWebkit());
+            }
+        }
+
+        /**
+         * 检查限流操作是否设置了数据
+         */
+        if (hServerContext.getWebkit().httpResponse.hasData()) {
+            return hServerContext;
+        }
+
+        /**
          * 检测下Filter的过滤哈哈
          */
         if (IocUtil.getListBean(FilterAdapter.class) != null) {
@@ -245,7 +269,7 @@ public class DispatcherHandler {
                     return null;
                 }
             }
-            return BuildResponse.buildEnd(hServerContext.getRequest(),response, hServerContext.getResponse());
+            return BuildResponse.buildEnd(hServerContext.getRequest(), response, hServerContext.getResponse());
         } catch (Exception e) {
             throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "构建Response对象异常", e, hServerContext.getWebkit());
         }
@@ -279,7 +303,7 @@ public class DispatcherHandler {
         if (response == null) {
             response = BuildResponse.buildString("你开启了全局异常处理，但是你没有处理.");
         }
-        return BuildResponse.buildEnd((Request) webkit.httpRequest,response, httpResponse);
+        return BuildResponse.buildEnd((Request) webkit.httpRequest, response, httpResponse);
     }
 
     /**

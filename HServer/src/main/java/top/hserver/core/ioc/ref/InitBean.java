@@ -289,7 +289,7 @@ public class InitBean {
 
             //检测这个Bean是否是LimitAdapter的
             if (LimitAdapter.class.isAssignableFrom(aClass)) {
-                IocUtil.addListBean(FilterAdapter.class.getName(), aClass.newInstance());
+                IocUtil.addListBean(LimitAdapter.class.getName(), aClass.newInstance());
                 continue;
             }
 
