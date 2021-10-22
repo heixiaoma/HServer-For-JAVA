@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.core.ioc.IocUtil;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -13,7 +14,6 @@ import java.lang.reflect.Method;
  */
 
 public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<QueueData> {
-    private static final Logger log = LoggerFactory.getLogger(QueueEventHandler.class);
 
     private String queueName;
     private Method method;
@@ -40,7 +40,13 @@ public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<Q
             method.setAccessible(true);
             method.invoke(IocUtil.getBean(queueName), args);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            if (e instanceof InvocationTargetException) {
+                ((InvocationTargetException) e).getTargetException().printStackTrace();
+            }else {
+                e.printStackTrace();
+            }
         }
+
+
     }
 }

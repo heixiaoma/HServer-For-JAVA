@@ -6,9 +6,19 @@ public class QueueInfo {
 
     private long remainQueueSize;
 
+    private int bufferSize;
+
     private long cursor;
 
     private long fqueue;
+
+    public int getBufferSize() {
+        return bufferSize;
+    }
+
+    public void setBufferSize(int bufferSize) {
+        this.bufferSize = bufferSize;
+    }
 
     public long getFqueue() {
         return fqueue;

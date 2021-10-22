@@ -149,18 +149,20 @@ public class QueueDispatcher {
                 while (true) {
                     FQ.forEach((k, v) -> {
                         try {
-                            byte[] poll = v.poll();
-                            if (poll == null) {
-                                Thread.sleep(1000);
-                            } else {
-                                QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
-                                dispatcherQueue(deserialize.getQueueName(), deserialize.getArgs());
+                            QueueInfo queueInfo = queueInfo(k);
+                            if (queueInfo!=null&&queueInfo.getBufferSize()>queueInfo.getQueueSize()) {
+                                byte[] poll = v.poll();
+                                if (poll == null) {
+                                    Thread.sleep(1000);
+                                } else {
+                                    QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
+                                    dispatcherQueue(deserialize.getQueueName(), deserialize.getArgs());
+                                }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     });
-
                 }
             });
             thread.start();

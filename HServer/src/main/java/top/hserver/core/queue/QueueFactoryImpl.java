@@ -15,12 +15,13 @@ import java.util.stream.Collectors;
 public class QueueFactoryImpl implements QueueFactory {
 
     private Disruptor<QueueData> disruptor;
+    private int bufferSize;
 
     @Override
     public void createQueue(String queueName, int bufferSize, QueueHandlerType queueHandlerType, List<QueueHandleMethod> queueHandleMethods) {
         // 创建disruptor
         disruptor = new Disruptor<>(QueueData::new, bufferSize, new NamedThreadFactory("queue:" + queueName));
-
+        this.bufferSize=bufferSize;
         Map<Integer, List<QueueHandleMethod>> collect = queueHandleMethods.stream().sorted(Comparator.comparingInt(QueueHandleMethod::getLevel)).collect(Collectors.groupingBy(QueueHandleMethod::getLevel));
 
         EventHandlerGroup<QueueData> eventHandlerGroup = null;
@@ -83,6 +84,7 @@ public class QueueFactoryImpl implements QueueFactory {
     @Override
     public QueueInfo queueInfo() {
         QueueInfo queueInfo = new QueueInfo();
+        queueInfo.setBufferSize(bufferSize);
         queueInfo.setCursor(disruptor.getCursor());
         queueInfo.setQueueSize(disruptor.getBufferSize());
         queueInfo.setRemainQueueSize(disruptor.getRingBuffer().remainingCapacity());
