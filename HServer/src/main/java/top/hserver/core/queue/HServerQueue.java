@@ -45,7 +45,7 @@ public class HServerQueue {
      * @param args      参数
      */
     public static boolean sendQueue(String queueName, Object... args) {
-        return QueueDispatcher.dispatcherQueue(queueName, args);
+        return QueueDispatcher.dispatcherQueue(null,queueName, args);
     }
 
 

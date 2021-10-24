@@ -150,13 +150,11 @@ public class QueueDispatcher {
                     FQ.forEach((k, v) -> {
                         try {
                             QueueInfo queueInfo = queueInfo(k);
-                            if (queueInfo!=null&&queueInfo.getRemainQueueSize()>0) {
+                            if (queueInfo != null && queueInfo.getRemainQueueSize() > 0) {
                                 byte[] poll = v.poll();
-                                if (poll == null) {
-                                    Thread.sleep(1000);
-                                } else {
+                                if (poll != null) {
                                     QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
-                                    dispatcherQueue(deserialize.getQueueName(), deserialize.getArgs());
+                                    dispatcherQueue(deserialize, deserialize.getQueueName());
                                 }
                             }
                         } catch (Exception e) {
@@ -175,10 +173,14 @@ public class QueueDispatcher {
      * @param queueName 事件URI
      * @param args      事件参数
      */
-    public static boolean dispatcherQueue(String queueName, Object... args) {
+    public static boolean dispatcherQueue(QueueData queueData, String queueName, Object... args) {
         QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
         if (queueHandleInfo != null) {
-            queueHandleInfo.getQueueFactory().producer(new QueueData(queueName, args));
+            if (queueData != null) {
+                queueHandleInfo.getQueueFactory().producer(queueData);
+            } else {
+                queueHandleInfo.getQueueFactory().producer(new QueueData(queueName, args));
+            }
             return true;
         } else {
             log.error("不存在:{} 队列", queueName);

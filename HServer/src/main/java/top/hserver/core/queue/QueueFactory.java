@@ -2,6 +2,7 @@ package top.hserver.core.queue;
 
 
 import top.hserver.core.ioc.annotation.queue.QueueHandlerType;
+import top.hserver.core.queue.fqueue.FQueue;
 
 import java.util.List;
 
