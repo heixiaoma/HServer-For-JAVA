@@ -7,6 +7,7 @@ import top.hserver.core.ioc.annotation.queue.QueueHandlerType;
 import top.hserver.core.server.util.NamedThreadFactory;
 
 import java.util.*;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
 /**
@@ -15,13 +16,11 @@ import java.util.stream.Collectors;
 public class QueueFactoryImpl implements QueueFactory {
 
     private Disruptor<QueueData> disruptor;
-    private int bufferSize;
 
     @Override
     public void createQueue(String queueName, int bufferSize, QueueHandlerType queueHandlerType, List<QueueHandleMethod> queueHandleMethods) {
         // 创建disruptor
         disruptor = new Disruptor<>(QueueData::new, bufferSize, new NamedThreadFactory("queue:" + queueName));
-        this.bufferSize=bufferSize;
         Map<Integer, List<QueueHandleMethod>> collect = queueHandleMethods.stream().sorted(Comparator.comparingInt(QueueHandleMethod::getLevel)).collect(Collectors.groupingBy(QueueHandleMethod::getLevel));
 
         EventHandlerGroup<QueueData> eventHandlerGroup = null;
@@ -84,9 +83,8 @@ public class QueueFactoryImpl implements QueueFactory {
     @Override
     public QueueInfo queueInfo() {
         QueueInfo queueInfo = new QueueInfo();
-        queueInfo.setBufferSize(bufferSize);
+        queueInfo.setBufferSize(disruptor.getBufferSize());
         queueInfo.setCursor(disruptor.getCursor());
-        queueInfo.setQueueSize(disruptor.getBufferSize());
         queueInfo.setRemainQueueSize(disruptor.getRingBuffer().remainingCapacity());
         return queueInfo;
     }

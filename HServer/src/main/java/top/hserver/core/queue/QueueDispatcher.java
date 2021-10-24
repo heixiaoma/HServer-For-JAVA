@@ -150,7 +150,7 @@ public class QueueDispatcher {
                     FQ.forEach((k, v) -> {
                         try {
                             QueueInfo queueInfo = queueInfo(k);
-                            if (queueInfo!=null&&queueInfo.getBufferSize()>queueInfo.getQueueSize()) {
+                            if (queueInfo!=null&&queueInfo.getRemainQueueSize()>0) {
                                 byte[] poll = v.poll();
                                 if (poll == null) {
                                     Thread.sleep(1000);
@@ -207,7 +207,6 @@ public class QueueDispatcher {
         QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
         if (queueHandleInfo != null) {
             QueueInfo queueInfo = queueHandleInfo.getQueueFactory().queueInfo();
-            queueInfo.setFqueue(FQ.get(queueName).size());
             return queueInfo;
         }
         return null;

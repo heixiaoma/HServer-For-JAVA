@@ -2,38 +2,24 @@ package top.hserver.core.queue;
 
 public class QueueInfo {
 
-    private long queueSize;
-
+    //内存剩余队列数
     private long remainQueueSize;
 
-    private int bufferSize;
+    //最大数量
+    private long bufferSize;
 
+    //游标，执行次数
     private long cursor;
 
-    private long fqueue;
+    // 持久化的数量
+    private long fqueueSize;
 
-    public int getBufferSize() {
+    public long getBufferSize() {
         return bufferSize;
     }
 
-    public void setBufferSize(int bufferSize) {
+    public void setBufferSize(long bufferSize) {
         this.bufferSize = bufferSize;
-    }
-
-    public long getFqueue() {
-        return fqueue;
-    }
-
-    public void setFqueue(long fqueue) {
-        this.fqueue = fqueue;
-    }
-
-    public long getQueueSize() {
-        return queueSize;
-    }
-
-    public void setQueueSize(long queueSize) {
-        this.queueSize = queueSize;
     }
 
     public long getRemainQueueSize() {
@@ -50,5 +36,23 @@ public class QueueInfo {
 
     public void setCursor(long cursor) {
         this.cursor = cursor;
+    }
+
+    public long getFqueueSize() {
+        return fqueueSize;
+    }
+
+    public void setFqueueSize(long fqueueSize) {
+        this.fqueueSize = fqueueSize;
+    }
+
+    @Override
+    public String toString() {
+        return "QueueInfo{" +
+                "remainQueueSize=" + remainQueueSize +
+                ", bufferSize=" + bufferSize +
+                ", cursor=" + cursor +
+                ", fqueueSize=" + fqueueSize +
+                '}';
     }
 }

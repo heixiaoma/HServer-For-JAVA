@@ -2,8 +2,6 @@ package top.hserver.core.queue;
 
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.WorkHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import top.hserver.core.ioc.IocUtil;
 
 import java.lang.reflect.InvocationTargetException;
@@ -42,11 +40,9 @@ public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<Q
         } catch (Exception e) {
             if (e instanceof InvocationTargetException) {
                 ((InvocationTargetException) e).getTargetException().printStackTrace();
-            }else {
+            } else {
                 e.printStackTrace();
             }
         }
-
-
     }
 }
