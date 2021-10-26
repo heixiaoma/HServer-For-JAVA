@@ -1,5 +1,6 @@
 package top.hserver.cloud.util;
 
+import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.ProtostuffIOUtil;
 import com.dyuproject.protostuff.Schema;
@@ -53,6 +54,18 @@ public class SerializationUtil {
             T message = objenesis.newInstance(cls);
             Schema<T> schema = getSchema(cls);
             ProtostuffIOUtil.mergeFrom(data, message, schema);
+            return message;
+        } catch (Exception e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    }
+
+    public static <T> T deserialize(Input in, Class<T> cls) {
+        //  ByteArrayInput input = new ByteArrayInput(data, offset, length, decodeNestedMessageAsGroup);
+        try {
+            T message = objenesis.newInstance(cls);
+            Schema<T> schema = getSchema(cls);
+            schema.mergeFrom(in,message);
             return message;
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage(), e);
