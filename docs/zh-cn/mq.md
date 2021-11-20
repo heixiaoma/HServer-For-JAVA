@@ -9,7 +9,11 @@
   @GET("/event")
     public JsonResult event() {
     	//队列名字，方法参数
+        //默认队列1024，超过限制就阻塞
         HServerQueue.sendQueue("Queue", "666");
+        
+        //持久方式，会先缓存文件，在消费
+        HServerQueue.sendPersistQueue("Queue", "666");
         return JsonResult.ok();
     }
 
