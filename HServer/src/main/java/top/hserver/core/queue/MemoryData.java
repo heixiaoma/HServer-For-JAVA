@@ -1,17 +1,9 @@
 package top.hserver.core.queue;
 
-import top.hserver.cloud.util.SerializationUtil;
 import top.hserver.core.queue.fmap.FMap;
 
 import java.io.File;
-import java.io.RandomAccessFile;
-import java.io.Serializable;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 import static top.hserver.core.server.context.ConstConfig.PERSIST_PATH;
 
@@ -21,16 +13,51 @@ import static top.hserver.core.server.context.ConstConfig.PERSIST_PATH;
  * key@data#
  */
 public class MemoryData {
+
     private static String path = PERSIST_PATH + File.separator + "memory" + File.separator;
 
-    public static void main(String[] args) throws Exception {
-        FMap<String> stringFMap = new FMap<>(path + "memory.data", String.class);
-        for (int i = 0; i < 10000; i++) {
-            stringFMap.put(String.valueOf(i), String.valueOf(i));
+    private static final FMap<Object> stringFMap = new FMap<>(path + "memory.data", Object.class);
+
+    static {
+        File file = new File(PERSIST_PATH + File.separator + "memory");
+        if (!file.isDirectory()){
+            file.mkdirs();
         }
+    }
+
+
+    public static void add(String key,Object obj){
+        stringFMap.put(key,obj);
+    }
+
+    public static void remove(String key){
+        stringFMap.remove(key);
+    }
+
+    public static synchronized void sync(){
         stringFMap.syncFile();
+    }
+
+    public static synchronized Collection<Object> getAll(){
+        return stringFMap.values();
+    }
+
+    public static synchronized void clear(){
+        stringFMap.clear();
+    }
+
+    public static synchronized long size(){
+        return stringFMap.size();
+    }
+
+
+    public static void main(String[] args) throws Exception {
+//        for (int i = 0; i < 10000; i++) {
+//            stringFMap.put(String.valueOf(i), String.valueOf(i));
+//        }
+//        stringFMap.syncFile();
         for (int i = 0; i < 10000; i++) {
-            String s = stringFMap.get(String.valueOf(i));
+            Object s = stringFMap.get(String.valueOf(i));
             if (s != null)
                 System.out.println(s);
         }

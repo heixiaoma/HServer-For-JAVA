@@ -10,11 +10,13 @@ import top.hserver.core.ioc.ref.PackageScanner;
 import top.hserver.core.queue.fqueue.FQueue;
 import top.hserver.core.queue.fqueue.exception.FileFormatException;
 import top.hserver.core.server.util.NamedThreadFactory;
+import top.hserver.core.server.util.UUIDUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -145,22 +147,42 @@ public class QueueDispatcher {
             initConfigQueue(v);
         });
         if (FQ.size() > 0) {
+            final boolean[] isFirst = {true};
             Thread thread = new NamedThreadFactory("hserver_queue").newThread(() -> {
                 while (true) {
-                    FQ.forEach((k, v) -> {
-                        try {
-                            QueueInfo queueInfo = queueInfo(k);
-                            if (queueInfo != null && queueInfo.getRemainQueueSize() > 0) {
-                                byte[] poll = v.poll();
-                                if (poll != null) {
-                                    QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
-                                    dispatcherQueue(deserialize, deserialize.getQueueName());
+                    //检查历史数据，如果历史数据没了才开始消费新的数据
+                    if (MemoryData.size()>0&& isFirst[0]){
+                        isFirst[0] =false;
+                        Collection<Object> all = MemoryData.getAll();
+                        all.forEach(v->{
+                            if (v instanceof QueueData) {
+                                QueueData queueData = (QueueData) v;
+                                if (FQ.containsKey(queueData.getQueueName())) {
+                                    log.debug("队列{}存在,上次内存数据ID：{}被再次消费", queueData.getQueueName(), queueData.getId());
+                                    dispatcherQueue(queueData, queueData.getQueueName());
+                                } else {
+                                    log.debug("队列{}不存在,上次内存数据ID：{}被移除", queueData.getQueueName(), queueData.getId());
+                                    MemoryData.remove(queueData.getId());
                                 }
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
+                        });
+                    }else {
+                        FQ.forEach((k, v) -> {
+                            try {
+                                QueueInfo queueInfo = queueInfo(k);
+                                if (queueInfo != null && queueInfo.getRemainQueueSize() > 0) {
+                                    byte[] poll = v.poll();
+                                    if (poll != null) {
+                                        QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
+                                        MemoryData.add(deserialize.getId(), deserialize);
+                                        dispatcherQueue(deserialize, deserialize.getQueueName());
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
                 }
             });
             thread.start();
@@ -179,7 +201,7 @@ public class QueueDispatcher {
             if (queueData != null) {
                 queueHandleInfo.getQueueFactory().producer(queueData);
             } else {
-                queueHandleInfo.getQueueFactory().producer(new QueueData(queueName, args));
+                queueHandleInfo.getQueueFactory().producer(new QueueData(queueName, args, UUIDUtil.getUid()));
             }
             return true;
         } else {
@@ -201,7 +223,7 @@ public class QueueDispatcher {
             log.error("不存在:{} 队列", queueName);
             return false;
         }
-        fQueue.offer(SerializationUtil.serialize(new QueueData(queueName, args)));
+        fQueue.offer(SerializationUtil.serialize(new QueueData(queueName, args,UUIDUtil.getUid())));
         return true;
     }
 

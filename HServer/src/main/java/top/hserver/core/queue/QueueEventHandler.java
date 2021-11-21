@@ -6,6 +6,7 @@ import top.hserver.core.ioc.IocUtil;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * @author hxm
@@ -43,6 +44,8 @@ public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<Q
             } else {
                 e.printStackTrace();
             }
+        }finally {
+            MemoryData.remove(queueData.getId());
         }
     }
 }

@@ -97,10 +97,9 @@ public class HServer {
         shutdownHook();
     }
 
-
     private void shutdownHook() {
         Thread shutdown = new NamedThreadFactory("hserver_shutdown").newThread(() -> {
-            log.warn("服务即将关闭");
+            log.info("服务即将关闭");
             List<ServerCloseAdapter> listBean = IocUtil.getListBean(ServerCloseAdapter.class);
             if (listBean != null) {
                 for (ServerCloseAdapter serverCloseAdapter : listBean) {
@@ -113,6 +112,7 @@ public class HServer {
             if (this.workerGroup != null) {
                 this.workerGroup.shutdownGracefully();
             }
+            log.info("服务关闭完成");
         });
         Runtime.getRuntime().addShutdownHook(shutdown);
     }

@@ -19,6 +19,7 @@ public class QueueProducer {
         try {
             QueueData queueData = ringBuffer.get(sequence);
             queueData.setArgs(qd.getArgs());
+            queueData.setId(qd.getId());
             queueData.setQueueName(qd.getQueueName());
         } finally {
             ringBuffer.publish(sequence);

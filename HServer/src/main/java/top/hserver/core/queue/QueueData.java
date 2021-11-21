@@ -8,6 +8,8 @@ import java.io.Serializable;
  */
 public class QueueData implements Serializable {
 
+    private String id;
+
     private String queueName;
 
     private Object[] args;
@@ -15,9 +17,18 @@ public class QueueData implements Serializable {
     public QueueData() {
     }
 
-    public QueueData(String queueName, Object[] args) {
+    public QueueData(String queueName, Object[] args,String id) {
         this.queueName = queueName;
         this.args = args;
+        this.id=id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getQueueName() {
