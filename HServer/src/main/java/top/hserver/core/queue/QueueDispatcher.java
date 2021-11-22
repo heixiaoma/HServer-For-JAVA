@@ -7,8 +7,8 @@ import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.ioc.annotation.queue.QueueHandler;
 import top.hserver.core.ioc.annotation.queue.QueueListener;
 import top.hserver.core.ioc.ref.PackageScanner;
+import top.hserver.core.queue.fmap.MemoryData;
 import top.hserver.core.queue.fqueue.FQueue;
-import top.hserver.core.queue.fqueue.exception.FileFormatException;
 import top.hserver.core.server.util.NamedThreadFactory;
 import top.hserver.core.server.util.UUIDUtil;
 
@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 import static top.hserver.core.server.context.ConstConfig.PERSIST_PATH;
 
@@ -152,18 +151,14 @@ public class QueueDispatcher {
                 while (true) {
                     //检查历史数据，如果历史数据没了才开始消费新的数据
                     if (MemoryData.size()>0&& isFirst[0]){
-                        isFirst[0] =false;
-                        Collection<Object> all = MemoryData.getAll();
-                        all.forEach(v->{
-                            if (v instanceof QueueData) {
-                                QueueData queueData = (QueueData) v;
+                        Collection<QueueData> all = MemoryData.getAll();
+                        all.forEach(queueData->{
                                 if (FQ.containsKey(queueData.getQueueName())) {
-                                    log.debug("队列{}存在,上次内存数据ID：{}被再次消费", queueData.getQueueName(), queueData.getId());
+                                    log.debug("队列{}存在，但是还有上次的内存数据，本次重新消费，数据ID为：{}", queueData.getQueueName(), queueData.getId());
                                     dispatcherQueue(queueData, queueData.getQueueName());
                                 } else {
-                                    log.debug("队列{}不存在,上次内存数据ID：{}被移除", queueData.getQueueName(), queueData.getId());
+                                    log.debug("队列{}不存在,因此上次的内存数据ID为：{}被移除", queueData.getQueueName(), queueData.getId());
                                     MemoryData.remove(queueData.getId());
-                                }
                             }
                         });
                     }else {
@@ -183,6 +178,7 @@ public class QueueDispatcher {
                             }
                         });
                     }
+                    isFirst[0] =false;
                 }
             });
             thread.start();

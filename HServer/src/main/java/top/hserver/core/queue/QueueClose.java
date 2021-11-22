@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.core.interfaces.ServerCloseAdapter;
 import top.hserver.core.ioc.annotation.Bean;
+import top.hserver.core.queue.fmap.MemoryData;
 
 @Bean
 public class QueueClose implements ServerCloseAdapter {

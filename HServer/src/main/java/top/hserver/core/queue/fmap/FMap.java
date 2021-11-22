@@ -3,6 +3,8 @@ package top.hserver.core.queue.fmap;
 import com.google.common.io.FileWriteMode;
 import com.google.common.io.Files;
 import top.hserver.cloud.util.SerializationUtil;
+import top.hserver.core.queue.fqueue.FQueue;
+import top.hserver.core.queue.fqueue.exception.FileFormatException;
 
 import java.io.*;
 import java.lang.reflect.Method;
@@ -18,21 +20,30 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class FMap<V> extends HashMap<String, V> {
+/**
+ * 不准给别人用，他们坏得很，怕数据错了
+ *
+ * @param <V>
+ */
+final class FMap<V> extends ConcurrentHashMap<String, V> {
 
     private Class<V> clazz;
     private String path;
-    private int size=1024*1024;
+    private FQueue fQueue=null;
 
-    public FMap(String path, Class<V> clazz){
-        this(path,clazz,-1);
-    }
-    public  FMap(String path, Class<V> clazz,int size) {
+    public  FMap(String path, Class<V> clazz) {
         this.clazz = clazz;
         this.path = path;
-        if (size>0) {
-            this.size = size;
+        try {
+            if (fQueue==null) {
+                fQueue = new FQueue(path);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (FileFormatException e) {
+            e.printStackTrace();
         }
+
         List<Memory> memories = readAll();
         for (Memory memory : memories) {
             put(memory.key, SerializationUtil.deserialize(memory.getValues(), clazz));
@@ -40,29 +51,24 @@ public class FMap<V> extends HashMap<String, V> {
     }
 
 
-    public void syncFile() {
-
+    public synchronized void syncFile() {
+        fQueue.clear();
+       this.forEach((k,v)->{
+           fQueue.offer(SerializationUtil.serialize(new Memory(k,SerializationUtil.serialize(v))));
+       });
     }
 
 
-    private List<Memory> readAll() {
-
-    }
-
-    private void clean(final Object buffer) throws Exception {
-        AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
-                try {
-                    Method getCleanerMethod = buffer.getClass().getMethod("cleaner", new Class[0]);
-                    getCleanerMethod.setAccessible(true);
-                    sun.misc.Cleaner cleaner = (sun.misc.Cleaner) getCleanerMethod.invoke(buffer, new Object[0]);
-                    cleaner.clean();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
+    private synchronized List<Memory> readAll() {
+        List<Memory> data=new ArrayList<>();
+        while (true) {
+            byte[] peek = fQueue.poll();
+            if (peek==null){
+                return data;
             }
-        });
+            Memory deserialize = SerializationUtil.deserialize(peek, Memory.class);
+            data.add(deserialize);
+        }
     }
 
     public static class Memory implements Serializable {

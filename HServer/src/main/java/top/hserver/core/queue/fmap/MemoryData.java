@@ -1,5 +1,6 @@
-package top.hserver.core.queue;
+package top.hserver.core.queue.fmap;
 
+import top.hserver.core.queue.QueueData;
 import top.hserver.core.queue.fmap.FMap;
 
 import java.io.File;
@@ -16,7 +17,7 @@ public class MemoryData {
 
     private static String path = PERSIST_PATH + File.separator + "memory" + File.separator;
 
-    private static final FMap<Object> stringFMap = new FMap<>(path + "memory.data", Object.class);
+    private  static final FMap<QueueData> stringFMap = new FMap<>(path, QueueData.class);
 
     static {
         File file = new File(PERSIST_PATH + File.separator + "memory");
@@ -26,7 +27,7 @@ public class MemoryData {
     }
 
 
-    public static void add(String key,Object obj){
+    public static void add(String key, QueueData obj){
         stringFMap.put(key,obj);
     }
 
@@ -38,7 +39,7 @@ public class MemoryData {
         stringFMap.syncFile();
     }
 
-    public static synchronized Collection<Object> getAll(){
+    public static synchronized Collection<QueueData> getAll(){
         return stringFMap.values();
     }
 
