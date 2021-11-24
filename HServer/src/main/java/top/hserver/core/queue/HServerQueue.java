@@ -45,7 +45,7 @@ public class HServerQueue {
      * @param args      参数
      */
     public static boolean sendQueue(String queueName, Object... args) {
-        return QueueDispatcher.dispatcherQueue(null,queueName, args);
+        return QueueDispatcher.dispatcherSerializationQueue(queueName, args);
     }
 
 
@@ -55,6 +55,7 @@ public class HServerQueue {
      * @param queueName
      * @param args
      */
+    @Deprecated
     public static boolean sendPersistQueue(String queueName, Object... args) {
         return QueueDispatcher.dispatcherSerializationQueue(queueName, args);
     }

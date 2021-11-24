@@ -1,6 +1,8 @@
 package top.hserver.core.queue;
 
 
+import top.hserver.core.queue.fqueue.FQueue;
+
 import java.io.Serializable;
 
 /**
@@ -8,7 +10,7 @@ import java.io.Serializable;
  */
 public class QueueData implements Serializable {
 
-    private String id;
+    private FQueue fQueue;
 
     private String queueName;
 
@@ -17,18 +19,18 @@ public class QueueData implements Serializable {
     public QueueData() {
     }
 
-    public QueueData(String queueName, Object[] args,String id) {
+    public QueueData(String queueName, Object[] args,FQueue fQueue) {
         this.queueName = queueName;
         this.args = args;
-        this.id=id;
+        this.fQueue=fQueue;
     }
 
-    public String getId() {
-        return id;
+    public FQueue getfQueue() {
+        return fQueue;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setfQueue(FQueue fQueue) {
+        this.fQueue = fQueue;
     }
 
     public String getQueueName() {

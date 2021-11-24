@@ -3,7 +3,6 @@ package top.hserver.core.queue;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.WorkHandler;
 import top.hserver.core.ioc.IocUtil;
-import top.hserver.core.queue.fmap.MemoryData;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -45,7 +44,7 @@ public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<Q
                 e.printStackTrace();
             }
         }finally {
-            MemoryData.remove(queueData.getId());
+            queueData.getfQueue().poll();
         }
     }
 }

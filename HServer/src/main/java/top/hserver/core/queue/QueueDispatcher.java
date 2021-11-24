@@ -7,16 +7,13 @@ import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.ioc.annotation.queue.QueueHandler;
 import top.hserver.core.ioc.annotation.queue.QueueListener;
 import top.hserver.core.ioc.ref.PackageScanner;
-import top.hserver.core.queue.fmap.MemoryData;
 import top.hserver.core.queue.fqueue.FQueue;
 import top.hserver.core.server.util.NamedThreadFactory;
-import top.hserver.core.server.util.UUIDUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -61,7 +58,7 @@ public class QueueDispatcher {
         QueueHandleInfo eventHandleInfo = new QueueHandleInfo();
         eventHandleInfo.setQueueHandlerType(queueListener.type());
         eventHandleInfo.setQueueName(queueName);
-        eventHandleInfo.setBufferSize(queueListener.bufferSize());
+        eventHandleInfo.setBufferSize(1);
         Method[] methods = clazz.getDeclaredMethods();
         for (Method method : methods) {
             QueueHandler queueHandler = method.getAnnotation(QueueHandler.class);
@@ -102,7 +99,7 @@ public class QueueDispatcher {
             QueueHandleInfo eventHandleInfo = new QueueHandleInfo();
             eventHandleInfo.setQueueHandlerType(queueListener.type());
             eventHandleInfo.setQueueName(queueListener.queueName());
-            eventHandleInfo.setBufferSize(queueListener.bufferSize());
+            eventHandleInfo.setBufferSize(1);
             Method[] methods = clazz.getDeclaredMethods();
             for (Method method : methods) {
                 QueueHandler queueHandler = method.getAnnotation(QueueHandler.class);
@@ -146,30 +143,16 @@ public class QueueDispatcher {
             initConfigQueue(v);
         });
         if (FQ.size() > 0) {
-            final boolean[] isFirst = {true};
             Thread thread = new NamedThreadFactory("hserver_queue").newThread(() -> {
                 while (true) {
                     //检查历史数据，如果历史数据没了才开始消费新的数据
-                    if (MemoryData.size()>0&& isFirst[0]){
-                        Collection<QueueData> all = MemoryData.getAll();
-                        all.forEach(queueData->{
-                                if (FQ.containsKey(queueData.getQueueName())) {
-                                    log.debug("队列{}存在，但是还有上次的内存数据，本次重新消费，数据ID为：{}", queueData.getQueueName(), queueData.getId());
-                                    dispatcherQueue(queueData, queueData.getQueueName());
-                                } else {
-                                    log.debug("队列{}不存在,因此上次的内存数据ID为：{}被移除", queueData.getQueueName(), queueData.getId());
-                                    MemoryData.remove(queueData.getId());
-                            }
-                        });
-                    }else {
                         FQ.forEach((k, v) -> {
                             try {
                                 QueueInfo queueInfo = queueInfo(k);
                                 if (queueInfo != null && queueInfo.getRemainQueueSize() > 0) {
-                                    byte[] poll = v.poll();
+                                    byte[] poll = v.peek();
                                     if (poll != null) {
                                         QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
-                                        MemoryData.add(deserialize.getId(), deserialize);
                                         dispatcherQueue(deserialize, deserialize.getQueueName());
                                     }
                                 }
@@ -177,8 +160,7 @@ public class QueueDispatcher {
                                 e.printStackTrace();
                             }
                         });
-                    }
-                    isFirst[0] =false;
+
                 }
             });
             thread.start();
@@ -189,15 +171,13 @@ public class QueueDispatcher {
      * 分发队列
      *
      * @param queueName 事件URI
-     * @param args      事件参数
      */
-    public static boolean dispatcherQueue(QueueData queueData, String queueName, Object... args) {
+    private static boolean dispatcherQueue(QueueData queueData, String queueName) {
         QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
         if (queueHandleInfo != null) {
             if (queueData != null) {
+                queueData.setfQueue(FQ.get(queueName));
                 queueHandleInfo.getQueueFactory().producer(queueData);
-            } else {
-                queueHandleInfo.getQueueFactory().producer(new QueueData(queueName, args, UUIDUtil.getUid()));
             }
             return true;
         } else {
@@ -219,7 +199,7 @@ public class QueueDispatcher {
             log.error("不存在:{} 队列", queueName);
             return false;
         }
-        fQueue.offer(SerializationUtil.serialize(new QueueData(queueName, args,UUIDUtil.getUid())));
+        fQueue.offer(SerializationUtil.serialize(new QueueData(queueName, args,null)));
         return true;
     }
 
