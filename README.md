@@ -68,7 +68,7 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 * Restful风格路由设计
 * Cron定时器
 * Filter拦截器
-* DisruptorQueue队列
+* 持久Queue队列
 * HOOK组件
 * Track组件
 * Web Socket功能
@@ -80,7 +80,7 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 * ApiDoc文档组件
 * 权限组件
 * Plugin组件自由扩展
-* 高性能 100并发下8核qps 10+w/s
+* 高性能
 * 高度自由度控制
 * 流量整形
 * Netty 原生响应支持自己扩展
