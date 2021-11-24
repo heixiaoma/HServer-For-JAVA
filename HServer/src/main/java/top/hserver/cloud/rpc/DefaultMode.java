@@ -19,7 +19,7 @@ public class DefaultMode implements RpcAdapter {
 
     @Override
     public boolean rpcMode(AppRpc appRpc, Integer port, List<String> serverNames) {
-        if (appRpc.getMode() == null || appRpc.getMode().trim().length() == 0) {
+        if (appRpc.getMode() == null || appRpc.getMode().trim().length() == 0||appRpc.getMode().equalsIgnoreCase("default")) {
             String address = appRpc.getAddress();
             if (address != null) {
                 ServiceData serviceData = defaultReg(address, serverNames);

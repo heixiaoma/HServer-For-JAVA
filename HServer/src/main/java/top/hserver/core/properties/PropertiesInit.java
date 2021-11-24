@@ -36,6 +36,10 @@ public class PropertiesInit {
         if (instance.get("epoll").trim().length() > 0) {
             ConstConfig.EPOLL = Boolean.valueOf(instance.get("epoll"));
         }
+
+        if (instance.get("persistPath").trim().length() > 0) {
+            ConstConfig.PERSIST_PATH = instance.get("persistPath");
+        }
         if (instance.get("openHttp2").trim().length() > 0) {
             ConstConfig.openHttp2 = Boolean.valueOf(instance.get("openHttp2"));
         }
