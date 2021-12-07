@@ -34,7 +34,7 @@ public class QueueDispatcher {
 
     public static void removeQueue(String queueName) {
         QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
-        if (queueHandleInfo!=null){
+        if (queueHandleInfo!=null&&queueHandleInfo.getQueueFactory()!=null){
             queueHandleInfo.getQueueFactory().stop();
         }
         handleMethodMap.remove(queueName);
@@ -136,7 +136,9 @@ public class QueueDispatcher {
          * 检查历史是否有，有的话先关闭掉
          */
         handleMethodMap.forEach((k, v) -> {
-            v.getQueueFactory().stop();
+            if (v.getQueueFactory()!=null){
+                v.getQueueFactory().stop();
+            }
         });
         FQ.forEach((k, v) -> {
             try {
