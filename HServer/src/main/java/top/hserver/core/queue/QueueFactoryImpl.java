@@ -7,7 +7,6 @@ import top.hserver.core.ioc.annotation.queue.QueueHandlerType;
 import top.hserver.core.server.util.NamedThreadFactory;
 
 import java.util.*;
-import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
 /**
@@ -30,17 +29,6 @@ public class QueueFactoryImpl implements QueueFactory {
         while (iterator.hasNext()) {
             Integer next = iterator.next();
             List<QueueHandleMethod> handleMethods = collect.get(next);
-            //检查哈是否有那种设置了多个消费者的添加进去
-            for (int i = 0; i < handleMethods.size(); i++) {
-                QueueHandleMethod queueHandleMethod = handleMethods.get(i);
-                int size = queueHandleMethod.getSize();
-                if (size > 1) {
-                    for (int j = 0; j < size - 1; j++) {
-                        handleMethods.add(queueHandleMethod);
-                    }
-                    queueHandleMethod.setSize(1);
-                }
-            }
             if (flag == 0) {
                 QueueEventHandler[] queueEventHandlers = new QueueEventHandler[handleMethods.size()];
                 for (int i = 0; i < handleMethods.size(); i++) {
@@ -70,7 +58,17 @@ public class QueueFactoryImpl implements QueueFactory {
                 }
             }
         }
+    }
+
+
+    @Override
+    public void start() {
         disruptor.start();
+    }
+
+    @Override
+    public void stop() {
+        disruptor.shutdown();
     }
 
     @Override

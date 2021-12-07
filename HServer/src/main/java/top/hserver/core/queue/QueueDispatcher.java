@@ -33,6 +33,10 @@ public class QueueDispatcher {
     }
 
     public static void removeQueue(String queueName) {
+        QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
+        if (queueHandleInfo!=null){
+            queueHandleInfo.getQueueFactory().stop();
+        }
         handleMethodMap.remove(queueName);
         FQueue fQueue = FQ.get(queueName);
         fQueue.clear();
@@ -63,7 +67,7 @@ public class QueueDispatcher {
         for (Method method : methods) {
             QueueHandler queueHandler = method.getAnnotation(QueueHandler.class);
             if (queueHandler != null) {
-                eventHandleInfo.add(new QueueHandleMethod(method, queueHandler.size(), queueHandler.level()));
+                eventHandleInfo.add(new QueueHandleMethod(method, queueHandler.level()));
                 log.debug("寻找队列 [{}] 的方法 [{}.{}]", queueName, clazz.getSimpleName(),
                         method.getName());
             }
@@ -104,7 +108,7 @@ public class QueueDispatcher {
             for (Method method : methods) {
                 QueueHandler queueHandler = method.getAnnotation(QueueHandler.class);
                 if (queueHandler != null) {
-                    eventHandleInfo.add(new QueueHandleMethod(method, queueHandler.size(), queueHandler.level()));
+                    eventHandleInfo.add(new QueueHandleMethod(method, queueHandler.level()));
                     log.debug("寻找队列 [{}] 的方法 [{}.{}]", queueListener.queueName(), clazz.getSimpleName(),
                             method.getName());
                 }
@@ -131,6 +135,9 @@ public class QueueDispatcher {
         /**
          * 检查历史是否有，有的话先关闭掉
          */
+        handleMethodMap.forEach((k, v) -> {
+            v.getQueueFactory().stop();
+        });
         FQ.forEach((k, v) -> {
             try {
                 v.close();
@@ -141,6 +148,9 @@ public class QueueDispatcher {
         FQ.clear();
         handleMethodMap.forEach((k, v) -> {
             initConfigQueue(v);
+        });
+        handleMethodMap.forEach((k, v) -> {
+            v.getQueueFactory().start();
         });
         if (FQ.size() > 0) {
             Thread thread = new NamedThreadFactory("hserver_queue").newThread(() -> {

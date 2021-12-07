@@ -9,7 +9,7 @@ import top.hserver.core.ioc.annotation.queue.QueueListener;
 
 import java.util.concurrent.atomic.LongAdder;
 
-@QueueListener(queueName = "Queue")
+@QueueListener(queueName = "Queue",size = 2)
 public class EventTest {
 
     private static final Logger log = LoggerFactory.getLogger(EventTest.class);
@@ -19,7 +19,7 @@ public class EventTest {
 
     LongAdder atomicLong = new LongAdder();
 
-    @QueueHandler(level = 1, size = 2)
+    @QueueHandler(level = 1)
     public void aa(String name) {
         atomicLong.increment();
         System.out.println(atomicLong + "---------" + Thread.currentThread().getName());
@@ -27,7 +27,7 @@ public class EventTest {
     }
 
 
-    @QueueHandler(level = 2, size = 2)
+    @QueueHandler(level = 2)
     public void cc(String name) {
         atomicLong.increment();
         System.out.println(atomicLong + "---------" + Thread.currentThread().getName());

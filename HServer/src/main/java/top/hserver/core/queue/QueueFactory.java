@@ -17,4 +17,8 @@ public interface QueueFactory {
 
     QueueInfo queueInfo();
 
+    void start();
+
+    void stop();
+
 }
