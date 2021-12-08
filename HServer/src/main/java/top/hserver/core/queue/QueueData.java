@@ -16,6 +16,8 @@ public class QueueData implements Serializable {
 
     private Object[] args;
 
+    private int threadSize;
+
     public QueueData() {
     }
 
@@ -23,6 +25,14 @@ public class QueueData implements Serializable {
         this.queueName = queueName;
         this.args = args;
         this.fQueue=fQueue;
+    }
+
+    public int getThreadSize() {
+        return threadSize;
+    }
+
+    public void setThreadSize(int threadSize) {
+        this.threadSize = threadSize;
     }
 
     public FQueue getfQueue() {

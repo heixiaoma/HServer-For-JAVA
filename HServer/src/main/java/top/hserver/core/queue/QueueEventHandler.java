@@ -16,7 +16,6 @@ public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<Q
     private String queueName;
     private Method method;
 
-
     public QueueEventHandler(String queueName, Method method) {
         this.queueName = queueName;
         this.method = method;
@@ -44,7 +43,9 @@ public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<Q
                 e.printStackTrace();
             }
         }finally {
-            queueData.getfQueue().poll();
+            if (queueData.getThreadSize()==1){
+                queueData.getfQueue().poll();
+            }
         }
     }
 }

@@ -29,6 +29,17 @@ public class QueueFactoryImpl implements QueueFactory {
         while (iterator.hasNext()) {
             Integer next = iterator.next();
             List<QueueHandleMethod> handleMethods = collect.get(next);
+            //检查哈是否有那种设置了多个消费者的添加进去，多线程那种意思
+            for (int i = 0; i < handleMethods.size(); i++) {
+                QueueHandleMethod queueHandleMethod = handleMethods.get(i);
+                int size = queueHandleMethod.getSize();
+                if (size > 1) {
+                    for (int j = 0; j < size - 1; j++) {
+                        handleMethods.add(queueHandleMethod);
+                    }
+                    queueHandleMethod.setSize(1);
+                }
+            }
             if (flag == 0) {
                 QueueEventHandler[] queueEventHandlers = new QueueEventHandler[handleMethods.size()];
                 for (int i = 0; i < handleMethods.size(); i++) {
@@ -74,8 +85,16 @@ public class QueueFactoryImpl implements QueueFactory {
     @Override
     public void producer(QueueData queueData) {
         RingBuffer<QueueData> ringBuffer = disruptor.getRingBuffer();
-        QueueProducer producer = new QueueProducer(ringBuffer);
-        producer.onData(queueData);
+        long sequence = ringBuffer.next();
+        try {
+            QueueData rdata = ringBuffer.get(sequence);
+            rdata.setArgs(queueData.getArgs());
+            rdata.setfQueue(queueData.getfQueue());
+            rdata.setQueueName(queueData.getQueueName());
+            rdata.setThreadSize(queueData.getThreadSize());
+        } finally {
+            ringBuffer.publish(sequence);
+        }
     }
 
     @Override

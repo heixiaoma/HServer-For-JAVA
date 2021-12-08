@@ -13,11 +13,23 @@ public class QueueHandleMethod implements Serializable {
      * 级别
      */
     private int level;
+
+    private int size;
+
     private Method method;
 
-    public QueueHandleMethod(Method method, int level) {
+    public QueueHandleMethod(Method method, int level,int size) {
         this.method = method;
         this.level = level;
+        this.size=size;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public int getLevel() {
