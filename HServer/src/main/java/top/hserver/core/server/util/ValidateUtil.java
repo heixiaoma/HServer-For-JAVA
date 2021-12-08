@@ -56,10 +56,10 @@ public class ValidateUtil {
         AssertFalse assertFalse = field.getAnnotation(AssertFalse.class);
         if (assertFalse != null) {
             if (obj == null) {
-                throw new ValidateException(assertFalse.message());
+                throw new ValidateException(assertFalse.message(),field,obj);
             }
             if (Boolean.parseBoolean(obj.toString())) {
-                throw new ValidateException(assertFalse.message());
+                throw new ValidateException(assertFalse.message(),field,obj);
             }
         }
     }
@@ -75,10 +75,10 @@ public class ValidateUtil {
         AssertTrue assertTrue = field.getAnnotation(AssertTrue.class);
         if (assertTrue != null) {
             if (obj == null) {
-                throw new ValidateException(assertTrue.message());
+                throw new ValidateException(assertTrue.message(),field,obj);
             }
             if (!Boolean.parseBoolean(obj.toString())) {
-                throw new ValidateException(assertTrue.message());
+                throw new ValidateException(assertTrue.message(),field,obj);
             }
         }
     }
@@ -94,12 +94,12 @@ public class ValidateUtil {
         Length length = field.getAnnotation(Length.class);
         if (length != null) {
             if (obj == null) {
-                throw new ValidateException(length.message());
+                throw new ValidateException(length.message(),field,obj);
             }
             if (CharSequence.class.isAssignableFrom(field.getType())) {
                 CharSequence obj1 = (CharSequence) obj;
                 if (obj1.length() != length.value()) {
-                    throw new ValidateException(length.message());
+                    throw new ValidateException(length.message(),field,obj);
                 }
             }
         }
@@ -117,7 +117,7 @@ public class ValidateUtil {
         Max max = field.getAnnotation(Max.class);
         if (max != null) {
             if (obj == null || Long.parseLong(obj.toString()) < max.value()) {
-                throw new ValidateException(max.message());
+                throw new ValidateException(max.message(),field,obj);
             }
         }
     }
@@ -133,7 +133,7 @@ public class ValidateUtil {
         Min min = field.getAnnotation(Min.class);
         if (min != null) {
             if (obj == null || Long.parseLong(obj.toString()) > min.value()) {
-                throw new ValidateException(min.message());
+                throw new ValidateException(min.message(),field,obj);
             }
         }
     }
@@ -149,7 +149,7 @@ public class ValidateUtil {
         NotBlank notBlank = field.getAnnotation(NotBlank.class);
         if (notBlank != null) {
             if (obj == null || obj.toString().trim().length() == 0) {
-                throw new ValidateException(notBlank.message());
+                throw new ValidateException(notBlank.message(),field,obj);
             }
         }
 
@@ -166,30 +166,30 @@ public class ValidateUtil {
         NotEmpty notEmpty = field.getAnnotation(NotEmpty.class);
         if (notEmpty != null) {
             if (obj == null) {
-                throw new ValidateException(notEmpty.message());
+                throw new ValidateException(notEmpty.message(),field,obj);
             }
             //CharSequence
             if (CharSequence.class.isAssignableFrom(field.getType())) {
                 if (((CharSequence) obj).length() == 0) {
-                    throw new ValidateException(notEmpty.message());
+                    throw new ValidateException(notEmpty.message(),field,obj);
                 }
             }
             //集合
             if (Collection.class.isAssignableFrom(field.getType())) {
                 if (((Collection) obj).size() == 0) {
-                    throw new ValidateException(notEmpty.message());
+                    throw new ValidateException(notEmpty.message(),field,obj);
                 }
             }
             //Map
             if (Map.class.isAssignableFrom(field.getType())) {
                 if (((Map) obj).size() == 0) {
-                    throw new ValidateException(notEmpty.message());
+                    throw new ValidateException(notEmpty.message(),field,obj);
                 }
             }
             //数组类型
             if (field.getType().isArray()) {
                 if (((Object[]) obj).length == 0) {
-                    throw new ValidateException(notEmpty.message());
+                    throw new ValidateException(notEmpty.message(),field,obj);
                 }
             }
         }
@@ -206,7 +206,7 @@ public class ValidateUtil {
         NotNull notNull = field.getAnnotation(NotNull.class);
         if (notNull != null) {
             if (obj == null) {
-                throw new ValidateException(notNull.message());
+                throw new ValidateException(notNull.message(),field,obj);
             }
         }
     }
@@ -222,7 +222,7 @@ public class ValidateUtil {
         Null isNull = field.getAnnotation(Null.class);
         if (isNull != null) {
             if (obj != null) {
-                throw new ValidateException(isNull.message());
+                throw new ValidateException(isNull.message(),field,obj);
             }
         }
     }
@@ -238,11 +238,11 @@ public class ValidateUtil {
         Pattern pattern = field.getAnnotation(Pattern.class);
         if (pattern != null) {
             if (obj == null) {
-                throw new ValidateException(pattern.message() + pattern.value());
+                throw new ValidateException(pattern.message(),field, obj);
             }
             if (CharSequence.class.isAssignableFrom(field.getType())) {
                 if (!java.util.regex.Pattern.matches(pattern.value(), obj.toString())) {
-                    throw new ValidateException(pattern.message() + pattern.value());
+                    throw new ValidateException(pattern.message(),field,obj);
                 }
             }
         }
@@ -260,7 +260,7 @@ public class ValidateUtil {
         Size size = field.getAnnotation(Size.class);
         if (size != null) {
             if (obj == null) {
-                throw new ValidateException(size.message());
+                throw new ValidateException(size.message(),field,obj);
             }
 
             /**
@@ -274,21 +274,25 @@ public class ValidateUtil {
             if (CharSequence.class.isAssignableFrom(field.getType())) {
                 int length = ((CharSequence) obj).length();
                 if (length < size.min() || length > size.max()) {
-                    throw new ValidateException(size.message());
+                    throw new ValidateException(size.message(),field,obj);
+
                 }
             }
             //集合
             if (Collection.class.isAssignableFrom(field.getType())) {
                 int length = ((Collection) obj).size();
                 if (length < size.min() || length > size.max()) {
-                    throw new ValidateException(size.message());
+                    throw new ValidateException(size.message(),field,obj);
+
+
                 }
             }
             //Map
             if (Map.class.isAssignableFrom(field.getType())) {
                 int length = ((Map) obj).size();
                 if (length < size.min() || length > size.max()) {
-                    throw new ValidateException(size.message());
+                    throw new ValidateException(size.message(),field,obj);
+
                 }
             }
             //数组类型
@@ -296,7 +300,8 @@ public class ValidateUtil {
                 assert obj instanceof Object[];
                 int length = ((Object[]) obj).length;
                 if (length < size.min() || length > size.max()) {
-                    throw new ValidateException(size.message());
+                    throw new ValidateException(size.message(),field,obj);
+
                 }
             }
         }
