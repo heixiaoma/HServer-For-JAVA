@@ -35,7 +35,11 @@ public class HServerQueue {
      * @param queueName
      */
     public static void removeQueue(String queueName) {
-        QueueDispatcher.removeQueue(queueName);
+        QueueDispatcher.removeQueue(queueName,true);
+    }
+
+    public static void removeQueue(String queueName,boolean trueDeleteData) {
+        QueueDispatcher.removeQueue(queueName,trueDeleteData);
     }
 
     /**

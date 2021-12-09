@@ -8,6 +8,7 @@ import top.hserver.core.ioc.annotation.queue.QueueHandler;
 import top.hserver.core.ioc.annotation.queue.QueueListener;
 import top.hserver.core.ioc.ref.PackageScanner;
 import top.hserver.core.queue.fqueue.FQueue;
+import top.hserver.core.queue.fqueue.exception.FileFormatException;
 import top.hserver.core.server.util.NamedThreadFactory;
 
 import java.io.File;
@@ -33,14 +34,25 @@ public class QueueDispatcher {
     private QueueDispatcher() {
     }
 
-    public static void removeQueue(String queueName) {
+    public static void removeQueue(String queueName,boolean trueDelete) {
         QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
         if (queueHandleInfo != null && queueHandleInfo.getQueueFactory() != null) {
             queueHandleInfo.getQueueFactory().stop();
         }
         handleMethodMap.remove(queueName);
         FQueue fQueue = FQ.get(queueName);
-        fQueue.clear();
+        if (fQueue!=null) {
+            if (trueDelete){
+                fQueue.clear();
+            }
+            try {
+                fQueue.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (FileFormatException e) {
+                e.printStackTrace();
+            }
+        }
         FQ.remove(queueName);
     }
 
@@ -133,6 +145,7 @@ public class QueueDispatcher {
         QueueFactory queueFactory = new QueueFactoryImpl();
         queueFactory.createQueue(v.getQueueName(), v.getBufferSize(), v.getQueueHandlerType(), v.getQueueHandleMethods());
         v.setQueueFactory(queueFactory);
+        v.getQueueFactory().start();
     }
 
     /**
@@ -155,21 +168,21 @@ public class QueueDispatcher {
             }
         });
         FQ.clear();
-
         //再来重新开始
         handleMethodMap.forEach((k, v) -> {
             initConfigQueue(v);
         });
-        handleMethodMap.forEach((k, v) -> {
-            v.getQueueFactory().start();
-        });
-        if (FQ.size() > 0) {
-            Thread thread = new NamedThreadFactory("hserver_queue").newThread(() -> {
-                while (true) {
+        Thread thread = new NamedThreadFactory("hserver_queue").newThread(() -> {
+            while (true) {
+                if (FQ.size() > 0) {
                     FQ.forEach((k, v) -> {
                         try {
                             QueueInfo queueInfo = queueInfo(k);
-                            int threadSize = handleMethodMap.get(k).getThreadSize();
+                            QueueHandleInfo queueHandleInfo = handleMethodMap.get(k);
+                            if (queueHandleInfo==null){
+                                return;
+                            }
+                            int threadSize =queueHandleInfo.getThreadSize();
                             if (queueInfo != null && (queueInfo.getBufferSize() - queueInfo.getRemainQueueSize() < threadSize)) {
                                 byte[] poll;
                                 if (threadSize == 1) {
@@ -186,11 +199,16 @@ public class QueueDispatcher {
                             e.printStackTrace();
                         }
                     });
-
+                } else {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-            });
-            thread.start();
-        }
+            }
+        });
+        thread.start();
     }
 
     /**
@@ -232,7 +250,7 @@ public class QueueDispatcher {
 
     public static QueueInfo queueInfo(String queueName) {
         QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
-        if (queueHandleInfo != null) {
+        if (queueHandleInfo != null && queueHandleInfo.getQueueFactory() != null) {
             QueueInfo queueInfo = queueHandleInfo.getQueueFactory().queueInfo();
             return queueInfo;
         }
