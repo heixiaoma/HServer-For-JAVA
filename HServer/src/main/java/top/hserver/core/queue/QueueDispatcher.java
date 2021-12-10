@@ -34,15 +34,15 @@ public class QueueDispatcher {
     private QueueDispatcher() {
     }
 
-    public static void removeQueue(String queueName,boolean trueDelete) {
+    public static void removeQueue(String queueName, boolean trueDelete) {
         QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
         if (queueHandleInfo != null && queueHandleInfo.getQueueFactory() != null) {
             queueHandleInfo.getQueueFactory().stop();
         }
         handleMethodMap.remove(queueName);
         FQueue fQueue = FQ.get(queueName);
-        if (fQueue!=null) {
-            if (trueDelete){
+        if (fQueue != null) {
+            if (trueDelete) {
                 fQueue.clear();
             }
             try {
@@ -179,10 +179,11 @@ public class QueueDispatcher {
                         try {
                             QueueInfo queueInfo = queueInfo(k);
                             QueueHandleInfo queueHandleInfo = handleMethodMap.get(k);
-                            if (queueHandleInfo==null){
+                            if (queueHandleInfo == null) {
+                                sleep();
                                 return;
                             }
-                            int threadSize =queueHandleInfo.getThreadSize();
+                            int threadSize = queueHandleInfo.getThreadSize();
                             if (queueInfo != null && (queueInfo.getBufferSize() - queueInfo.getRemainQueueSize() < threadSize)) {
                                 byte[] poll;
                                 if (threadSize == 1) {
@@ -193,18 +194,19 @@ public class QueueDispatcher {
                                 if (poll != null) {
                                     QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
                                     dispatcherQueue(deserialize, deserialize.getQueueName());
+                                } else {
+                                    sleep();
                                 }
+                            } else {
+                                sleep();
                             }
                         } catch (Exception e) {
+                            sleep();
                             e.printStackTrace();
                         }
                     });
                 } else {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    sleep();
                 }
             }
         });
@@ -256,4 +258,14 @@ public class QueueDispatcher {
         }
         return null;
     }
+
+
+    private static void sleep(){
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
