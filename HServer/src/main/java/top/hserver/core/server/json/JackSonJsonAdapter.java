@@ -56,6 +56,7 @@ public class JackSonJsonAdapter implements JsonAdapter {
         try {
             return ConstConfig.OBJECT_MAPPER.writeValueAsString(data);
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
