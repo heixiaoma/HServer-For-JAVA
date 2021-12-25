@@ -76,7 +76,7 @@ public class ConstConfig {
      * webServer workerGroupThreadCount
      */
 
-    public static Integer workerPool = 4;
+    public static Integer workerPool = 2;
 
     /**
      * 对象处理

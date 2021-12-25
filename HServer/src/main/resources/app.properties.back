@@ -12,11 +12,11 @@ openHttp2=true
 #taskPool定时任务线程池子配置，默认大小是cpu核心数+1
 taskPool=5
 
-#bossPool Netty boss线程组大小 默认2，可以按cpu 核心数来
+#bossPool Netty boss线程组大小 默认2
 bossPool=2
 
-#workerPool Netty worker线程组大小 默认4
-workerPool=4
+#workerPool Netty worker线程组大小 默认2
+workerPool=2
 
 #businessPool 业务线程大小，默是用的workerPool
 businessPool=50
