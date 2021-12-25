@@ -224,6 +224,8 @@ level=debug
 #消息体大小 默认int.maxValue
 #httpContentSize=999999
 
+#队列数据缓存位置 默认当前项目下
+persistPath=/user/mcl/data
 
 #-----------------ssl-------------
 #注意下载的证书中 key文件需要转换成 pk8 文件
