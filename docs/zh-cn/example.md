@@ -125,25 +125,7 @@
         }
     
     }   
-
-
-	//@RpcService
-	//标注一个Bean对象是一个rpc服务,也可以分配一个名字
-    @Bean
-    @RpcService
-    public class RpcServiceTest {
-        public String test(String name){
-            return name+"我是RPC";
-        }
-    }  
-
-
-	//@Resource
-	//注入一个Rpc服务，也可以通过名字注入。详情，请看文档介绍   
-    @Resource
-    private RpcServiceTest rpcServiceTest;
-
-
+    
 
     @Sign("MD5")
     @RequiresRoles("角色")

@@ -1,4 +1,4 @@
-package top.hserver.cloud.util;
+package top.hserver.core.server.util;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;

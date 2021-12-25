@@ -224,8 +224,6 @@ level=debug
 #消息体大小 默认int.maxValue
 #httpContentSize=999999
 
-#Rpc调用超时时间设置 5秒
-rpcTimeOut=5000
 
 #-----------------ssl-------------
 #注意下载的证书中 key文件需要转换成 pk8 文件
@@ -234,20 +232,6 @@ rpcTimeOut=5000
 certPath=hserver.pem
 privateKeyPath=hserver.pk8
 privateKeyPwd=123
-
-
-#-----------------RPC-------------
-#默认模式
-消费者的配置文件添加即可
-app.rpc.address=127.0.0.1:7777@provider1,127.0.0.1:7778@provider2
-
-#nacos模式
-app.rpc.mode=nacos
-app.rpc.nacos.name=provider
-app.rpc.nacos.ip=127.0.0.1
-app.rpc.nacos.address=127.0.0.1:8848
-app.rpc.nacos.group=DEFAULT_GROUP
-
 
 
 ```

@@ -59,13 +59,6 @@ public class ConstConfig {
      */
     public static final String BUG_ADDRESS = "https://gitee.com/HServer/HServer/issues";
 
-
-    /**
-     * rpcTimeOut rpc超时时间设置
-     */
-
-    public static Integer rpcTimeOut = 5000;
-
     /**
      * webServer  bossThreadCount
      */

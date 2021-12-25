@@ -1,4 +1,4 @@
-package top.hserver.cloud.util;
+package top.hserver.core.server.util;
 
 import com.dyuproject.protostuff.Input;
 import com.dyuproject.protostuff.LinkedBuffer;

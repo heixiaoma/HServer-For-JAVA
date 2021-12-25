@@ -2,7 +2,7 @@ package top.hserver.core.queue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.hserver.cloud.util.SerializationUtil;
+import top.hserver.core.server.util.SerializationUtil;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.ioc.annotation.queue.QueueHandler;
 import top.hserver.core.ioc.annotation.queue.QueueListener;

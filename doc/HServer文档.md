@@ -8,13 +8,13 @@ HServer是一个简单高效的web库基于Netty开发.它不遵循servlet规范
 QQ交流群：1065301527
 ### Hserver的理念 
 
-**极简、高性能、分布式**
+**极简、高性能、扩展强**
 
 **极简** 代码只有几百KB 更多的案例会在gitee.com/Hserver 的组下给出案例源码.
 
 **高性能** 使用Netty网络库作为核心，比起传统的web容器性能高数十倍.
 
-**分布式** 支持RPC模式，可以实现分布式调用.
+**扩展强** 预留了丰富的接口，以及netty直接自定义协议
 
 ### 使用该框架的公司
 深圳市快读科技，深圳市聚美良品科技，广州家庭医生在线，上海互软集团，深圳市巨和网络...
@@ -40,15 +40,13 @@ QQ交流群：1065301527
 |         @OPTIONS         |                         请求类型注解                         |
 |         @CONNECT         |                         请求类型注解                         |
 |          @TRACE          |                         请求类型注解                         |
-|      @Order      | 排序注解 值越小，优先级越高 (FilterAdapter, GlobalException, InitRunner,ReInitRunner, ResponseAdapter,ProtocolDispatcherAdapter,RpcAdapter,ServerCloseAdapter) 这些子类支持排序 |
+|      @Order      | 排序注解 值越小，优先级越高 (FilterAdapter, GlobalException, InitRunner,ReInitRunner, ResponseAdapter,ProtocolDispatcherAdapter,ServerCloseAdapter) 这些子类支持排序 |
 |      @Configuration      | 配置注解，这个和springboot有相似之处（这个类中可以注入 @NacosClass,@NacosValue,@Value,@ConfigurationProperties这些注解产生的对象） |
 | @ConfigurationProperties |     配置类，和springboot相似 将Properties转为对象放入IOC     |
 |       @Controller        |  标记类为控制器 @Controller 参数可以指定一个URL 和 一个名字  |
 |          @Hook           |                         AOP操作使用                          |
 |   @RequiresPermissions   |                           权限注解                           |
 |      @RequiresRoles      |                           角色注解                           |
-|        @Resource         |               RPC对象的注入使用.可以按名字注入               |
-|       @RpcService        |         标记一个Service是一个RPC服务，可以给一个名字         |
 |          @Sign           | 作用在控制器方法上.可以根据他来实现sign检查当然你可以用拦截器自己处理 |
 |          @Task           |                    定时器使用，具体看例子                    |
 |          @Track          | 链路跟踪注解，如果你想检查某些方法的耗时或者其他监控，可以用这个注解，具体看下面的介绍 |
@@ -198,23 +196,6 @@ QQ交流群：1065301527
         }
     
     }
-
-
-	//@RpcService
-	//标注一个Bean对象是一个rpc服务,也可以分配一个名字
-    @Bean
-    @RpcService
-    public class RpcServiceTest {
-        public String test(String name){
-            return name+"我是RPC";
-        }
-    }  
-
-
-	//@Resource
-	//注入一个Rpc服务，也可以通过名字注入。详情，请看文档介绍   
-    @Resource
-    private RpcServiceTest rpcServiceTest;
 
 
 
@@ -741,12 +722,6 @@ public class TestPermission implements PermissionAdapter {
 }
 ```
 
-## **RPC调用**
-
-hserver 提供了RpcAdapter类，详细看代码里的实现 支持自定义注册中心完成RPC
-目前提供了两种模式 第一种默认模式不需要注册中心 第二种模式是需要Nacos注册中心. 编码过程中没有什么差异
-主要差异是在配置上. 文档我怕讲不清楚，详情看 test-rpc-*
-
 
 ## **ApiDoc生成功能**
 
@@ -1085,7 +1060,7 @@ public class TrackImpl implements TrackAdapter {
 
 HServer实现的是同端口多协议处理方式，如果有需要还可以构建其他协议。
 构建协议特点，需要包含包头用于区分协议，选择对应的解码器处理。
-HServer默认集成 websocket http rpc mqtt websocketmqtt协议，
+HServer默认集成 websocket http mqtt websocketmqtt协议，
 如果你还有更多的需求，可以在加协议。或者重写HServer提供的协议。
 headers字节，最多提取头512个字节，所以定义头一定不要过长，不要过线.
 

@@ -10,8 +10,6 @@
     <modules>
         <module>HServer</module>
         <module>test-web</module>
-        <module>test-rpc-default</module>
-        <module>test-rpc-nacos</module>
     </modules>
     <packaging>pom</packaging>
 </project>

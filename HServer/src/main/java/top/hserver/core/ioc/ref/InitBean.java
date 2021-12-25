@@ -3,15 +3,11 @@ package top.hserver.core.ioc.ref;
 import javassist.util.proxy.ProxyObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.hserver.cloud.CloudManager;
-import top.hserver.cloud.proxy.CloudProxy;
-import top.hserver.cloud.rpc.RpcAdapter;
 import top.hserver.core.proxy.HookProxyFactory;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.*;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.ioc.annotation.*;
-import top.hserver.core.ioc.annotation.nacos.NacosValue;
 import top.hserver.core.server.handlers.WebSocketServerHandler;
 import top.hserver.core.server.router.RouterInfo;
 import top.hserver.core.server.router.RouterManager;
@@ -35,7 +31,7 @@ public class InitBean {
     private static final Logger log = LoggerFactory.getLogger(InitBean.class);
 
     private static void sortOrder() {
-        Class<?>[] order = new Class[]{LimitAdapter.class, FilterAdapter.class, GlobalException.class, InitRunner.class, ReInitRunner.class, ResponseAdapter.class, ProtocolDispatcherAdapter.class, RpcAdapter.class, ServerCloseAdapter.class};
+        Class<?>[] order = new Class[]{LimitAdapter.class, FilterAdapter.class, GlobalException.class, InitRunner.class, ReInitRunner.class, ResponseAdapter.class, ProtocolDispatcherAdapter.class, ServerCloseAdapter.class};
         for (Class<?> aClass : order) {
             List<?> listBean = IocUtil.getListBean(aClass);
             List newObjectList = new ArrayList<>();
@@ -186,8 +182,6 @@ public class InitBean {
                 valuezr(field, o);
                 //注入配置类
                 zr(field, o);
-                //注入Nacos配置中心的数据
-                nacoszr(field, o);
             }
             for (Method method : methods) {
                 Bean bean = method.getAnnotation(Bean.class);
@@ -302,10 +296,7 @@ public class InitBean {
                 IocUtil.addListBean(ProtocolDispatcherAdapter.class.getName(), aClass.newInstance());
                 continue;
             }
-            if (RpcAdapter.class.isAssignableFrom(aClass)) {
-                IocUtil.addListBean(RpcAdapter.class.getName(), aClass.newInstance());
-                continue;
-            }
+
             //检测这个Bean是否是Mqtt的
             if (MqttAdapter.class.isAssignableFrom(aClass)) {
                 IocUtil.addBean(MqttAdapter.class.getName(), aClass.newInstance());
@@ -322,24 +313,6 @@ public class InitBean {
 
             //检测下Bean里面是否带又Task任务洛，带了就给他安排了
             Method[] methods = aClass.getDeclaredMethods();
-
-            //检测当前的Bean是不是Rpc服务
-            RpcService rpcService = (RpcService) aClass.getAnnotation(RpcService.class);
-            //说明是rpc服务，单独存储一份她的数据哦
-            if (rpcService != null) {
-                if (rpcService.value().trim().length() > 0) {
-                    //自定义了Rpc服务名
-                    IocUtil.addBean(rpcService.value(), aClass.newInstance());
-                } else {
-                    //没有自定义服务名字
-                    Class[] interfaces = aClass.getInterfaces();
-                    if (interfaces != null && interfaces.length > 0) {
-                        IocUtil.addBean(interfaces[0].getName(), aClass.newInstance());
-                    } else {
-                        log.error("RPC没有实现任何接口，预计调用过程会出现问题:{}", aClass.getSimpleName());
-                    }
-                }
-            }
 
             for (Method method : methods) {
                 Task task = method.getAnnotation(Task.class);
@@ -612,57 +585,8 @@ public class InitBean {
                 valuezr(field, v);
                 //Autowired注入
                 zr(field, v);
-                //rpc注入
-                rpczr(field, v);
-                //nacos注入
-                nacoszr(field, v);
-
             }
             par = par.getSuperclass();
-        }
-    }
-
-
-    /**
-     * Nacos注入
-     *
-     * @param declaredField
-     * @param v
-     */
-    private static void nacoszr(Field declaredField, Object v) {
-        NacosValue annotation = declaredField.getAnnotation(NacosValue.class);
-        if (annotation != null) {
-            try {
-                declaredField.setAccessible(true);
-                Object bean = IocUtil.getBean(annotation.dataId() + annotation.group());
-                if (bean == null) {
-                    log.info("{}：空值", v.getClass().getSimpleName());
-                    return;
-                }
-                declaredField.set(v, bean);
-                log.info("{}----->{}：装配完成，NacosValue装配", bean.getClass().getSimpleName(), v.getClass().getSimpleName());
-            } catch (Exception e) {
-                log.error("{}----->{}：NacosValue装配失败", v.getClass().getSimpleName(), v.getClass().getSimpleName());
-            }
-        }
-    }
-
-
-    /**
-     * Rpc 服务的代理对象生成
-     */
-    private static void rpczr(Field declaredField, Object v) {
-        Resource annotation = declaredField.getAnnotation(Resource.class);
-        if (annotation != null) {
-            try {
-                CloudManager.add(annotation.serverName());
-                declaredField.setAccessible(true);
-                Object proxy = CloudProxy.getProxy(declaredField.getType(), annotation);
-                declaredField.set(v, proxy);
-                log.info("{}----->{}：装配完成，Rpc装配", proxy.getClass().getSimpleName(), v.getClass().getSimpleName());
-            } catch (Exception e) {
-                log.error("{}----->{}：装配错误:RPC代理生成失败", v.getClass().getSimpleName(), v.getClass().getSimpleName());
-            }
         }
     }
 

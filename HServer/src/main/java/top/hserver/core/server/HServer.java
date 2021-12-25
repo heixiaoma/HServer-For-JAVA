@@ -7,7 +7,6 @@ import io.netty.handler.ssl.*;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.hserver.cloud.CloudManager;
 import top.hserver.core.interfaces.ServerCloseAdapter;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
@@ -118,8 +117,6 @@ public class HServer {
     }
 
     private void initOk() {
-        //云启动
-        CloudManager.run(ports[0]);
         //初始化完成可以放开任务了
         TaskManager.IS_OK = true;
         QueueDispatcher.startTaskThread();

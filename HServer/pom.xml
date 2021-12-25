@@ -29,7 +29,6 @@
         <freemarker.version>2.3.31</freemarker.version>
         <objenesis.version>3.2</objenesis.version>
         <junit.version>4.13.2</junit.version>
-        <nacos.version>2.0.2</nacos.version>
         <disruptor.version>3.4.4</disruptor.version>
         <guava.version>30.1.1-jre</guava.version>
     </properties>
@@ -139,14 +138,6 @@
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
             <version>${disruptor.version}</version>
-        </dependency>
-
-        <!--注册配置中心-->
-        <dependency>
-            <groupId>com.alibaba.nacos</groupId>
-            <artifactId>nacos-client</artifactId>
-            <version>${nacos.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <!--   谷歌工具库     -->

@@ -21,7 +21,6 @@
 * [自定义JSON序列化](zh-cn/json.md)
 * [自定义协议](zh-cn/protocol.md)
 * [单元测试](zh-cn/unit.md)
-* [RPC调用](zh-cn/rpc.md)
 * [配置文件](zh-cn/prop.md)
 * [插件开发](zh-cn/plugin.md)
 * [程序打包](zh-cn/jar.md)
