@@ -13,6 +13,7 @@ import top.hserver.core.server.router.RouterInfo;
 import top.hserver.core.server.router.RouterManager;
 import top.hserver.core.server.router.RouterPermission;
 import top.hserver.core.server.util.ClassLoadUtil;
+import top.hserver.core.server.util.ExceptionUtil;
 import top.hserver.core.server.util.ParameterUtil;
 import top.hserver.core.server.util.PropUtil;
 import top.hserver.core.task.TaskManager;
@@ -187,6 +188,10 @@ public class InitBean {
                 Bean bean = method.getAnnotation(Bean.class);
                 if (bean != null) {
                     try {
+                        if (method.getParameterTypes().length > 0) {
+                            log.warn("类：{} 方法：{}，方法不能有入参", aClass.getName(), method.getName());
+                            continue;
+                        }
                         method.setAccessible(true);
                         Object invoke = method.invoke(o);
                         if (invoke != null) {
@@ -200,8 +205,8 @@ public class InitBean {
                             log.warn("{},方法返回空值，不进入容器", method.getName());
                         }
                     } catch (Exception e) {
-                        log.warn("{},提示：方法不能有入参", method.getName());
-                        log.warn(e.getMessage());
+                        log.warn("类：{} 方法：{}，执行异常，", aClass.getName(), method.getName());
+                        log.warn(ExceptionUtil.getMessage(e));
                     }
                 }
             }
