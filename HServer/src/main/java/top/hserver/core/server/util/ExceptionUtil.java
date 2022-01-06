@@ -32,9 +32,9 @@ public class ExceptionUtil {
 
     public static String getHtmlMessage(Throwable e) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("<br>").append(getExceptionSrintStackTrace(e).replaceAll("\n", "<br>").replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;"));
+        stringBuilder.append("<br>").append(getExceptionSrintStackTrace(e).replaceAll("\n", "<br>").replaceAll("\t", "<div style='text-indent: 4em;display: inline-block;'>&nbsp;</div>"));
         if (e.getMessage() != null) {
-            stringBuilder.append("<br>&nbsp;&nbsp;&nbsp;&nbsp;at ").append(getExceptionMessage(e));
+            stringBuilder.append("<br><div style='text-indent: 4em;display: inline-block;'>&nbsp;</div>at ").append(getExceptionMessage(e));
         }
         return stringBuilder.toString();
     }

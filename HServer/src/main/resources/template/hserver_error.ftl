@@ -8,33 +8,35 @@
         body {
             font: 16px arial, 'Microsoft Yahei', 'Hiragino Sans GB', sans-serif;
         }
-
+        ::-webkit-scrollbar {
+            display: none
+        }
         * {
-            color: #2d6a88;
+            color: #ffffff;
         }
 
         h1 {
             margin: 0;
-            color: #3a87ad;
+            color: #ffffff;
             font-size: 26px;
         }
 
         .content {
-            margin: 5vh auto;
+            min-height: 94vh;
             padding: 20px;
             border-radius: 12px;
             overflow: hidden;
             overflow-x: scroll;
-            width: 50%;
-            background: #d9edf7;
+            background: #000000;
         }
 
         .content dl {
-            line-height: 40px;
+            line-height: 3vh;
         }
 
         .flex {
             display: flex;
+            align-items: flex-start;
         }
 
         .flex > div {
@@ -97,7 +99,10 @@
                 <a target="_blank" href="${business.bugAddress}">有Bug?反馈?</a>
             </div>
             <div>
-                <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=_zBDA2Wsf851BI5zKr2fn_hvoH0n9vM5&jump_from=webapi"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="HServer扯皮交流群" title="HServer扯皮交流群"></a>
+                <a target="_blank"
+                   href="https://qm.qq.com/cgi-bin/qm/qr?k=_zBDA2Wsf851BI5zKr2fn_hvoH0n9vM5&jump_from=webapi"><img
+                            border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="HServer扯皮交流群"
+                            title="HServer扯皮交流群"></a>
             </div>
         </div>
     </div>
