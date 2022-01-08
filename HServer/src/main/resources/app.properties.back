@@ -18,7 +18,7 @@ bossPool=2
 #workerPool Netty worker线程组大小 默认2
 workerPool=2
 
-#businessPool 业务线程大小，默是用的workerPool
+#businessPool 业务线程大小，默是用的workerPool -1标识使用workerPool 性能更快
 businessPool=50
 
 #可以开启Epoll时是否开启epoll 默认true
