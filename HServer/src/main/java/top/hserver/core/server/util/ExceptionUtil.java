@@ -21,20 +21,14 @@ public class ExceptionUtil {
     }
 
     public static String getMessage(Throwable e) {
-        StringBuilder stringBuilder = new StringBuilder();
-//        stringBuffer.append("\nat " + ExceptionUtil.getExceptionType(e));
-        stringBuilder.append("\n").append(ExceptionUtil.getExceptionSrintStackTrace(e));
-        if (e.getMessage() != null) {
-            stringBuilder.append("\nat ").append(ExceptionUtil.getExceptionMessage(e));
-        }
-        return stringBuilder.toString();
+        return "\n" + ExceptionUtil.getExceptionSrintStackTrace(e);
     }
 
     public static String getHtmlMessage(Throwable e) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("<br>").append(getExceptionSrintStackTrace(e).replaceAll("\n", "<br>").replaceAll("\t", "<div style='text-indent: 4em;display: inline-block;'>&nbsp;</div>"));
         if (e.getMessage() != null) {
-            stringBuilder.append("<br><div style='text-indent: 4em;display: inline-block;'>&nbsp;</div>at ").append(getExceptionMessage(e));
+            stringBuilder.append("<br><div style='text-indent: 4em;display: inline-block;'>&nbsp;</div>");
         }
         return stringBuilder.toString();
     }
