@@ -25,3 +25,4 @@
 * [插件开发](zh-cn/plugin.md)
 * 插件使用
     * [程序打包](zh-cn/plugin/jar.md)
+    * [Beetlsql](zh-cn/plugin/beetle.md)
