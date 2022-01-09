@@ -23,4 +23,5 @@
 * [单元测试](zh-cn/unit.md)
 * [配置文件](zh-cn/prop.md)
 * [插件开发](zh-cn/plugin.md)
-* [程序打包](zh-cn/jar.md)
+* 插件使用
+    * [程序打包](zh-cn/plugin/jar.md)
