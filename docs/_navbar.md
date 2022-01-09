@@ -18,3 +18,4 @@
     * [Maven打包插件](https://gitee.com/HServer/hserver-maven-plugin)
     * [Mybatis/MybatisPlus 插件](https://gitee.com/HServer/hserver-plugin-mybatis)
     * [BeetlSql插件](https://gitee.com/HServer/hserver-plugs-beetlsql)
+    * [RPC插件](https://gitee.com/HServer/hserver-rpc-plugin)

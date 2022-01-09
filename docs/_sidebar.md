@@ -26,3 +26,5 @@
 * 插件使用
     * [程序打包](zh-cn/plugin/jar.md)
     * [Beetlsql](zh-cn/plugin/beetle.md)
+    * [Mybatis](zh-cn/plugin/mybatis.md)
+    * [Redis](zh-cn/plugin/redis.md)

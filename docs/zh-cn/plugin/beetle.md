@@ -40,6 +40,7 @@ public class DbConfig {
     @Value("mysql.driver")
     private String mySqlDriver;
 
+    //默认数据源
     @Bean
     public SQLManager sql() {
         HikariDataSource ds = new HikariDataSource();
@@ -54,6 +55,23 @@ public class DbConfig {
         builder.setInters(new Interceptor[]{new DebugInterceptor()});
         return builder.build();
     }
+
+    //数据源1
+    @Bean("data_1")
+    public SQLManager sql1() {
+        HikariDataSource ds = new HikariDataSource();
+        ds.setJdbcUrl(mySqlUrl);
+        ds.setUsername(mySqlUsername);
+        ds.setPassword(mySqlPassword);
+        ds.setDriverClassName(mySqlDriver);
+        ConnectionSource source = ConnectionSourceHelper.getSingle(ds);
+        SQLManagerBuilder builder = new SQLManagerBuilder(source);
+        builder.setSqlLoader(new MarkdownClasspathLoader());
+        builder.setNc(new UnderlinedNameConversion());
+        builder.setInters(new Interceptor[]{new DebugInterceptor()});
+        return builder.build();
+    }
+    
 }
 ```
 
@@ -89,7 +107,7 @@ public class UserEntity {
 
 
 
-Mapper接口
+### Mapper接口
 ```java
     @BeetlSQL
     public interface UserDao2 extends BaseMapper<UserEntity> {
@@ -101,8 +119,23 @@ Mapper接口
         List<UserEntity> select();
     }
 
+
+    /**
+     * 使用的数据源1
+     */
+    @BeetlSQL("data_1")
+    public interface UserDao2 extends BaseMapper<UserEntity> {
+
+        @Update
+        @Sql("update user set nickName = ? where id = ?")
+        void update(String nickName,int id);
+
+        List<UserEntity> select();
+    }
+
 ```
 
+### 事务操作
 ```java
 
 @Bean
@@ -137,3 +170,8 @@ selectRole
 
 
 更具体的使用方法可以参考Beetlsql官方网的教程，比如包括一些查询什么的，拉米大的单表操作之类的
+
+### 测试Demo 多数据源
+```text
+https://gitee.com/HServer/hserver-for-java-beetlsql/tree/master
+```
