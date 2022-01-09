@@ -38,6 +38,7 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 | HServer版本 | 2.9.80  |
 | HServer-Beetlsql版本 | 3.3 |
 | HServer-Mybatis版本(1.0是原生mybatis,2.0开始mybatisPlus支持) | 2.1 |
+| HServer-RPC | 暂未发布 |
 | HServer-Maven 打包版本 | 3.0 |
 
 
@@ -54,6 +55,7 @@ spring的优点就不过多讲，但是存在臃肿，太大太复杂，那我�
 | HServer-Maven-Plugin | [点我](https://gitee.com/HServer/hserver-maven-plugin) |
 | HServer-BeetlSql-Plugin | [点我](https://gitee.com/HServer/hserver-plugs-beetlsql) |
 | HServer-Mybatis-Plugin | [点我](https://gitee.com/HServer/hserver-plugin-mybatis) |
+| HServer-RPC-Plugin | [点我](https://gitee.com/HServer/hserver-rpc-plugin) |
 | HServer版本查询 | [点我](https://repo1.maven.org/maven2/top/hserver/HServer/) |
 
 
