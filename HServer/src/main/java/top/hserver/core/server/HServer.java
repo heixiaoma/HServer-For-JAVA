@@ -1,10 +1,11 @@
 package top.hserver.core.server;
 
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
-import io.netty.handler.ssl.*;
-import io.netty.handler.ssl.util.SelfSignedCertificate;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.core.interfaces.ServerCloseAdapter;
@@ -12,10 +13,11 @@ import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.ConstConfig;
-import top.hserver.core.server.util.NamedThreadFactory;
-import top.hserver.core.server.util.EpollUtil;
-import top.hserver.core.server.util.PropUtil;
-import top.hserver.core.server.util.SslContextUtil;
+import top.hserver.core.server.context.HumMessage;
+import top.hserver.core.server.context.HumMessageType;
+import top.hserver.core.server.handlers.HumClientHandler;
+import top.hserver.core.server.handlers.HumServerHandler;
+import top.hserver.core.server.util.*;
 import top.hserver.core.task.TaskManager;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
@@ -24,10 +26,11 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import static io.netty.handler.codec.http2.Http2SecurityUtil.CIPHERS;
 import static top.hserver.core.server.context.ConstConfig.*;
 
 /**
@@ -38,12 +41,19 @@ public class HServer {
 
     private static final Logger log = LoggerFactory.getLogger(HServer.class);
 
-    private final Integer[] ports;
+    public static Integer[] ports;
 
     private final String[] args;
 
-    private EventLoopGroup bossGroup = null;
+    private final Map<Channel, String> channels = new HashMap<>();
 
+    //UDP
+    private EventLoopGroup humServerBossGroup = null;
+
+    private EventLoopGroup humClientBossGroup = null;
+
+    //TCP
+    private EventLoopGroup bossGroup = null;
     private EventLoopGroup workerGroup = null;
 
     public HServer(Integer[] port, String[] args) {
@@ -55,12 +65,35 @@ public class HServer {
                 ports[i] = Integer.parseInt(portStrs[i]);
             }
         } else {
-            this.ports = port;
+            ports = port;
         }
         this.args = args;
     }
 
     public void run() throws Exception {
+        //UDP Server
+        humServerBossGroup = new NioEventLoopGroup();
+        Bootstrap humServer = new Bootstrap();
+        humServer.group(humServerBossGroup)
+                .channel(NioDatagramChannel.class)
+                .option(ChannelOption.SO_BROADCAST, true)
+                .handler(new HumServerHandler());
+        for (Integer port : ports) {
+            Channel channel = humServer.bind(port).sync().channel();
+            channels.put(channel, "UDP Server Port:" + port);
+        }
+
+        //UDP Client
+        humClientBossGroup = new NioEventLoopGroup();
+        Bootstrap humClient = new Bootstrap();
+        humClient.group(humClientBossGroup)
+                .channel(NioDatagramChannel.class)
+                .option(ChannelOption.SO_BROADCAST, true)
+                .handler(new HumClientHandler());
+        HumClient.channel = humClient.bind(0).sync().channel();
+        channels.put(HumClient.channel, "UDP Client Port:0");
+
+        //TCP Server
         String typeName;
         ServerBootstrap bootstrap = new ServerBootstrap();
         if (EpollUtil.check() && EPOLL) {
@@ -85,25 +118,45 @@ public class HServer {
         String portStr = "";
         for (Integer port : ports) {
             portStr = portStr + (port + " ");
-            bootstrap.bind(port).sync().channel();
+            Channel channel = bootstrap.bind(port).sync().channel();
+            channels.put(channel, "TCP Server Port:" + port);
         }
         log.info("HServer 启动完成");
         System.out.println();
 
         System.out.println(getHello(typeName, portStr));
         System.out.println();
-        initOk();
         shutdownHook();
+        initOk();
     }
 
     private void shutdownHook() {
+
+        publishMessage(APP_NAME + "上线，IP：" + IpUtil.getLocalIP());
+
+        channels.forEach((k, v) -> new NamedThreadFactory("hserver_close").newThread(() -> {
+            try {
+                k.closeFuture().sync();
+                log.info("channel关闭,描述信息：{}", v);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start());
+
         Thread shutdown = new NamedThreadFactory("hserver_shutdown").newThread(() -> {
             log.info("服务即将关闭");
+            publishMessage(APP_NAME + "下线，IP：" + IpUtil.getLocalIP());
             List<ServerCloseAdapter> listBean = IocUtil.getListBean(ServerCloseAdapter.class);
             if (listBean != null) {
                 for (ServerCloseAdapter serverCloseAdapter : listBean) {
                     serverCloseAdapter.close();
                 }
+            }
+            if (this.humClientBossGroup != null) {
+                this.humClientBossGroup.shutdownGracefully();
+            }
+            if (this.humServerBossGroup != null) {
+                this.humServerBossGroup.shutdownGracefully();
             }
             if (this.bossGroup != null) {
                 this.bossGroup.shutdownGracefully();
@@ -150,6 +203,14 @@ public class HServer {
                 "\\    Y    /        \\  ___/|  | \\/\\   /\\  ___/|  | \\/\n" +
                 " \\___|_  /_______  /\\___  >__|    \\_/  \\___  >__|   \n" +
                 "       \\/        \\/     \\/                 \\/       ";
+    }
+
+
+    public void publishMessage(String message) {
+        HumMessage humMessage = new HumMessage();
+        humMessage.setData(message);
+        humMessage.setHumMessageType(HumMessageType.SYSTEM);
+        HumClient.sendMessage(humMessage);
     }
 
 }

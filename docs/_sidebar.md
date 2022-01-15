@@ -18,6 +18,7 @@
 * [消息队列的使用](zh-cn/mq.md)
 * [并发限制](zh-cn/limit.md)
 * [Track跟踪](zh-cn/track.md)
+* [HUM消息](zh-cn/hum.md)
 * [自定义JSON序列化](zh-cn/json.md)
 * [自定义协议](zh-cn/protocol.md)
 * [单元测试](zh-cn/unit.md)
