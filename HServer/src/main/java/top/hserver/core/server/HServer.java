@@ -41,7 +41,7 @@ public class HServer {
 
     private static final Logger log = LoggerFactory.getLogger(HServer.class);
 
-    public static Integer[] ports;
+    private final Integer[] ports;
 
     private final String[] args;
 
@@ -77,12 +77,10 @@ public class HServer {
         humServer.group(humServerBossGroup)
                 .channel(NioDatagramChannel.class)
                 .option(ChannelOption.SO_BROADCAST, true)
+                .option(ChannelOption.SO_REUSEADDR, true)
                 .handler(new HumServerHandler());
-        for (Integer port : ports) {
-            Channel channel = humServer.bind(port).sync().channel();
-            channels.put(channel, "UDP Server Port:" + port);
-        }
-
+        Channel humChannel = humServer.bind(HUM_PORT).sync().channel();
+        channels.put(humChannel, "UDP Server Port:" + HUM_PORT);
         //UDP Client
         humClientBossGroup = new NioEventLoopGroup();
         Bootstrap humClient = new Bootstrap();

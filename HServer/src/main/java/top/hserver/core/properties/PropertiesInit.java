@@ -27,6 +27,10 @@ public class PropertiesInit {
         if (workerPool != null) {
             ConstConfig.workerPool = workerPool;
         }
+        Integer humPort = instance.getInt("humPort");
+        if (humPort != null) {
+            ConstConfig.HUM_PORT = humPort;
+        }
         if (instance.get("epoll").trim().length() > 0) {
             ConstConfig.EPOLL = Boolean.valueOf(instance.get("epoll"));
         }

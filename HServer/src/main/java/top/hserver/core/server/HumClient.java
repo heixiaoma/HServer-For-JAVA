@@ -2,6 +2,7 @@ package top.hserver.core.server;
 
 import io.netty.channel.Channel;
 import io.netty.channel.socket.DatagramPacket;
+import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.context.HumMessage;
 import top.hserver.core.server.util.HumMessageUtil;
 
@@ -13,17 +14,15 @@ public class HumClient {
 
     public static void sendMessage(Object data) {
         if (channel != null) {
-            for (Integer port : HServer.ports) {
-                channel.writeAndFlush(new DatagramPacket(HumMessageUtil.createMessage(new HumMessage(data)), new InetSocketAddress(
-                        "255.255.255.255", port)));
-            }
+            channel.writeAndFlush(new DatagramPacket(HumMessageUtil.createMessage(new HumMessage(data)), new InetSocketAddress(
+                    "255.255.255.255", ConstConfig.HUM_PORT)));
         }
     }
 
     public static void sendMessage(Object data, int port) {
         if (channel != null) {
             channel.writeAndFlush(new DatagramPacket(HumMessageUtil.createMessage(new HumMessage(data)), new InetSocketAddress(
-                    "255.255.255.255", port)));
+                    "255.255.255.255", ConstConfig.HUM_PORT)));
         }
     }
 
@@ -50,10 +49,8 @@ public class HumClient {
 
     public static void sendMessage(HumMessage humMessage) {
         if (channel != null) {
-            for (Integer port : HServer.ports) {
-                channel.writeAndFlush(new DatagramPacket(HumMessageUtil.createMessage(humMessage), new InetSocketAddress(
-                        "255.255.255.255", port)));
-            }
+            channel.writeAndFlush(new DatagramPacket(HumMessageUtil.createMessage(humMessage), new InetSocketAddress(
+                    "255.255.255.255", ConstConfig.HUM_PORT)));
         }
     }
 }

@@ -122,4 +122,9 @@ public class ConstConfig {
 
     public static String APP_NAME = "HServer";
 
+    /**
+     * hum 默认消息端口
+     */
+    public static Integer HUM_PORT = 0;
+
 }
