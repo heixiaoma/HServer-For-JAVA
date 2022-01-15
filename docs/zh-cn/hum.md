@@ -19,6 +19,7 @@ public class HumMsg implements HumAdapter {
     public void message(Object o, Hum hum) {
         
         //UDP其实不分服务端和客服端，但是为了开发理解方便，加入这个
+        // hum是点对点推送
         System.out.println(hum.getType()+"-->Hum消息："+o);
         if (hum.getType()== Hum.Type.CLIENT){
             hum.sendMessage(System.currentTimeMillis()+"Server");
@@ -33,5 +34,6 @@ public class HumMsg implements HumAdapter {
 - 主动发送消息
 - 默认9527端口，可以在配置文件中自定义端口: humPort=9527
 ```java
+//广播推送
  HumClient.sendMessage("666");
 ```
