@@ -33,7 +33,7 @@ HServer是一个基于Netty开发的一个功能强大，资源丰富，开发�
 | :----:| :----: |
 | HServer版本 | 2.9.80  |
 | HServer-Beetlsql版本 | 3.3 |
-| HServer-Mybatis版本(1.0是原生mybatis,2.0开始mybatisPlus支持) | 2.1 |
+| HServer-Mybatis版本(1.0是原生mybatis,2.0开始mybatisPlus支持) | 3.0 |
 | HServer-RPC | 暂未发布 |
 | HServer-Maven 打包版本 | 3.0 |
 
