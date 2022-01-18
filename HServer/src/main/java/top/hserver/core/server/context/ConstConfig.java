@@ -125,6 +125,6 @@ public class ConstConfig {
     /**
      * hum 默认消息端口
      */
-    public static Integer HUM_PORT = 0;
+    public static Integer HUM_PORT = 9527;
 
 }

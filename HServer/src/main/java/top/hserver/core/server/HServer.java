@@ -12,7 +12,6 @@ import top.hserver.core.interfaces.ServerCloseAdapter;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
-import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.context.HumMessage;
 import top.hserver.core.server.context.HumMessageType;
 import top.hserver.core.server.handlers.HumClientHandler;
