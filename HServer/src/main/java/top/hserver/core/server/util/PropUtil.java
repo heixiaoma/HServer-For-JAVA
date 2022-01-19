@@ -7,6 +7,8 @@ import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.context.HeadMap;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.Properties;
 
 import static top.hserver.core.server.context.ConstConfig.profiles;
@@ -19,7 +21,7 @@ public class PropUtil {
 
     private static PropUtil propUtil;
 
-    private static HeadMap data = new HeadMap();
+    private static final HeadMap data = new HeadMap();
 
     private PropUtil() {
     }
@@ -42,7 +44,7 @@ public class PropUtil {
         Properties p = new Properties();
         try {
             String name = "/app.properties";
-            InputStream is = getFileStream(name);
+            InputStreamReader is = getFileStream(name);
             if (is == null) {
                 return;
             }
@@ -58,7 +60,7 @@ public class PropUtil {
         }
         if (profiles != null) {
             try {
-                InputStream is2 = getFileStream(getProFiles(profiles));
+                InputStreamReader is2 = getFileStream(getProFiles(profiles));
                 p.clear();
                 if (is2 == null) {
                     return;
@@ -128,13 +130,13 @@ public class PropUtil {
     }
 
 
-    private static InputStream getFileStream(String path) {
+    private static InputStreamReader getFileStream(String path) {
         //先检查外部文件，在检查内部文件，外部优先级最高
-        String rootPath=System.getProperty("user.dir");
+        String rootPath = System.getProperty("user.dir");
         try {
-            return new FileInputStream(rootPath + path);
-        }catch (FileNotFoundException e){
-            return PropUtil.class.getResourceAsStream(path);
+            return new InputStreamReader(new FileInputStream(rootPath + path), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            return new InputStreamReader(Objects.requireNonNull(PropUtil.class.getResourceAsStream(path)), StandardCharsets.UTF_8);
         }
     }
 
