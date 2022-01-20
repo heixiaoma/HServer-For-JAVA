@@ -12,7 +12,7 @@ public interface HookAdapter {
      * 之前
      * @param args
      */
-    void before(Class clazz, Method method, Object[] args);
+    void before(Class clazz, Method method, Object[] args) throws Throwable;
 
     /**
      * 之后

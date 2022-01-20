@@ -207,6 +207,7 @@ public class DispatcherHandler {
                 throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "控制器方法调用时传入的参数异常", e, hServerContext.getWebkit());
             }
             method.setAccessible(true);
+
             res = method.invoke(bean, methodArgs);
             //调用结果进行设置
             if (res == null) {
@@ -317,11 +318,6 @@ public class DispatcherHandler {
             //一般是走自己的异常
             if (e.getCause() instanceof BusinessException) {
                 BusinessException e1 = (BusinessException) e.getCause();
-                if (e1.getHttpCode() == HttpResponseStatus.NOT_FOUND.code()) {
-                    log.error(e1.getErrorDescription());
-                } else {
-                    log.error(ExceptionUtil.getMessage(e1.getThrowable()));
-                }
                 List<GlobalException> listBean = IocUtil.getListBean(GlobalException.class);
                 if (listBean != null) {
                     for (GlobalException globalException : listBean) {
@@ -332,6 +328,11 @@ public class DispatcherHandler {
                     }
                     return buildExceptionResponse(e1.getWebkit());
                 } else {
+                    if (e1.getHttpCode() == HttpResponseStatus.NOT_FOUND.code()) {
+                        log.error(e1.getErrorDescription());
+                    } else {
+                        log.error(ExceptionUtil.getMessage(e1.getThrowable()));
+                    }
                     return BuildResponse.buildError(e1);
                 }
             } else {
