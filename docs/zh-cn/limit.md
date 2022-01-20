@@ -1,6 +1,6 @@
 ## **并发限制**
 
-HServer提供了GlobalLimit(全局QPS限制)和UrlLimit(更具URL来限制QPS)使用案例如下
+HServer提供了GlobalLimit(全局QPS限制)，UrlLimit(更具URL来限制QPS)@QpsLimit注解使用案例如下
 
 - 继承方式
 
@@ -18,8 +18,9 @@ public class TestLimit extends GlobalLimit{
         super(100);
     }
 
+    //rate为当前速率
     @Override
-    protected void result(Webkit webkit, boolean status) {
+    protected void result(Webkit webkit,Double rate, boolean status) {
         if (status){
             webkit.httpResponse.sendJson(JsonResult.error("并发数限制"));
         }
