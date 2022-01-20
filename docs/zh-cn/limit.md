@@ -38,5 +38,22 @@ public class TestLimit extends GlobalLimit{
     public JsonResult b(){
         return JsonResult.ok();
     }
+    
+    //当被限制时，会抛出QpsException 异常
+
+    @Bean
+    public class QpsLimitException implements GlobalException {
+        @Override
+        public void handler(Throwable throwable, int i, String s, Webkit webkit) {
+            if (throwable instanceof QpsException) {
+                QpsException qpsException = (QpsException) throwable;
+                Integer qps = qpsException.getQps();
+                Double rate = qpsException.getRate();
+                System.out.println("速率："+rate);
+                System.out.println("设定的QPS："+qps);
+            }
+            webkit.httpResponse.sendJson(JsonResult.error());
+        }
+    }
 
 ```
