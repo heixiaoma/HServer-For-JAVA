@@ -20,7 +20,7 @@ public abstract class GlobalLimit extends Limit implements LimitAdapter {
 
     @Override
     public void doLimit(Webkit webkit) throws Exception {
-        result(webkit, !rateLimiter.tryAcquire());
+        result(webkit, rateLimiter.getRate(),!rateLimiter.tryAcquire());
     }
 
 }

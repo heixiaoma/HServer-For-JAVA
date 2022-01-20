@@ -4,6 +4,12 @@ import top.hserver.core.server.context.Webkit;
 
 public abstract class Limit {
 
-    public abstract void result(Webkit webkit, boolean status);
+    /**
+     *
+     * @param webkit
+     * @param rate 当前速率
+     * @param status true 被限制
+     */
+    public abstract void result(Webkit webkit,Double rate, boolean status);
 
 }

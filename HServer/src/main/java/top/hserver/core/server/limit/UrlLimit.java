@@ -22,7 +22,8 @@ public abstract class UrlLimit extends Limit implements LimitAdapter {
     public void doLimit(Webkit webkit) throws Exception {
         String key = webkit.httpRequest.getUri();
         if (rateLimiterPool.containsKey(key)) {
-            result(webkit, !rateLimiterPool.get(key).tryAcquire());
+            RateLimiter rateLimiter = rateLimiterPool.get(key);
+            result(webkit, rateLimiter.getRate(), !rateLimiter.tryAcquire());
         } else {
             rateLimiterPool.put(key, RateLimiter.create(qps));
         }
