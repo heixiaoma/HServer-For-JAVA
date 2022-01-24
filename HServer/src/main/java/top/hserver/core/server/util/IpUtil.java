@@ -168,7 +168,7 @@ public class IpUtil {
             return ip;
         } else {
             try {
-                Enumeration<?> e1 = (Enumeration<?>) NetworkInterface
+                Enumeration<?> e1 = NetworkInterface
                         .getNetworkInterfaces();
                 while (e1.hasMoreElements()) {
                     NetworkInterface ni = (NetworkInterface) e1.nextElement();
@@ -190,6 +190,6 @@ public class IpUtil {
             } catch (SocketException e) {
             }
         }
-        return "";
+        return "0.0.0.0";
     }
 }

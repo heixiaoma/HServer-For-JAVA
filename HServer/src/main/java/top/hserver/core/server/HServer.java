@@ -46,10 +46,8 @@ public class HServer {
 
     private final Map<Channel, String> channels = new HashMap<>();
 
-    //UDP
+    //UDP-它是服务也是客服端，通用起来
     private EventLoopGroup humServerBossGroup = null;
-
-    private EventLoopGroup humClientBossGroup = null;
 
     //TCP
     private EventLoopGroup bossGroup = null;
@@ -78,17 +76,8 @@ public class HServer {
                 .option(ChannelOption.SO_BROADCAST, true)
                 .option(ChannelOption.SO_REUSEADDR, true)
                 .handler(new HumServerHandler());
-        Channel humChannel = humServer.bind(HUM_PORT).sync().channel();
-        channels.put(humChannel, "UDP Server Port:" + HUM_PORT);
-        //UDP Client
-        humClientBossGroup = new NioEventLoopGroup();
-        Bootstrap humClient = new Bootstrap();
-        humClient.group(humClientBossGroup)
-                .channel(NioDatagramChannel.class)
-                .option(ChannelOption.SO_BROADCAST, true)
-                .handler(new HumClientHandler());
-        HumClient.channel = humClient.bind(0).sync().channel();
-        channels.put(HumClient.channel, "UDP Client Port:0");
+        HumClient.channel  = humServer.bind(HUM_PORT).sync().channel();
+        channels.put(HumClient.channel , "UDP Server Port:" + HUM_PORT);
 
         //TCP Server
         String typeName;
@@ -148,9 +137,6 @@ public class HServer {
                 for (ServerCloseAdapter serverCloseAdapter : listBean) {
                     serverCloseAdapter.close();
                 }
-            }
-            if (this.humClientBossGroup != null) {
-                this.humClientBossGroup.shutdownGracefully();
             }
             if (this.humServerBossGroup != null) {
                 this.humServerBossGroup.shutdownGracefully();
