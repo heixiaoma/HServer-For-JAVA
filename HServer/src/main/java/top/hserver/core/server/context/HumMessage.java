@@ -17,7 +17,8 @@ public class HumMessage {
     public HumMessage() {
     }
 
-    public HumMessage(Object data) {
+    public HumMessage(String type,Object data) {
+        this.type=type;
         this.data = data;
     }
 
