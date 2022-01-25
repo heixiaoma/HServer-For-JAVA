@@ -30,7 +30,7 @@ public class HumServerHandler extends
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
         HumMessage message = HumMessageUtil.getMessage(msg.content());
         if (message != null) {
-            if (message.getType().equals(SERVER_NAME)) {
+            if (SERVER_NAME.equals(message.getType())) {
                 log.debug("hum消息:{}", message.getData().toString());
             } else {
                 List<HumAdapter> listBean = IocUtil.getListBean(HumAdapter.class);
