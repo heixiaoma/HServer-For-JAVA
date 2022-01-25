@@ -13,8 +13,6 @@ import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.HumMessage;
-import top.hserver.core.server.context.HumMessageType;
-import top.hserver.core.server.handlers.HumClientHandler;
 import top.hserver.core.server.handlers.HumServerHandler;
 import top.hserver.core.server.util.*;
 import top.hserver.core.task.TaskManager;
@@ -192,7 +190,7 @@ public class HServer {
     public void publishMessage(String message) {
         HumMessage humMessage = new HumMessage();
         humMessage.setData(message);
-        humMessage.setHumMessageType(HumMessageType.SYSTEM);
+        humMessage.setType(SERVER_NAME);
         HumClient.sendMessage(humMessage);
     }
 

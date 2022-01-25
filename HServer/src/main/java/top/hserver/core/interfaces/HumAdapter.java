@@ -1,5 +1,6 @@
 package top.hserver.core.interfaces;
 
+import top.hserver.core.server.context.HumMessage;
 import top.hserver.core.server.handlers.Hum;
 
 /**
@@ -11,5 +12,5 @@ public interface HumAdapter {
      *
      * @param data
      */
-    void message(Object data, Hum hum);
+    void message(HumMessage data, Hum hum);
 }

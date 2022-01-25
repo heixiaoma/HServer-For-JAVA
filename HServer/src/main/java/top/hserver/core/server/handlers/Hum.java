@@ -20,8 +20,8 @@ public class Hum {
         return ctx.channel().isActive()&&!ctx.isRemoved()&&ctx.channel().isOpen();
     }
 
-    public void sendMessage(Object data) {
-        ctx.writeAndFlush(new DatagramPacket(HumMessageUtil.createMessage(new HumMessage(data)), datagramPacket.sender()));
+    public void sendMessage(HumMessage humMessage) {
+        ctx.writeAndFlush(new DatagramPacket(HumMessageUtil.createMessage(humMessage), datagramPacket.sender()));
     }
 
     public Type getType() {

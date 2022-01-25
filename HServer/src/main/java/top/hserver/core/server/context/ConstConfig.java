@@ -118,7 +118,7 @@ public class ConstConfig {
      */
     public static Integer HTTP_CONTENT_SIZE = Integer.MAX_VALUE;
 
-    public static String SERVER_NAME = "HServer";
+    public final static String SERVER_NAME = "HServer";
 
     public static String APP_NAME = "HServer";
 

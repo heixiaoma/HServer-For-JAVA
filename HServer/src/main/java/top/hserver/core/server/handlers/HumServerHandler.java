@@ -8,10 +8,11 @@ import org.slf4j.LoggerFactory;
 import top.hserver.core.interfaces.HumAdapter;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.HumMessage;
-import top.hserver.core.server.context.HumMessageType;
 import top.hserver.core.server.util.HumMessageUtil;
 
 import java.util.List;
+
+import static top.hserver.core.server.context.ConstConfig.SERVER_NAME;
 
 public class HumServerHandler extends
         SimpleChannelInboundHandler<DatagramPacket> {
@@ -29,16 +30,16 @@ public class HumServerHandler extends
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
         HumMessage message = HumMessageUtil.getMessage(msg.content());
         if (message != null) {
-            if (message.getHumMessageType()== HumMessageType.USER) {
+            if (message.getType().equals(SERVER_NAME)) {
+                log.debug("hum消息:{}", message.getData().toString());
+            } else {
                 List<HumAdapter> listBean = IocUtil.getListBean(HumAdapter.class);
                 if (listBean != null) {
                     for (HumAdapter humAdapter : listBean) {
                         //交换角色，不要搞错了
-                        humAdapter.message(message.getData(), new Hum(msg, ctx, Hum.Type.CLIENT));
+                        humAdapter.message(message, new Hum(msg, ctx, Hum.Type.CLIENT));
                     }
                 }
-            }else {
-                log.debug("hum消息:{}", message.getData().toString());
             }
         }
     }
