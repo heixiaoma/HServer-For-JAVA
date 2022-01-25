@@ -16,6 +16,10 @@ public class Hum {
         this.type = type;
     }
 
+    public boolean isLive(){
+        return ctx.channel().isActive()&&!ctx.isRemoved()&&ctx.channel().isOpen();
+    }
+
     public void sendMessage(Object data) {
         ctx.writeAndFlush(new DatagramPacket(HumMessageUtil.createMessage(new HumMessage(data)), datagramPacket.sender()));
     }

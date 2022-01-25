@@ -11,9 +11,14 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class RequestIdGen {
 
-    private static AtomicLong lastId = new AtomicLong();
-    private static final String HEXIP = hexIp(getHostIp());
+    private static final AtomicLong lastId = new AtomicLong();
+    private static final String HEXIP = hexIp(IpUtil.getLocalIP());
     private static final String PROCESSON = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+
+
+    public long getRequestCount(){
+        return lastId.get();
+    }
 
     public static String getId() {
         // 规则： hexIp(ip)-base36(timestamp)-process-seq
@@ -42,33 +47,5 @@ public class RequestIdGen {
         }
         //127.0.0.1
         return "7f000001";
-    }
-
-    private static String getHostIp() {
-        try {
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            String lastMatchIP = null;
-            while (interfaces.hasMoreElements()) {
-                NetworkInterface networkInterface = interfaces.nextElement();
-                Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
-                while (addresses.hasMoreElements()) {
-                    InetAddress addr = addresses.nextElement();
-                    if (addr.isLoopbackAddress()) {
-                        continue;
-                    }
-                    lastMatchIP = addr.getHostAddress();
-                    if (!lastMatchIP.contains(":")) {
-                        return lastMatchIP;// return IPv4 addr
-                    }
-                }
-            }
-            if (lastMatchIP != null && lastMatchIP.trim().length() > 0) {
-                return InetAddress.getLocalHost().getHostAddress();
-            } else {
-                return lastMatchIP;
-            }
-        } catch (Exception e) {
-            return "127.0.0.1";
-        }
     }
 }
