@@ -53,17 +53,8 @@ public class HServer {
     private EventLoopGroup bossGroup = null;
     private EventLoopGroup workerGroup = null;
 
-    public HServer(Integer[] port, String[] args) {
-        String portsStr = PropUtil.getInstance().get("ports");
-        if (portsStr.trim().length() > 0) {
-            String[] portStrs = portsStr.split(",");
-            ports = new Integer[portStrs.length];
-            for (int i = 0; i < portStrs.length; i++) {
-                ports[i] = Integer.parseInt(portStrs[i]);
-            }
-        } else {
-            ports = port;
-        }
+    public HServer(Integer[] ports, String[] args) {
+        this.ports=ports;
         this.args = args;
     }
 

@@ -6,11 +6,12 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.hserver.core.ioc.annotation.Auto;
-import top.hserver.core.ioc.annotation.Track;
+import top.hserver.HServerApplication;
+import top.hserver.core.interfaces.TrackAdapter;
+import top.hserver.core.queue.HServerQueue;
+import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.util.ClassLoadUtil;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,46 +28,61 @@ public class MemoryInitClass {
     private static final List<String> cache = new ArrayList<>();
 
     public static void init(String packageName) {
-        if (packageName == null) {
+        //自己不跟踪
+        if (packageName == null||packageName.startsWith("top.hserver")) {
             return;
         }
         try {
             List<Class<?>> classes = ClassLoadUtil.LoadClasses(packageName, true);
             ClassPool cp = ClassPool.getDefault();
-            for (Class<?> aClass : classes) {
-                CtClass cc = null;
-                ClassClassPath classPath = new ClassClassPath(aClass);
-                cp.insertClassPath(classPath);
-                CtMethod[] methods;
-                try {
-                    methods = cp.getCtClass(aClass.getName()).getMethods();
-                } catch (NoClassDefFoundError error) {
+            br:for (Class<?> aClass : classes) {
+                //主函数不能被跟踪，他已经被加载了
+                if (aClass.getName().equals(HServerApplication.mainClass.getName())){
                     continue;
                 }
-                bake:
-                for (CtMethod method : methods) {
-                    Object[] annotations = method.getAnnotations();
-                    for (Object annotation : annotations) {
-                        Annotation annotation1 = (Annotation) annotation;
-                        Annotation[] annotations1 = annotation1.annotationType().getAnnotations();
-                        for (Annotation annotation2 : annotations1) {
-                            if (annotation2.annotationType().getName().equals(Auto.class.getName())) {
-                                if (cache.contains(aClass.getName())) {
-                                    continue;
-                                } else {
-                                    cache.add(aClass.getName());
-                                }
-                                cc = cp.get(aClass.getName());
-                                cc.freeze();
-                                cc.defrost();
-                                if (annotation1.annotationType().getName().equals(Track.class.getName())) {
-                                    log.debug("被链路跟踪的类：{}", aClass.getName());
-                                    initTrack(cc, cp, method);
-                                }
-                                continue bake;
+                CtClass cc = null;
+                CtMethod[] methods;
+                try {
+                    ClassClassPath classPath = new ClassClassPath(aClass);
+                    cp.insertClassPath(classPath);
+                    CtClass ctClass = cp.getCtClass(aClass.getName());
+                    //如果是接口就不跟踪了
+                    if (ctClass.isInterface()){
+                        continue;
+                    }
+                    //如果是TrackAdapter子类的都不能被跟踪，不然就递归了
+                    CtClass[] interfaces = ctClass.getInterfaces();
+                    if (interfaces.length>0){
+                        for (CtClass anInterface : interfaces) {
+                            if (anInterface.getName().equals(TrackAdapter.class.getName())){
+                                continue br;
                             }
                         }
                     }
+                    methods = ctClass.getDeclaredMethods();
+                } catch (Throwable error) {
+                    continue;
+                }
+                //有的方法没用放方法体只有成员变量，这种不能跟踪
+                if (methods==null||methods.length==0){
+                    continue;
+                }
+                for (CtMethod method : methods) {
+                    //重复的不跟踪
+                    if (cache.contains(aClass.getName())) {
+                        continue;
+                    } else {
+                        cache.add(aClass.getName());
+                    }
+                    //抽象方法不跟踪
+                    if (method.isEmpty()){
+                      continue ;
+                    }
+                    cc = cp.get(aClass.getName());
+                    cc.freeze();
+                    cc.defrost();
+                    log.debug("被链路跟踪的类：{}", aClass.getName());
+                    initTrack(cc, cp, method);
                 }
                 if (cc != null) {
                     try {
@@ -74,7 +90,6 @@ public class MemoryInitClass {
                     } catch (Exception e) {
                         log.warn(e.getMessage());
                     }
-
                 }
             }
         } catch (Exception e) {
@@ -90,14 +105,13 @@ public class MemoryInitClass {
     }
 
 
-    private static void initTrack(CtClass cc, ClassPool cp, CtMethod method) throws Exception {
-        CtMethod[] methods = cc.getMethods();
+    private static void initTrack(CtClass cc, ClassPool cp, CtMethod method) {
+        CtMethod[] methods = cc.getDeclaredMethods();
         for (CtMethod declaredMethod : methods) {
-            Object annotation = declaredMethod.getAnnotation(Track.class);
-            if (annotation != null) {
+            String uuid = UUID.randomUUID().toString();
+            try {
                 //提前放进去不然Linux下报错
                 cp.insertClassPath(new ClassClassPath(CtMethod.class));
-                String uuid = UUID.randomUUID().toString();
                 annMapMethod.put(uuid, method);
                 log.debug("被链路跟踪的方法：{}", declaredMethod.getName());
                 declaredMethod.addLocalVariable("begin_hserver", CtClass.longType);
@@ -107,7 +121,6 @@ public class MemoryInitClass {
                 declaredMethod.addLocalVariable("annMethodObj", cp.get(CtMethod.class.getCanonicalName()));
                 declaredMethod.insertBefore("begin_hserver=System.currentTimeMillis();");
                 declaredMethod.insertBefore("annMethodObj = (javassist.CtMethod)top.hserver.core.ioc.ref.MemoryInitClass.annMapMethod.get(\"" + uuid + "\");");
-
                 StringBuilder src = new StringBuilder();
                 src.append("end_hserver=System.currentTimeMillis();");
                 src.append("trackAdapter_hserver = top.hserver.core.ioc.IocUtil.getListBean(top.hserver.core.interfaces.TrackAdapter.class);");
@@ -118,7 +131,6 @@ public class MemoryInitClass {
                     //静态
                     src.append("clazz_hserver = " + cc.getName() + ".class;");
                 }
-
                 src.append("if (trackAdapter_hserver!=null)");
                 src.append("{");
                 src.append("for (int i = 0; i <trackAdapter_hserver.size() ; i++)");
@@ -131,9 +143,11 @@ public class MemoryInitClass {
                 src.append("System.out.println(\"请实现，TrackAdapter接口，并用@Bean标注\");");
                 src.append("}");
                 declaredMethod.insertAfter(src.toString());
+            }catch (Exception e){
+                log.warn(method.getName()+"："+e.getMessage());
+                annMapMethod.remove(uuid);
             }
         }
-
     }
 
 }

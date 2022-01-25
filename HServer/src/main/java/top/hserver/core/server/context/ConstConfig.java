@@ -127,4 +127,19 @@ public class ConstConfig {
      */
     public static Integer HUM_PORT = 9527;
 
+    /**
+     * HServer 端口
+     */
+    public static Integer[] PORTS = new Integer[]{8888};
+
+    /**
+     * 是否开启追踪
+     */
+    public static Boolean TRACK = false;
+
+    /**
+     * 跟踪扩展包
+     */
+    public static String[] TRACK_EXT_PACKAGES = new String[0];
+
 }

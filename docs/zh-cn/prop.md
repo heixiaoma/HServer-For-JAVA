@@ -184,9 +184,14 @@ resources/template
 
 
 ### 全部配置
-```text
+```properties
+#外置配置大于jar中包配置文件，配置文件大于代码默认设置
 
-#外置配置大于jar包配置文件
+#应用名字，默认HServer
+appName=HServer
+
+#hum消息端口，默认9527
+humPort=9527
 
 #端口动态指定，多个用英文逗号隔开 配置文件大于代码写死，
 ports=9090
@@ -197,16 +202,23 @@ env=dev
 #openHttp2 true  当https模式下开启http2功能
 openHttp2=true
 
+#链路跟踪 默认不跟踪
+track=true
+
+#添加其他的包跟踪，用引英文逗号隔开默认不用在操作了，
+#它是向下找，包名越短，扫码到的文件更多
+trackExtPackages=com.mysql,org.freemarker
+
 #taskPool定时任务线程池子配置，默认大小是cpu核心数+1
 taskPool=5
 
-#bossPool Netty boss线程组大小 默认2，可以按cpu 核心数来
+#bossPool Netty boss线程组大小 默认2
 bossPool=2
 
-#workerPool Netty worker线程组大小 默认4
-workerPool=4
+#workerPool Netty worker线程组大小 默认2
+workerPool=2
 
-#businessPool 业务线程大小，默是用的workerPool
+#businessPool 业务线程大小，默是用的workerPool -1标识使用workerPool 性能更快
 businessPool=50
 
 #可以开启Epoll时是否开启epoll 默认true
@@ -227,6 +239,7 @@ level=debug
 #队列数据缓存位置 默认当前项目下
 persistPath=/user/mcl/data
 
+
 #-----------------ssl-------------
 #注意下载的证书中 key文件需要转换成 pk8 文件
 #因为netty4不支持pkcs12格式的私钥, 所以需要将私钥转换成pkcs8格式.
@@ -234,7 +247,5 @@ persistPath=/user/mcl/data
 certPath=hserver.pem
 privateKeyPath=hserver.pk8
 privateKeyPwd=123
-
-
 ```
 

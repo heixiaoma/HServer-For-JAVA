@@ -16,7 +16,7 @@
 |         @OPTIONS         |                         请求类型注解                         |
 |         @CONNECT         |                         请求类型注解                         |
 |          @TRACE          |                         请求类型注解                         |
-|      @Order      | 排序注解 值越小，优先级越高 (LimitAdapter.class, FilterAdapter.class, GlobalException.class, InitRunner.class, ReInitRunner.class, ResponseAdapter.class, ProtocolDispatcherAdapter.class, ServerCloseAdapter.class) 这些子类支持排序 |
+|      @Order      | 排序注解 值越小，优先级越高 (LimitAdapter.class, FilterAdapter.class, GlobalException.class, InitRunner.class, ResponseAdapter.class, ProtocolDispatcherAdapter.class, ServerCloseAdapter.class) 这些子类支持排序 |
 |      @Configuration      | 配置注解，这个和springboot有相似之处（这个类中可以注入 @NacosClass,@NacosValue,@Value,@ConfigurationProperties这些注解产生的对象） |
 | @ConfigurationProperties |     配置类，和springboot相似 将Properties转为对象放入IOC     |
 |       @Controller        |  标记类为控制器 @Controller 参数可以指定一个URL 和 一个名字  |

@@ -13,7 +13,7 @@ import java.util.*;
 
 public class PropertiesInit {
 
-    public static void configFile(Set<String> scanPackage) {
+    public static void configFile() {
         PropUtil instance = PropUtil.getInstance();
         Integer taskPool = instance.getInt("taskPool");
         if (taskPool != null) {
@@ -31,6 +31,22 @@ public class PropertiesInit {
         if (humPort != null) {
             ConstConfig.HUM_PORT = humPort;
         }
+        String trackExtPackages = instance.get("trackExtPackages");
+        if (trackExtPackages.trim().length() > 0) {
+            ConstConfig.TRACK_EXT_PACKAGES=trackExtPackages.split(",");
+        }
+        try {
+            String portsStr = instance.get("ports");
+            if (portsStr.trim().length() > 0) {
+                String[] portStars = portsStr.split(",");
+                Integer[] ports = new Integer[portStars.length];
+                for (int i = 0; i < portStars.length; i++) {
+                    ports[i] = Integer.parseInt(portStars[i]);
+                }
+                ConstConfig.PORTS = ports;
+            }
+        }catch (Throwable ignored){
+        }
         if (instance.get("epoll").trim().length() > 0) {
             ConstConfig.EPOLL = Boolean.valueOf(instance.get("epoll"));
         }
@@ -42,6 +58,9 @@ public class PropertiesInit {
         }
         if (instance.get("openHttp2").trim().length() > 0) {
             ConstConfig.openHttp2 = Boolean.valueOf(instance.get("openHttp2"));
+        }
+        if (instance.get("track").trim().length() > 0) {
+            ConstConfig.TRACK = Boolean.valueOf(instance.get("track"));
         }
         if (instance.get("readLimit").trim().length() > 0) {
             ConstConfig.READ_LIMIT = Long.valueOf(instance.get("readLimit"));

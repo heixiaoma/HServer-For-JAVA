@@ -1,14 +1,15 @@
 ## **Track跟踪**
 
-使用动态字节码技术，在初始化对需要跟踪的方法进行，字节码处理，可以跟踪任意方法
-1.在任意方法上添加，@Track 注解:例如
+使用动态字节码技术，字节码处理，可以跟踪任意方法，不跟踪HServer框架本身，不跟踪已经被jvm加载的，不跟踪已经被跟踪的类，不跟踪接口和抽象方法
 
-```java
-@Track
-@GET("/track")
-public JsonResult track() {
-    return JsonResult.ok();
-}
+1.在配置文件添加
+```properties
+track=true
+
+#添加其他的包跟踪，用引英文逗号隔开默认不用在操作了，
+#它是向下找，包名越短，扫码到的文件更多
+#不建议在添加，数据量过大，整体性能会存在性能问题
+trackExtPackages=com.mysql,org.freemarker
 ```
 2.实现TrackAdapter接口，并在类上用 @Bean标识
 

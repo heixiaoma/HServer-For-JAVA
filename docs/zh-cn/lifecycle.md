@@ -17,21 +17,6 @@
  }
 ```
 
-## **服务器IOC重新初始化执行的方法**
-
-类必须要被@Bean注解，同时实现ReInitRunner接口，
-
-```java
- @Bean
- public class ReInit implements ReInitRunner {
- 
-     @Override
-     public void reInit() {
-         System.out.println("重新初始化之前，这个方法被执行，可以关闭一些线程或者或者叫资源，比如Redisson的相关内容");
-     }
- }
-```
-
 ## **服务器关闭回调执行的方法**
 
 类必须要被@Bean注解，同时实现ServerCloseAdapter接口，
