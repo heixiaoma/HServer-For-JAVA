@@ -13,6 +13,7 @@ import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.HumMessage;
+import top.hserver.core.server.handlers.HumClientHandler;
 import top.hserver.core.server.handlers.HumServerHandler;
 import top.hserver.core.server.util.*;
 import top.hserver.core.task.TaskManager;
@@ -44,9 +45,10 @@ public class HServer {
 
     private final Map<Channel, String> channels = new HashMap<>();
 
-    //UDP-它是服务也是客服端，通用起来
+    //UDP
     private EventLoopGroup humServerBossGroup = null;
 
+    private EventLoopGroup humClientBossGroup = null;
     //TCP
     private EventLoopGroup bossGroup = null;
     private EventLoopGroup workerGroup = null;
@@ -74,8 +76,17 @@ public class HServer {
                 .option(ChannelOption.SO_BROADCAST, true)
                 .option(ChannelOption.SO_REUSEADDR, true)
                 .handler(new HumServerHandler());
-        HumClient.channel  = humServer.bind(HUM_PORT).sync().channel();
-        channels.put(HumClient.channel , "UDP Server Port:" + HUM_PORT);
+        Channel humChannel = humServer.bind(HUM_PORT).sync().channel();
+        channels.put(humChannel, "UDP Server Port:" + HUM_PORT);
+        //UDP Client
+        humClientBossGroup = new NioEventLoopGroup();
+        Bootstrap humClient = new Bootstrap();
+        humClient.group(humClientBossGroup)
+                .channel(NioDatagramChannel.class)
+                .option(ChannelOption.SO_BROADCAST, true)
+                .handler(new HumClientHandler());
+        HumClient.channel = humClient.bind(0).sync().channel();
+        channels.put(HumClient.channel, "UDP Client Port:0");
 
         //TCP Server
         String typeName;
@@ -135,6 +146,9 @@ public class HServer {
                 for (ServerCloseAdapter serverCloseAdapter : listBean) {
                     serverCloseAdapter.close();
                 }
+            }
+            if (this.humClientBossGroup != null) {
+                this.humClientBossGroup.shutdownGracefully();
             }
             if (this.humServerBossGroup != null) {
                 this.humServerBossGroup.shutdownGracefully();
