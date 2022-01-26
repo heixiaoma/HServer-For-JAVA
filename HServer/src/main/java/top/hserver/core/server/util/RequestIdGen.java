@@ -16,7 +16,7 @@ public class RequestIdGen {
     private static final String PROCESSON = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
 
 
-    public long getRequestCount(){
+    public static long getRequestCount(){
         return lastId.get();
     }
 
