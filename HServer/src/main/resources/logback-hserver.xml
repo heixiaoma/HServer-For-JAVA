@@ -26,6 +26,9 @@
         </encoder>
     </appender>
 
+    <!-- 自定义-->
+    <appender name="HSERVER_EXT" class="top.hserver.core.log.HServerLogAsyncAppender">
+    </appender>
     <!--文件存储-->
     <appender name="FILE"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -83,6 +86,7 @@
 
     <root level="${logging.level:-debug}">
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="HSERVER_EXT"/>
         <appender-ref ref="FILE"/>
         <appender-ref ref="FILE_ERROR"/>
     </root>
