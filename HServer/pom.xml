@@ -147,6 +147,13 @@
             <version>${guava.version}</version>
         </dependency>
 
+        <!--   线程之间数据共享     -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
+            <version>2.12.4</version>
+        </dependency>
+
 
     </dependencies>
 
