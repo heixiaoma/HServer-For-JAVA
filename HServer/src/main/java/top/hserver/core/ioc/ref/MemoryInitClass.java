@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.HServerApplication;
 import top.hserver.core.interfaces.TrackAdapter;
-import top.hserver.core.queue.HServerQueue;
-import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.util.ClassLoadUtil;
 
 import java.lang.reflect.Modifier;
@@ -117,11 +115,15 @@ public class MemoryInitClass {
                 //之前
                 declaredMethod.addLocalVariable("begin_hserver", CtClass.longType);
                 declaredMethod.addLocalVariable("end_hserver", CtClass.longType);
+                declaredMethod.addLocalVariable("spanId", CtClass.intType);
                 declaredMethod.addLocalVariable("trackAdapter_hserver", cp.get(List.class.getCanonicalName()));
                 declaredMethod.addLocalVariable("clazz_hserver", cp.get(Class.class.getCanonicalName()));
                 declaredMethod.addLocalVariable("annMethodObj", cp.get(CtMethod.class.getCanonicalName()));
                 declaredMethod.insertBefore("begin_hserver=System.currentTimeMillis();");
+                declaredMethod.insertBefore("spanId=top.hserver.core.server.util.SpanUtil.get();");
+                declaredMethod.insertBefore("top.hserver.core.server.util.SpanUtil.add();");
                 declaredMethod.insertBefore("annMethodObj = (javassist.CtMethod)top.hserver.core.ioc.ref.MemoryInitClass.annMapMethod.get(\"" + uuid + "\");");
+
 
                 //之后
                 StringBuilder src = new StringBuilder();
@@ -138,13 +140,14 @@ public class MemoryInitClass {
                 }
                 src.append("for (int i = 0; i <trackAdapter_hserver.size() ; i++)");
                 src.append("{");
-                src.append(" ((top.hserver.core.interfaces.TrackAdapter)trackAdapter_hserver.get(i)).track(clazz_hserver,annMethodObj,Thread.currentThread().getStackTrace(), begin_hserver,end_hserver);");
+                src.append(" ((top.hserver.core.interfaces.TrackAdapter)trackAdapter_hserver.get(i)).track(clazz_hserver,annMethodObj,Thread.currentThread().getStackTrace(), begin_hserver,end_hserver,spanId,spanId+1);");
                 src.append("}");
                 src.append("}");
                 src.append("else");
                 src.append("{");
                 src.append("System.out.println(\"请实现，TrackAdapter接口，并用@Bean标注\");");
                 src.append("}");
+                src.append("top.hserver.core.server.util.SpanUtil.clear();");
                 declaredMethod.insertAfter(src.toString());
             }catch (Exception e){
                 log.warn(method.getName()+"："+e.getMessage());

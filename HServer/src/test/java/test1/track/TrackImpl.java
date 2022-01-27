@@ -16,7 +16,7 @@ public class TrackImpl implements TrackAdapter {
     private static final Logger log = LoggerFactory.getLogger(TrackImpl.class);
 
     @Override
-    public void track(Class clazz, CtMethod method, StackTraceElement[] stackTraceElements, long start, long end) throws Exception {
+    public void track(Class clazz, CtMethod method, StackTraceElement[] stackTraceElements, long start, long end,int pSpanId,int spanId) throws Exception {
         log.info("当前类：{},当前方法：{},耗时：{}", clazz.getName(), stackTraceElements[1].getMethodName(), (end - start) + "ms");
         JvmStack.printMemoryInfo();
         JvmStack.printGCInfo();
