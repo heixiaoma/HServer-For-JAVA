@@ -106,20 +106,6 @@ httpContentSize=999999
 epoll=true
 ```
 
-### **配置中心**
-```properties
-在app.properties文件中添加
-#配置中心地址
-app.nacos.config.address=127.0.0.1:8848
-就可以使用动态配置注解，配置中心更新，服务自动刷新.
-标记一个类
-@NacosClass
-标记一个字段
-@NacosValue
-
-目前Nacos中Text类型是@NacosValue使用，Json和properties 被@NacosClass使用
-```
-
 ## 配置类注解
 
 1. app.properties文件内容

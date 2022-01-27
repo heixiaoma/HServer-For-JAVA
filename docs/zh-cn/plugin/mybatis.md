@@ -21,7 +21,7 @@
 <dependency>
     <groupId>net.hserver.mybatis.plugin</groupId>
     <artifactId>hserver-mybatis-plugin</artifactId>
-    <version>2.1</version>
+    <version>3.0</version>
 </dependency>
 
 <!--添加连接池和MySQL驱动-->
