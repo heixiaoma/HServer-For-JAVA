@@ -6,13 +6,14 @@ import java.util.Stack;
 
 public class SpanUtil {
 
-    private static final TransmittableThreadLocal<Stack<Integer>> threadMethods = new TransmittableThreadLocal<>();
+    private static final SnowflakeIdWorker SNOWFLAKE_ID_WORKER=new SnowflakeIdWorker(1,30);
+    private static final TransmittableThreadLocal<Stack<Long>> threadMethods = new TransmittableThreadLocal<>();
 
     public static void add() {
-        Stack<Integer> queue = null;
+        Stack<Long> queue = null;
         if (null == threadMethods.get()) {
             queue = new Stack<>();
-            queue.add(0);
+            queue.add(SNOWFLAKE_ID_WORKER.nextId());
         } else {
             queue = threadMethods.get();
             queue.add(queue.peek()+1);
@@ -20,16 +21,16 @@ public class SpanUtil {
         threadMethods.set(queue);
     }
 
-    public static int get() {
-        Stack<Integer> integers = threadMethods.get();
+    public static long get() {
+        Stack<Long> integers = threadMethods.get();
         if (integers == null) {
-            return 0;
+            return SNOWFLAKE_ID_WORKER.nextId();
         }
         return integers.peek();
     }
 
     public static void clear() {
-        Stack<Integer> queue = threadMethods.get();
+        Stack<Long> queue = threadMethods.get();
         if (queue == null) {
             return;
         }

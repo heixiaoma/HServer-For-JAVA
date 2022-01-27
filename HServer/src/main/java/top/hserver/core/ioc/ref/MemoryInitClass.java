@@ -115,7 +115,7 @@ public class MemoryInitClass {
                 //之前
                 declaredMethod.addLocalVariable("begin_hserver", CtClass.longType);
                 declaredMethod.addLocalVariable("end_hserver", CtClass.longType);
-                declaredMethod.addLocalVariable("spanId", CtClass.intType);
+                declaredMethod.addLocalVariable("spanId", CtClass.longType);
                 declaredMethod.addLocalVariable("trackAdapter_hserver", cp.get(List.class.getCanonicalName()));
                 declaredMethod.addLocalVariable("clazz_hserver", cp.get(Class.class.getCanonicalName()));
                 declaredMethod.addLocalVariable("annMethodObj", cp.get(CtMethod.class.getCanonicalName()));
