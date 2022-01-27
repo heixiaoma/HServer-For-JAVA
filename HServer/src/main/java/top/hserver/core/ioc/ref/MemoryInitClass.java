@@ -112,8 +112,9 @@ public class MemoryInitClass {
             try {
                 //提前放进去不然Linux下报错
                 cp.insertClassPath(new ClassClassPath(CtMethod.class));
-                annMapMethod.put(uuid, method);
+                annMapMethod.put(uuid, declaredMethod);
                 log.debug("被链路跟踪的方法：{}", declaredMethod.getName());
+                //之前
                 declaredMethod.addLocalVariable("begin_hserver", CtClass.longType);
                 declaredMethod.addLocalVariable("end_hserver", CtClass.longType);
                 declaredMethod.addLocalVariable("trackAdapter_hserver", cp.get(List.class.getCanonicalName()));
@@ -121,9 +122,13 @@ public class MemoryInitClass {
                 declaredMethod.addLocalVariable("annMethodObj", cp.get(CtMethod.class.getCanonicalName()));
                 declaredMethod.insertBefore("begin_hserver=System.currentTimeMillis();");
                 declaredMethod.insertBefore("annMethodObj = (javassist.CtMethod)top.hserver.core.ioc.ref.MemoryInitClass.annMapMethod.get(\"" + uuid + "\");");
+
+                //之后
                 StringBuilder src = new StringBuilder();
                 src.append("end_hserver=System.currentTimeMillis();");
                 src.append("trackAdapter_hserver = top.hserver.core.ioc.IocUtil.getListBean(top.hserver.core.interfaces.TrackAdapter.class);");
+                src.append("if (trackAdapter_hserver!=null)");
+                src.append("{");
                 if (!Modifier.isStatic(declaredMethod.getModifiers())) {
                     //非静态
                     src.append("clazz_hserver = this.getClass();");
@@ -131,8 +136,6 @@ public class MemoryInitClass {
                     //静态
                     src.append("clazz_hserver = " + cc.getName() + ".class;");
                 }
-                src.append("if (trackAdapter_hserver!=null)");
-                src.append("{");
                 src.append("for (int i = 0; i <trackAdapter_hserver.size() ; i++)");
                 src.append("{");
                 src.append(" ((top.hserver.core.interfaces.TrackAdapter)trackAdapter_hserver.get(i)).track(clazz_hserver,annMethodObj,Thread.currentThread().getStackTrace(), begin_hserver,end_hserver);");
