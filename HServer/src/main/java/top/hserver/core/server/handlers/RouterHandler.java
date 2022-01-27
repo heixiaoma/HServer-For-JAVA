@@ -18,7 +18,7 @@ public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HServerContext hServerContext) throws Exception {
         CompletableFuture<HServerContext> future = CompletableFuture.completedFuture(hServerContext);
-        ExecutorService executor = TtlExecutors.getTtlExecutorService(ctx.executor());
+        Executor executor = TtlExecutors.getTtlExecutor(ctx.executor());
         future.thenApplyAsync(req -> DispatcherHandler.staticFile(hServerContext), executor)
                 .thenApplyAsync(DispatcherHandler::permission, executor)
                 .thenApplyAsync(DispatcherHandler::filter, executor)
@@ -26,7 +26,6 @@ public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
                 .thenApplyAsync(DispatcherHandler::buildResponse, executor)
                 .exceptionally(DispatcherHandler::handleException)
                 .thenAcceptAsync(msg -> DispatcherHandler.writeResponse(ctx, future, msg), executor);
-
     }
 
 
