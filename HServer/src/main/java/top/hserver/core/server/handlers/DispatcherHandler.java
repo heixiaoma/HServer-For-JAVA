@@ -360,6 +360,7 @@ public class DispatcherHandler {
                     msg = responseAdapter.response(msg);
                 }
             }
+            HServerContextHolder.remove();
             ctx.writeAndFlush(msg);
 //            try {
 //                Request request = future.get().getRequest();
