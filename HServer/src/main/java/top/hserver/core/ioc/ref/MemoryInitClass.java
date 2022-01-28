@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.HServerApplication;
 import top.hserver.core.interfaces.TrackAdapter;
+import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.util.ClassLoadUtil;
 
 import java.lang.reflect.Modifier;
@@ -34,6 +35,16 @@ public class MemoryInitClass {
             List<Class<?>> classes = ClassLoadUtil.LoadClasses(packageName, true);
             ClassPool cp = ClassPool.getDefault();
             br:for (Class<?> aClass : classes) {
+
+                /**
+                 * 主动过滤的不跟踪
+                 */
+                for (String trackNoPackage : ConstConfig.TRACK_NO_PACKAGES) {
+                    if (aClass.getName().startsWith(trackNoPackage)){
+                        break br;
+                    }
+                }
+
                 //主函数不能被跟踪，他已经被加载了
                 if (aClass.getName().equals(HServerApplication.mainClass.getName())){
                     continue;

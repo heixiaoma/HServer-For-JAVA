@@ -18,9 +18,13 @@ openHttp2=true
 #链路跟踪 默认不跟踪
 track=true
 
-#添加其他的包跟踪，用引英文逗号隔开默认不用在操作了，
+#添加其他的包跟踪，用引英文逗号隔开默认不用在操作了，前缀匹配模式
+
 #它是向下找，包名越短，扫码到的文件更多
 trackExtPackages=com.mysql,org.freemarker
+
+#排除这些包不跟踪
+trackNoPackages=com.mysql,org.freemarker
 
 #taskPool定时任务线程池子配置，默认大小是cpu核心数+1
 taskPool=5

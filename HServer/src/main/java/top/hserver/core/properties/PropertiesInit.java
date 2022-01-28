@@ -35,6 +35,11 @@ public class PropertiesInit {
         if (trackExtPackages.trim().length() > 0) {
             ConstConfig.TRACK_EXT_PACKAGES=trackExtPackages.split(",");
         }
+
+        String trackNoPackages = instance.get("trackNoPackages");
+        if (trackNoPackages.trim().length() > 0) {
+            ConstConfig.TRACK_NO_PACKAGES=trackNoPackages.split(",");
+        }
         try {
             String portsStr = instance.get("ports");
             if (portsStr.trim().length() > 0) {

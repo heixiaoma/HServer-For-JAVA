@@ -142,4 +142,9 @@ public class ConstConfig {
      */
     public static String[] TRACK_EXT_PACKAGES = new String[0];
 
+    /**
+     * 不跟踪的包
+     */
+    public static String[] TRACK_NO_PACKAGES = new String[0];
+
 }
