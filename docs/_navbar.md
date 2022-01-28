@@ -12,6 +12,7 @@
     * [后台管理系统（权限校验相关操作）](https://gitee.com/HServer/hserver-system)
     * [docker自动部署工具](https://gitee.com/HServer/hserver-for-docker)
     * [HP内网穿透(单端口多协议)](https://gitee.com/HServer/hp)
+    * [链路追踪](https://gitee.com/HServer/hserver-apm)
 
 
 * HServer插件
