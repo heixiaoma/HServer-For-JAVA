@@ -154,10 +154,6 @@ public class MemoryInitClass {
                 src.append(" ((top.hserver.core.interfaces.TrackAdapter)trackAdapter_hserver.get(i)).track(clazz_hserver,annMethodObj,Thread.currentThread().getStackTrace(), begin_hserver,end_hserver,spanId,spanId+1);");
                 src.append("}");
                 src.append("}");
-                src.append("else");
-                src.append("{");
-                src.append("System.out.println(\"请实现，TrackAdapter接口，并用@Bean标注\");");
-                src.append("}");
                 src.append("top.hserver.core.server.util.SpanUtil.clear();");
                 declaredMethod.insertAfter(src.toString());
             }catch (Exception e){

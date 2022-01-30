@@ -22,11 +22,15 @@ public class SpanUtil {
     }
 
     public static long get() {
-        Stack<Long> integers = threadMethods.get();
-        if (integers == null) {
-            return SNOWFLAKE_ID_WORKER.nextId();
+        try {
+            Stack<Long> integers = threadMethods.get();
+            if (integers == null) {
+                return SNOWFLAKE_ID_WORKER.nextId();
+            }
+            return integers.peek();
+        }catch (Exception e){
+            return -1;
         }
-        return integers.peek();
     }
 
     public static void clear() {
