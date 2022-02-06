@@ -17,7 +17,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
     }
 
     @Override
-    public ScheduledFuture<?> submit(CronExpression expression, String className, Method method, Object... args) {
+    public ScheduledFuture submit(CronExpression expression, String className, Method method, Object... args) {
         Runnable scheduleTask = () -> {
             Date now  = new Date();
             Date time = expression.getNextValidTimeAfter(now);
@@ -46,7 +46,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
     }
 
     @Override
-    public ScheduledFuture<?> submit(CronExpression expression, TaskJob taskJob, Object... args) {
+    public ScheduledFuture submit(CronExpression expression, TaskJob taskJob, Object... args) {
         Runnable scheduleTask = () -> {
             Date now  = new Date();
             Date time = expression.getNextValidTimeAfter(now);
@@ -74,7 +74,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
     }
 
     @Override
-    public ScheduledFuture<?> submit(Integer expression, String className, Method method, Object... args) {
+    public ScheduledFuture submit(Integer expression, String className, Method method, Object... args) {
         Runnable scheduleTask = () -> {
                 if (IS_OK) {
                     try {
@@ -89,7 +89,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
     }
 
     @Override
-    public ScheduledFuture<?> submit(Integer expression, TaskJob taskJob, Object... args) {
+    public ScheduledFuture submit(Integer expression, TaskJob taskJob, Object... args) {
         Runnable scheduleTask = () -> {
             if (IS_OK) {
                 try {
