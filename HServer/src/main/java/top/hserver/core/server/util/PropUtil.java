@@ -107,10 +107,10 @@ public class PropUtil {
             try {
                 return Boolean.valueOf(s);
             } catch (Exception e) {
-                return null;
+                return false;
             }
         }
-        return null;
+        return false;
     }
 
 
