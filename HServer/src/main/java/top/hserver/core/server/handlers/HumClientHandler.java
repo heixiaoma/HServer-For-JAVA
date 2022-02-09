@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import top.hserver.core.interfaces.HumAdapter;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.HumMessage;
+import top.hserver.core.server.util.ExceptionUtil;
 import top.hserver.core.server.util.HumMessageUtil;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class HumClientHandler extends
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable
             cause) throws Exception {
-        cause.printStackTrace();
+        log.error(ExceptionUtil.getMessage(cause));
         ctx.close();
     }
 
