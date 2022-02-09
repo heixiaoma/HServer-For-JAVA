@@ -184,6 +184,7 @@ public class BuildResponse {
     }
 
     public static void writeException(ChannelHandlerContext ctx, Throwable cause) {
+        HServerContextHolder.remove();
         writeException(ctx, cause, HttpResponseStatus.SERVICE_UNAVAILABLE);
     }
 

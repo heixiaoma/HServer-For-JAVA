@@ -2,24 +2,26 @@ package top.hserver.core.server.context;
 
 public class HumMessage {
 
-    private HumMessageType humMessageType = HumMessageType.USER;
+    private String type="USER";
 
     private Object data;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public HumMessage() {
     }
 
-    public HumMessage(Object data) {
+    public HumMessage(String type,Object data) {
+        this.type=type;
         this.data = data;
     }
 
-    public HumMessageType getHumMessageType() {
-        return humMessageType;
-    }
-
-    public void setHumMessageType(HumMessageType humMessageType) {
-        this.humMessageType = humMessageType;
-    }
 
     public Object getData() {
         return data;
@@ -32,7 +34,7 @@ public class HumMessage {
     @Override
     public String toString() {
         return "HumMessage{" +
-                "humMessageType=" + humMessageType +
+                "humMessageType=" + type +
                 ", data=" + data +
                 '}';
     }

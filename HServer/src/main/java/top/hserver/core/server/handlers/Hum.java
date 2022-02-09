@@ -16,8 +16,12 @@ public class Hum {
         this.type = type;
     }
 
-    public void sendMessage(Object data) {
-        ctx.writeAndFlush(new DatagramPacket(HumMessageUtil.createMessage(new HumMessage(data)), datagramPacket.sender()));
+    public boolean isLive(){
+        return ctx.channel().isActive()&&!ctx.isRemoved()&&ctx.channel().isOpen();
+    }
+
+    public void sendMessage(HumMessage humMessage) {
+        ctx.writeAndFlush(new DatagramPacket(HumMessageUtil.createMessage(humMessage), datagramPacket.sender()));
     }
 
     public Type getType() {

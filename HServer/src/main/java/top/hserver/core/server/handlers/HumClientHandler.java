@@ -8,11 +8,11 @@ import org.slf4j.LoggerFactory;
 import top.hserver.core.interfaces.HumAdapter;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.HumMessage;
-import top.hserver.core.server.context.HumMessageType;
-import top.hserver.core.server.util.ExceptionUtil;
 import top.hserver.core.server.util.HumMessageUtil;
 
 import java.util.List;
+
+import static top.hserver.core.server.context.ConstConfig.SERVER_NAME;
 
 public class HumClientHandler extends
         SimpleChannelInboundHandler<DatagramPacket> {
@@ -23,7 +23,7 @@ public class HumClientHandler extends
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable
             cause) throws Exception {
-        log.error(ExceptionUtil.getMessage(cause));
+        cause.printStackTrace();
         ctx.close();
     }
 
@@ -31,16 +31,16 @@ public class HumClientHandler extends
     protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket msg) throws Exception {
         HumMessage message = HumMessageUtil.getMessage(msg.content());
         if (message != null) {
-            if (message.getHumMessageType() == HumMessageType.USER) {
+            if (SERVER_NAME.equals(message.getType())) {
+                log.debug("hum消息:{}", message.getData().toString());
+            } else {
                 List<HumAdapter> listBean = IocUtil.getListBean(HumAdapter.class);
                 if (listBean != null) {
                     for (HumAdapter humAdapter : listBean) {
                         //交换角色，不要搞错了
-                        humAdapter.message(message.getData(), new Hum(msg, ctx, Hum.Type.SERVER));
+                        humAdapter.message(message, new Hum(msg, ctx, Hum.Type.SERVER));
                     }
                 }
-            } else {
-                log.debug("hum消息:{}", message.getData().toString());
             }
         }
     }

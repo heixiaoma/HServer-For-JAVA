@@ -157,39 +157,30 @@ public class IpUtil {
     }
 
     public static String getLocalIP() {
-        String ip = "";
-        if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
-            InetAddress addr;
-            try {
-                addr = InetAddress.getLocalHost();
-                ip = addr.getHostAddress();
-            } catch (UnknownHostException e) {
-            }
-            return ip;
-        } else {
-            try {
-                Enumeration<?> e1 = (Enumeration<?>) NetworkInterface
-                        .getNetworkInterfaces();
-                while (e1.hasMoreElements()) {
-                    NetworkInterface ni = (NetworkInterface) e1.nextElement();
-                    if (!ni.getName().equals("eth0")) {
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            String lastMatchIP = null;
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = interfaces.nextElement();
+                Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress addr = addresses.nextElement();
+                    if (addr.isLoopbackAddress()) {
                         continue;
-                    } else {
-                        Enumeration<?> e2 = ni.getInetAddresses();
-                        while (e2.hasMoreElements()) {
-                            InetAddress ia = (InetAddress) e2.nextElement();
-                            if (ia instanceof Inet6Address) {
-                                continue;
-                            }
-                            ip = ia.getHostAddress();
-                            return ip;
-                        }
-                        break;
+                    }
+                    lastMatchIP = addr.getHostAddress();
+                    if (!lastMatchIP.contains(":")) {
+                        return lastMatchIP;// return IPv4 addr
                     }
                 }
-            } catch (SocketException e) {
             }
+            if (lastMatchIP != null && lastMatchIP.trim().length() > 0) {
+                return InetAddress.getLocalHost().getHostAddress();
+            } else {
+                return lastMatchIP;
+            }
+        } catch (Exception e) {
+            return "127.0.0.1";
         }
-        return "";
     }
 }

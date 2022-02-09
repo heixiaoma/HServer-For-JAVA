@@ -43,7 +43,7 @@ public class ConstConfig {
     /**
      * 版本号
      */
-    public static final String VERSION = "2.9.81";
+    public static final String VERSION = "2.9.82";
     /**
      * 定时任务线程数配置
      */
@@ -118,7 +118,7 @@ public class ConstConfig {
      */
     public static Integer HTTP_CONTENT_SIZE = Integer.MAX_VALUE;
 
-    public static String SERVER_NAME = "HServer";
+    public final static String SERVER_NAME = "HServer";
 
     public static String APP_NAME = "HServer";
 
@@ -126,5 +126,25 @@ public class ConstConfig {
      * hum 默认消息端口
      */
     public static Integer HUM_PORT = 9527;
+
+    /**
+     * HServer 端口
+     */
+    public static Integer[] PORTS = new Integer[]{8888};
+
+    /**
+     * 是否开启追踪
+     */
+    public static Boolean TRACK = false;
+
+    /**
+     * 跟踪扩展包
+     */
+    public static String[] TRACK_EXT_PACKAGES = new String[0];
+
+    /**
+     * 不跟踪的包
+     */
+    public static String[] TRACK_NO_PACKAGES = new String[0];
 
 }

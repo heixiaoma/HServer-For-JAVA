@@ -11,9 +11,9 @@ import java.util.concurrent.ScheduledFuture;
  */
 public interface CronExecutorService extends ExecutorService {
 
-    ScheduledFuture<?> submit(CronExpression expression, String className, Method method, Object... args);
-    ScheduledFuture<?> submit(Integer expression, String className, Method method, Object... args);
-    ScheduledFuture<?> submit(CronExpression expression, TaskJob taskJob, Object... args);
-    ScheduledFuture<?> submit(Integer expression, TaskJob taskJob, Object... args);
+    ScheduledFuture submit(CronExpression expression, String className, Method method, Object... args);
+    ScheduledFuture submit(Integer expression, String className, Method method, Object... args);
+    ScheduledFuture submit(CronExpression expression, TaskJob taskJob, Object... args);
+    ScheduledFuture submit(Integer expression, TaskJob taskJob, Object... args);
 
 }

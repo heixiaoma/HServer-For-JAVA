@@ -10,7 +10,7 @@
         <img src="https://img.shields.io/badge/Build-Java8-red.svg?style=flat" />
     </a>
     <a >
-        <img src="https://img.shields.io/badge/Netty-4.1.65.Final-blue.svg" alt="flat">
+        <img src="https://img.shields.io/badge/Netty-4.1.73.Final-blue.svg" alt="flat">
     </a>
     <a >
         <img src="https://img.shields.io/badge/Licence-Apache2.0-green.svg?style=flat" />
@@ -31,7 +31,7 @@ HServer是一个基于Netty开发的一个功能强大，资源丰富，开发�
 ### 最新央仓库统一版本
 | 资源名 | 版本号 |
 | :----:| :----: |
-| HServer版本 | 2.9.80  |
+| HServer版本 | 2.9.81  |
 | HServer-Beetlsql版本 | 3.3 |
 | HServer-Mybatis版本(1.0是原生mybatis,2.0开始mybatisPlus支持) | 3.0 |
 | HServer-RPC | 暂未发布 |
@@ -67,7 +67,7 @@ HServer是一个基于Netty开发的一个功能强大，资源丰富，开发�
 * Filter拦截器
 * 持久Queue队列
 * HOOK/AOP组件
-* Track组件
+* Track链路跟踪组件
 * Web Socket功能
 * Mqtt WebSocketMqtt功能
 * 自定义协议

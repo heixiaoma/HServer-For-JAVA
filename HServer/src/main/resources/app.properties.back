@@ -1,6 +1,6 @@
-#外置配置大于jar包配置文件
+#外置配置大于jar中包配置文件，配置文件大于代码默认设置
 
-#服务名字，默认HServer
+#应用名字，默认HServer
 appName=HServer
 
 #hum消息端口，默认9527
@@ -14,6 +14,17 @@ env=dev
 
 #openHttp2 true  当https模式下开启http2功能
 openHttp2=true
+
+#链路跟踪 默认不跟踪
+track=true
+
+#添加其他的包跟踪，用引英文逗号隔开默认不用在操作了，前缀匹配模式
+
+#它是向下找，包名越短，扫码到的文件更多
+trackExtPackages=com.mysql,org.freemarker
+
+#排除这些包不跟踪
+trackNoPackages=com.mysql,org.freemarker
 
 #taskPool定时任务线程池子配置，默认大小是cpu核心数+1
 taskPool=5

@@ -32,7 +32,7 @@ public class InitBean {
     private static final Logger log = LoggerFactory.getLogger(InitBean.class);
 
     private static void sortOrder() {
-        Class<?>[] order = new Class[]{LimitAdapter.class, FilterAdapter.class, GlobalException.class, InitRunner.class, ReInitRunner.class, HumAdapter.class,ResponseAdapter.class, ProtocolDispatcherAdapter.class, ServerCloseAdapter.class};
+        Class<?>[] order = new Class[]{LimitAdapter.class, FilterAdapter.class, GlobalException.class, InitRunner.class, HumAdapter.class,ResponseAdapter.class,LogAdapter.class, ProtocolDispatcherAdapter.class, ServerCloseAdapter.class};
         for (Class<?> aClass : order) {
             List<?> listBean = IocUtil.getListBean(aClass);
             List newObjectList = new ArrayList<>();
@@ -255,12 +255,6 @@ public class InitBean {
                 continue;
             }
 
-            //检测这个Bean是否是重新初始化的类
-            if (ReInitRunner.class.isAssignableFrom(aClass)) {
-                IocUtil.addListBean(ReInitRunner.class.getName(), aClass.newInstance());
-                continue;
-            }
-
             //检测这个Bean是否是Hum消息
             if (HumAdapter.class.isAssignableFrom(aClass)) {
                 IocUtil.addListBean(HumAdapter.class.getName(), aClass.newInstance());
@@ -273,6 +267,11 @@ public class InitBean {
                 continue;
             }
 
+            //检测这个Bean是否是日志扩展的数据
+            if (LogAdapter.class.isAssignableFrom(aClass)) {
+                IocUtil.addListBean(LogAdapter.class.getName(), aClass.newInstance());
+                continue;
+            }
 
             //检测这个Bean是否是权限认证的
             if (PermissionAdapter.class.isAssignableFrom(aClass)) {

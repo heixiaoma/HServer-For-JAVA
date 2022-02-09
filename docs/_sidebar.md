@@ -11,6 +11,7 @@
 * [定时器](zh-cn/task.md)
 * [全局异常处理](zh-cn/exception.md)
 * [生命周期方法](zh-cn/lifecycle.md)
+* [日志拦截](zh-cn/log.md)
 * [websocket](zh-cn/websocket.md)
 * [Mqtt](zh-cn/mqtt.md)
 * [鉴权认证相关操作](zh-cn/authentication.md)

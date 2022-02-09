@@ -13,7 +13,6 @@ import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.server.context.HumMessage;
-import top.hserver.core.server.context.HumMessageType;
 import top.hserver.core.server.handlers.HumClientHandler;
 import top.hserver.core.server.handlers.HumServerHandler;
 import top.hserver.core.server.util.*;
@@ -50,22 +49,12 @@ public class HServer {
     private EventLoopGroup humServerBossGroup = null;
 
     private EventLoopGroup humClientBossGroup = null;
-
     //TCP
     private EventLoopGroup bossGroup = null;
     private EventLoopGroup workerGroup = null;
 
-    public HServer(Integer[] port, String[] args) {
-        String portsStr = PropUtil.getInstance().get("ports");
-        if (portsStr.trim().length() > 0) {
-            String[] portStrs = portsStr.split(",");
-            ports = new Integer[portStrs.length];
-            for (int i = 0; i < portStrs.length; i++) {
-                ports[i] = Integer.parseInt(portStrs[i]);
-            }
-        } else {
-            ports = port;
-        }
+    public HServer(Integer[] ports, String[] args) {
+        this.ports=ports;
         this.args = args;
     }
 
@@ -206,7 +195,7 @@ public class HServer {
     public void publishMessage(String message) {
         HumMessage humMessage = new HumMessage();
         humMessage.setData(message);
-        humMessage.setHumMessageType(HumMessageType.SYSTEM);
+        humMessage.setType(SERVER_NAME);
         HumClient.sendMessage(humMessage);
     }
 

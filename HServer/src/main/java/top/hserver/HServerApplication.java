@@ -2,7 +2,7 @@ package top.hserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.hserver.core.interfaces.ReInitRunner;
+import top.hserver.core.interfaces.TrackAdapter;
 import top.hserver.core.plugs.PlugsManager;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
@@ -14,7 +14,6 @@ import top.hserver.core.properties.PropertiesInit;
 import top.hserver.core.server.HServer;
 import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.json.JsonAdapter;
-import top.hserver.core.server.router.RouterManager;
 import top.hserver.core.server.util.EnvironmentUtil;
 import top.hserver.core.server.util.ExceptionUtil;
 import top.hserver.core.server.util.PackageUtil;
@@ -25,6 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static top.hserver.core.server.context.ConstConfig.TRACK_EXT_PACKAGES;
+
 
 /**
  * @author hxm
@@ -32,118 +33,35 @@ import java.util.Set;
 public class HServerApplication {
     private static final Logger log = LoggerFactory.getLogger(HServerApplication.class);
     private static Class clazz;
-    private static Class mainClass;
+    public static Class mainClass;
     private static String[] packages;
 
     private static final PlugsManager PLUGS_MANAGER = new PlugsManager();
 
     /**
-     * 添加插件
-     *
-     * @param plugsClass
-     */
-    @Deprecated
-    public static void addPlugins(Class... plugsClass) {
-        PLUGS_MANAGER.addPlugins(plugsClass);
-    }
-
-    /**
-     * 启动服务
-     *
-     * @param port
-     * @param args
-     */
-    public static void run(String[] packageName, Integer port, String... args) {
-        iocInit(packageName);
-        startServer(new Integer[]{port}, args);
-    }
-
-    public static void run(String[] packageName, Integer[] ports, String... args) {
-        iocInit(packageName);
-        startServer(ports, args);
-    }
-
-    /**
-     * 主函数启动
+     * 主函数启动 单端
      *
      * @param mainClass
      * @param port
      * @param args
      */
     public static void run(Class mainClass, Integer port, String... args) {
+        ConstConfig.PORTS = new Integer[]{port};
         iocInit(mainClass);
-        startServer(new Integer[]{port}, args);
+        startServer(args);
     }
 
-
+    //多端口
     public static void run(Class mainClass, Integer[] ports, String... args) {
+        ConstConfig.PORTS = ports;
         iocInit(mainClass);
-        startServer(ports, args);
+        startServer(args);
     }
 
-    /**
-     * 主函数启动
-     *
-     * @param mainClass
-     * @param port
-     */
-    public static void run(Class mainClass, Integer port) {
+    //无端口，默认端口，或者配置端口
+    public static void run(Class mainClass, String... args) {
         iocInit(mainClass);
-        startServer(new Integer[]{port}, null);
-    }
-
-    /**
-     * 启动服务
-     *
-     * @param port
-     * @param args
-     */
-    public static void run(Integer port, String... args) {
-        iocInit();
-        startServer(new Integer[]{port}, args);
-    }
-
-
-    /**
-     * 启动服务
-     *
-     * @param port
-     */
-    public static void run(String[] packageName, Integer port) {
-        iocInit(packageName);
-        startServer(new Integer[]{port}, null);
-    }
-
-
-    /**
-     * 启动服务
-     *
-     * @param port
-     */
-    public static void run(Integer port) {
-        iocInit();
-        startServer(new Integer[]{port}, null);
-    }
-
-    /**
-     * 非服务模式启动
-     *
-     * @param args
-     */
-    public static void run(String[] packageName, String... args) {
-        iocInit(packageName);
-        initTestOk(args);
-    }
-
-
-    /**
-     * 非服务模式启动
-     *
-     * @param args
-     */
-    public static void run(String... args) {
-        iocInit();
-        initTestOk(args);
+        startServer(args);
     }
 
     /**
@@ -156,29 +74,15 @@ public class HServerApplication {
         initTestOk(null);
     }
 
-    /**
-     * 服务测试模式
-     *
-     * @param testPackageName
-     * @param port
-     */
-    public static void runTest(String testPackageName, Integer port, Class clazz) {
-        iocInit(clazz, null, testPackageName);
-        startServer(new Integer[]{port}, null);
-    }
 
-
-    private static void startServer(Integer[] port, String[] args) {
+    private static void startServer(String[] args) {
         try {
-            new HServer(port, args).run();
+            new HServer(ConstConfig.PORTS, args).run();
         } catch (Exception e) {
             log.error(ExceptionUtil.getMessage(e));
         }
     }
 
-    private static void iocInit(String... packages) {
-        iocInit(null, null, packages);
-    }
 
     private static void iocInit(Class mainClass) {
         iocInit(null, mainClass);
@@ -214,14 +118,24 @@ public class HServerApplication {
         scanPackage.addAll(PLUGS_MANAGER.getPlugPackages());
         scanPackage.add(HServerApplication.class.getPackage().getName());
         log.info("初始化配置文件");
-        PropertiesInit.configFile(scanPackage);
+        PropertiesInit.configFile();
         log.info("初始化配置完成");
-        log.info("Class动态修改开始...");
-        MemoryInitClass.closeCache();
-        for (String s : scanPackage) {
-            MemoryInitClass.init(s);
+        //没开启追踪的不追踪
+        if (ConstConfig.TRACK) {
+            log.info("Class动态修改开始...");
+            MemoryInitClass.closeCache();
+            //默认的
+            for (String s : scanPackage) {
+                MemoryInitClass.init(s);
+            }
+            //扩展的
+            if (TRACK_EXT_PACKAGES!=null&&TRACK_EXT_PACKAGES.length>0) {
+                for (String extPackage : TRACK_EXT_PACKAGES) {
+                    MemoryInitClass.init(extPackage);
+                }
+            }
+            log.info("Class动态修改完成");
         }
-        log.info("Class动态修改完成");
         log.info("HServer 启动中....");
         log.info("Package 扫描中");
         PLUGS_MANAGER.startIocInit();
@@ -246,27 +160,8 @@ public class HServerApplication {
         }
     }
 
-    /**
-     * 重新初始化依赖关系
-     */
-    public synchronized static void reInitIoc() {
-        List<ReInitRunner> listBean = IocUtil.getListBean(ReInitRunner.class);
-        if (listBean != null) {
-            for (ReInitRunner reInitRunner : listBean) {
-                reInitRunner.reInit();
-            }
-        }
-        //IOC清除，
-        IocUtil.clearAll();
-        //URLMapper 清除
-        RouterManager.clearRouterManager();
-        //重新加载一盘
-        iocInit(HServerApplication.clazz, HServerApplication.mainClass, HServerApplication.packages);
-    }
-
-
-    public static void setJson(JsonAdapter jsonAdapter){
-        ConstConfig.JSONADAPTER=jsonAdapter;
+    public static void setJson(JsonAdapter jsonAdapter) {
+        ConstConfig.JSONADAPTER = jsonAdapter;
     }
 
 }

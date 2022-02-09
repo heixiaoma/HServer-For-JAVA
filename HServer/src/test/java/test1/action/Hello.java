@@ -95,7 +95,6 @@ public class Hello {
     }
 
 
-    @Track
     @GET("/track")
     public JsonResult track() {
         return JsonResult.ok();
