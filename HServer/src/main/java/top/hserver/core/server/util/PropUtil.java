@@ -52,7 +52,7 @@ public class PropUtil {
             p.forEach((k, v) -> data.put(k.toString(), v.toString()));
             is.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(ExceptionUtil.getMessage(e));
         }
         //优先级查代码的，再查配置的
         if (profiles == null) {
@@ -70,7 +70,7 @@ public class PropUtil {
                 is2.close();
                 p.clear();
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(ExceptionUtil.getMessage(e));
             }
         }
     }

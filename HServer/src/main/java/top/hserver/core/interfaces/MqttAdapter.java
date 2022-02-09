@@ -5,6 +5,10 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.mqtt.*;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import top.hserver.HServerApplication;
+import top.hserver.core.server.util.ExceptionUtil;
 
 /**
  * Aop
@@ -12,6 +16,7 @@ import io.netty.handler.timeout.IdleStateEvent;
  * @author hxm
  */
 public abstract class MqttAdapter {
+    private static final Logger log = LoggerFactory.getLogger(MqttAdapter.class);
 
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
     }
@@ -49,7 +54,7 @@ public abstract class MqttAdapter {
     }
 
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        log.error(ExceptionUtil.getMessage(cause));
         ctx.close();
     }
 

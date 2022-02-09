@@ -16,6 +16,7 @@ import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.json.JsonAdapter;
 import top.hserver.core.server.router.RouterManager;
 import top.hserver.core.server.util.EnvironmentUtil;
+import top.hserver.core.server.util.ExceptionUtil;
 import top.hserver.core.server.util.PackageUtil;
 import top.hserver.core.task.TaskManager;
 
@@ -171,7 +172,7 @@ public class HServerApplication {
         try {
             new HServer(port, args).run();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(ExceptionUtil.getMessage(e));
         }
     }
 
@@ -194,7 +195,7 @@ public class HServerApplication {
         try {
             EnvironmentUtil.init(clazz);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(ExceptionUtil.getMessage(e));
             return;
         }
         HServerLogConfig.init();

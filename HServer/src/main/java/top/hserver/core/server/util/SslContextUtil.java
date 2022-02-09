@@ -1,6 +1,8 @@
 package top.hserver.core.server.util;
 
 import io.netty.handler.ssl.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.core.server.HServer;
 import top.hserver.core.server.context.ConstConfig;
 
@@ -13,6 +15,9 @@ import java.util.List;
 import static io.netty.handler.codec.http2.Http2SecurityUtil.CIPHERS;
 
 public class SslContextUtil {
+
+    private static final Logger log = LoggerFactory.getLogger(SslContextUtil.class);
+
     /*
      * List of ALPN/NPN protocols in order of preference. MICRO_EXP_VERSION
      * requires that HTTP2_VERSION be present and that MICRO_EXP_VERSION should be
@@ -112,7 +117,7 @@ public class SslContextUtil {
                 pinput.close();
             }
         } catch (Exception s) {
-            s.printStackTrace();
+            log.error(ExceptionUtil.getMessage(s));
         }
     }
 }

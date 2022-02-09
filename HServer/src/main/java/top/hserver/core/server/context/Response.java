@@ -1,7 +1,11 @@
 package top.hserver.core.server.context;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import top.hserver.HServerApplication;
 import top.hserver.core.interfaces.HttpResponse;
+import top.hserver.core.server.util.ExceptionUtil;
 import top.hserver.core.server.util.FreemarkerUtil;
 
 import java.io.File;
@@ -16,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author hxm
  */
 public class Response implements HttpResponse {
+  private static final Logger log = LoggerFactory.getLogger(Response.class);
 
   private Map<String, String> headers = new ConcurrentHashMap<>();
 
@@ -95,7 +100,7 @@ public class Response implements HttpResponse {
       this.result = ConstConfig.JSONADAPTER.convertString(object);
       headers.put("content-type", "application/json;charset=UTF-8");
     } catch (Exception e) {
-      e.printStackTrace();
+      log.error(ExceptionUtil.getMessage(e));
     }
   }
 
@@ -133,7 +138,7 @@ public class Response implements HttpResponse {
     try {
       this.result = FreemarkerUtil.getTemplate(htmlPath, obj);
     } catch (Exception e) {
-      e.printStackTrace();
+      log.error(ExceptionUtil.getMessage(e));
     }
     headers.put("content-type", "text/html;charset=UTF-8");
   }
@@ -158,7 +163,7 @@ public class Response implements HttpResponse {
       try {
         cookieStr.append(java.net.URLEncoder.encode(k, "UTF-8") + "=" + java.net.URLEncoder.encode(v, "UTF-8") + ";");
       } catch (UnsupportedEncodingException e) {
-        e.printStackTrace();
+        log.error(ExceptionUtil.getMessage(e));
       }
     }
     if (cookie.getMaxAge() != null) {

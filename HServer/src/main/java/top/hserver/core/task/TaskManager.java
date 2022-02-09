@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.core.interfaces.TaskJob;
 import top.hserver.core.server.context.ConstConfig;
+import top.hserver.core.server.util.ExceptionUtil;
 import top.hserver.core.server.util.NamedThreadFactory;
 
 import java.lang.reflect.Method;
@@ -52,11 +53,11 @@ public class TaskManager {
                     ScheduledFuture<?> submit = SCHEDULED_THREAD_POOL_EXECUTOR.submit(times, taskJob1, args);
                     CRON_TASK.put(name, submit);
                 } catch (Exception e2) {
-                    e2.printStackTrace();
+                    log.error(ExceptionUtil.getMessage(e2));
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(ExceptionUtil.getMessage(e));
         }
     }
 
@@ -121,7 +122,7 @@ public class TaskManager {
                 ScheduledFuture<?> submit = SCHEDULED_THREAD_POOL_EXECUTOR.submit(times, className, method, args);
                 CRON_TASK.put(name, submit);
             } catch (Exception e1) {
-                e1.printStackTrace();
+                log.error(ExceptionUtil.getMessage(e1));
             }
 
         }

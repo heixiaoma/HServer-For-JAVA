@@ -1,8 +1,12 @@
 
 package top.hserver.core.task;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.core.interfaces.TaskJob;
 import top.hserver.core.ioc.IocUtil;
+import top.hserver.core.server.util.ExceptionUtil;
+import top.hserver.core.server.util.SslContextUtil;
 
 import java.lang.reflect.Method;
 import java.util.Date;
@@ -11,6 +15,7 @@ import java.util.concurrent.*;
 import static top.hserver.core.task.TaskManager.IS_OK;
 
 public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor implements CronExecutorService {
+    private static final Logger log = LoggerFactory.getLogger(ScheduledThreadPoolExecutorPro.class);
 
     ScheduledThreadPoolExecutorPro(int corePoolSize, ThreadFactory threadFactory) {
         super(corePoolSize, threadFactory);
@@ -33,7 +38,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
                             method.setAccessible(true);
                             method.invoke(IocUtil.getBean(className), args);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            log.error(ExceptionUtil.getMessage(e));
                         }
                     }
                 }
@@ -61,7 +66,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
                         try {
                             taskJob.exec(args);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            log.error(ExceptionUtil.getMessage(e));
                         }
                     }
                 }
@@ -81,7 +86,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
                         method.setAccessible(true);
                         method.invoke(IocUtil.getBean(className), args);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.error(ExceptionUtil.getMessage(e));
                     }
                 }
         };
@@ -95,7 +100,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
                 try {
                     taskJob.exec(args);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error(ExceptionUtil.getMessage(e));
                 }
             }
         };

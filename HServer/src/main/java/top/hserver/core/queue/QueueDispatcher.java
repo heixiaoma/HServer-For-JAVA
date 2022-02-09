@@ -2,6 +2,7 @@ package top.hserver.core.queue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.hserver.core.server.util.ExceptionUtil;
 import top.hserver.core.server.util.SerializationUtil;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.ioc.annotation.queue.QueueHandler;
@@ -47,10 +48,8 @@ public class QueueDispatcher {
             }
             try {
                 fQueue.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (FileFormatException e) {
-                e.printStackTrace();
+            } catch (IOException | FileFormatException e) {
+                log.error(ExceptionUtil.getMessage(e));
             }
         }
         FQ.remove(queueName);
@@ -164,7 +163,7 @@ public class QueueDispatcher {
             try {
                 v.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(ExceptionUtil.getMessage(e));
             }
         });
         FQ.clear();
@@ -202,7 +201,7 @@ public class QueueDispatcher {
                             }
                         } catch (Exception e) {
                             sleep();
-                            e.printStackTrace();
+                            log.error(ExceptionUtil.getMessage(e));
                         }
                     });
                 } else {
@@ -264,7 +263,7 @@ public class QueueDispatcher {
         try {
             Thread.sleep(1);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error(ExceptionUtil.getMessage(e));
         }
     }
 

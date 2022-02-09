@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import top.hserver.core.ioc.annotation.Auto;
 import top.hserver.core.ioc.annotation.Track;
 import top.hserver.core.server.util.ClassLoadUtil;
+import top.hserver.core.server.util.ExceptionUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
@@ -78,7 +79,7 @@ public class MemoryInitClass {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(ExceptionUtil.getMessage(e));
         }
     }
 

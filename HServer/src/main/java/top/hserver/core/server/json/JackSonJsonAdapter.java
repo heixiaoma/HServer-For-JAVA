@@ -1,8 +1,12 @@
 package top.hserver.core.server.json;
 
 import com.fasterxml.jackson.databind.JavaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import top.hserver.core.server.context.ConstConfig;
+import top.hserver.core.server.context.Response;
+import top.hserver.core.server.util.ExceptionUtil;
 
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
@@ -14,6 +18,7 @@ import java.util.*;
  */
 public class JackSonJsonAdapter implements JsonAdapter {
 
+    private static final Logger log = LoggerFactory.getLogger(JackSonJsonAdapter.class);
 
     /**
      * 常见对象转换
@@ -56,7 +61,7 @@ public class JackSonJsonAdapter implements JsonAdapter {
         try {
             return ConstConfig.OBJECT_MAPPER.writeValueAsString(data);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(ExceptionUtil.getMessage(e));
             return null;
         }
     }

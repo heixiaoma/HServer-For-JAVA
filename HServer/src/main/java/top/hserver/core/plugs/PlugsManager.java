@@ -1,6 +1,10 @@
 package top.hserver.core.plugs;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import top.hserver.HServerApplication;
 import top.hserver.core.interfaces.PluginAdapter;
+import top.hserver.core.server.util.ExceptionUtil;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,6 +17,7 @@ import java.util.Set;
  * @author hxm
  */
 public class PlugsManager implements PluginAdapter {
+    private static final Logger log = LoggerFactory.getLogger(PlugsManager.class);
 
     private Set<String> plugPackages = new HashSet<>();
     private Set<PluginAdapter> obj = new HashSet<>();
@@ -35,7 +40,7 @@ public class PlugsManager implements PluginAdapter {
                 obj.add((PluginAdapter) aClass.newInstance());
                 plugPackages.add(aClass.getPackage().getName());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(ExceptionUtil.getMessage(e));
             }
         }
     }

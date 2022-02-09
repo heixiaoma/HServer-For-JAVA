@@ -3,8 +3,9 @@ package top.hserver.core.log;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import org.slf4j.LoggerFactory;
 import org.slf4j.impl.StaticLoggerBinder;
-import top.hserver.core.server.context.ConstConfig;
+import top.hserver.core.server.util.ExceptionUtil;
 import top.hserver.core.server.util.PropUtil;
 
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.io.InputStream;
  * @author hxm
  */
 public class HServerLogConfig {
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(HServerLogConfig.class);
 
     private static String[] getStandardConfigLocations() {
         return new String[]{"logback-test.groovy", "logback-test.xml", "logback.groovy", "logback.xml"};
@@ -35,7 +37,7 @@ public class HServerLogConfig {
             }
             loadConfiguration(HServerLogConfig.class.getResourceAsStream("/logback-hserver.xml"));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(ExceptionUtil.getMessage(e));
         }
     }
 

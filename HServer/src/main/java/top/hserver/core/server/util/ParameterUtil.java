@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import javassist.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.interfaces.HttpResponse;
 import javassist.bytecode.CodeAttribute;
@@ -15,6 +17,7 @@ import top.hserver.core.server.context.ConstConfig;
 import top.hserver.core.server.context.HServerContext;
 import top.hserver.core.server.context.MimeType;
 import top.hserver.core.server.exception.ValidateException;
+import top.hserver.core.server.json.JackSonJsonAdapter;
 
 import java.lang.reflect.*;
 import java.lang.reflect.Modifier;
@@ -30,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author hxm
  */
 public class ParameterUtil {
+    private static final Logger log = LoggerFactory.getLogger(ParameterUtil.class);
 
     /**
      * 需要这map在初始化就被赋值了
@@ -131,7 +135,7 @@ public class ParameterUtil {
             }
             return paramNames;
         } catch (NotFoundException e) {
-            e.printStackTrace();
+            log.error(ExceptionUtil.getMessage(e));
             return new String[]{};
         }
     }

@@ -16,6 +16,10 @@
 
 package top.hserver.core.loader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import top.hserver.core.server.util.ExceptionUtil;
+
 import java.lang.reflect.Method;
 
 /**
@@ -25,6 +29,7 @@ import java.lang.reflect.Method;
  * @author Phillip Webb
  */
 public class MainMethodRunner implements Runnable {
+	private static final Logger log = LoggerFactory.getLogger(MainMethodRunner.class);
 
 	private final String mainClassName;
 
@@ -54,7 +59,7 @@ public class MainMethodRunner implements Runnable {
 			mainMethod.invoke(null, new Object[] { this.args });
 		}
 		catch (Exception ex) {
-			ex.printStackTrace();
+			log.error(ExceptionUtil.getMessage(ex));
 			System.exit(1);
 		}
 	}

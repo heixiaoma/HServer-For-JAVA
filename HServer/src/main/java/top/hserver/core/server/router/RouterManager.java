@@ -7,6 +7,7 @@ import top.hserver.core.ioc.annotation.RequestMethod;
 import top.hserver.core.server.context.HServerContext;
 import top.hserver.core.server.context.PatternUri;
 import top.hserver.core.server.context.Request;
+import top.hserver.core.server.util.ExceptionUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -171,7 +172,7 @@ public class RouterManager {
                             request.addReqParams(pattern.getKeys().get(i), URLDecoder.decode(matcher.group(i + 1), "UTF-8"));
                             request.addReqUrlParams(pattern.getKeys().get(i), URLDecoder.decode(matcher.group(i + 1), "UTF-8"));
                         } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
+                            log.error(ExceptionUtil.getMessage(e));
                         }
                     }
 

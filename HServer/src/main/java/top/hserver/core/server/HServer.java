@@ -136,7 +136,7 @@ public class HServer {
                 k.closeFuture().sync();
                 log.info("channel关闭,描述信息：{}", v);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.error(ExceptionUtil.getMessage(e));
             }
         }).start());
 

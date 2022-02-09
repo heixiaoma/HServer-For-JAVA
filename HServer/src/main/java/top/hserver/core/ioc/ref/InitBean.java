@@ -77,7 +77,7 @@ public class InitBean {
                 //读取配置文件
                 initConfigurationProperties(scan);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(ExceptionUtil.getMessage(e));
             }
         });
 
@@ -86,7 +86,7 @@ public class InitBean {
                 PackageScanner scan = new ClasspathPackageScanner(k);
                 initConfiguration(scan);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(ExceptionUtil.getMessage(e));
             }
         });
 
@@ -95,7 +95,7 @@ public class InitBean {
                 PackageScanner scan = new ClasspathPackageScanner(k);
                 initWebSocket(scan);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(ExceptionUtil.getMessage(e));
             }
         });
 
@@ -104,7 +104,7 @@ public class InitBean {
                 PackageScanner scan = new ClasspathPackageScanner(k);
                 initTest(scan);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(ExceptionUtil.getMessage(e));
             }
         });
         packageNames.forEach(k -> {
@@ -112,7 +112,7 @@ public class InitBean {
                 PackageScanner scan = new ClasspathPackageScanner(k);
                 initBean(scan);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(ExceptionUtil.getMessage(e));
             }
         });
         packageNames.forEach(k -> {
@@ -120,7 +120,7 @@ public class InitBean {
                 PackageScanner scan = new ClasspathPackageScanner(k);
                 initController(scan);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(ExceptionUtil.getMessage(e));
             }
         });
         packageNames.forEach(k -> {
@@ -128,7 +128,7 @@ public class InitBean {
                 PackageScanner scan = new ClasspathPackageScanner(k);
                 initHook(scan, packageNames);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(ExceptionUtil.getMessage(e));
             }
         });
         packageNames.forEach(k -> {
@@ -136,7 +136,7 @@ public class InitBean {
                 PackageScanner scan = new ClasspathPackageScanner(k);
                 QueueDispatcher.init(scan);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(ExceptionUtil.getMessage(e));
             }
         });
 
@@ -691,7 +691,6 @@ public class InitBean {
                     log.error("{}----->{}：装配错误:类型不匹配", v.getClass().getSimpleName(), v.getClass().getSimpleName());
                 }
             } catch (Exception e) {
-                e.printStackTrace();
                 log.error("装配错误:{},{}", declaredField.getName(), e.getMessage());
             }
         }
