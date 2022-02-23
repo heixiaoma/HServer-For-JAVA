@@ -137,7 +137,7 @@ public class PropUtil {
             return new InputStreamReader(new FileInputStream(rootPath + path), StandardCharsets.UTF_8);
         } catch (Exception e) {
             try {
-                return new InputStreamReader(Objects.requireNonNull(PropUtil.class.getResourceAsStream(path)), StandardCharsets.UTF_8);
+                return new InputStreamReader(PropUtil.class.getResourceAsStream(path), StandardCharsets.UTF_8);
             }catch (Exception e1){
                 return null;
             }
