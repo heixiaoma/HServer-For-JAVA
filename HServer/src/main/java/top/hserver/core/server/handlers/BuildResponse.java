@@ -23,7 +23,6 @@ import java.util.Objects;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.FOUND;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
-import static top.hserver.core.server.context.ConstConfig.REQUEST_ID;
 import static top.hserver.core.server.context.ConstConfig.SERVER_NAME;
 
 
@@ -117,7 +116,6 @@ public class BuildResponse {
         }
         response.headers().set(HttpHeaderNames.SERVER, SERVER_NAME);
         response.headers().set(SERVER_NAME, ConstConfig.VERSION);
-        response.headers().set(REQUEST_ID, request.getRequestId());
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
         //用户自定义头头
@@ -180,8 +178,6 @@ public class BuildResponse {
                 Unpooled.wrappedBuffer(html.getBytes(StandardCharsets.UTF_8)));
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html;charset=UTF-8");
         response.headers().set(SERVER_NAME, ConstConfig.VERSION);
-        Webkit webKit = HServerContextHolder.getWebKit();
-        response.headers().set(REQUEST_ID, webKit.httpRequest.getRequestId());
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
         return response;
@@ -202,8 +198,6 @@ public class BuildResponse {
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-        Webkit webKit = HServerContextHolder.getWebKit();
-        response.headers().set(REQUEST_ID, webKit.httpRequest.getRequestId());
         HServerContextHolder.remove();
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     }
