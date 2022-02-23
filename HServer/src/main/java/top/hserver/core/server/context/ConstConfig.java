@@ -118,10 +118,20 @@ public class ConstConfig {
      */
     public static Integer HTTP_CONTENT_SIZE = Integer.MAX_VALUE;
 
+    /**
+     * 请求ID
+     */
     public final static String REQUEST_ID = "hRequestId";
 
+
+    /**
+     * 内部自用名字
+     */
     public final static String SERVER_NAME = "HServer";
 
+    /**
+     * 用户自定义的服务名
+     */
     public static String APP_NAME = "HServer";
 
     /**
