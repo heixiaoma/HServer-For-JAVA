@@ -19,6 +19,8 @@ import top.hserver.core.server.util.RequestIdGen;
 import java.util.List;
 import java.util.Map;
 
+import static top.hserver.core.server.context.ConstConfig.SERVER_NAME;
+
 
 /**
  * @author hxm
@@ -74,6 +76,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         webkit.httpRequest = hServerContext.getRequest();
         webkit.httpResponse = hServerContext.getResponse();
         webkit.httpResponse.setHeader(ConstConfig.REQUEST_ID,webkit.httpRequest.getRequestId());
+        webkit.httpResponse.setHeader(SERVER_NAME, ConstConfig.VERSION);
         hServerContext.setWebkit(webkit);
         HServerContextHolder.setWebKit(webkit);
         channelHandlerContext.fireChannelRead(hServerContext);

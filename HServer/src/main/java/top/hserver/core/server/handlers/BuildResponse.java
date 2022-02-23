@@ -114,8 +114,6 @@ public class BuildResponse {
         if (request.getStreamId()!=null){
             response.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),request.getStreamId());
         }
-        response.headers().set(HttpHeaderNames.SERVER, SERVER_NAME);
-        response.headers().set(SERVER_NAME, ConstConfig.VERSION);
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
         //用户自定义头头
@@ -177,7 +175,6 @@ public class BuildResponse {
                 httpResponseStatus,
                 Unpooled.wrappedBuffer(html.getBytes(StandardCharsets.UTF_8)));
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html;charset=UTF-8");
-        response.headers().set(SERVER_NAME, ConstConfig.VERSION);
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
         return response;
