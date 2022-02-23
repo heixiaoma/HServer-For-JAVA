@@ -118,6 +118,8 @@ public class ConstConfig {
      */
     public static Integer HTTP_CONTENT_SIZE = Integer.MAX_VALUE;
 
+    public final static String REQUEST_ID = "hRequestId";
+
     public final static String SERVER_NAME = "HServer";
 
     public static String APP_NAME = "HServer";
