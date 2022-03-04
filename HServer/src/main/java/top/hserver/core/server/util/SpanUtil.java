@@ -1,9 +1,8 @@
 package top.hserver.core.server.util;
 
-import com.alibaba.ttl.TransmittableThreadLocal;
+import io.netty.util.concurrent.FastThreadLocal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.hserver.HServerApplication;
 
 import java.util.Stack;
 
@@ -11,7 +10,7 @@ public class SpanUtil {
     private static final Logger log = LoggerFactory.getLogger(SpanUtil.class);
 
     private static final SnowflakeIdWorker SNOWFLAKE_ID_WORKER=new SnowflakeIdWorker(1,30);
-    private static final TransmittableThreadLocal<Stack<Long>> threadMethods = new TransmittableThreadLocal<>();
+    private static final FastThreadLocal<Stack<Long>> threadMethods = new FastThreadLocal<>();
 
     public static void add() {
         Stack<Long> queue;
