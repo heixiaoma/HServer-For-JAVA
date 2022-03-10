@@ -1,5 +1,6 @@
 package top.hserver.core.interfaces;
 
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import top.hserver.core.server.context.Cookie;
 
@@ -26,6 +27,17 @@ public interface HttpResponse {
      * @param file
      */
     void setDownloadFile(File file);
+
+
+    /**
+     * 下载大文件
+     *
+     * @param file
+     * @param progressStatus
+     * @param ctx
+     * @throws Exception
+     */
+    void setDownloadBigFile(File file, ProgressStatus progressStatus, ChannelHandlerContext ctx) throws Exception;
 
     /**
      * 流的下载文件
