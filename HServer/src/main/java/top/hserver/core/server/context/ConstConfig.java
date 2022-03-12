@@ -31,11 +31,6 @@ public class ConstConfig {
     public static String CLASSPATH;
 
     /**
-     * 当可以使用Epoll时是否使用Epoll
-     */
-    public static Boolean EPOLL = true;
-
-    /**
      * 打开http2 配置
      */
     public static Boolean openHttp2 = false;

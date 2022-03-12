@@ -3,7 +3,6 @@ package top.hserver.core.server;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import org.slf4j.Logger;
@@ -82,19 +81,19 @@ public class HServer {
         //TCP Server
         String typeName;
         ServerBootstrap bootstrap = new ServerBootstrap();
-        if (EpollUtil.check() && EPOLL) {
+        if (EpollUtil.check()) {
             bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
             bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
             bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-            bossGroup = new EpollEventLoopGroup(bossPool, new NamedThreadFactory("hserver_epoll_boss"));
-            workerGroup = new EpollEventLoopGroup(workerPool, new NamedThreadFactory("hserver_epoll_worker"));
+            bossGroup =TTLUtil.getEventLoop(bossPool,"hserver_epoll_boss");
+            workerGroup =TTLUtil.getEventLoop(workerPool,"hserver_epoll_worker");
             bootstrap.group(bossGroup, workerGroup).channel(EpollServerSocketChannel.class);
             typeName = "Epoll";
         } else {
             bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
             bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-            bossGroup = new NioEventLoopGroup(bossPool, new NamedThreadFactory("hserver_boss"));
-            workerGroup = new NioEventLoopGroup(workerPool, new NamedThreadFactory("hserver_worker"));
+            bossGroup =TTLUtil.getEventLoop(bossPool,"hserver_boss");
+            workerGroup =TTLUtil.getEventLoop(workerPool,"hserver_worker");
             bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
             typeName = "Nio";
         }

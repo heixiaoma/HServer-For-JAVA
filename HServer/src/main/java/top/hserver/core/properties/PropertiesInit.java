@@ -1,11 +1,8 @@
 package top.hserver.core.properties;
 
-import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import top.hserver.core.server.context.ConstConfig;
-import top.hserver.core.server.util.NamedThreadFactory;
 import top.hserver.core.server.util.PropUtil;
-
-import java.util.*;
+import top.hserver.core.server.util.TTLUtil;
 
 /**
  * @author hxm
@@ -52,9 +49,6 @@ public class PropertiesInit {
             }
         }catch (Throwable ignored){
         }
-        if (instance.get("epoll").trim().length() > 0) {
-            ConstConfig.EPOLL = Boolean.valueOf(instance.get("epoll"));
-        }
         if (instance.get("appName").trim().length() > 0) {
             ConstConfig.APP_NAME = instance.get("appName");
         }
@@ -78,12 +72,12 @@ public class PropertiesInit {
         }
         Integer businessPool = instance.getInt("businessPool");
         if (businessPool != null && businessPool > 0) {
-            ConstConfig.BUSINESS_EVENT = new DefaultEventExecutorGroup(businessPool, new NamedThreadFactory("hserver_business"));
+            ConstConfig.BUSINESS_EVENT =TTLUtil.getEventLoop(businessPool,"hserver_business");
         }
         if (businessPool != null && businessPool < 0) {
             ConstConfig.BUSINESS_EVENT = null;
         } else {
-            ConstConfig.BUSINESS_EVENT = new DefaultEventExecutorGroup(50, new NamedThreadFactory("hserver_business"));
+            ConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(50,"hserver_business");
         }
     }
 }
