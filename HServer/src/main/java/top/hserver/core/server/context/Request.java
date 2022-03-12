@@ -34,7 +34,7 @@ public class Request implements HttpRequest {
     private Map<String, List<String>> urlParams = new ConcurrentHashMap<>();
     private HeadMap headers;
     private FullHttpRequest nettyRequest;
-    private long createTime = System.currentTimeMillis();
+    private final long createTime = System.nanoTime();
     private HServerContentHandler handler;
 
     /**

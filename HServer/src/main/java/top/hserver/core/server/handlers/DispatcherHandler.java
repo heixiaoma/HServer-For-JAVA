@@ -362,11 +362,13 @@ public class DispatcherHandler {
             }
             HServerContextHolder.remove();
             ctx.writeAndFlush(msg);
-//            try {
-//                Request request = future.get().getRequest();
-//                log.debug("地址：{} 方法：{} 耗时：{}/ms", request.getNettyUri(), request.getRequestType().name(), ((System.currentTimeMillis() - request.getCreateTime())));
-//            } catch (Exception e) {
-//            }
+            if (log.isDebugEnabled()) {
+                try {
+                    Request request = future.get().getRequest();
+                    log.debug("地址：{} 方法：{} 耗时：{}/ns", request.getNettyUri(), request.getRequestType().name(), ((System.nanoTime() - request.getCreateTime())));
+                } catch (Exception e) {
+                }
+            }
             future.complete(null);
         }
     }
