@@ -48,7 +48,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-tcnative-boringssl-static</artifactId>
-            <version>2.0.41.Final</version>
+            <version>${boringssl.version}</version>
         </dependency>
 
         <!--  日志类      -->
