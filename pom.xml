@@ -11,5 +11,6 @@
         <module>HServer</module>
         <module>test-web</module>
     </modules>
+
     <packaging>pom</packaging>
 </project>

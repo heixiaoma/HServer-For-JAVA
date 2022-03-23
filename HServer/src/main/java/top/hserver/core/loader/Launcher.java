@@ -16,14 +16,10 @@
 
 package top.hserver.core.loader;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import top.hserver.core.interfaces.MqttAdapter;
 import top.hserver.core.loader.archive.Archive;
 import top.hserver.core.loader.archive.ExplodedArchive;
 import top.hserver.core.loader.archive.JarFileArchive;
 import top.hserver.core.loader.jar.JarFile;
-import top.hserver.core.server.util.ExceptionUtil;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -44,7 +40,6 @@ import java.util.List;
  */
 public abstract class Launcher {
 
-	private static final Logger log = LoggerFactory.getLogger(Launcher.class);
 
 	/**
 	 * The main runner class. This must be loaded by the created ClassLoader so cannot be
@@ -65,7 +60,7 @@ public abstract class Launcher {
 			launch(args, getMainClass(), classLoader);
 		}
 		catch (Exception ex) {
-			log.error(ExceptionUtil.getMessage(ex));
+			ex.printStackTrace();
 			System.exit(1);
 		}
 	}

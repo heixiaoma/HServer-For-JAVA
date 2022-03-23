@@ -6,14 +6,13 @@
 
     <groupId>top.hserver</groupId>
     <artifactId>HServer</artifactId>
-    <version>2.9.82</version>
+    <version>2.9.83</version>
     <packaging>jar</packaging>
     <name>HServer</name>
     <url>https://gitee.com/HServer/HServer</url>
     <description>一个基于Netty的高性能Server 服务器</description>
 
     <properties>
-
         <java.version>1.8</java.version>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -23,8 +22,7 @@
         <netty.version>4.1.75.Final</netty.version>
         <boringssl.version>2.0.51.Final</boringssl.version>
         <transmittable.version>2.12.4</transmittable.version>
-        <slf4j.version>1.7.30</slf4j.version>
-        <logback.version>1.2.10</logback.version>
+        <logback.version>1.2.11</logback.version>
         <jackson.version>2.12.3</jackson.version>
         <javassist.version>3.28.0-GA</javassist.version>
         <protostuff.version>1.1.6</protostuff.version>
@@ -51,28 +49,9 @@
             <version>${boringssl.version}</version>
         </dependency>
 
-        <!--  日志类      -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-access</artifactId>
             <version>${logback.version}</version>
         </dependency>
 

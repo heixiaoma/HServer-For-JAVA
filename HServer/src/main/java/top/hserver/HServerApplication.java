@@ -2,7 +2,6 @@ package top.hserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.hserver.core.interfaces.TrackAdapter;
 import top.hserver.core.plugs.PlugsManager;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.InitRunner;
