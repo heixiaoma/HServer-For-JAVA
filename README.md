@@ -43,15 +43,15 @@ HServer是一个基于Netty开发的一个功能强大，资源丰富，开发�
 
 | 资源名 | 地址 |
 | :----:| :----: |
-| 教程文档新版 | [点我](https://doc.hserver.top)  |
+| 教程文档 | [点我](https://doc.hserver.top)  |
 | 压测文档 | [点我](doc/PM.md) |
-| Redis操作源码 | [点我](https://gitee.com/HServer/hserver-for-java-redis) |
-| MYSQL-BeetlSQL 插件(推荐)源码 | [点我](https://gitee.com/HServer/hserver-for-java-beetlsql) |
-| MYSQL-NEO 源码 |  [点我](https://gitee.com/HServer/hserver-for-java-mysql) |
-| HServer-Maven-Plugin | [点我](https://gitee.com/HServer/hserver-maven-plugin) |
-| HServer-BeetlSql-Plugin | [点我](https://gitee.com/HServer/hserver-plugs-beetlsql) |
-| HServer-Mybatis-Plugin | [点我](https://gitee.com/HServer/hserver-plugin-mybatis) |
-| HServer-RPC-Plugin | [点我](https://gitee.com/HServer/hserver-rpc-plugin) |
+| Redis使用案例 | [点我](https://gitee.com/HServer/hserver-for-java-redis) |
+| MYSQL-BeetlSQL 使用案例 | [点我](https://gitee.com/HServer/hserver-for-java-beetlsql) |
+| MYSQL-NEO 使用案例 |  [点我](https://gitee.com/HServer/hserver-for-java-mysql) |
+|插件源码 HServer-Maven-Plugin | [点我](https://gitee.com/HServer/hserver-maven-plugin) |
+|插件源码 HServer-BeetlSql-Plugin | [点我](https://gitee.com/HServer/hserver-plugs-beetlsql) |
+|插件源码 HServer-Mybatis-Plugin | [点我](https://gitee.com/HServer/hserver-plugin-mybatis) |
+|插件源码 HServer-RPC-Plugin | [点我](https://gitee.com/HServer/hserver-rpc-plugin) |
 | HServer版本查询 | [点我](https://repo1.maven.org/maven2/top/hserver/HServer/) |
 
 
