@@ -363,7 +363,7 @@ public class DispatcherHandler {
             if (log.isDebugEnabled()) {
                 try {
                     Request request = future.get().getRequest();
-                    log.debug("地址：{} 方法：{} 耗时：{}/ms", request.getNettyUri(), request.getRequestType().name(), ((System.currentTimeMillis() - request.getCreateTime())));
+                    log.debug("地址：{} 方法：{} 耗时：{}/ms 来源:{}", request.getNettyUri(), request.getRequestType().name(), ((System.currentTimeMillis() - request.getCreateTime())),request.getIpAddress());
                 } catch (Exception e) {
                 }
             }
