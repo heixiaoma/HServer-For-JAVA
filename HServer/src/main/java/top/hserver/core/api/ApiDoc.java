@@ -9,10 +9,7 @@ import top.hserver.core.ioc.ref.PackageScanner;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Api 数据操作对象
@@ -29,16 +26,24 @@ public class ApiDoc {
      * @param baseClass
      */
     public ApiDoc(Class<?> baseClass) {
-        this.packageScanner = new ClasspathPackageScanner(baseClass.getPackage().getName());
+        this.packageScanner = new ClasspathPackageScanner(new HashSet<String>() {
+            {
+                add(baseClass.getPackage().getName());
+            }
+        });
     }
 
     public ApiDoc(String packageName) {
-        this.packageScanner = new ClasspathPackageScanner(packageName);
+        this.packageScanner = new ClasspathPackageScanner(new HashSet<String>() {
+            {
+                add(packageName);
+            }
+        });
     }
 
     public List<ApiResult> getApiData() throws Exception {
         List<ApiResult> apiResults = new ArrayList<>();
-        List<Class<?>> annotationList = packageScanner.getAnnotationList(Controller.class);
+        Set<Class<?>> annotationList = packageScanner.getAnnotationList(Controller.class);
         //所有的控制器
         for (Class<?> aClass : annotationList) {
             Controller controller = aClass.getAnnotation(Controller.class);

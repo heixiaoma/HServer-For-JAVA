@@ -32,7 +32,7 @@ public class InitBean {
     private static final Logger log = LoggerFactory.getLogger(InitBean.class);
 
     private static void sortOrder() {
-        Class<?>[] order = new Class[]{LimitAdapter.class, FilterAdapter.class, GlobalException.class, InitRunner.class, HumAdapter.class,ResponseAdapter.class,LogAdapter.class, ProtocolDispatcherAdapter.class, ServerCloseAdapter.class};
+        Class<?>[] order = new Class[]{LimitAdapter.class, FilterAdapter.class, GlobalException.class, InitRunner.class, HumAdapter.class, ResponseAdapter.class, LogAdapter.class, ProtocolDispatcherAdapter.class, ServerCloseAdapter.class};
         for (Class<?> aClass : order) {
             List<?> listBean = IocUtil.getListBean(aClass);
             List newObjectList = new ArrayList<>();
@@ -58,7 +58,6 @@ public class InitBean {
                 IocUtil.addBean(aClass.getName(), newObjectList);
             }
 
-
         }
 
     }
@@ -71,82 +70,66 @@ public class InitBean {
         if (packageNames == null) {
             return;
         }
-        packageNames.forEach(k -> {
-            try {
-                PackageScanner scan = new ClasspathPackageScanner(k);
-                //读取配置文件
-                initConfigurationProperties(scan);
-            } catch (Exception e) {
-                log.error(ExceptionUtil.getMessage(e));
-            }
-        });
+        PackageScanner scan = new ClasspathPackageScanner(packageNames);
 
-        packageNames.forEach(k -> {
-            try {
-                PackageScanner scan = new ClasspathPackageScanner(k);
-                initConfiguration(scan);
-            } catch (Exception e) {
-                log.error(ExceptionUtil.getMessage(e));
-            }
-        });
+        try {
+            //读取配置文件
+            initConfigurationProperties(scan);
+        } catch (Exception e) {
+            log.error(ExceptionUtil.getMessage(e));
+        }
 
-        packageNames.forEach(k -> {
-            try {
-                PackageScanner scan = new ClasspathPackageScanner(k);
-                initWebSocket(scan);
-            } catch (Exception e) {
-                log.error(ExceptionUtil.getMessage(e));
-            }
-        });
+        try {
+            //初始化配置类
+            initConfiguration(scan);
+        } catch (Exception e) {
+            log.error(ExceptionUtil.getMessage(e));
+        }
 
-        packageNames.forEach(k -> {
-            try {
-                PackageScanner scan = new ClasspathPackageScanner(k);
-                initTest(scan);
-            } catch (Exception e) {
-                log.error(ExceptionUtil.getMessage(e));
-            }
-        });
-        packageNames.forEach(k -> {
-            try {
-                PackageScanner scan = new ClasspathPackageScanner(k);
-                initBean(scan);
-            } catch (Exception e) {
-                log.error(ExceptionUtil.getMessage(e));
-            }
-        });
-        packageNames.forEach(k -> {
-            try {
-                PackageScanner scan = new ClasspathPackageScanner(k);
-                initController(scan);
-            } catch (Exception e) {
-                log.error(ExceptionUtil.getMessage(e));
-            }
-        });
-        packageNames.forEach(k -> {
-            try {
-                PackageScanner scan = new ClasspathPackageScanner(k);
-                initHook(scan, packageNames);
-            } catch (Exception e) {
-                log.error(ExceptionUtil.getMessage(e));
-            }
-        });
-        packageNames.forEach(k -> {
-            try {
-                PackageScanner scan = new ClasspathPackageScanner(k);
-                QueueDispatcher.init(scan);
-            } catch (Exception e) {
-                log.error(ExceptionUtil.getMessage(e));
-            }
-        });
+        try {
+            //初始化Websocket
+            initWebSocket(scan);
+        } catch (Exception e) {
+            log.error(ExceptionUtil.getMessage(e));
+        }
 
+        try {
+            //测试类
+            initTest(scan);
+        } catch (Exception e) {
+            log.error(ExceptionUtil.getMessage(e));
+        }
+        try {
+            //初始化容器bean
+            initBean(scan);
+        } catch (Exception e) {
+            log.error(ExceptionUtil.getMessage(e));
+        }
+        try {
+            //初始化控制器
+            initController(scan);
+        } catch (Exception e) {
+            log.error(ExceptionUtil.getMessage(e));
+        }
+        try {
+            //初始化Hook
+            initHook(scan, packageNames);
+        } catch (Exception e) {
+            log.error(ExceptionUtil.getMessage(e));
+        }
+        try {
+            //初始化队列
+            QueueDispatcher.init(scan);
+        } catch (Exception e) {
+            log.error(ExceptionUtil.getMessage(e));
+        }
         //排序
         sortOrder();
     }
 
     private static void initConfigurationProperties(PackageScanner scanner) throws Exception {
         //配置文件类自动装配
-        List<Class<?>> clasps = scanner.getAnnotationList(ConfigurationProperties.class);
+        Set<Class<?>> clasps = scanner.getAnnotationList(ConfigurationProperties.class);
         for (Class<?> clasp : clasps) {
             String value = clasp.getAnnotation(ConfigurationProperties.class).prefix();
             if (value.trim().length() == 0) {
@@ -174,7 +157,7 @@ public class InitBean {
 
 
     private static void initConfiguration(PackageScanner scan) throws Exception {
-        List<Class<?>> clasps = scan.getAnnotationList(Configuration.class);
+        Set<Class<?>> clasps = scan.getAnnotationList(Configuration.class);
         for (Class aClass : clasps) {
             Method[] methods = aClass.getDeclaredMethods();
             Object o = aClass.newInstance();
@@ -214,7 +197,7 @@ public class InitBean {
     }
 
     private static void initWebSocket(PackageScanner scan) throws Exception {
-        List<Class<?>> clasps = scan.getAnnotationList(WebSocket.class);
+        Set<Class<?>> clasps = scan.getAnnotationList(WebSocket.class);
         for (Class aClass : clasps) {
             //检查注解里面是否有值
             WebSocket annotation = (WebSocket) aClass.getAnnotation(WebSocket.class);
@@ -227,7 +210,7 @@ public class InitBean {
     private static void initTest(PackageScanner scan) throws Exception {
         try {
             Class<Annotation> aClass1 = (Class<Annotation>) InitBean.class.getClassLoader().loadClass("org.junit.runner.RunWith");
-            List<Class<?>> clasps = scan.getAnnotationList(aClass1);
+            Set<Class<?>> clasps = scan.getAnnotationList(aClass1);
             for (Class aClass : clasps) {
                 //检查注解里面是否有值
                 IocUtil.addBean(aClass.getName(), aClass.newInstance());
@@ -241,7 +224,7 @@ public class InitBean {
      * 初始化Bean
      */
     private static void initBean(PackageScanner scan) throws Exception {
-        List<Class<?>> clasps = scan.getAnnotationList(Bean.class);
+        Set<Class<?>> clasps = scan.getAnnotationList(Bean.class);
         for (Class aClass : clasps) {
             //检测这个Bean是否是全局异常处理的类
             if (GlobalException.class.isAssignableFrom(aClass)) {
@@ -346,7 +329,7 @@ public class InitBean {
         /**
          * 检查是否有方法注解
          */
-        List<Class<?>> clasps = scan.getAnnotationList(Controller.class);
+        Set<Class<?>> clasps = scan.getAnnotationList(Controller.class);
         for (Class aClass : clasps) {
             //检查注解里面是否有值
             Method[] methods = aClass.getDeclaredMethods();
@@ -483,7 +466,7 @@ public class InitBean {
 
     private static void initHook(PackageScanner scan, Set<String> packages) throws Exception {
         HookProxyFactory hookProxyFactory = new HookProxyFactory();
-        List<Class<?>> clasps = scan.getAnnotationList(Hook.class);
+        Set<Class<?>> clasps = scan.getAnnotationList(Hook.class);
         for (Class aClass : clasps) {
             Hook hook = (Hook) aClass.getAnnotation(Hook.class);
             Class[] values = hook.value();

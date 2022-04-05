@@ -3,6 +3,7 @@ package top.hserver.core.ioc.ref;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author hxm
@@ -16,5 +17,5 @@ public interface PackageScanner {
      * @return
      * @throws IOException
      */
-    <A extends Annotation> List<Class<?>> getAnnotationList(Class<A> annotation) throws IOException;
+    <A extends Annotation> Set<Class<?>> getAnnotationList(Class<A> annotation) throws IOException;
 }

@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.*;
 
 import static top.hserver.core.server.context.ConstConfig.PERSIST_PATH;
@@ -96,7 +97,7 @@ public class QueueDispatcher {
      */
     public static void init(PackageScanner scanner) throws IOException {
         // 载入事件处理类
-        List<Class<?>> classes = scanner.getAnnotationList(QueueListener.class);
+        Set<Class<?>> classes = scanner.getAnnotationList(QueueListener.class);
         // 解析事件处理类
         for (Class<?> clazz : classes) {
             QueueListener queueListener = clazz.getAnnotation(QueueListener.class);
