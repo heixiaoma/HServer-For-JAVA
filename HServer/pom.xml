@@ -23,7 +23,7 @@
         <boringssl.version>2.0.51.Final</boringssl.version>
         <transmittable.version>2.12.4</transmittable.version>
         <logback.version>1.2.11</logback.version>
-        <jackson.version>2.13.1</jackson.version>
+        <jackson.version>2.13.2.1</jackson.version>
         <javassist.version>3.28.0-GA</javassist.version>
         <protostuff.version>1.1.6</protostuff.version>
         <freemarker.version>2.3.31</freemarker.version>
