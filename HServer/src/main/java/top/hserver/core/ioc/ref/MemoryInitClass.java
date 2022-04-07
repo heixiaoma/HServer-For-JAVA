@@ -1,9 +1,6 @@
 package top.hserver.core.ioc.ref;
 
-import javassist.ClassClassPath;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
+import javassist.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.HServerApplication;
@@ -17,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 
 /**
  * @author hxm
@@ -27,27 +25,63 @@ public class MemoryInitClass {
     public static final ConcurrentHashMap<String, Object> annMapMethod = new ConcurrentHashMap<>();
     private static final List<String> cache = new ArrayList<>();
 
+    /**
+     * 修改Netty，让线程池被TTL包装
+     * AbstractEventExecutor eventloop都继承了这个抽象类，我们只加入一点自己的逻辑，并在RouterHandler里使用
+     */
+    public static void modifyNetty() {
+        ClassPool cp = ClassPool.getDefault();
+        try {
+            String strPath="io.netty.util.concurrent.AbstractEventExecutor";
+            ClassPath classPath= new LoaderClassPath(Thread.currentThread().getContextClassLoader());
+            cp.insertClassPath(classPath);
+            Loader loader = new Loader(cp);
+            Class<?> abstractEventExecutor = loader.loadClass(strPath);
+            CtClass ctClass = cp.getCtClass(abstractEventExecutor.getName());
+            ctClass.freeze();
+            ctClass.defrost();
+            CtClass executorType = cp.get(Executor.class.getCanonicalName());
+            // final Executor executor=TtlExecutors.getTtlExecutor(this); 模拟这样一段代码
+            CtField ctField = new CtField(executorType, "executor", ctClass);
+            ctField.setModifiers(Modifier.FINAL);
+            ctClass.addField(ctField, "com.alibaba.ttl.threadpool.TtlExecutors.getTtlExecutor(this);");
+            //在添加一个get方法用于RouterHandler调用
+            // public Executor getExecutor() {
+            //        return this.executor;
+            //    }
+            CtMethod m = new CtMethod( cp.get(Executor.class.getCanonicalName()), "getTtlExecutor", new CtClass[]{}, ctClass);
+            m.setModifiers(Modifier.PUBLIC);
+            // 添加返回
+            m.setBody("return this.executor;");
+            ctClass.addMethod(m);
+            ctClass.toClass();
+            ctClass.detach();
+        } catch (Throwable e) {
+            log.error(ExceptionUtil.getMessage(e));
+        }
+    }
+
+
     public static void init(String packageName) {
         //自己不跟踪
-        if (packageName == null||packageName.startsWith("top.hserver")) {
+        if (packageName == null || packageName.startsWith("top.hserver")) {
             return;
         }
         try {
             List<Class<?>> classes = ClassLoadUtil.LoadClasses(packageName, true);
             ClassPool cp = ClassPool.getDefault();
-            br:for (Class<?> aClass : classes) {
-
+            br:
+            for (Class<?> aClass : classes) {
                 /**
                  * 主动过滤的不跟踪
                  */
                 for (String trackNoPackage : ConstConfig.TRACK_NO_PACKAGES) {
-                    if (aClass.getName().startsWith(trackNoPackage)){
+                    if (aClass.getName().startsWith(trackNoPackage)) {
                         break br;
                     }
                 }
-
                 //主函数不能被跟踪，他已经被加载了
-                if (aClass.getName().equals(HServerApplication.mainClass.getName())){
+                if (aClass.getName().equals(HServerApplication.mainClass.getName())) {
                     continue;
                 }
                 CtClass cc = null;
@@ -57,14 +91,14 @@ public class MemoryInitClass {
                     cp.insertClassPath(classPath);
                     CtClass ctClass = cp.getCtClass(aClass.getName());
                     //如果是接口就不跟踪了
-                    if (ctClass.isInterface()){
+                    if (ctClass.isInterface()) {
                         continue;
                     }
                     //如果是TrackAdapter子类的都不能被跟踪，不然就递归了
                     CtClass[] interfaces = ctClass.getInterfaces();
-                    if (interfaces.length>0){
+                    if (interfaces.length > 0) {
                         for (CtClass anInterface : interfaces) {
-                            if (anInterface.getName().equals(TrackAdapter.class.getName())){
+                            if (anInterface.getName().equals(TrackAdapter.class.getName())) {
                                 continue br;
                             }
                         }
@@ -74,7 +108,7 @@ public class MemoryInitClass {
                     continue;
                 }
                 //有的方法没用放方法体只有成员变量，这种不能跟踪
-                if (methods==null||methods.length==0){
+                if (methods == null || methods.length == 0) {
                     continue;
                 }
                 for (CtMethod method : methods) {
@@ -85,8 +119,8 @@ public class MemoryInitClass {
                         cache.add(aClass.getName());
                     }
                     //抽象方法不跟踪
-                    if (method.isEmpty()){
-                      continue ;
+                    if (method.isEmpty()) {
+                        continue;
                     }
                     cc = cp.get(aClass.getName());
                     cc.freeze();
@@ -97,6 +131,7 @@ public class MemoryInitClass {
                 if (cc != null) {
                     try {
                         cc.toClass();
+                        cc.detach();
                     } catch (Exception e) {
                         log.warn(e.getMessage());
                     }
@@ -157,8 +192,8 @@ public class MemoryInitClass {
                 src.append("}");
                 src.append("top.hserver.core.server.util.SpanUtil.clear();");
                 declaredMethod.insertAfter(src.toString());
-            }catch (Exception e){
-                log.warn(method.getName()+"："+e.getMessage());
+            } catch (Exception e) {
+                log.warn(method.getName() + "：" + e.getMessage());
                 annMapMethod.remove(uuid);
             }
         }

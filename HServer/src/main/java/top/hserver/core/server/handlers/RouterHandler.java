@@ -1,10 +1,10 @@
 package top.hserver.core.server.handlers;
 
-import com.alibaba.ttl.threadpool.TtlExecutors;
 import top.hserver.core.server.context.HServerContext;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -14,10 +14,15 @@ import java.util.concurrent.Executor;
  */
 public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
 
+    private static Method getTtlExecutor = null;
+
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HServerContext hServerContext) throws Exception {
         CompletableFuture<HServerContext> future = CompletableFuture.completedFuture(hServerContext);
-        Executor executor = TtlExecutors.getTtlExecutor(ctx.executor());
+        if (getTtlExecutor == null) {
+            getTtlExecutor = ctx.executor().getClass().getMethod("getTtlExecutor");
+        }
+        Executor executor = (Executor) getTtlExecutor.invoke(ctx.executor());
         future.thenApplyAsync(req -> DispatcherHandler.staticFile(hServerContext), executor)
                 .thenApplyAsync(DispatcherHandler::permission, executor)
                 .thenApplyAsync(DispatcherHandler::filter, executor)

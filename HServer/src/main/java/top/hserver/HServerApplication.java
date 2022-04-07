@@ -31,9 +31,7 @@ import static top.hserver.core.server.context.ConstConfig.TRACK_EXT_PACKAGES;
  */
 public class HServerApplication {
     private static final Logger log = LoggerFactory.getLogger(HServerApplication.class);
-    private static Class clazz;
     public static Class mainClass;
-    private static String[] packages;
 
     private static final PlugsManager PLUGS_MANAGER = new PlugsManager();
 
@@ -88,9 +86,7 @@ public class HServerApplication {
     }
 
     private synchronized static void iocInit(Class clazz, Class mainClass, String... packages) {
-        HServerApplication.clazz = clazz;
         HServerApplication.mainClass = mainClass;
-        HServerApplication.packages = packages;
 
         /**
          * 初始化哈日志配置
@@ -119,22 +115,25 @@ public class HServerApplication {
         log.info("初始化配置文件");
         PropertiesInit.configFile();
         log.info("初始化配置完成");
+        log.info("Class动态修改开始...");
+        //对Netty进行改造，内存方式修改
+        MemoryInitClass.modifyNetty();
         //没开启追踪的不追踪
         if (ConstConfig.TRACK) {
-            log.info("Class动态修改开始...");
             MemoryInitClass.closeCache();
             //默认的
             for (String s : scanPackage) {
                 MemoryInitClass.init(s);
             }
             //扩展的
-            if (TRACK_EXT_PACKAGES!=null&&TRACK_EXT_PACKAGES.length>0) {
+            if (TRACK_EXT_PACKAGES != null && TRACK_EXT_PACKAGES.length > 0) {
                 for (String extPackage : TRACK_EXT_PACKAGES) {
                     MemoryInitClass.init(extPackage);
                 }
             }
-            log.info("Class动态修改完成");
+            MemoryInitClass.closeCache();
         }
+        log.info("Class动态修改完成");
         log.info("HServer 启动中....");
         log.info("Package 扫描中");
         PLUGS_MANAGER.startIocInit();
