@@ -254,6 +254,7 @@ public class QueueDispatcher {
         QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
         if (queueHandleInfo != null && queueHandleInfo.getQueueFactory() != null) {
             QueueInfo queueInfo = queueHandleInfo.getQueueFactory().queueInfo();
+            queueInfo.setFqueueSize(FQ.get(queueName).size());
             return queueInfo;
         }
         return null;
