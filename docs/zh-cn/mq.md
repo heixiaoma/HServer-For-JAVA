@@ -9,17 +9,27 @@
   @GET("/event")
     public JsonResult event() {
     	//队列名字，方法参数
-        //默认队列1024，超过限制就阻塞
-        HServerQueue.sendQueue("Queue", "666");
-        
         //持久方式，会先缓存文件，在消费
-        HServerQueue.sendPersistQueue("Queue", "666");
+        HServerQueue.sendQueue("Queue", "666");
         return JsonResult.ok();
     }
 
 
     @GET("/eventInfo")
     public JsonResult eventInfo() {
+        //队列信息
+        //内存剩余队列数
+        // long remainQueueSize;
+        
+        //最大数量
+        // long bufferSize;
+        
+        //游标，执行次数
+        // long cursor;
+        
+        // 持久化剩下的数量
+        // long fqueueSize;
+        
         QueueInfo queueInfo = HServerQueue.queueInfo("Queue");
         return JsonResult.ok().put("data", queueInfo);
     }

@@ -17,6 +17,28 @@
         response.setDownloadFile(fileInputStream, "README.md");
     }
 
+   //超大文件下载
+    @GET("/downBigFile")
+    public void downBigFile(HttpRequest request, HttpResponse response) throws Exception {
+        final File file = new File("D:\\Java\\HServer\\README.md");
+        response.setDownloadBigFile(file, new ProgressStatus() {
+        @Override
+        public void operationComplete(String s) {
+             log.info("file {} transfer complete.", file.getName());
+        }
+        
+        @Override
+        public void downloading(long progress, long total) {
+            if (total < 0) {
+                log.warn("file {} transfer progress: {}", file.getName(), progress);
+            } else {
+                log.debug("file {} transfer progress: {}/{}", file.getName(), progress, total);
+            }
+        }
+        }, request.getCtx());
+
+    }
+
     /**
      * 上传文件测试
      *
