@@ -34,7 +34,7 @@ public class MemoryInitClass {
         try {
             String strPath="io.netty.util.concurrent.AbstractEventExecutor";
             ClassPath classPath= new LoaderClassPath(Thread.currentThread().getContextClassLoader());
-            cp.insertClassPath(classPath);
+            cp.appendClassPath(classPath);
             Loader loader = new Loader(cp);
             Class<?> abstractEventExecutor = loader.loadClass(strPath);
             CtClass ctClass = cp.getCtClass(abstractEventExecutor.getName());

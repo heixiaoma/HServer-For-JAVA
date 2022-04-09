@@ -98,7 +98,6 @@ public class HServerApplication {
             return;
         }
         HServerLogConfig.init();
-
         log.info("检查包文件");
         Set<String> scanPackage;
         if (mainClass == null) {
@@ -112,9 +111,6 @@ public class HServerApplication {
         }
         scanPackage.addAll(PLUGS_MANAGER.getPlugPackages());
         scanPackage.add(HServerApplication.class.getPackage().getName());
-        log.info("初始化配置文件");
-        PropertiesInit.configFile();
-        log.info("初始化配置完成");
         log.info("Class动态修改开始...");
         //对Netty进行改造，内存方式修改
         MemoryInitClass.modifyNetty();
@@ -134,6 +130,9 @@ public class HServerApplication {
             MemoryInitClass.closeCache();
         }
         log.info("Class动态修改完成");
+        log.info("初始化配置文件");
+        PropertiesInit.configFile();
+        log.info("初始化配置完成");
         log.info("HServer 启动中....");
         log.info("Package 扫描中");
         PLUGS_MANAGER.startIocInit();
@@ -157,7 +156,6 @@ public class HServerApplication {
             }
         }
     }
-
     public static void setJson(JsonAdapter jsonAdapter) {
         ConstConfig.JSONADAPTER = jsonAdapter;
     }
