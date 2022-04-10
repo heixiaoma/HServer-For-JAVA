@@ -12,23 +12,25 @@ public class SpanUtil {
     private static final SnowflakeIdWorker SNOWFLAKE_ID_WORKER=new SnowflakeIdWorker(1,30);
     private static final FastThreadLocal<Stack<Long>> threadMethods = new FastThreadLocal<>();
 
-    public static void add() {
+    public static long add() {
+        long l = SNOWFLAKE_ID_WORKER.nextId();
         Stack<Long> queue;
         if (null == threadMethods.get()) {
             queue = new Stack<>();
-            queue.add(SNOWFLAKE_ID_WORKER.nextId());
+            queue.add(l);
         } else {
             queue = threadMethods.get();
-            queue.add(queue.peek()+1);
+            queue.add(l);
         }
         threadMethods.set(queue);
+        return l;
     }
 
     public static long get() {
         try {
             Stack<Long> integers = threadMethods.get();
             if (integers == null) {
-                return SNOWFLAKE_ID_WORKER.nextId();
+                return -1;
             }
             return integers.peek();
         }catch (Exception e){

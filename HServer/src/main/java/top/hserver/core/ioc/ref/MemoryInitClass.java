@@ -163,13 +163,16 @@ public class MemoryInitClass {
                 declaredMethod.addLocalVariable("begin_hserver", CtClass.longType);
                 declaredMethod.addLocalVariable("end_hserver", CtClass.longType);
                 declaredMethod.addLocalVariable("spanId", CtClass.longType);
+                declaredMethod.addLocalVariable("pspanId", CtClass.longType);
                 declaredMethod.addLocalVariable("trackAdapter_hserver", cp.get(List.class.getCanonicalName()));
                 declaredMethod.addLocalVariable("clazz_hserver", cp.get(Class.class.getCanonicalName()));
                 declaredMethod.addLocalVariable("annMethodObj", cp.get(CtMethod.class.getCanonicalName()));
-                declaredMethod.insertBefore("begin_hserver=System.currentTimeMillis();");
-                declaredMethod.insertBefore("spanId=top.hserver.core.server.util.SpanUtil.get();");
-                declaredMethod.insertBefore("top.hserver.core.server.util.SpanUtil.add();");
-                declaredMethod.insertBefore("annMethodObj = (javassist.CtMethod)top.hserver.core.ioc.ref.MemoryInitClass.annMapMethod.get(\"" + uuid + "\");");
+
+                 String before = "begin_hserver=System.currentTimeMillis();" +
+                        "spanId=top.hserver.core.server.util.SpanUtil.get();" +
+                        "pspanId=top.hserver.core.server.util.SpanUtil.add();" +
+                        "annMethodObj = (javassist.CtMethod)top.hserver.core.ioc.ref.MemoryInitClass.annMapMethod.get(\"" + uuid + "\");";
+                declaredMethod.insertBefore(before);
 
 
                 //之后
@@ -187,7 +190,7 @@ public class MemoryInitClass {
                 }
                 src.append("for (int i = 0; i <trackAdapter_hserver.size() ; i++)");
                 src.append("{");
-                src.append(" ((top.hserver.core.interfaces.TrackAdapter)trackAdapter_hserver.get(i)).track(clazz_hserver,annMethodObj,Thread.currentThread().getStackTrace(), begin_hserver,end_hserver,spanId,spanId+1);");
+                src.append(" ((top.hserver.core.interfaces.TrackAdapter)trackAdapter_hserver.get(i)).track(clazz_hserver,annMethodObj,Thread.currentThread().getStackTrace(), begin_hserver,end_hserver,pspanId,spanId);");
                 src.append("}");
                 src.append("}");
                 src.append("top.hserver.core.server.util.SpanUtil.clear();");
