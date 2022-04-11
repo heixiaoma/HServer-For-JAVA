@@ -1,5 +1,6 @@
 package top.hserver.core.server.util;
 
+import com.alibaba.ttl.TransmittableThreadLocal;
 import io.netty.util.concurrent.FastThreadLocal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +10,8 @@ import java.util.Stack;
 public class SpanUtil {
     private static final Logger log = LoggerFactory.getLogger(SpanUtil.class);
 
-    private static final SnowflakeIdWorker SNOWFLAKE_ID_WORKER=new SnowflakeIdWorker(1,30);
-    private static final FastThreadLocal<Stack<Long>> threadMethods = new FastThreadLocal<>();
+    private static final SnowflakeIdWorker SNOWFLAKE_ID_WORKER = new SnowflakeIdWorker(1, 30);
+    private static final TransmittableThreadLocal<Stack<Long>> threadMethods = new TransmittableThreadLocal<>();
 
     public static long add() {
         long l = SNOWFLAKE_ID_WORKER.nextId();
@@ -29,11 +30,11 @@ public class SpanUtil {
     public static long get() {
         try {
             Stack<Long> integers = threadMethods.get();
-            if (integers == null) {
+            if (integers == null||integers.isEmpty()) {
                 return -1;
             }
             return integers.peek();
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(ExceptionUtil.getMessage(e));
             return -1;
         }
@@ -44,7 +45,9 @@ public class SpanUtil {
         if (queue == null) {
             return;
         }
-        queue.pop();
+        if (!queue.isEmpty()){
+            queue.pop();
+        }
         if (queue.isEmpty()) {
             threadMethods.remove();
         }
