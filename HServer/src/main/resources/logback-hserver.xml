@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false">
 
+    <define name="dataFormat" class="top.hserver.core.log.HServerDataDefiner"/>
+
     <!--可视化的高亮样式-->
     <property name="STDOUT_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %HServerHighlight(%5.5level) 线程名: [%17.17thread] %cyan(%-40.40logger{39} 行号:[%4.4line]) 请求ID： [%requestId] : %msg%n"/>
+              value="${dataFormat}"/>
 
     <!--文件存储的样式-->
     <property name="FILE_PATTERN"
@@ -21,6 +23,18 @@
             <layout class="top.hserver.core.log.HServerPatternLayout">
                 <pattern>
                     ${logging.console.pattern:-${STDOUT_PATTERN}}
+                </pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT_WIN"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder
+                class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="top.hserver.core.log.HServerPatternLayout">
+                <pattern>
+                    ${logging.console.pattern:-${FILE_PATTERN}}
                 </pattern>
             </layout>
         </encoder>
