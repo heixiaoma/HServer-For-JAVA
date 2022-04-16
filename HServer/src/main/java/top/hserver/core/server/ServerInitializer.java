@@ -23,7 +23,6 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
         pipeline.addLast(new ProtocolDispatcher());
     }
 
-    @Sharable
     public static class ProtocolDispatcher extends ByteToMessageDecoder {
         @Override
         public void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
