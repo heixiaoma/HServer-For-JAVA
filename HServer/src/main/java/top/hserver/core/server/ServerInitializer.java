@@ -17,10 +17,12 @@ import java.util.List;
  */
 public class ServerInitializer extends ChannelInitializer<Channel> {
 
+    private final static ProtocolDispatcher protocolDispatcher = new ProtocolDispatcher();
+
     @Override
     protected void initChannel(Channel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-        pipeline.addLast(new ProtocolDispatcher());
+        pipeline.addLast(protocolDispatcher);
     }
 
 
@@ -37,7 +39,7 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
             byte[] bytes = ByteBufUtil.byteBufToBytes(slice);
             ChannelPipeline pipeline = ctx.pipeline();
             List<ProtocolDispatcherAdapter> listBean = IocUtil.getListBean(ProtocolDispatcherAdapter.class);
-            if (listBean==null){
+            if (listBean == null) {
                 return;
             }
             for (ProtocolDispatcherAdapter protocolDispatcherAdapter : listBean) {
