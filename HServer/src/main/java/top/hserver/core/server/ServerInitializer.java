@@ -17,15 +17,13 @@ import java.util.List;
  */
 public class ServerInitializer extends ChannelInitializer<Channel> {
 
-    private final static ProtocolDispatcher protocolDispatcher = new ProtocolDispatcher();
-
     @Override
     protected void initChannel(Channel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-        pipeline.addLast(protocolDispatcher);
+        pipeline.addLast(new ProtocolDispatcher());
     }
 
-
+    @Sharable
     public static class ProtocolDispatcher extends ByteToMessageDecoder {
         @Override
         public void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
