@@ -27,7 +27,7 @@ import static top.hserver.core.server.context.ConstConfig.SERVER_NAME;
  */
 public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
-    private static final Logger log = LoggerFactory.getLogger(HServerApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(HServerContentHandler.class);
 
     private final static DefaultHttpDataFactory FACTORY = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
 
