@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import top.hserver.core.server.context.ConstConfig;
-import top.hserver.core.server.context.Response;
 import top.hserver.core.server.util.ExceptionUtil;
 
 import java.lang.reflect.Parameter;
@@ -20,20 +19,11 @@ public class JackSonJsonAdapter implements JsonAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(JackSonJsonAdapter.class);
 
-    /**
-     * 常见对象转换
-     * <p>
-     * </>
-     *
-     * @param data
-     * @param type
-     * @return
-     */
     @Override
     public Object convertObject(String data, Parameter type) {
         try {
             if (Collection.class.isAssignableFrom(type.getType()) || Map.class.isAssignableFrom(type.getType())) {
-                return ConstConfig.OBJECT_MAPPER.readValue(data, getParameterizedTypeImplType(null, (ParameterizedType) type.getParameterizedType()));
+                return ConstConfig.OBJECT_MAPPER.readValue(data, getParameterizedTypeImplType((ParameterizedType) type.getParameterizedType()));
             } else {
                 return ConstConfig.OBJECT_MAPPER.readValue(data, type.getType());
             }
@@ -74,13 +64,13 @@ public class JackSonJsonAdapter implements JsonAdapter {
         }
     }
 
-    private JavaType getParameterizedTypeImplType(JavaType javaType, ParameterizedType parameterizedType) {
+    private JavaType getParameterizedTypeImplType(ParameterizedType parameterizedType) {
         Type rawType = parameterizedType.getRawType();
         Class<?> typeClass = getTypeClass(rawType);
         if (Collection.class.isAssignableFrom(typeClass)) {
             Type listActualTypeArgument = parameterizedType.getActualTypeArguments()[0];
             if (listActualTypeArgument instanceof ParameterizedType) {
-                return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(List.class, getParameterizedTypeImplType(javaType, (ParameterizedType) listActualTypeArgument));
+                return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(List.class, getParameterizedTypeImplType((ParameterizedType) listActualTypeArgument));
             } else {
                 return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(List.class, getTypeClass(parameterizedType.getActualTypeArguments()[0]));
             }
@@ -88,7 +78,7 @@ public class JackSonJsonAdapter implements JsonAdapter {
             Type mapActualTypeArgument = parameterizedType.getActualTypeArguments()[1];
             if (mapActualTypeArgument instanceof ParameterizedType) {
                 JavaType keyType = ConstConfig.OBJECT_MAPPER.getTypeFactory().constructType(getTypeClass(parameterizedType.getActualTypeArguments()[0]));
-                return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(Map.class, keyType, getParameterizedTypeImplType(javaType, (ParameterizedType) mapActualTypeArgument));
+                return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(Map.class, keyType, getParameterizedTypeImplType((ParameterizedType) mapActualTypeArgument));
 
             } else {
                 return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(Map.class, getTypeClass(parameterizedType.getActualTypeArguments()[0]), getTypeClass(parameterizedType.getActualTypeArguments()[1]));
