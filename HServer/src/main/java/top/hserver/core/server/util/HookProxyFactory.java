@@ -1,4 +1,4 @@
-package top.hserver.core.proxy;
+package top.hserver.core.server.util;
 
 import javassist.util.proxy.ProxyObject;
 import top.hserver.core.interfaces.HookAdapter;

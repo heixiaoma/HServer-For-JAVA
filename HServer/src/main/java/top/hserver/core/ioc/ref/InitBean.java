@@ -3,7 +3,7 @@ package top.hserver.core.ioc.ref;
 import javassist.util.proxy.ProxyObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.hserver.core.proxy.HookProxyFactory;
+import top.hserver.core.server.util.HookProxyFactory;
 import top.hserver.core.queue.QueueDispatcher;
 import top.hserver.core.interfaces.*;
 import top.hserver.core.ioc.IocUtil;
