@@ -31,44 +31,37 @@ import static top.hserver.core.server.context.ConstConfig.TRACK_EXT_PACKAGES;
  */
 public class HServerApplication {
     private static final Logger log = LoggerFactory.getLogger(HServerApplication.class);
-    public static Class mainClass;
+
+    public static Class<?> mainClass;
 
     private static final PlugsManager PLUGS_MANAGER = new PlugsManager();
 
-    /**
-     * 主函数启动 单端
-     *
-     * @param mainClass
-     * @param port
-     * @param args
-     */
-    public static void run(Class mainClass, Integer port, String... args) {
+    //单端口
+    public static void run(Class<?> mainClass, Integer port, String... args) {
         ConstConfig.PORTS = new Integer[]{port};
         iocInit(mainClass);
         startServer(args);
     }
 
     //多端口
-    public static void run(Class mainClass, Integer[] ports, String... args) {
+    public static void run(Class<?> mainClass, Integer[] ports, String... args) {
         ConstConfig.PORTS = ports;
         iocInit(mainClass);
         startServer(args);
     }
 
     //无端口，默认端口，或者配置端口
-    public static void run(Class mainClass, String... args) {
+    public static void run(Class<?> mainClass, String... args) {
         iocInit(mainClass);
         startServer(args);
     }
 
     /**
      * 非服务的测试模式
-     *
-     * @param testPackageName
      */
-    public static void runTest(String testPackageName, Class clazz) {
+    public static void runTest(String testPackageName, Class<?> clazz) {
         iocInit(clazz, null, testPackageName);
-        initTestOk(null);
+        initTestOk();
     }
 
 
@@ -81,18 +74,16 @@ public class HServerApplication {
     }
 
 
-    private static void iocInit(Class mainClass) {
+    private static void iocInit(Class<?> mainClass) {
         iocInit(null, mainClass);
     }
 
-    private synchronized static void iocInit(Class clazz, Class mainClass, String... packages) {
+    private synchronized static void iocInit(Class<?> clazz, Class<?> mainClass, String... packages) {
         HServerApplication.mainClass = mainClass;
 
         //对Netty进行改造，内存方式修改
         MemoryInitClass.modifyNetty();
-        /**
-         * 初始化哈日志配置
-         */
+        //初始化哈日志配置
         try {
             EnvironmentUtil.init(clazz);
         } catch (Exception e) {
@@ -146,14 +137,14 @@ public class HServerApplication {
         log.info("IOC 全部装配完成");
     }
 
-    private static void initTestOk(String[] args) {
+    private static void initTestOk() {
         //初始化完成可以放开任务了
         TaskManager.IS_OK = true;
         QueueDispatcher.startTaskThread();
         List<InitRunner> listBean = IocUtil.getListBean(InitRunner.class);
         if (listBean != null) {
             for (InitRunner initRunner : listBean) {
-                initRunner.init(args);
+                initRunner.init(null);
             }
         }
     }
