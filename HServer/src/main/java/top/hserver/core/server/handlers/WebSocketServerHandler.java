@@ -1,5 +1,7 @@
 package top.hserver.core.server.handlers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.hserver.core.interfaces.WebSocketHandler;
 import top.hserver.core.ioc.IocUtil;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author hxm
  */
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
+    private static final Logger log = LoggerFactory.getLogger(WebSocketServerHandler.class);
 
     public static final Map<String, String> WEB_SOCKET_ROUTER = new ConcurrentHashMap<>();
 
@@ -64,7 +67,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
                 this.request = req;
                 this.uid = ctx.channel().id().asLongText();
                 this.webSocketHandler = (WebSocketHandler) IocUtil.getBean(WEB_SOCKET_ROUTER.get(uri));
-                this.webSocketHandler.onConnect(new Ws(ctx, uid, request,WsType.INIT));
+                this.webSocketHandler.onConnect(new Ws(ctx, uid, request, WsType.INIT));
             }
         } else {
             ReferenceCountUtil.retain(req);
@@ -82,16 +85,40 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         }
     }
 
+
+    //处理多数据
+    private StringBuilder frameBuffer = null;
+
     private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         if (frame instanceof CloseWebSocketFrame) {
             this.handshake.close(ctx.channel(), (CloseWebSocketFrame) frame.retain());
+            return;
         } else if (frame instanceof PingWebSocketFrame) {
             ctx.channel().write(new PongWebSocketFrame(frame.content().retain()));
+            return;
         } else if (frame instanceof TextWebSocketFrame) {
-            this.webSocketHandler.onMessage(new Ws(ctx, ((TextWebSocketFrame) frame).text(), uid, request,WsType.TEXT));
+            if (frame.isFinalFragment()) {
+                this.webSocketHandler.onMessage(new Ws(ctx, ((TextWebSocketFrame) frame).text(), uid, request, WsType.TEXT));
+                return;
+            } else {
+                frameBuffer = new StringBuilder();
+                frameBuffer.append(((TextWebSocketFrame) frame).text());
+            }
         } else if (frame instanceof BinaryWebSocketFrame) {
-            this.webSocketHandler.onMessage(new Ws(ctx, ByteBufUtil.byteBufToBytes(frame.content()), uid, request,WsType.BINARY));
+            this.webSocketHandler.onMessage(new Ws(ctx, ByteBufUtil.byteBufToBytes(frame.content()), uid, request, WsType.BINARY));
+            return;
+        } else if (frame instanceof ContinuationWebSocketFrame) {
+            if (frameBuffer != null) {
+                frameBuffer.append(((ContinuationWebSocketFrame) frame).text());
+            } else {
+                log.warn("ContinuationWebSocketFrame 帧不完整，缓存出现了null");
+            }
         }
+        if (frame.isFinalFragment()) {
+            this.webSocketHandler.onMessage(new Ws(ctx, frameBuffer.toString(), uid, request, WsType.TEXT));
+            frameBuffer = null;
+        }
+
     }
 
     private boolean isWebSocketRequest(HttpRequest req) {
