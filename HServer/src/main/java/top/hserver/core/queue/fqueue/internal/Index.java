@@ -29,10 +29,10 @@ public class Index {
      */
     private String magicString = null;
     private int version = -1;
-    private long readerPosition = -1;
-    private long writerPosition = -1;
-    private long readerIndex = -1;
-    private long writerIndex = -1;
+    private int readerPosition = -1;
+    private int writerPosition = -1;
+    private int readerIndex = -1;
+    private int writerIndex = -1;
     private AtomicLong size = new AtomicLong();
 
     public Index(String path) throws IOException, FileFormatException {
@@ -81,11 +81,11 @@ public class Index {
         dbRandFile.seek(0);
         dbRandFile.write(magicString.getBytes());// magic
         dbRandFile.writeInt(version);// 8 version
-        dbRandFile.writeLong(readerPosition);// 12 reader position
-        dbRandFile.writeLong(writerPosition);// 16 write position
-        dbRandFile.writeLong(readerIndex);// 20 reader index
-        dbRandFile.writeLong(writerIndex);// 24 writer index
-        dbRandFile.writeLong(0);// 28 size
+        dbRandFile.writeInt(readerPosition);// 12 reader position
+        dbRandFile.writeInt(writerPosition);// 16 write position
+        dbRandFile.writeInt(readerIndex);// 20 reader index
+        dbRandFile.writeInt(writerIndex);// 24 writer index
+        dbRandFile.writeInt(0);// 28 size
     }
 
     public void clear() throws IOException {
@@ -99,9 +99,9 @@ public class Index {
      *
      * @param pos
      */
-    public void putWriterPosition(long pos) {
+    public void putWriterPosition(int pos) {
         mappedByteBuffer.position(16);
-        mappedByteBuffer.putLong(pos);
+        mappedByteBuffer.putInt(pos);
         this.writerPosition = pos;
     }
 
@@ -110,9 +110,9 @@ public class Index {
      *
      * @param pos
      */
-    public void putReaderPosition(long pos) {
+    public void putReaderPosition(int pos) {
         mappedByteBuffer.position(12);
-        mappedByteBuffer.putLong(pos);
+        mappedByteBuffer.putInt(pos);
         this.readerPosition = pos;
     }
 
@@ -121,9 +121,9 @@ public class Index {
      *
      * @param index
      */
-    public void putWriterIndex(long index) {
+    public void putWriterIndex(int index) {
         mappedByteBuffer.position(24);
-        mappedByteBuffer.putLong(index);
+        mappedByteBuffer.putInt(index);
         this.writerIndex = index;
     }
 
@@ -132,9 +132,9 @@ public class Index {
      *
      * @param index
      */
-    public void putReaderIndex(long index) {
+    public void putReaderIndex(int index) {
         mappedByteBuffer.position(20);
-        mappedByteBuffer.putLong(index);
+        mappedByteBuffer.putInt(index);
         this.readerIndex = index;
     }
 
@@ -158,19 +158,19 @@ public class Index {
         return version;
     }
 
-    public long getReaderPosition() {
+    public int getReaderPosition() {
         return readerPosition;
     }
 
-    public long getWriterPosition() {
+    public int getWriterPosition() {
         return writerPosition;
     }
 
-    public long getReaderIndex() {
+    public int getReaderIndex() {
         return readerIndex;
     }
 
-    public long getWriterIndex() {
+    public int getWriterIndex() {
         return writerIndex;
     }
 

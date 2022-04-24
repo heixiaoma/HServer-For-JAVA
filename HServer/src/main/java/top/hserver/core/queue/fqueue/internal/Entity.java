@@ -27,24 +27,24 @@ public class Entity {
     private FileChannel fc;
     private MappedByteBuffer mappedByteBuffer;
     private Index idx = null;
-    private long fileLimitLength;
+    private int fileLimitLength;
     /**
      * 文件操作位置信息
      */
     private String magicString = null;
     private int version = -1;
-    private long readerPosition = -1;
-    private long writerPosition = -1;
-    private long endPosition = -1;
-    private long currentFileNumber = -1;
-    private long nextFileNumber = -1;
+    private int readerPosition = -1;
+    private int writerPosition = -1;
+    private int endPosition = -1;
+    private int currentFileNumber = -1;
+    private int nextFileNumber = -1;
 
-    public Entity(String path, long fileNumber, long fileLimitLength, Index db)
+    public Entity(String path, int fileNumber, int fileLimitLength, Index db)
             throws IOException, FileFormatException {
         this(path, fileNumber, fileLimitLength, db, false);
     }
 
-    public Entity(String path, long fileNumber, long fileLimitLength,
+    public Entity(String path, int fileNumber, int fileLimitLength,
                   Index idx, boolean create) throws IOException, FileFormatException {
         this.currentFileNumber = fileNumber;
         this.fileLimitLength = fileLimitLength;
@@ -94,15 +94,15 @@ public class Entity {
         t.start();
     }
 
-    public static File getIdbFile(String path, long fileNumber) {
+    public static File getIdbFile(String path, int fileNumber) {
         return new File(path, DB_FILE_PREFIX + fileNumber + DB_FILE_SUFFIX);
     }
 
-    public long getCurrentFileNumber() {
+    public int getCurrentFileNumber() {
         return currentFileNumber;
     }
 
-    public long getNextFileNumber() {
+    public int getNextFileNumber() {
         return nextFileNumber;
     }
 
@@ -113,8 +113,8 @@ public class Entity {
         mappedByteBuffer = fc.map(FileChannel.MapMode.READ_WRITE, 0, fileLimitLength);
         mappedByteBuffer.put(MAGIC.getBytes());
         mappedByteBuffer.putInt(version);// 8 version
-        mappedByteBuffer.putLong(nextFileNumber);// 12 next fileindex
-        mappedByteBuffer.putLong(endPosition);// 16
+        mappedByteBuffer.putInt(nextFileNumber);// 12 next fileindex
+        mappedByteBuffer.putInt(endPosition);// 16
         magicString = MAGIC;
         writerPosition = MESSAGE_START_POSITION;
         readerPosition = MESSAGE_START_POSITION;
@@ -130,8 +130,8 @@ public class Entity {
         mappedByteBuffer.position(0);
         mappedByteBuffer.put(MAGIC.getBytes());
         mappedByteBuffer.putInt(version);// 8 version
-        mappedByteBuffer.putLong(nextFileNumber);// 12 next fileindex
-        mappedByteBuffer.putLong(endPosition);// 16
+        mappedByteBuffer.putInt(nextFileNumber);// 12 next fileindex
+        mappedByteBuffer.putInt(endPosition);// 16
         mappedByteBuffer.force();
         magicString = MAGIC;
         writerPosition = MESSAGE_START_POSITION;
@@ -143,9 +143,9 @@ public class Entity {
      *
      * @param number
      */
-    public void putNextFileNumber(long number) throws IOException {
+    public void putNextFileNumber(int number) throws IOException {
         mappedByteBuffer.position(12);
-        mappedByteBuffer.putLong(number);
+        mappedByteBuffer.putInt(number);
         nextFileNumber = number;
     }
 
@@ -161,11 +161,11 @@ public class Entity {
         int increment = bytes.length + 4;
         if (isFull(increment)) {
             mappedByteBuffer.position(16);
-            mappedByteBuffer.putLong(writerPosition);
+            mappedByteBuffer.putInt(writerPosition);
             endPosition = writerPosition;
             return WRITEFULL;
         }
-        mappedByteBuffer.position((int)writerPosition);
+        mappedByteBuffer.position(writerPosition);
         mappedByteBuffer.putInt(bytes.length);
         mappedByteBuffer.put(bytes);
         writerPosition += increment;
@@ -186,7 +186,7 @@ public class Entity {
         if (readerPosition >= writerPosition) {
             return null;
         }
-        mappedByteBuffer.position((int)readerPosition);
+        mappedByteBuffer.position(readerPosition);
         int length = mappedByteBuffer.getInt();
         byte[] bytes = new byte[length];
         mappedByteBuffer.get(bytes);

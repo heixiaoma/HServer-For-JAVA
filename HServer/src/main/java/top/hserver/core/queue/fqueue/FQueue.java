@@ -44,6 +44,7 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
     /**
      * 创建一个持久化队列
      *
+     * @param path              文件的存储目录
      * @param entityLimitLength 存储数据的单个文件的大小
      * @throws IOException
      * @throws FileFormatException
@@ -59,10 +60,6 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
 
     @Override
     public int size() {
-        return (int)fsQueue.getQueueSize();
-    }
-
-    public long sizeLong() {
         return (int)fsQueue.getQueueSize();
     }
 
