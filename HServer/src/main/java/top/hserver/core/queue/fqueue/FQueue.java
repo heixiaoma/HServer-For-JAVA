@@ -66,6 +66,10 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
         return (int)fsQueue.getQueueSize();
     }
 
+    public int sizeLong() {
+        return (int)fsQueue.getQueueSize();
+    }
+
     @Override
     public boolean offer(byte[] e) {
         try {
