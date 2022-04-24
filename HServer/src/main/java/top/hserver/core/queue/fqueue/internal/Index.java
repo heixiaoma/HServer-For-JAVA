@@ -11,7 +11,6 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 数据索引文件
@@ -33,7 +32,7 @@ public class Index {
     private int writerPosition = -1;
     private int readerIndex = -1;
     private int writerIndex = -1;
-    private AtomicLong size = new AtomicLong();
+    private AtomicInteger size = new AtomicInteger();
 
     public Index(String path) throws IOException, FileFormatException {
         File dbFile = new File(path, INDEX_FILE_NAME);
@@ -139,15 +138,15 @@ public class Index {
     }
 
     public void incrementSize() {
-        long num = size.incrementAndGet();
+        int num = size.incrementAndGet();
         mappedByteBuffer.position(28);
-        mappedByteBuffer.putLong(num);
+        mappedByteBuffer.putInt(num);
     }
 
     public void decrementSize() {
-        long num = size.decrementAndGet();
+        int num = size.decrementAndGet();
         mappedByteBuffer.position(28);
-        mappedByteBuffer.putLong(num);
+        mappedByteBuffer.putInt(num);
     }
 
     public String getMagicString() {
@@ -174,7 +173,7 @@ public class Index {
         return writerIndex;
     }
 
-    public long getSize() {
+    public int getSize() {
         return size.get();
     }
 

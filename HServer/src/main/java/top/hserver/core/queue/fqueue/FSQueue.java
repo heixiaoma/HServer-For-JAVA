@@ -204,7 +204,7 @@ public class FSQueue {
         idx.close();
     }
 
-    public long getQueueSize() {
+    public int getQueueSize() {
         return idx.getSize();
     }
 }
