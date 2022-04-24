@@ -22,7 +22,8 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     private static final Logger log = LoggerFactory.getLogger(WebSocketServerHandler.class);
 
     public static final Map<String, String> WEB_SOCKET_ROUTER = new ConcurrentHashMap<>();
-
+    //处理多数据
+    private StringBuilder frameBuffer = null;
     private WebSocketServerHandshaker handshake;
     private WebSocketHandler webSocketHandler;
     private String uid;
@@ -86,8 +87,6 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     }
 
 
-    //处理多数据
-    private StringBuilder frameBuffer = null;
 
     private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         if (frame instanceof CloseWebSocketFrame) {
