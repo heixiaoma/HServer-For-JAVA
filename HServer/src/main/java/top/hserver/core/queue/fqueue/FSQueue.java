@@ -29,8 +29,8 @@ public class FSQueue {
     /**
      * 文件操作位置信息
      */
-    private int readerIndex = -1;
-    private int writerIndex = -1;
+    private long readerIndex = -1;
+    private long writerIndex = -1;
 
     public FSQueue(String dir) throws IOException, FileFormatException {
         this(new File(dir));
@@ -134,7 +134,7 @@ public class FSQueue {
         try {
             bytes = readerHandle.read(commit);
         } catch (FileEOFException e) {
-            int nextFileNumber = readerHandle.getNextFileNumber();
+            long nextFileNumber = readerHandle.getNextFileNumber();
             readerHandle.reset();
             File deleteFile = readerHandle.getFile();
             readerHandle.close();
@@ -204,7 +204,7 @@ public class FSQueue {
         idx.close();
     }
 
-    public int getQueueSize() {
+    public long getQueueSize() {
         return idx.getSize();
     }
 }

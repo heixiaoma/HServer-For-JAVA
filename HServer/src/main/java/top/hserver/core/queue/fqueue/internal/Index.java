@@ -11,6 +11,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 数据索引文件
@@ -28,11 +29,11 @@ public class Index {
      */
     private String magicString = null;
     private int version = -1;
-    private int readerPosition = -1;
-    private int writerPosition = -1;
-    private int readerIndex = -1;
-    private int writerIndex = -1;
-    private AtomicInteger size = new AtomicInteger();
+    private long readerPosition = -1;
+    private long writerPosition = -1;
+    private long readerIndex = -1;
+    private long writerIndex = -1;
+    private AtomicLong size = new AtomicLong();
 
     public Index(String path) throws IOException, FileFormatException {
         File dbFile = new File(path, INDEX_FILE_NAME);
@@ -80,11 +81,11 @@ public class Index {
         dbRandFile.seek(0);
         dbRandFile.write(magicString.getBytes());// magic
         dbRandFile.writeInt(version);// 8 version
-        dbRandFile.writeInt(readerPosition);// 12 reader position
-        dbRandFile.writeInt(writerPosition);// 16 write position
-        dbRandFile.writeInt(readerIndex);// 20 reader index
-        dbRandFile.writeInt(writerIndex);// 24 writer index
-        dbRandFile.writeInt(0);// 28 size
+        dbRandFile.writeLong(readerPosition);// 12 reader position
+        dbRandFile.writeLong(writerPosition);// 16 write position
+        dbRandFile.writeLong(readerIndex);// 20 reader index
+        dbRandFile.writeLong(writerIndex);// 24 writer index
+        dbRandFile.writeLong(0);// 28 size
     }
 
     public void clear() throws IOException {
@@ -98,9 +99,9 @@ public class Index {
      *
      * @param pos
      */
-    public void putWriterPosition(int pos) {
+    public void putWriterPosition(long pos) {
         mappedByteBuffer.position(16);
-        mappedByteBuffer.putInt(pos);
+        mappedByteBuffer.putLong(pos);
         this.writerPosition = pos;
     }
 
@@ -109,9 +110,9 @@ public class Index {
      *
      * @param pos
      */
-    public void putReaderPosition(int pos) {
+    public void putReaderPosition(long pos) {
         mappedByteBuffer.position(12);
-        mappedByteBuffer.putInt(pos);
+        mappedByteBuffer.putLong(pos);
         this.readerPosition = pos;
     }
 
@@ -120,9 +121,9 @@ public class Index {
      *
      * @param index
      */
-    public void putWriterIndex(int index) {
+    public void putWriterIndex(long index) {
         mappedByteBuffer.position(24);
-        mappedByteBuffer.putInt(index);
+        mappedByteBuffer.putLong(index);
         this.writerIndex = index;
     }
 
@@ -131,22 +132,22 @@ public class Index {
      *
      * @param index
      */
-    public void putReaderIndex(int index) {
+    public void putReaderIndex(long index) {
         mappedByteBuffer.position(20);
-        mappedByteBuffer.putInt(index);
+        mappedByteBuffer.putLong(index);
         this.readerIndex = index;
     }
 
     public void incrementSize() {
-        int num = size.incrementAndGet();
+        long num = size.incrementAndGet();
         mappedByteBuffer.position(28);
-        mappedByteBuffer.putInt(num);
+        mappedByteBuffer.putLong(num);
     }
 
     public void decrementSize() {
-        int num = size.decrementAndGet();
+        long num = size.decrementAndGet();
         mappedByteBuffer.position(28);
-        mappedByteBuffer.putInt(num);
+        mappedByteBuffer.putLong(num);
     }
 
     public String getMagicString() {
@@ -157,23 +158,23 @@ public class Index {
         return version;
     }
 
-    public int getReaderPosition() {
+    public long getReaderPosition() {
         return readerPosition;
     }
 
-    public int getWriterPosition() {
+    public long getWriterPosition() {
         return writerPosition;
     }
 
-    public int getReaderIndex() {
+    public long getReaderIndex() {
         return readerIndex;
     }
 
-    public int getWriterIndex() {
+    public long getWriterIndex() {
         return writerIndex;
     }
 
-    public int getSize() {
+    public long getSize() {
         return size.get();
     }
 
