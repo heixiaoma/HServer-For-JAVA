@@ -16,4 +16,8 @@ public @interface QueueHandler {
     int level() default 1;
 
     int size() default 1;
+
+    //可以配置
+    String sizePropValue() default "";
+
 }

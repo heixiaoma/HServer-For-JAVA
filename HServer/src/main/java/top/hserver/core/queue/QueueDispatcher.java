@@ -3,6 +3,7 @@ package top.hserver.core.queue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.core.server.util.ExceptionUtil;
+import top.hserver.core.server.util.PropUtil;
 import top.hserver.core.server.util.SerializationUtil;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.ioc.annotation.queue.QueueHandler;
@@ -80,10 +81,16 @@ public class QueueDispatcher {
         for (Method method : methods) {
             QueueHandler queueHandler = method.getAnnotation(QueueHandler.class);
             if (queueHandler != null) {
-                if (queueHandler.size() > eventHandleInfo.getThreadSize()) {
-                    eventHandleInfo.setThreadSize(queueHandler.size());
+
+                int size=queueHandler.size();
+                String s = queueHandler.sizePropValue();
+                if (s.trim().length()!=0){
+                    size= PropUtil.getInstance().getInt(s);
                 }
-                eventHandleInfo.add(new QueueHandleMethod(method, queueHandler.level(), queueHandler.size()));
+                if (size > eventHandleInfo.getThreadSize()) {
+                    eventHandleInfo.setThreadSize(size);
+                }
+                eventHandleInfo.add(new QueueHandleMethod(method, queueHandler.level(), size));
                 log.debug("寻找队列 [{}] 的方法 [{}.{}]", queueName, clazz.getSimpleName(),
                         method.getName());
             }
@@ -124,10 +131,20 @@ public class QueueDispatcher {
             for (Method method : methods) {
                 QueueHandler queueHandler = method.getAnnotation(QueueHandler.class);
                 if (queueHandler != null) {
-                    if (queueHandler.size() > eventHandleInfo.getThreadSize()) {
-                        eventHandleInfo.setThreadSize(queueHandler.size());
+
+                    int size=queueHandler.size();
+                    String s = queueHandler.sizePropValue();
+                    if (s.trim().length()!=0){
+                        size= PropUtil.getInstance().getInt(s);
                     }
-                    eventHandleInfo.add(new QueueHandleMethod(method, queueHandler.level(), queueHandler.size()));
+                    if (size > eventHandleInfo.getThreadSize()) {
+                        eventHandleInfo.setThreadSize(size);
+                    }
+
+                    if (size > eventHandleInfo.getThreadSize()) {
+                        eventHandleInfo.setThreadSize(size);
+                    }
+                    eventHandleInfo.add(new QueueHandleMethod(method, queueHandler.level(), size));
                     log.debug("寻找队列 [{}] 的方法 [{}.{}]", queueListener.queueName(), clazz.getSimpleName(),
                             method.getName());
                 }
