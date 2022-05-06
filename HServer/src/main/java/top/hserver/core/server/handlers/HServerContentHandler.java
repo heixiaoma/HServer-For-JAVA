@@ -31,7 +31,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
 
     private final static DefaultHttpDataFactory FACTORY = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
 
-    private boolean isHttp2 = false;
+    private final boolean isHttp2;
 
     public HServerContentHandler(boolean isHttp2) {
         this.isHttp2 = isHttp2;
