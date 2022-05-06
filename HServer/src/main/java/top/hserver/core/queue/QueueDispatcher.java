@@ -81,11 +81,13 @@ public class QueueDispatcher {
         for (Method method : methods) {
             QueueHandler queueHandler = method.getAnnotation(QueueHandler.class);
             if (queueHandler != null) {
-
                 int size=queueHandler.size();
                 String s = queueHandler.sizePropValue();
                 if (s.trim().length()!=0){
-                    size= PropUtil.getInstance().getInt(s);
+                    Integer anInt = PropUtil.getInstance().getInt(s);
+                    if (anInt!=null) {
+                        size =anInt;
+                    }
                 }
                 if (size > eventHandleInfo.getThreadSize()) {
                     eventHandleInfo.setThreadSize(size);
@@ -135,7 +137,10 @@ public class QueueDispatcher {
                     int size=queueHandler.size();
                     String s = queueHandler.sizePropValue();
                     if (s.trim().length()!=0){
-                        size= PropUtil.getInstance().getInt(s);
+                        Integer anInt = PropUtil.getInstance().getInt(s);
+                        if (anInt!=null) {
+                            size =anInt;
+                        }
                     }
                     if (size > eventHandleInfo.getThreadSize()) {
                         eventHandleInfo.setThreadSize(size);

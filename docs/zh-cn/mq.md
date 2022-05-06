@@ -72,6 +72,8 @@ public @interface QueueHandler {
     //消费者数量
     int size() default 1;
 
+    //配置文件读取消息数量
+    String sizePropValue() default "";
 }
 ```
 
@@ -109,6 +111,13 @@ public class EventTest {
 
 
     @QueueHandler(level = 2, size = 2)
+    public void cc(String name) {
+        atomicLong.increment();
+        System.out.println(atomicLong + "---------" + Thread.currentThread().getName());
+    }
+
+    //优先配置文件，如果配置文件不存在apm.size 则使用size 8
+    @QueueHandler(level = 2,sizePropValue = "apm.size",size = 8)
     public void cc(String name) {
         atomicLong.increment();
         System.out.println(atomicLong + "---------" + Thread.currentThread().getName());
