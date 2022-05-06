@@ -29,8 +29,8 @@ import static top.hserver.core.server.context.ConstConfig.PERSIST_PATH;
  */
 public class QueueDispatcher {
     private static final Logger log = LoggerFactory.getLogger(QueueDispatcher.class);
-    private static Map<String, QueueHandleInfo> handleMethodMap = new ConcurrentHashMap<>();
-    private static Map<String, FQueue> FQ = new ConcurrentHashMap<>();
+    private static final Map<String, QueueHandleInfo> handleMethodMap = new ConcurrentHashMap<>();
+    private static final Map<String, FQueue> FQ = new ConcurrentHashMap<>();
     private static final int buffSize = 1024;
 
     private QueueDispatcher() {
