@@ -49,7 +49,8 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
             request.setStreamId(streamId);
         }
         request.setHandler(this);
-        request.setRequestId(RequestIdGen.getId());
+        String id = RequestIdGen.getId();
+        request.setRequestId(id);
         request.setIp(HServerIpUtil.getClientIp(channelHandlerContext));
         request.setPort(HServerIpUtil.getClientPort(channelHandlerContext));
         request.setCtx(channelHandlerContext);
@@ -75,7 +76,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         Webkit webkit = new Webkit();
         webkit.httpRequest = hServerContext.getRequest();
         webkit.httpResponse = hServerContext.getResponse();
-        webkit.httpResponse.setHeader(ConstConfig.REQUEST_ID,webkit.httpRequest.getRequestId());
+        webkit.httpResponse.setHeader(ConstConfig.REQUEST_ID,id);
         webkit.httpResponse.setHeader(SERVER_NAME, ConstConfig.VERSION);
         hServerContext.setWebkit(webkit);
         HServerContextHolder.setWebKit(webkit);
