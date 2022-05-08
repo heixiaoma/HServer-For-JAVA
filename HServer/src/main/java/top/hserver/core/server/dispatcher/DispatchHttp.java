@@ -26,6 +26,8 @@ import top.hserver.core.server.handlers.WebSocketServerHandler;
 @Bean
 public class DispatchHttp implements ProtocolDispatcherAdapter {
 
+    private static GlobalTrafficShapingHandler globalTrafficShapingHandler;
+
     @Override
     public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers) {
         //如果是https
@@ -52,7 +54,10 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
     public static void httpHandler(ChannelHandlerContext ctx) {
         ChannelPipeline pipeline = ctx.pipeline();
         if (ConstConfig.WRITE_LIMIT != null && ConstConfig.READ_LIMIT != null) {
-            pipeline.addLast(ConstConfig.BUSINESS_EVENT, new GlobalTrafficShapingHandler(ctx.executor().parent(), ConstConfig.WRITE_LIMIT, ConstConfig.READ_LIMIT));
+            if (globalTrafficShapingHandler == null) {
+                globalTrafficShapingHandler = new GlobalTrafficShapingHandler(ctx.executor(), ConstConfig.WRITE_LIMIT, ConstConfig.READ_LIMIT);
+            }
+            pipeline.addLast(ConstConfig.BUSINESS_EVENT, globalTrafficShapingHandler);
         }
         pipeline.addLast(ConstConfig.BUSINESS_EVENT, new HttpServerCodec());
         pipeline.addLast(ConstConfig.BUSINESS_EVENT, new HttpObjectAggregator(ConstConfig.HTTP_CONTENT_SIZE));
@@ -75,7 +80,10 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
                 .connection(connection).build());
 
         if (ConstConfig.WRITE_LIMIT != null && ConstConfig.READ_LIMIT != null) {
-            ctx.pipeline().addLast(ConstConfig.BUSINESS_EVENT, new GlobalTrafficShapingHandler(ctx.executor().parent(), ConstConfig.WRITE_LIMIT, ConstConfig.READ_LIMIT));
+            if (globalTrafficShapingHandler == null) {
+                globalTrafficShapingHandler = new GlobalTrafficShapingHandler(ctx.executor(), ConstConfig.WRITE_LIMIT, ConstConfig.READ_LIMIT);
+            }
+            ctx.pipeline().addLast(ConstConfig.BUSINESS_EVENT, globalTrafficShapingHandler);
         }
         ctx.pipeline().addLast(ConstConfig.BUSINESS_EVENT, new HServerContentHandler(true));
         ctx.pipeline().addLast(ConstConfig.BUSINESS_EVENT, new RouterHandler());
