@@ -66,7 +66,7 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
             pipeline.addLast(ConstConfig.BUSINESS_EVENT, new WebSocketServerHandler());
         }
         pipeline.addLast(ConstConfig.BUSINESS_EVENT, new HServerContentHandler(false));
-        pipeline.addLast(ConstConfig.BUSINESS_EVENT, new RouterHandler());
+        pipeline.addLast(ConstConfig.BUSINESS_EVENT, new RouterHandler(ctx));
     }
 
     public static void http2Handler(ChannelHandlerContext ctx) {
@@ -86,7 +86,7 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
             ctx.pipeline().addLast(ConstConfig.BUSINESS_EVENT, globalTrafficShapingHandler);
         }
         ctx.pipeline().addLast(ConstConfig.BUSINESS_EVENT, new HServerContentHandler(true));
-        ctx.pipeline().addLast(ConstConfig.BUSINESS_EVENT, new RouterHandler());
+        ctx.pipeline().addLast(ConstConfig.BUSINESS_EVENT, new RouterHandler(ctx));
     }
 
 
