@@ -21,6 +21,7 @@ public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
         CompletableFuture<HServerContext> future = CompletableFuture.completedFuture(hServerContext);
         if (getTtlExecutor == null) {
             getTtlExecutor = ctx.executor().getClass().getMethod("getTtlExecutor");
+            getTtlExecutor.setAccessible(true);
         }
         Executor executor = (Executor) getTtlExecutor.invoke(ctx.executor());
         future.thenApplyAsync(req -> DispatcherHandler.staticFile(hServerContext), executor)
