@@ -13,8 +13,8 @@ import top.hserver.core.server.handlers.MqttHeartBeatBrokerHandler;
 /**
  * @author hxm
  */
-@Order(2)
-@Bean
+//@Order(2)
+//@Bean
 public class DispatchWebSocketMqtt implements ProtocolDispatcherAdapter {
 
     @Override
