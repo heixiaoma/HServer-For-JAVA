@@ -31,12 +31,6 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
 
     private final static DefaultHttpDataFactory FACTORY = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
 
-    private final boolean isHttp2;
-
-    public HServerContentHandler(boolean isHttp2) {
-        this.isHttp2 = isHttp2;
-    }
-
     public Channel outboundChannel;
 
     @Override
@@ -44,10 +38,6 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         HServerContext hServerContext = new HServerContext();
         Request request = new Request();
         hServerContext.setRequest(request);
-        if (isHttp2) {
-            String streamId = req.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
-            request.setStreamId(streamId);
-        }
         request.setHandler(this);
         String id = RequestIdGen.getId();
         request.setRequestId(id);
@@ -76,7 +66,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         Webkit webkit = new Webkit();
         webkit.httpRequest = hServerContext.getRequest();
         webkit.httpResponse = hServerContext.getResponse();
-        webkit.httpResponse.setHeader(ConstConfig.REQUEST_ID,id);
+        webkit.httpResponse.setHeader(ConstConfig.REQUEST_ID, id);
         webkit.httpResponse.setHeader(SERVER_NAME, ConstConfig.VERSION);
         hServerContext.setWebkit(webkit);
         HServerContextHolder.setWebKit(webkit);

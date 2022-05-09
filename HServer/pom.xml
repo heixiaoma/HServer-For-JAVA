@@ -19,8 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skipTests>true</skipTests>
 
-        <netty.version>4.1.75.Final</netty.version>
-        <boringssl.version>2.0.51.Final</boringssl.version>
+        <netty.version>4.1.77.Final</netty.version>
         <transmittable.version>2.12.4</transmittable.version>
         <logback.version>1.2.11</logback.version>
         <jackson.version>2.13.1</jackson.version>
@@ -40,13 +39,6 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>${netty.version}</version>
-        </dependency>
-
-        <!--   APN NPN TLS     -->
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-tcnative-boringssl-static</artifactId>
-            <version>${boringssl.version}</version>
         </dependency>
 
         <dependency>

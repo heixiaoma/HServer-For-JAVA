@@ -28,7 +28,6 @@ public class Request implements HttpRequest {
     private HttpMethod requestType;
     private String ip;
     private int port;
-    private String streamId;
     private ChannelHandlerContext ctx;
     private Map<String, List<String>> requestParams = new ConcurrentHashMap<>();
     private Map<String, List<String>> urlParams = new ConcurrentHashMap<>();
@@ -285,15 +284,6 @@ public class Request implements HttpRequest {
 
     public void setHandler(HServerContentHandler handler) {
         this.handler = handler;
-    }
-
-    @Override
-    public String getStreamId() {
-        return streamId;
-    }
-
-    public void setStreamId(String streamId) {
-        this.streamId = streamId;
     }
 
     @Override

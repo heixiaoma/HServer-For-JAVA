@@ -10,7 +10,7 @@
         <img src="https://img.shields.io/badge/Build-Java8-red.svg?style=flat" />
     </a>
     <a >
-        <img src="https://img.shields.io/badge/Netty-4.1.75.Final-blue.svg" alt="flat">
+        <img src="https://img.shields.io/badge/Netty-4.1.77.Final-blue.svg" alt="flat">
     </a>
     <a >
         <img src="https://img.shields.io/badge/Licence-Apache2.0-green.svg?style=flat" />
@@ -61,7 +61,6 @@ HServer是一个基于Netty开发的一个功能强大，资源丰富，开发�
 * 简便易用5分钟即可掌握使用
 * 快速构建高效API
 * TCP层上直接构建
-* 支持HTTP/2.0
 * Restful风格路由设计
 * Cron定时器
 * Filter拦截器

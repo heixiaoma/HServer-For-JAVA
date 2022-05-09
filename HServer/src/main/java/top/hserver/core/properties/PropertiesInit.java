@@ -55,9 +55,6 @@ public class PropertiesInit {
         if (instance.get("persistPath").trim().length() > 0) {
             ConstConfig.PERSIST_PATH = instance.get("persistPath");
         }
-        if (instance.get("openHttp2").trim().length() > 0) {
-            ConstConfig.openHttp2 = Boolean.valueOf(instance.get("openHttp2"));
-        }
         if (instance.get("track").trim().length() > 0) {
             ConstConfig.TRACK = Boolean.valueOf(instance.get("track"));
         }

@@ -4,7 +4,6 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
-import io.netty.handler.codec.http2.HttpConversionUtil;
 import top.hserver.core.interfaces.HttpRequest;
 import top.hserver.core.server.context.*;
 import top.hserver.core.server.exception.BusinessBean;
@@ -110,9 +109,6 @@ public class BuildResponse {
         if (response1.getHttpResponseStatus() != null) {
             response.setStatus(response1.getHttpResponseStatus());
         }
-        if (request.getStreamId()!=null){
-            response.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),request.getStreamId());
-        }
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
         //用户自定义头头
@@ -151,12 +147,12 @@ public class BuildResponse {
         build.setVersion(ConstConfig.VERSION);
         build.setBugAddress(ConstConfig.BUG_ADDRESS);
 
-        Map data = new HashMap<>();
+        Map<Object, Object> data = new HashMap<>();
         data.put("business", build);
         String html = "模板输出错误";
         try {
             html = FreemarkerUtil.getTemplate("hserver_error.ftl", data);
-        } catch (Exception e1) {
+        } catch (Exception ignored) {
         }
         HttpResponseStatus httpResponseStatus = HttpResponseStatus.valueOf(e.getHttpCode());
         return getFullHttpResponse(html, httpResponseStatus);

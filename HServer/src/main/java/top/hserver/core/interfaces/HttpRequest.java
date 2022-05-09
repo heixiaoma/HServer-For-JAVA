@@ -174,11 +174,4 @@ public interface HttpRequest {
      * @param channel
      */
     void setOutboundChannel(Channel channel);
-
-    /**
-     * 当为Http2时这个有值
-     * @return
-     */
-    String getStreamId();
-
 }

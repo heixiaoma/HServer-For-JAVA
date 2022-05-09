@@ -12,9 +12,6 @@ ports=9090
 #动态配置文件
 env=dev
 
-#openHttp2 true  当https模式下开启http2功能
-openHttp2=true
-
 #链路跟踪 默认不跟踪
 track=true
 
