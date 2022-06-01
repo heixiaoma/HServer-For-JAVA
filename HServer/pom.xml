@@ -6,7 +6,7 @@
 
     <groupId>top.hserver</groupId>
     <artifactId>HServer</artifactId>
-    <version>2.9.89</version>
+    <version>2.9.90</version>
     <packaging>jar</packaging>
     <name>HServer</name>
     <url>https://gitee.com/HServer/HServer</url>
@@ -23,7 +23,7 @@
         <transmittable.version>2.12.4</transmittable.version>
         <logback.version>1.2.11</logback.version>
         <jackson.version>2.13.1</jackson.version>
-        <javassist.version>3.28.0-GA</javassist.version>
+        <javassist.version>3.29.0-GA</javassist.version>
         <protostuff.version>1.1.6</protostuff.version>
         <freemarker.version>2.3.31</freemarker.version>
         <objenesis.version>3.2</objenesis.version>

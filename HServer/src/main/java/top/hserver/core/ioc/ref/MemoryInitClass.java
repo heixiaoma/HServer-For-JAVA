@@ -1,5 +1,6 @@
 package top.hserver.core.ioc.ref;
 
+import io.netty.util.concurrent.AbstractEventExecutorGroup;
 import javassist.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,8 @@ public class MemoryInitClass {
     public static void modifyNetty() {
         ClassPool cp = ClassPool.getDefault();
         try {
+            //jdk17 使用邻居类做为兼容
+            Class<?> aClass = Thread.currentThread().getContextClassLoader().loadClass(AbstractEventExecutorGroup.class.getName());
             String strPath="io.netty.util.concurrent.AbstractEventExecutor";
             ClassPath classPath= new LoaderClassPath(Thread.currentThread().getContextClassLoader());
             cp.appendClassPath(classPath);
@@ -54,7 +57,7 @@ public class MemoryInitClass {
             // 添加返回
             m.setBody("return this.executor;");
             ctClass.addMethod(m);
-            ctClass.toClass();
+            ctClass.toClass(aClass);
             ctClass.detach();
         } catch (Throwable e) {
             log.error(ExceptionUtil.getMessage(e));
