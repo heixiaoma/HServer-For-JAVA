@@ -147,13 +147,15 @@
                     <div class="panel">
                       <div class="panel-heading">
                         <h4 class="panel-title">
-                          <a data-toggle="collapse" data-parent="#"
-                             href="#four${api.name}${api_index}">
+                          <a data-toggle="collapse" data-parent="#"  class="collapsed"
+                             href="#four${api.name}${api_index}"
+                             aria-expanded="false" aria-controls="#four${api.name}${api_index}"
+                          >
                             ${api.name}
                           </a>
                         </h4>
                       </div>
-                      <div id="four${api.name}${api_index}" class="panel-collapse collapse in">
+                      <div id="four${api.name}${api_index}" class="panel-collapse collapse">
                         <div class="panel-body">
                           <div class="api-sub-content">
                             <div class="simpleline"><strong>接口地址：</strong><span
