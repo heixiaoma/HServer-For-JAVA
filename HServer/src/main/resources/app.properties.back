@@ -26,14 +26,19 @@ trackNoPackages=com.mysql,org.freemarker
 #taskPool定时任务线程池子配置，默认大小是cpu核心数+1
 taskPool=5
 
-#bossPool Netty boss线程组大小 默认2
+#bossPool Netty boss线程组大小 默认cpu 核心数两倍
 bossPool=2
 
-#workerPool Netty worker线程组大小 默认2
+#workerPool Netty worker线程组大小 默认核心数两倍
 workerPool=2
 
 #businessPool 业务线程大小，默是用的workerPool -1标识使用workerPool 性能更快
 businessPool=50
+
+#backlog 指定了内核为此套接口排队的最大连接个数；
+#对于给定的监听套接口，内核要维护两个队列: 未连接队列和已连接队列
+#backlog 的值即为未连接队列和已连接队列的和。
+backLog=8192
 
 #可以开启Epoll时是否开启epoll 默认true
 epoll=true

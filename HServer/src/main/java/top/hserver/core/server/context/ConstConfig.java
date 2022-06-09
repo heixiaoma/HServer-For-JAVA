@@ -5,7 +5,9 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.ssl.SslContext;
+import io.netty.util.NettyRuntime;
 import io.netty.util.concurrent.EventExecutorGroup;
+import io.netty.util.internal.SystemPropertyUtil;
 import top.hserver.core.server.json.JackSonJsonAdapter;
 import top.hserver.core.server.json.JsonAdapter;
 
@@ -52,14 +54,19 @@ public class ConstConfig {
     /**
      * webServer  bossThreadCount
      */
-
-    public static Integer bossPool = 2;
+    public static Integer bossPool = 0;
 
     /**
      * webServer workerGroupThreadCount
      */
+    public static Integer workerPool = 0;
 
-    public static Integer workerPool = 2;
+    /**
+     * backlog 指定了内核为此套接口排队的最大连接个数；
+     * 对于给定的监听套接口，内核要维护两个队列: 未连接队列和已连接队列
+     * backlog 的值即为未连接队列和已连接队列的和。
+     */
+    public static Integer backLog = 8192;
 
     /**
      * 对象处理

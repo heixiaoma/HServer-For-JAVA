@@ -24,6 +24,11 @@ public class PropertiesInit {
         if (workerPool != null) {
             ConstConfig.workerPool = workerPool;
         }
+
+        Integer backLog = instance.getInt("backLog");
+        if (backLog != null) {
+            ConstConfig.backLog = backLog;
+        }
         Integer humPort = instance.getInt("humPort");
         if (humPort != null) {
             ConstConfig.HUM_PORT = humPort;

@@ -3,6 +3,7 @@ package top.hserver.core.server;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.DefaultEventLoop;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import org.slf4j.Logger;
@@ -77,7 +78,6 @@ public class HServer {
                 .handler(new HumClientHandler());
         HumClient.channel = humClient.bind(0).sync().channel();
         channels.put(HumClient.channel, "UDP Client Port:0");
-
         //TCP Server
         String typeName;
         ServerBootstrap bootstrap = new ServerBootstrap();
@@ -99,6 +99,7 @@ public class HServer {
         }
         //看看有没有SSL
         SslContextUtil.setSsl();
+        bootstrap.option(ChannelOption.SO_BACKLOG, backLog);
         bootstrap.childHandler(new ServerInitializer());
         String portStr = "";
         for (Integer port : ports) {
