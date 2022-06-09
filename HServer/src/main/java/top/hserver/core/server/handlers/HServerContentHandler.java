@@ -68,6 +68,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         webkit.httpResponse = hServerContext.getResponse();
         webkit.httpResponse.setHeader(ConstConfig.REQUEST_ID, id);
         webkit.httpResponse.setHeader(SERVER_NAME, ConstConfig.VERSION);
+        webkit.httpResponse.setHeader("Server",SERVER_NAME);
         hServerContext.setWebkit(webkit);
         HServerContextHolder.setWebKit(webkit);
         channelHandlerContext.fireChannelRead(hServerContext);
