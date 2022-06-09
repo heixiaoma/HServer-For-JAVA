@@ -80,9 +80,6 @@ public class HServerApplication {
 
     private synchronized static void iocInit(Class<?> clazz, Class<?> mainClass, String... packages) {
         HServerApplication.mainClass = mainClass;
-
-        //对Netty进行改造，内存方式修改
-        MemoryInitClass.modifyNetty();
         //初始化哈日志配置
         try {
             EnvironmentUtil.init(clazz);

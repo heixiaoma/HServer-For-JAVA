@@ -3,8 +3,6 @@ package test4;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.WorkHandler;
 
-import javax.annotation.Resource;
-
 public class SpikeEventHandler implements EventHandler<Event>, WorkHandler<Event> {
 
     private String name;

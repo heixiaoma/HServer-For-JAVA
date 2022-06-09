@@ -26,45 +26,6 @@ public class MemoryInitClass {
     public static final ConcurrentHashMap<String, Object> annMapMethod = new ConcurrentHashMap<>();
     private static final List<String> cache = new ArrayList<>();
 
-    /**
-     * 修改Netty，让线程池被TTL包装
-     * AbstractEventExecutor eventloop都继承了这个抽象类，我们只加入一点自己的逻辑，并在RouterHandler里使用
-     */
-    public static void modifyNetty() {
-        ClassPool cp = ClassPool.getDefault();
-        try {
-            //jdk17 使用邻居类做为兼容
-            Class<?> aClass = Thread.currentThread().getContextClassLoader().loadClass(AbstractEventExecutorGroup.class.getName());
-            String strPath="io.netty.util.concurrent.AbstractEventExecutor";
-            ClassPath classPath= new LoaderClassPath(Thread.currentThread().getContextClassLoader());
-            cp.appendClassPath(classPath);
-            Loader loader = new Loader(cp);
-            Class<?> abstractEventExecutor = loader.loadClass(strPath);
-            CtClass ctClass = cp.getCtClass(abstractEventExecutor.getName());
-            ctClass.freeze();
-            ctClass.defrost();
-            CtClass executorType = cp.get(Executor.class.getCanonicalName());
-            // final Executor executor=TtlExecutors.getTtlExecutor(this); 模拟这样一段代码
-            CtField ctField = new CtField(executorType, "executor", ctClass);
-            ctField.setModifiers(Modifier.FINAL);
-            ctClass.addField(ctField, "com.alibaba.ttl.threadpool.TtlExecutors.getTtlExecutor(this);");
-            //在添加一个get方法用于RouterHandler调用
-            // public Executor getExecutor() {
-            //        return this.executor;
-            //    }
-            CtMethod m = new CtMethod( cp.get(Executor.class.getCanonicalName()), "getTtlExecutor", new CtClass[]{}, ctClass);
-            m.setModifiers(Modifier.PUBLIC);
-            // 添加返回
-            m.setBody("return this.executor;");
-            ctClass.addMethod(m);
-            ctClass.toClass(aClass);
-            ctClass.detach();
-        } catch (Throwable e) {
-            log.error(ExceptionUtil.getMessage(e));
-        }
-    }
-
-
     public static void init(String packageName) {
         //自己不跟踪
         if (packageName == null || packageName.startsWith("top.hserver")) {
