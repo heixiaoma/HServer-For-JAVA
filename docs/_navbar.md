@@ -5,6 +5,7 @@
     * [BeetlSql使用案例](https://gitee.com/HServer/hserver-for-java-beetlsql)
     * [MYSQL-NEO案例](https://gitee.com/HServer/hserver-for-java-mysql)
     * [Redis操作源码](https://gitee.com/HServer/hserver-for-java-redis)
+    * [mongodb操作源码](https://gitee.com/HServer/hserver-for-java-mongodb)
     * [MybatisPlus案例](https://gitee.com/HServer/hserver-system)
     * [7层代理（可做网关）](https://gitee.com/HServer/http-proxy)
     * [自定义协议](https://gitee.com/HServer/hsvevr-for-custom-protocol)
