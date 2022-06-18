@@ -6,10 +6,17 @@
 ```properties
 track=true
 
+
+#跟踪路径配置（可选）默认也有跟踪
+
 #添加其他的包跟踪，用引英文逗号隔开默认不用在操作了，
 #它是向下找，包名越短，扫码到的文件更多
-#不建议在添加，数据量过大，整体性能会存在性能问题
 trackExtPackages=com.mysql,org.freemarker
+
+#排除这些包不跟踪
+trackNoPackages=com.mysql,org.freemarker
+
+
 ```
 2.实现TrackAdapter接口，并在类上用 @Bean标识
 
