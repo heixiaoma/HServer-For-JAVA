@@ -4,16 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.hserver.core.server.util.ExceptionUtil;
 import top.hserver.core.server.util.PropUtil;
-import top.hserver.core.server.util.SerializationUtil;
 import top.hserver.core.ioc.IocUtil;
 import top.hserver.core.ioc.annotation.queue.QueueHandler;
 import top.hserver.core.ioc.annotation.queue.QueueListener;
 import top.hserver.core.ioc.ref.PackageScanner;
-import top.hserver.core.queue.fqueue.FQueue;
-import top.hserver.core.queue.fqueue.exception.FileFormatException;
 import top.hserver.core.server.util.NamedThreadFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -21,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.*;
-
-import static top.hserver.core.server.context.ConstConfig.PERSIST_PATH;
 
 
 /**
@@ -47,11 +41,6 @@ public class QueueDispatcher {
         if (fQueue != null) {
             if (trueDelete) {
                 fQueue.clear();
-            }
-            try {
-                fQueue.close();
-            } catch (IOException | FileFormatException e) {
-                log.error(ExceptionUtil.getMessage(e));
             }
         }
         FQ.remove(queueName);
@@ -81,16 +70,13 @@ public class QueueDispatcher {
         for (Method method : methods) {
             QueueHandler queueHandler = method.getAnnotation(QueueHandler.class);
             if (queueHandler != null) {
-                int size=queueHandler.size();
+                int size = queueHandler.size();
                 String s = queueHandler.sizePropValue();
-                if (s.trim().length()!=0){
+                if (s.trim().length() != 0) {
                     Integer anInt = PropUtil.getInstance().getInt(s);
-                    if (anInt!=null) {
-                        size =anInt;
+                    if (anInt != null) {
+                        size = anInt;
                     }
-                }
-                if (size > eventHandleInfo.getThreadSize()) {
-                    eventHandleInfo.setThreadSize(size);
                 }
                 eventHandleInfo.add(new QueueHandleMethod(method, queueHandler.level(), size));
                 log.debug("寻找队列 [{}] 的方法 [{}.{}]", queueName, clazz.getSimpleName(),
@@ -133,21 +119,13 @@ public class QueueDispatcher {
             for (Method method : methods) {
                 QueueHandler queueHandler = method.getAnnotation(QueueHandler.class);
                 if (queueHandler != null) {
-
-                    int size=queueHandler.size();
+                    int size = queueHandler.size();
                     String s = queueHandler.sizePropValue();
-                    if (s.trim().length()!=0){
+                    if (s.trim().length() != 0) {
                         Integer anInt = PropUtil.getInstance().getInt(s);
-                        if (anInt!=null) {
-                            size =anInt;
+                        if (anInt != null) {
+                            size = anInt;
                         }
-                    }
-                    if (size > eventHandleInfo.getThreadSize()) {
-                        eventHandleInfo.setThreadSize(size);
-                    }
-
-                    if (size > eventHandleInfo.getThreadSize()) {
-                        eventHandleInfo.setThreadSize(size);
                     }
                     eventHandleInfo.add(new QueueHandleMethod(method, queueHandler.level(), size));
                     log.debug("寻找队列 [{}] 的方法 [{}.{}]", queueListener.queueName(), clazz.getSimpleName(),
@@ -160,9 +138,9 @@ public class QueueDispatcher {
 
     private static void initConfigQueue(QueueHandleInfo v) {
         try {
-            FQueue fQueue = new FQueue(PERSIST_PATH + File.separator + v.getQueueName());
-            FQ.put(v.getQueueName(), fQueue);
+            FQ.put(v.getQueueName(), new FQueue(v.getQueueName()));
         } catch (Exception ignored) {
+            ignored.printStackTrace();
         }
         QueueFactory queueFactory = new QueueFactoryImpl();
         queueFactory.createQueue(v.getQueueName(), v.getBufferSize(), v.getQueueHandlerType(), v.getQueueHandleMethods());
@@ -182,13 +160,6 @@ public class QueueDispatcher {
                 v.getQueueFactory().stop();
             }
         });
-        FQ.forEach((k, v) -> {
-            try {
-                v.close();
-            } catch (Exception e) {
-                log.error(ExceptionUtil.getMessage(e));
-            }
-        });
         FQ.clear();
         //再来重新开始
         handleMethodMap.forEach((k, v) -> {
@@ -205,17 +176,10 @@ public class QueueDispatcher {
                                 sleep();
                                 return;
                             }
-                            int threadSize = queueHandleInfo.getThreadSize();
-                            if (queueInfo != null && (queueInfo.getBufferSize() - queueInfo.getRemainQueueSize() < threadSize)) {
-                                byte[] poll;
-                                if (threadSize == 1) {
-                                    poll = v.peek();
-                                } else {
-                                    poll = v.poll();
-                                }
-                                if (poll != null) {
-                                    QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
-                                    dispatcherQueue(deserialize, deserialize.getQueueName());
+                            if (queueInfo != null && (queueInfo.getRemainQueueSize()>0)) {
+                                QueueData next = v.getNext();
+                                if (next != null) {
+                                    dispatcherQueue(next, next.getQueueName());
                                 } else {
                                     sleep();
                                 }
@@ -244,8 +208,6 @@ public class QueueDispatcher {
         QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
         if (queueHandleInfo != null) {
             if (queueData != null) {
-                queueData.setfQueue(FQ.get(queueName));
-                queueData.setThreadSize(queueHandleInfo.getThreadSize());
                 queueHandleInfo.getQueueFactory().producer(queueData);
             }
             return true;
@@ -268,7 +230,7 @@ public class QueueDispatcher {
             log.error("不存在:{} 队列", queueName);
             return false;
         }
-        fQueue.offer(SerializationUtil.serialize(new QueueData(queueName, args, null)));
+        fQueue.add(new QueueData(queueName, args));
         return true;
     }
 
@@ -282,8 +244,14 @@ public class QueueDispatcher {
         return null;
     }
 
+    public static void removeKey(Long id,String queueName) {
+        FQueue fQueue = FQ.get(queueName);
+        if (fQueue!=null) {
+            fQueue.removeBack(id);
+        }
+    }
 
-    private static void sleep(){
+    private static void sleep() {
         try {
             Thread.sleep(1);
         } catch (InterruptedException e) {

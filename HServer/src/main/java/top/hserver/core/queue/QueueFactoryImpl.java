@@ -44,7 +44,7 @@ public class QueueFactoryImpl implements QueueFactory {
                 QueueEventHandler[] queueEventHandlers = new QueueEventHandler[handleMethods.size()];
                 for (int i = 0; i < handleMethods.size(); i++) {
                     QueueHandleMethod queueHandleMethod = handleMethods.get(i);
-                    queueEventHandlers[i] = new QueueEventHandler(queueName, queueHandleMethod.getMethod());
+                    queueEventHandlers[i] = new QueueEventHandler(queueHandleMethod.getMethod());
                 }
                 //多消费者重复消费
                 if (queueHandlerType == QueueHandlerType.REPEAT) {
@@ -58,7 +58,7 @@ public class QueueFactoryImpl implements QueueFactory {
                 QueueEventHandler[] queueEventHandlers = new QueueEventHandler[handleMethods.size()];
                 for (int i = 0; i < handleMethods.size(); i++) {
                     QueueHandleMethod queueHandleMethod = handleMethods.get(i);
-                    queueEventHandlers[i] = new QueueEventHandler(queueName, queueHandleMethod.getMethod());
+                    queueEventHandlers[i] = new QueueEventHandler(queueHandleMethod.getMethod());
                 }
                 //多消费者重复消费
                 if (queueHandlerType == QueueHandlerType.REPEAT) {
@@ -88,10 +88,9 @@ public class QueueFactoryImpl implements QueueFactory {
         long sequence = ringBuffer.next();
         try {
             QueueData rdata = ringBuffer.get(sequence);
+            rdata.setId(queueData.getId());
             rdata.setArgs(queueData.getArgs());
-            rdata.setfQueue(queueData.getfQueue());
             rdata.setQueueName(queueData.getQueueName());
-            rdata.setThreadSize(queueData.getThreadSize());
         } finally {
             ringBuffer.publish(sequence);
         }
