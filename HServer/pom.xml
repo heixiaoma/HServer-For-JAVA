@@ -30,7 +30,6 @@
         <junit.version>4.13.2</junit.version>
         <disruptor.version>3.4.4</disruptor.version>
         <guava.version>30.1.1-jre</guava.version>
-        <rocksdbjni.version>7.2.2</rocksdbjni.version>
     </properties>
 
     <dependencies>
@@ -48,19 +47,13 @@
             <version>${logback.version}</version>
         </dependency>
 
-        <!--    存储    -->
-        <dependency>
-            <groupId>org.rocksdb</groupId>
-            <artifactId>rocksdbjni</artifactId>
-            <version>${rocksdbjni.version}</version>
-        </dependency>
-
         <!-- JSON处理 -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>

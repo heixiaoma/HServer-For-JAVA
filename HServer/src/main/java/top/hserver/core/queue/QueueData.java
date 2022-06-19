@@ -1,40 +1,46 @@
 package top.hserver.core.queue;
 
 
-
-import top.hserver.core.server.util.SnowflakeIdWorker;
+import top.hserver.core.queue.fqueue.FQueue;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 /**
  * @author hxm
  */
 public class QueueData implements Serializable {
-    private final  static SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
 
-    private long id;
+    private FQueue fQueue;
 
     private String queueName;
 
     private Object[] args;
 
+    private int threadSize;
 
     public QueueData() {
     }
 
-    public QueueData(String queueName, Object[] args) {
+    public QueueData(String queueName, Object[] args,FQueue fQueue) {
         this.queueName = queueName;
         this.args = args;
-        this.id= idWorker.nextId();
+        this.fQueue=fQueue;
     }
 
-    public long getId() {
-        return id;
+    public int getThreadSize() {
+        return threadSize;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setThreadSize(int threadSize) {
+        this.threadSize = threadSize;
+    }
+
+    public FQueue getfQueue() {
+        return fQueue;
+    }
+
+    public void setfQueue(FQueue fQueue) {
+        this.fQueue = fQueue;
     }
 
     public String getQueueName() {
