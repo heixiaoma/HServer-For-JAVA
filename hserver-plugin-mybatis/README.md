@@ -3,18 +3,9 @@
 
 ```text
 
-原生 mybatis 推荐使用 版本
 <dependency>
-   <groupId>cn.hserver.mybatis.plugin</groupId>
-   <artifactId>hserver-mybatis-plugin</artifactId>
-   <version>1.0</version>
-</dependency>
-
-从2.0开始 插件集成 mybatis-plus
-<dependency>
-   <groupId>cn.hserver.mybatis.plugin</groupId>
-   <artifactId>hserver-mybatis-plugin</artifactId>
-   <version>3.0</version>
+   <groupId>cn.hserver</groupId>
+   <artifactId>hserver-plugin-mybatis</artifactId>
 </dependency>
 ```
 

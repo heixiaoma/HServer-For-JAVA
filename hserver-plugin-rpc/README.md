@@ -4,9 +4,8 @@
 
 ```xml
 <dependency>
-  <groupId>cn.hserver.plugins.rpc</groupId>
-  <artifactId>hserver-rpc-plugin</artifactId>
-  <version>1.0</version>
+  <groupId>cn.hserver</groupId>
+  <artifactId>hserver-plugin-rpc</artifactId>
 </dependency>
 ```
 

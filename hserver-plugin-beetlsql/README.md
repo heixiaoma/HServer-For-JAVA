@@ -3,7 +3,7 @@
 ```
 版本查询 https://repo1.maven.org/maven2/net/hserver/plugins/beetlsql/plugins.beetlsql/
 
-当前 3.3
+当前 3.14.2-RELEASE
 
 beetlsql 3.4.3-RELEASE
 
@@ -11,9 +11,8 @@ beetlsql 3.4.3-RELEASE
 
 ```
 <dependency>
-  <groupId>cn.hserver.plugins.beetlsql</groupId>
-  <artifactId>plugins.beetlsql</artifactId>
-  <version>3.3</version>
+  <groupId>cn.hserver</groupId>
+  <artifactId>hserver-plugin-beetlsql</artifactId>
 </dependency>
 
 ```
