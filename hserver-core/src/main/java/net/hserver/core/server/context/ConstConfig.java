@@ -1,13 +1,10 @@
 package net.hserver.core.server.context;
 
-import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.ssl.SslContext;
-import io.netty.util.NettyRuntime;
 import io.netty.util.concurrent.EventExecutorGroup;
-import io.netty.util.internal.SystemPropertyUtil;
 import net.hserver.core.server.json.JackSonJsonAdapter;
 import net.hserver.core.server.json.JsonAdapter;
 
@@ -35,7 +32,7 @@ public class ConstConfig {
     /**
      * 版本号
      */
-    public static final String VERSION = "2.9.91";
+    public static final String VERSION = "3.0-M1";
     /**
      * 定时任务线程数配置
      */

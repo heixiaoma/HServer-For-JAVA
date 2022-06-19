@@ -9,6 +9,11 @@
     <packaging>pom</packaging>
     <version>3.0-M1</version>
 
+    <name>HServer</name>
+    <url>https://gitee.com/HServer/HServer</url>
+    <description>一个基于Netty的高性能Server 服务器</description>
+
+
     <modules>
         <module>hserver-core</module>
         <module>hserver-plugin-beetlsql</module>
@@ -21,4 +26,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+
+
+
 </project>
