@@ -1,8 +1,8 @@
 package net.hserver.plugin.rpc.core.mode;
 
-import net.hserver.plugins.rpc.bean.RpcServer;
-import net.hserver.plugins.rpc.client.RpcClient;
-import net.hserver.plugins.rpc.codec.RpcAdapter;
+import net.hserver.plugin.rpc.bean.RpcServer;
+import net.hserver.plugin.rpc.client.RpcClient;
+import net.hserver.plugin.rpc.codec.RpcAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
