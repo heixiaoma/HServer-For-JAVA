@@ -39,6 +39,7 @@ public class HServerPackagerMojo extends AbstractMojo {
         try {
             CopyLoader.start(getTargetFile());
         } catch (Exception e) {
+            e.printStackTrace();
             throw new MojoExecutionException("write loader exception", e);
         }
     }

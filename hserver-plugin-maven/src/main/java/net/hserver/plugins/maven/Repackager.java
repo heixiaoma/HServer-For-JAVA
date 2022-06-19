@@ -4,6 +4,7 @@ package net.hserver.plugins.maven;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
+import net.hserver.core.ioc.annotation.HServerBoot;
 import net.hserver.plugins.maven.tools.tool.*;
 import org.apache.maven.plugin.logging.Log;
 
@@ -218,19 +219,21 @@ public class Repackager {
                     CtMethod[] methods = ctClass.getDeclaredMethods();
                     for (CtMethod method : methods) {
                         if (method.getName().equals("main") && method.getParameterTypes().length == 1) {
-                            if (method.getParameterTypes()[0].equals(String[].class) && Modifier.isStatic(method.getModifiers())) {
+                            System.out.println(1);
+                            if (method.getParameterTypes()[0].getName().equals("java.lang.String[]") && Modifier.isStatic(method.getModifiers())) {
+                                System.out.println(1);
                                 if (method.getReturnType().getName().equals("void")) {
-                                    for (Object annotation : ctClass.getAnnotations()) {
-                                        if (annotation.toString().endsWith("HServerBoot")) {
-                                            logger.info("启动类：" + ctClass);
-                                            return ctClass.getName();
-                                        }
+                                    System.out.println(ctClass.hasAnnotation(HServerBoot.class));
+                                    if (ctClass.hasAnnotation(HServerBoot.class)){
+                                        logger.info("启动类：" + ctClass.getName());
+                                        return ctClass.getName();
                                     }
                                 }
                             }
                         }
                     }
                 } catch (Throwable ignored) {
+                    ignored.printStackTrace();
                 }
             }
         }

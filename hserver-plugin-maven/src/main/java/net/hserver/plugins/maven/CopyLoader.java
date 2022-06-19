@@ -69,7 +69,7 @@ public class CopyLoader {
         Enumeration<JarEntry> entries = jarfile.entries();
         while (entries.hasMoreElements()) {
             JarEntry jarEntry = entries.nextElement();
-            if (jarEntry.getName().endsWith(".jar") && jarEntry.getName().startsWith("lib/HServer")) {
+            if (jarEntry.getName().endsWith(".jar") && jarEntry.getName().startsWith("lib/hserver")) {
                 InputStream inputStream = jarfile.getInputStream(jarEntry);
                 writeToLocal(path + HServerName, inputStream);
                 break;
