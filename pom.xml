@@ -13,6 +13,31 @@
     <url>https://gitee.com/HServer/HServer</url>
     <description>一个基于Netty的高性能Server 服务器</description>
 
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <tag>master</tag>
+        <connection>https://gitee.com/HServer/HServer.git</connection>
+        <developerConnection>https://hserver.net/</developerConnection>
+        <url>https://gitee.com/HServer/HServer.git</url>
+    </scm>
+
+
+    <developers>
+        <developer>
+            <name>黑小马</name>
+            <email>heixiaoma@gmail.com</email>
+            <organization>hserver.net</organization>
+            <organizationUrl>http://www.hserver.net</organizationUrl>
+        </developer>
+    </developers>
+
 
     <modules>
         <module>hserver</module>
@@ -29,7 +54,6 @@
 
     <dependencyManagement>
         <dependencies>
-
             <dependency>
                 <groupId>net.hserver</groupId>
                 <artifactId>hserver</artifactId>
@@ -59,7 +83,6 @@
                 <artifactId>hserver-plugin-maven</artifactId>
                 <version>3.0-M1</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
