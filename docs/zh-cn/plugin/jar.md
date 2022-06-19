@@ -8,9 +8,8 @@ Main函数类上添加@HServerBoot 注解用于标记是启动类。
 <build>
     <plugins>
         <plugin>
-            <groupId>cn.hserver.plugin.maven</groupId>
-            <artifactId>hserver-maven-plugin</artifactId>
-            <version>3.0</version>
+            <groupId>cn.hserver</groupId>
+            <artifactId>hserver-plugin-maven</artifactId>
             <executions>
                 <execution>
                     <phase>package</phase>

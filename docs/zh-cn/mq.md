@@ -88,9 +88,9 @@ level级别,当里面出现两个 我们指定级别实现 顺序消费.
 ```java
 import lombok.extern.slf4j.Slf4j;
 import test1.service.HelloService;
-import top.hserver.core.ioc.annotation.Autowired;
-import top.hserver.core.ioc.annotation.queue.QueueHandler;
-import top.hserver.core.ioc.annotation.queue.QueueListener;
+import cn.hserver.core.ioc.annotation.Autowired;
+import cn.hserver.core.ioc.annotation.queue.QueueHandler;
+import cn.hserver.core.ioc.annotation.queue.QueueListener;
 
 import java.util.concurrent.atomic.LongAdder;
 

@@ -3,11 +3,19 @@
 **1.建立一个maven项目，导入依赖**
 
 ```xml
+<parent>
+    <artifactId>hserver-parent</artifactId>
+    <groupId>cn.hserver</groupId>
+    <version>最新版本</version>
+</parent>
+
+<dependencies>
 <dependency>
-    <groupId>top.hserver</groupId>
-    <artifactId>HServer</artifactId>
-    <version>最新版</version>
+    <groupId>cn.hserver</groupId>
+    <artifactId>hserver</artifactId>
 </dependency>
+</dependencies>
+
 ```
 
 

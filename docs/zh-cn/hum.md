@@ -8,9 +8,9 @@ HServer UPD Message HUM消息是在局域网内服务之间的通讯，实现数
 - 提供了Hum用来区分和发送消息
 
 ```java
-import top.hserver.core.interfaces.HumAdapter;
-import top.hserver.core.ioc.annotation.Bean;
-import top.hserver.core.server.handlers.Hum;
+import cn.hserver.core.interfaces.HumAdapter;
+import cn.hserver.core.ioc.annotation.Bean;
+import cn.hserver.core.server.handlers.Hum;
 
 @Bean
 public class HumMsg implements HumAdapter {

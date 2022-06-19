@@ -6,9 +6,9 @@ HServer提供了GlobalLimit(全局QPS限制)，UrlLimit(更具URL来限制QPS)@Q
 
 ```java
 
-import top.hserver.core.ioc.annotation.Bean;
-import top.hserver.core.server.context.Webkit;
-import top.hserver.core.server.util.JsonResult;
+import cn.hserver.core.ioc.annotation.Bean;
+import cn.hserver.core.server.context.Webkit;
+import cn.hserver.core.server.util.JsonResult;
 
 @Bean
 public class TestLimit extends GlobalLimit{

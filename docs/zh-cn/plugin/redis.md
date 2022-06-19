@@ -17,9 +17,9 @@ import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
-import top.hserver.core.ioc.annotation.Bean;
-import top.hserver.core.ioc.annotation.Configuration;
-import top.hserver.core.ioc.annotation.Value;
+import cn.hserver.core.ioc.annotation.Bean;
+import cn.hserver.core.ioc.annotation.Configuration;
+import cn.hserver.core.ioc.annotation.Value;
 
 /**
  * @author hxm

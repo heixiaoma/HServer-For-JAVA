@@ -4,9 +4,9 @@
 提供hook注解，它只能Hook在ioc中存在的bean对象. hook功能除了hook指定的类所有方法，还能hook注解，只要包含这个注解的类都会被hook.
 
 ```java
-import top.hserver.core.interfaces.HookAdapter;
-import top.hserver.core.ioc.annotation.Autowired;
-import top.hserver.core.ioc.annotation.Hook;
+import cn.hserver.core.interfaces.HookAdapter;
+import cn.hserver.core.ioc.annotation.Autowired;
+import cn.hserver.core.ioc.annotation.Hook;
 import test1.service.HelloService;
 import test1.service.Test;
 import lombok.extern.slf4j.Slf4j;

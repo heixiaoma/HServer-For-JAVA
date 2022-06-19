@@ -1,18 +1,10 @@
-## mybatis使用
+## mybatis mybatis-plus 使用
 
 ```text
-原生 mybatis 
+ 
 <dependency>
-    <groupId>cn.hserver.mybatis.plugin</groupId>
-    <artifactId>hserver-mybatis-plugin</artifactId>
-    <version>1.0</version>
-</dependency>
-
-从2.0开始 插件集成 mybatis-plus
-<dependency>
-    <groupId>cn.hserver.mybatis.plugin</groupId>
-    <artifactId>hserver-mybatis-plugin</artifactId>
-    <version>3.0</version>
+    <groupId>cn.hserver</groupId>
+    <artifactId>hserver-plugin-mybatis</artifactId>
 </dependency>
 ```
 
@@ -21,9 +13,8 @@
 ```xml
 
 <dependency>
-    <groupId>cn.hserver.plugin.mybatis.plugin</groupId>
-    <artifactId>hserver-mybatis-plugin</artifactId>
-    <version>3.0</version>
+    <groupId>cn.hserver</groupId>
+    <artifactId>hserver-plugin-mybatis</artifactId>
 </dependency>
 
         <!--添加连接池和MySQL驱动-->

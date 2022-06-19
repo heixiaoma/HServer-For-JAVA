@@ -5,9 +5,9 @@
 
 ```xml
         <dependency>
-            <groupId>top.hserver</groupId>
-            <artifactId>HServer</artifactId>
-            <version>${HServer.version}</version>
+            <groupId>cn.hserver</groupId>
+            <artifactId>hserver</artifactId>
+            <version>${hserver.version}</version>
             <scope>provided</scope>
         </dependency>
 ```
@@ -49,7 +49,7 @@ public class BeetLSqlPlugin implements PluginAdapter {
 3. spi处理
 
 ```
-建立一个文件  resources/META-INF/services/top.hserver.core.interfaces.PluginAdapter
+建立一个文件  resources/META-INF/services/cn.hserver.core.interfaces.PluginAdapter
 文件内容     cn.hserver.plugins.beetlsql.BeetLSqlPlugin
 这个文件内容是你实现接口的包名+类名
 ```

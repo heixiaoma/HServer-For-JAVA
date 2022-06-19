@@ -4,10 +4,10 @@
 
 ```xml
 
+<!--引入了parent 下面就不写版本号-->
 <dependency>
-    <groupId>cn.hserver.plugin.beetlsql</groupId>
-    <artifactId>plugins.beetlsql</artifactId>
-    <version>3.3</version>
+    <groupId>cn.hserver</groupId>
+    <artifactId>hserver-plugin-beetlsql</artifactId>
 </dependency>
 
         <!--添加连接池和MySQL驱动-->

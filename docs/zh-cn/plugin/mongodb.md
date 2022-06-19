@@ -14,10 +14,10 @@
 </repositories>
 
 <dependencies>
+
 <dependency>
-    <groupId>top.hserver</groupId>
+    <groupId>cn.hserver</groupId>
     <artifactId>HServer</artifactId>
-    <version>2.9.90</version>
 </dependency>
 
 <dependency>
