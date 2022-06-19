@@ -7,7 +7,7 @@
     <groupId>net.hserver</groupId>
     <artifactId>hserver-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.0</version>
+    <version>3.0-M1</version>
 
     <modules>
         <module>hserver-core</module>
