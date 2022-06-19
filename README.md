@@ -31,7 +31,7 @@ HServer是一个基于Netty开发的一个功能强大，资源丰富，开发�
 
 ```text
 重要提示，旧版请看 master分支 当前main分支为新分支，后面会将main分支合并到master分支下 
-向常新得前往main分支
+向尝新得前往main分支
 1.top.hserver 包名变更为 cn.hserver
 2.常用插件统一管理，版本由hserver-parent控制
 3.在以前得代码过度时请注意包名变化，依赖名字变化
