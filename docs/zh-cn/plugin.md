@@ -50,7 +50,7 @@ public class BeetLSqlPlugin implements PluginAdapter {
 
 ```
 建立一个文件  resources/META-INF/services/top.hserver.core.interfaces.PluginAdapter
-文件内容     net.hserver.plugins.beetlsql.BeetLSqlPlugin
+文件内容     cn.hserver.plugins.beetlsql.BeetLSqlPlugin
 这个文件内容是你实现接口的包名+类名
 ```
 

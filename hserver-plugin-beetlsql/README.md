@@ -11,7 +11,7 @@ beetlsql 3.4.3-RELEASE
 
 ```
 <dependency>
-  <groupId>net.hserver.plugins.beetlsql</groupId>
+  <groupId>cn.hserver.plugins.beetlsql</groupId>
   <artifactId>plugins.beetlsql</artifactId>
   <version>3.3</version>
 </dependency>

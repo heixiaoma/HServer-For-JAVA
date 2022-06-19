@@ -5,7 +5,7 @@
 ```xml
 
 <dependency>
-    <groupId>net.hserver.plugin.beetlsql</groupId>
+    <groupId>cn.hserver.plugin.beetlsql</groupId>
     <artifactId>plugins.beetlsql</artifactId>
     <version>3.3</version>
 </dependency>

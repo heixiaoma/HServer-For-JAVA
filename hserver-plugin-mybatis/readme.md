@@ -5,14 +5,14 @@
 
 原生 mybatis 推荐使用 版本
 <dependency>
-   <groupId>net.hserver.mybatis.plugin</groupId>
+   <groupId>cn.hserver.mybatis.plugin</groupId>
    <artifactId>hserver-mybatis-plugin</artifactId>
    <version>1.0</version>
 </dependency>
 
 从2.0开始 插件集成 mybatis-plus
 <dependency>
-   <groupId>net.hserver.mybatis.plugin</groupId>
+   <groupId>cn.hserver.mybatis.plugin</groupId>
    <artifactId>hserver-mybatis-plugin</artifactId>
    <version>3.0</version>
 </dependency>
@@ -23,8 +23,8 @@
 @Configuration
 public class MybatisConfig {
     @Bean
-    public net.hserver.plugin.mybatis.bean.MybatisConfig mybatisConfig() {
-        net.hserver.plugin.mybatis.bean.MybatisConfig mybatisConfig = new net.hserver.plugin.mybatis.bean.MybatisConfig();
+    public cn.hserver.plugin.mybatis.bean.MybatisConfig mybatisConfig() {
+        cn.hserver.plugin.mybatis.bean.MybatisConfig mybatisConfig = new cn.hserver.plugin.mybatis.bean.MybatisConfig();
         HikariDataSource ds = new HikariDataSource();
         ds.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/mydb?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC");
         ds.setUsername("root");

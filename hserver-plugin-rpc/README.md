@@ -4,7 +4,7 @@
 
 ```xml
 <dependency>
-  <groupId>net.hserver.plugins.rpc</groupId>
+  <groupId>cn.hserver.plugins.rpc</groupId>
   <artifactId>hserver-rpc-plugin</artifactId>
   <version>1.0</version>
 </dependency>

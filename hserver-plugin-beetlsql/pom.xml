@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>hserver-parent</artifactId>
-        <groupId>net.hserver</groupId>
+        <groupId>cn.hserver</groupId>
         <version>3.0.M1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -27,7 +27,7 @@
             <version>${beetlsql.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.hserver</groupId>
+            <groupId>cn.hserver</groupId>
             <artifactId>hserver</artifactId>
             <version>3.0.M1</version>
             <scope>provided</scope>
