@@ -15,7 +15,7 @@
 
 
     <modules>
-        <module>hserver-core</module>
+        <module>hserver</module>
         <module>hserver-plugin-beetlsql</module>
         <module>hserver-plugin-mybatis</module>
         <module>hserver-plugin-rpc</module>
@@ -27,6 +27,41 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>net.hserver</groupId>
+                <artifactId>hserver</artifactId>
+                <version>3.0-M1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.hserver</groupId>
+                <artifactId>hserver-plugin-beetlsql</artifactId>
+                <version>3.0-M1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.hserver</groupId>
+                <artifactId>hserver-plugin-mybatis</artifactId>
+                <version>3.0-M1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.hserver</groupId>
+                <artifactId>hserver-plugin-rpc</artifactId>
+                <version>3.0-M1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.hserver</groupId>
+                <artifactId>hserver-plugin-maven</artifactId>
+                <version>3.0-M1</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
 
 
 </project>

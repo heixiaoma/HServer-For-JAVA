@@ -33,7 +33,7 @@
 
         <dependency>
             <groupId>net.hserver</groupId>
-            <artifactId>hserver-core</artifactId>
+            <artifactId>hserver</artifactId>
             <version>3.0-M1</version>
             <scope>provided</scope>
         </dependency>

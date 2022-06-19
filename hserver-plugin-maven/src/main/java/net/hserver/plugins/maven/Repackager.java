@@ -219,11 +219,8 @@ public class Repackager {
                     CtMethod[] methods = ctClass.getDeclaredMethods();
                     for (CtMethod method : methods) {
                         if (method.getName().equals("main") && method.getParameterTypes().length == 1) {
-                            System.out.println(1);
                             if (method.getParameterTypes()[0].getName().equals("java.lang.String[]") && Modifier.isStatic(method.getModifiers())) {
-                                System.out.println(1);
                                 if (method.getReturnType().getName().equals("void")) {
-                                    System.out.println(ctClass.hasAnnotation(HServerBoot.class));
                                     if (ctClass.hasAnnotation(HServerBoot.class)){
                                         logger.info("启动类：" + ctClass.getName());
                                         return ctClass.getName();
