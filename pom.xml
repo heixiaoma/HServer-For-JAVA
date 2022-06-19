@@ -7,7 +7,7 @@
     <groupId>net.hserver</groupId>
     <artifactId>hserver-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.0-M1</version>
+    <version>3.0.M1</version>
 
     <name>hserver-parent</name>
     <url>https://gitee.com/HServer/HServer</url>
@@ -32,31 +32,31 @@
             <dependency>
                 <groupId>net.hserver</groupId>
                 <artifactId>hserver</artifactId>
-                <version>3.0-M1</version>
+                <version>3.0.M1</version>
             </dependency>
 
             <dependency>
                 <groupId>net.hserver</groupId>
                 <artifactId>hserver-plugin-beetlsql</artifactId>
-                <version>3.0-M1</version>
+                <version>3.0.M1</version>
             </dependency>
 
             <dependency>
                 <groupId>net.hserver</groupId>
                 <artifactId>hserver-plugin-mybatis</artifactId>
-                <version>3.0-M1</version>
+                <version>3.0.M1</version>
             </dependency>
 
             <dependency>
                 <groupId>net.hserver</groupId>
                 <artifactId>hserver-plugin-rpc</artifactId>
-                <version>3.0-M1</version>
+                <version>3.0.M1</version>
             </dependency>
 
             <dependency>
                 <groupId>net.hserver</groupId>
                 <artifactId>hserver-plugin-maven</artifactId>
-                <version>3.0-M1</version>
+                <version>3.0.M1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -80,7 +80,7 @@
 
     <developers>
         <developer>
-            <name>黑小马</name>
+            <name>heixiaoma</name>
             <email>heixiaoma@gmail.com</email>
             <organization>hserver.net</organization>
             <organizationUrl>http://www.hserver.net</organizationUrl>
@@ -91,6 +91,63 @@
     <profiles>
         <profile>
             <id>release</id>
+            <build>
+                <plugins>
+                    <!-- GPG -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+
+                    <!-- Source -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.M1</version>
+                        <configuration>
+                            <attach>true</attach>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Javadoc -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.3</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <configuration>
+                                    <additionalparam>-Xdoclint:none</additionalparam>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+
+                </plugins>
+            </build>
             <distributionManagement>
                 <snapshotRepository>
                     <id>heixiaoma</id>
@@ -101,51 +158,6 @@
                     <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
                 </repository>
             </distributionManagement>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.5</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>2.2.1</version>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.9.1</version>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-
         </profile>
     </profiles>
 
