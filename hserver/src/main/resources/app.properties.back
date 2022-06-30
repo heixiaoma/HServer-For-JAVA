@@ -1,0 +1,68 @@
+#外置配置大于jar中包配置文件，配置文件大于代码默认设置
+
+#应用名字，默认HServer
+appName=HServer
+
+#hum消息端口，默认9527
+humPort=9527
+
+#端口动态指定，多个用英文逗号隔开 配置文件大于代码写死，
+ports=9090
+
+#动态配置文件
+env=dev
+
+#链路跟踪 默认不跟踪
+track=true
+
+#添加其他的包跟踪，用引英文逗号隔开默认不用在操作了，前缀匹配模式
+
+#它是向下找，包名越短，扫码到的文件更多
+trackExtPackages=com.mysql,org.freemarker
+
+#排除这些包不跟踪
+trackNoPackages=com.mysql,org.freemarker
+
+#taskPool定时任务线程池子配置，默认大小是cpu核心数+1
+taskPool=5
+
+#bossPool Netty boss线程组大小 默认cpu 核心数两倍
+bossPool=2
+
+#workerPool Netty worker线程组大小 默认核心数两倍
+workerPool=2
+
+#businessPool 业务线程大小，默是用的workerPool -1标识使用workerPool 性能更快
+businessPool=50
+
+#backlog 指定了内核为此套接口排队的最大连接个数；
+#对于给定的监听套接口，内核要维护两个队列: 未连接队列和已连接队列
+#backlog 的值即为未连接队列和已连接队列的和。
+backLog=8192
+
+#可以开启Epoll时是否开启epoll 默认true
+epoll=true
+
+#读取限制 byte 单位
+readLimit=100
+
+#写出限制 byte 单位
+writeLimit=100
+
+#日志级别 debug info error ...
+level=debug
+
+#消息体大小 默认int.maxValue
+#httpContentSize=999999
+
+#队列数据缓存位置 默认当前项目下
+persistPath=/user/mcl/data
+
+
+#-----------------ssl-------------
+#注意下载的证书中 key文件需要转换成 pk8 文件
+#因为netty4不支持pkcs12格式的私钥, 所以需要将私钥转换成pkcs8格式.
+#openssl pkcs8 -in my.key -topk8 -out my.pk8
+certPath=hserver.pem
+privateKeyPath=hserver.pk8
+privateKeyPwd=123
