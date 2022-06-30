@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-Agent-Class: top.hserver.core.agent.HServerAgent
-Can-Redefine-Classes: true
-Can-Retransform-Classes: true
