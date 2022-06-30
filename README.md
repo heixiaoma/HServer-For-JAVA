@@ -1,6 +1,6 @@
 <p align="center">
 <a href="https://doc.hserver.top">
-<img src="https://gitee.com/HServer/HServer/raw/master/doc/hserver.png" width="500" />
+<img src="https://gitee.com/HServer/HServer/raw/master/doc/icon.png" width="500" />
 </a>
 </p>
 <p align="center">
