@@ -24,7 +24,7 @@
         <netty.version>4.1.77.Final</netty.version>
         <transmittable.version>2.12.4</transmittable.version>
         <logback.version>1.2.11</logback.version>
-        <jackson.version>2.13.1</jackson.version>
+        <jackson.version>2.13.3</jackson.version>
         <javassist.version>3.29.0-GA</javassist.version>
         <protostuff.version>1.1.6</protostuff.version>
         <freemarker.version>2.3.31</freemarker.version>
