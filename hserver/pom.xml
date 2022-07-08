@@ -32,6 +32,7 @@
         <junit.version>4.13.2</junit.version>
         <disruptor.version>3.4.4</disruptor.version>
         <guava.version>30.1.1-jre</guava.version>
+        <leveldb.version>0.12</leveldb.version>
     </properties>
 
     <dependencies>
@@ -113,6 +114,12 @@
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
             <version>${disruptor.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.iq80.leveldb</groupId>
+            <artifactId>leveldb</artifactId>
+            <version>${leveldb.version}</version>
         </dependency>
 
         <!--   谷歌工具库     -->
