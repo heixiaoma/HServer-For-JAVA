@@ -1,7 +1,11 @@
 package cn.hserver.core.queue.cache;
 
+import cn.hserver.HServerApplication;
 import cn.hserver.core.queue.ListQueueData;
 import cn.hserver.core.queue.QueueData;
+import cn.hserver.core.server.util.ExceptionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,6 +16,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class HQueue {
+    private static final Logger log = LoggerFactory.getLogger(HQueue.class);
+
     private final ScheduledExecutorService newScheduledThreadPool = Executors.newScheduledThreadPool(1);
     private final CacheMap<QueueData> STORE_MAP;
     private final CacheMap<ListQueueData> DELAY_MAP;
@@ -35,20 +41,24 @@ public class HQueue {
             Calendar calendar = Calendar.getInstance();
             int currentSecond = calendar.get(Calendar.MINUTE) * 60 + calendar.get(Calendar.SECOND);
             String id = String.valueOf(currentSecond);
-            ListQueueData listQueueData = DELAY_MAP.get(id);
-            if (listQueueData != null && !listQueueData.getQueueDataList().isEmpty()) {
-                List<QueueData> temp=new ArrayList<>();
-                for (QueueData queueData : listQueueData.getQueueDataList()) {
-                    if (queueData.getCycleNum() <= 0) {
-                        putQueue(queueData);
-                    } else {
-                        queueData.countDown();
-                        temp.add(queueData);
+            try {
+                ListQueueData listQueueData = DELAY_MAP.get(id);
+                if (listQueueData != null && listQueueData.getQueueDataList() != null && !listQueueData.getQueueDataList().isEmpty()) {
+                    List<QueueData> temp = new ArrayList<>();
+                    for (QueueData queueData : listQueueData.getQueueDataList()) {
+                        if (queueData.getCycleNum() <= 0) {
+                            putQueue(queueData);
+                        } else {
+                            queueData.countDown();
+                            temp.add(queueData);
+                        }
                     }
+                    listQueueData.getQueueDataList().clear();
+                    DELAY_MAP.remove(id);
+                    DELAY_MAP.put(id, new ListQueueData(id, temp));
                 }
-                listQueueData.getQueueDataList().clear();
-                DELAY_MAP.remove(id);
-                DELAY_MAP.put(id, new ListQueueData(id,temp));
+            } catch (Exception e) {
+                log.error(ExceptionUtil.getMessage(e));
             }
 
         };
@@ -100,7 +110,7 @@ public class HQueue {
         String delayId = String.valueOf(soltIndex);
         ListQueueData listQueueData = DELAY_MAP.get(delayId);
         if (listQueueData == null) {
-            listQueueData = new ListQueueData(delayId,queueData);
+            listQueueData = new ListQueueData(delayId, queueData);
         } else {
             listQueueData.addData(queueData);
         }
@@ -141,17 +151,17 @@ public class HQueue {
         List<ListQueueData> all = DELAY_MAP.getAll();
         for (ListQueueData listQueueData : all) {
             List<QueueData> queueDataList = listQueueData.getQueueDataList();
-            if (queueDataList!=null){
-                QueueData temp=null;
+            if (queueDataList != null) {
+                QueueData temp = null;
                 for (QueueData queueData : queueDataList) {
-                    if (queueData.getQueueId().equals(queueId)){
-                        temp=queueData;
+                    if (queueData.getQueueId().equals(queueId)) {
+                        temp = queueData;
                         break;
                     }
                 }
-                if (temp!=null){
+                if (temp != null) {
                     queueDataList.remove(temp);
-                    DELAY_MAP.put(listQueueData.getId(),listQueueData);
+                    DELAY_MAP.put(listQueueData.getId(), listQueueData);
                     break;
                 }
             }
