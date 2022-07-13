@@ -133,7 +133,17 @@ public class HQueue {
      * @return
      */
     public int size() {
-        return STORE_MAP.size() + RUN_MAP.size();
+        List<ListQueueData> all = DELAY_MAP.getAll();
+        int i=0;
+        for (ListQueueData listQueueData : all) {
+            List<QueueData> queueDataList = listQueueData.getQueueDataList();
+            if (queueDataList!=null&&!queueDataList.isEmpty()){
+                for (QueueData ignored : queueDataList) {
+                    i++;
+                }
+            }
+        }
+        return STORE_MAP.size() + RUN_MAP.size()+i;
     }
 
     /**
