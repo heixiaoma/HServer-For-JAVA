@@ -47,7 +47,7 @@ public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<Q
                 log.error(ExceptionUtil.getMessage(e));
             }
         } finally {
-            queueData.gethQueue().removeRun(queueData.getUid());
+            queueData.gethQueue().removeRun(queueData.getQueueId());
         }
     }
 }

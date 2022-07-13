@@ -15,7 +15,7 @@ public class QueueData implements Serializable {
 
     private HQueue hQueue;
 
-    private String uid;
+    private String queueId;
 
     private String queueName;
 
@@ -25,18 +25,23 @@ public class QueueData implements Serializable {
     public QueueData() {
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
 
-    public QueueData(String queueName, Object[] args) {
+    public QueueData(String queueName, String queueId,Object[] args) {
         this.queueName = queueName;
         this.args = args;
-        uid= UUID.randomUUID().toString();
+        if (queueId==null) {
+            this.queueId = UUID.randomUUID().toString();
+        }else {
+            this.queueId=queueId;
+        }
     }
 
-    public String getUid() {
-        return uid;
+    public String getQueueId() {
+        return queueId;
+    }
+
+    public void setQueueId(String queueId) {
+        this.queueId = queueId;
     }
 
     public HQueue gethQueue() {

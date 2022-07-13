@@ -36,6 +36,18 @@ public class QueueDispatcher {
     private QueueDispatcher() {
     }
 
+    /**
+     * 删除队列中得数据
+     * @param queueName
+     * @param queueId
+     */
+    public static void removeQueueData(String queueName, String queueId){
+        HQueue hQueue = CACHE_MAP_MAP.get(queueName);
+        if (hQueue!=null){
+            hQueue.removeAllQueueId(queueId);
+        }
+    }
+
     public static void removeQueue(String queueName, boolean trueDelete) {
         QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
         if (queueHandleInfo != null && queueHandleInfo.getQueueFactory() != null) {
@@ -240,14 +252,14 @@ public class QueueDispatcher {
      * @param queueName
      * @param args
      */
-    public static boolean dispatcherSerializationQueue(String queueName, Object... args) {
+    public static boolean dispatcherSerializationQueue(String queueName,String queueId, Object... args) {
         HQueue hQueue = CACHE_MAP_MAP.get(queueName);
         if (hQueue == null) {
             log.error("不存在:{} 队列", queueName);
             return false;
         }
-        QueueData queueData = new QueueData(queueName, args);
-        hQueue.put(queueData);
+        QueueData queueData = new QueueData(queueName,queueId, args);
+        hQueue.putQueue(queueData);
         return true;
     }
 

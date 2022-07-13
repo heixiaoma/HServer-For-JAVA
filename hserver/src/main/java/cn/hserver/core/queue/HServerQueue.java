@@ -26,8 +26,19 @@ public class HServerQueue {
      * 获取所有队列名
      */
     public static List<String> getAllQueueName() {
-       return QueueDispatcher.getAllQueueName();
+        return QueueDispatcher.getAllQueueName();
     }
+
+    /**
+     * 删除队列中得数据
+     *
+     * @param queueName
+     * @param queueId
+     */
+    public static void removeQueueData(String queueName, String queueId) {
+        QueueDispatcher.removeQueueData(queueName, queueId);
+    }
+
 
     /**
      * 删除Queue
@@ -35,11 +46,11 @@ public class HServerQueue {
      * @param queueName
      */
     public static void removeQueue(String queueName) {
-        QueueDispatcher.removeQueue(queueName,true);
+        QueueDispatcher.removeQueue(queueName, true);
     }
 
-    public static void removeQueue(String queueName,boolean trueDeleteData) {
-        QueueDispatcher.removeQueue(queueName,trueDeleteData);
+    public static void removeQueue(String queueName, boolean trueDeleteData) {
+        QueueDispatcher.removeQueue(queueName, trueDeleteData);
     }
 
     /**
@@ -49,19 +60,18 @@ public class HServerQueue {
      * @param args      参数
      */
     public static boolean sendQueue(String queueName, Object... args) {
-        return QueueDispatcher.dispatcherSerializationQueue(queueName, args);
+       return sendQueue(queueName, null, args);
     }
 
-
     /**
-     * 发送队列进行持久化
-     *
-     * @param queueName
-     * @param args
+     * 发生队列定义队列ID ，方便后期可以删除
+     * @param queueName 队列名字
+     * @param queueId 队列ID
+     * @param args 参数
+     * @return
      */
-    @Deprecated
-    public static boolean sendPersistQueue(String queueName, Object... args) {
-        return QueueDispatcher.dispatcherSerializationQueue(queueName, args);
+    public static boolean sendQueue(String queueName, String queueId, Object... args) {
+        return QueueDispatcher.dispatcherSerializationQueue(queueName, queueId, args);
     }
 
 
