@@ -3,7 +3,6 @@ package cn.hserver.core.server.json;
 import com.fasterxml.jackson.databind.JavaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import cn.hserver.core.server.context.ConstConfig;
 import cn.hserver.core.server.util.ExceptionUtil;
 
@@ -57,8 +56,9 @@ public class JackSonJsonAdapter implements JsonAdapter {
     }
 
     private Class<?> getTypeClass(Type rawType) {
-        if (rawType instanceof ParameterizedTypeImpl) {
-            return ((ParameterizedTypeImpl) rawType).getRawType();
+        if (rawType instanceof ParameterizedType) {
+            //todo jdk 升级跳转 待测试
+            return (Class<?>) ((ParameterizedType) rawType).getRawType();
         } else {
             return (Class<?>) rawType;
         }
