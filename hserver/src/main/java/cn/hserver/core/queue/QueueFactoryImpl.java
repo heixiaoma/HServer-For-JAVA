@@ -89,9 +89,9 @@ public class QueueFactoryImpl implements QueueFactory {
         try {
             QueueData rdata = ringBuffer.get(sequence);
             rdata.setArgs(queueData.getArgs());
-            rdata.setfQueue(queueData.getfQueue());
+            rdata.sethQueue(queueData.gethQueue());
             rdata.setQueueName(queueData.getQueueName());
-            rdata.setThreadSize(queueData.getThreadSize());
+            rdata.setUid(queueData.getUid());
         } finally {
             ringBuffer.publish(sequence);
         }

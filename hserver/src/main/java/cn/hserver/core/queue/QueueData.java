@@ -1,46 +1,50 @@
 package cn.hserver.core.queue;
 
 
-import cn.hserver.core.queue.fqueue.FQueue;
+
+import cn.hserver.core.queue.cache.CacheMap;
+import cn.hserver.core.queue.cache.HQueue;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * @author hxm
  */
 public class QueueData implements Serializable {
 
-    private FQueue fQueue;
+    private HQueue hQueue;
+
+    private String uid;
 
     private String queueName;
 
     private Object[] args;
 
-    private int threadSize;
 
     public QueueData() {
     }
 
-    public QueueData(String queueName, Object[] args,FQueue fQueue) {
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public QueueData(String queueName, Object[] args) {
         this.queueName = queueName;
         this.args = args;
-        this.fQueue=fQueue;
+        uid= UUID.randomUUID().toString();
     }
 
-    public int getThreadSize() {
-        return threadSize;
+    public String getUid() {
+        return uid;
     }
 
-    public void setThreadSize(int threadSize) {
-        this.threadSize = threadSize;
+    public HQueue gethQueue() {
+        return hQueue;
     }
 
-    public FQueue getfQueue() {
-        return fQueue;
-    }
-
-    public void setfQueue(FQueue fQueue) {
-        this.fQueue = fQueue;
+    public void sethQueue(HQueue hQueue) {
+        this.hQueue = hQueue;
     }
 
     public String getQueueName() {

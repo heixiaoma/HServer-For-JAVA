@@ -20,7 +20,6 @@ public class QueueHandleInfo {
 
     private QueueHandlerType queueHandlerType;
 
-    private int threadSize;
 
     private List<QueueHandleMethod> queueHandleMethods = new ArrayList<>();
 
@@ -52,13 +51,6 @@ public class QueueHandleInfo {
         this.bufferSize = bufferSize;
     }
 
-    public int getThreadSize() {
-        return threadSize;
-    }
-
-    public void setThreadSize(int threadSize) {
-        this.threadSize = threadSize;
-    }
 
     public QueueHandlerType getQueueHandlerType() {
         return queueHandlerType;

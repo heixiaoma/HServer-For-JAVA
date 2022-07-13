@@ -2,13 +2,17 @@ package cn.hserver.core.queue.cache;
 
 
 import cn.hserver.core.server.util.SerializationUtil;
+import org.checkerframework.checker.units.qual.A;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.Options;
+import org.iq80.leveldb.WriteOptions;
 import org.iq80.leveldb.impl.Iq80DBFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,7 +39,9 @@ public class CacheMap<V> {
     public int size() {
         int i = 0;
         for (Map.Entry<byte[], byte[]> ignored : db) {
-            i++;
+            if (ignored.getValue().length > 0) {
+                i++;
+            }
         }
         return i;
     }
@@ -57,10 +63,26 @@ public class CacheMap<V> {
      */
     public V getFirst() {
         for (Map.Entry<byte[], byte[]> next : db) {
-            return SerializationUtil.deserialize(next.getValue(), aClass);
+            byte[] value = next.getValue();
+            if (value.length > 0) {
+                return SerializationUtil.deserialize(value, aClass);
+            }
         }
         return null;
     }
+
+
+    public List<V> getAll() {
+        List<V> data = new ArrayList<>();
+        for (Map.Entry<byte[], byte[]> next : db) {
+            byte[] value = next.getValue();
+            if (value.length > 0) {
+                data.add(SerializationUtil.deserialize(value, aClass));
+            }
+        }
+        return data;
+    }
+
 
     public V get(String key) {
         byte[] bytes = db.get(bytes(key));
