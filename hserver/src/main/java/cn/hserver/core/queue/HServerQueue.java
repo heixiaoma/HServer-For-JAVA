@@ -54,24 +54,54 @@ public class HServerQueue {
     }
 
     /**
+     * 发送延时队列
+     *
+     * @param queueName
+     * @param delaySecond
+     * @param args
+     * @return
+     */
+    public static boolean sendDelayQueue(String queueName, int delaySecond, Object... args) {
+        return sendIdDelayQueue(queueName, null, delaySecond, args);
+    }
+
+    /**
+     * 发送演示队列
+     *
+     * @param queueName
+     * @param queueId
+     * @param delaySecond
+     * @param args
+     * @return
+     */
+    public static boolean sendIdDelayQueue(String queueName, String queueId, int delaySecond, Object... args) {
+        if (delaySecond>0) {
+            return QueueDispatcher.dispatcherSerializationQueue(queueName, queueId, true, delaySecond, args);
+        }else {
+            return false;
+        }
+    }
+
+    /**
      * 发送队列
      *
      * @param queueName 队列名
      * @param args      参数
      */
     public static boolean sendQueue(String queueName, Object... args) {
-       return sendQueue(queueName, null, args);
+        return sendIdQueue(queueName, null, args);
     }
 
     /**
      * 发生队列定义队列ID ，方便后期可以删除
+     *
      * @param queueName 队列名字
-     * @param queueId 队列ID
-     * @param args 参数
+     * @param queueId   队列ID
+     * @param args      参数
      * @return
      */
-    public static boolean sendQueue(String queueName, String queueId, Object... args) {
-        return QueueDispatcher.dispatcherSerializationQueue(queueName, queueId, args);
+    public static boolean sendIdQueue(String queueName, String queueId, Object... args) {
+        return QueueDispatcher.dispatcherSerializationQueue(queueName, queueId, false, -1, args);
     }
 
 

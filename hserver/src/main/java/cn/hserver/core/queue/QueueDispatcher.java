@@ -252,14 +252,18 @@ public class QueueDispatcher {
      * @param queueName
      * @param args
      */
-    public static boolean dispatcherSerializationQueue(String queueName,String queueId, Object... args) {
+    public static boolean dispatcherSerializationQueue(String queueName,String queueId, boolean isDelay,int delay, Object... args) {
         HQueue hQueue = CACHE_MAP_MAP.get(queueName);
         if (hQueue == null) {
             log.error("不存在:{} 队列", queueName);
             return false;
         }
         QueueData queueData = new QueueData(queueName,queueId, args);
-        hQueue.putQueue(queueData);
+        if (!isDelay){
+            hQueue.putQueue(queueData);
+        }else {
+            hQueue.putDelayQueue(queueData,delay);
+        }
         return true;
     }
 

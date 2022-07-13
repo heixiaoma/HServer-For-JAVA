@@ -1,9 +1,12 @@
 package cn.hserver.core.queue.cache;
 
+import cn.hserver.core.queue.ListQueueData;
 import cn.hserver.core.queue.QueueData;
-import cn.hserver.core.server.util.NamedThreadFactory;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -11,13 +14,14 @@ import java.util.concurrent.TimeUnit;
 public class HQueue {
     private final ScheduledExecutorService newScheduledThreadPool = Executors.newScheduledThreadPool(1);
     private final CacheMap<QueueData> STORE_MAP;
-    private final CacheMap<QueueData> DELAY_MAP;
+    private final CacheMap<ListQueueData> DELAY_MAP;
+    //一天这么多分秒
     private final CacheMap<QueueData> RUN_MAP;
 
     public HQueue(String path) {
         STORE_MAP = new CacheMap<>(path + File.separator + "sore", QueueData.class);
         RUN_MAP = new CacheMap<>(path + File.separator + "run", QueueData.class);
-        DELAY_MAP = new CacheMap<>(path + File.separator + "delay", QueueData.class);
+        DELAY_MAP = new CacheMap<>(path + File.separator + "delay", ListQueueData.class);
         changeOld();
         checkDelayQueue();
     }
@@ -27,6 +31,25 @@ public class HQueue {
      */
     public void checkDelayQueue() {
         Runnable runnable = () -> {
+            //获取当前时间是一天得地几秒
+            Calendar calendar = Calendar.getInstance();
+            int currentSecond = calendar.get(Calendar.MINUTE) * 60 + calendar.get(Calendar.SECOND);
+            String id = String.valueOf(currentSecond);
+            ListQueueData listQueueData = DELAY_MAP.get(id);
+            if (listQueueData != null && !listQueueData.getQueueDataList().isEmpty()) {
+                List<QueueData> temp=new ArrayList<>();
+                for (QueueData queueData : listQueueData.getQueueDataList()) {
+                    if (queueData.getCycleNum() <= 0) {
+                        putQueue(queueData);
+                    } else {
+                        queueData.countDown();
+                        temp.add(queueData);
+                    }
+                }
+                listQueueData.getQueueDataList().clear();
+                DELAY_MAP.remove(id);
+                DELAY_MAP.put(id, new ListQueueData(id,temp));
+            }
 
         };
         newScheduledThreadPool.scheduleWithFixedDelay(runnable, 1, 1, TimeUnit.SECONDS);
@@ -69,7 +92,19 @@ public class HQueue {
      * @param seconds
      */
     public void putDelayQueue(QueueData queueData, int seconds) {
-        DELAY_MAP.put(queueData.getQueueId(), queueData);
+        Calendar calendar = Calendar.getInstance();
+        int currentSecond = calendar.get(Calendar.MINUTE) * 60 + calendar.get(Calendar.SECOND);
+        //下轮时间
+        int soltIndex = (currentSecond + seconds) % 3600;
+        queueData.setCycleNum(seconds / 3600);
+        String delayId = String.valueOf(soltIndex);
+        ListQueueData listQueueData = DELAY_MAP.get(delayId);
+        if (listQueueData == null) {
+            listQueueData = new ListQueueData(delayId,queueData);
+        } else {
+            listQueueData.addData(queueData);
+        }
+        DELAY_MAP.put(delayId, listQueueData);
     }
 
     /**
@@ -102,8 +137,25 @@ public class HQueue {
 
     public void removeAllQueueId(String queueId) {
         RUN_MAP.remove(queueId);
-        DELAY_MAP.remove(queueId);
         STORE_MAP.remove(queueId);
+        List<ListQueueData> all = DELAY_MAP.getAll();
+        for (ListQueueData listQueueData : all) {
+            List<QueueData> queueDataList = listQueueData.getQueueDataList();
+            if (queueDataList!=null){
+                QueueData temp=null;
+                for (QueueData queueData : queueDataList) {
+                    if (queueData.getQueueId().equals(queueId)){
+                        temp=queueData;
+                        break;
+                    }
+                }
+                if (temp!=null){
+                    queueDataList.remove(temp);
+                    DELAY_MAP.put(listQueueData.getId(),listQueueData);
+                    break;
+                }
+            }
+        }
     }
 
 
