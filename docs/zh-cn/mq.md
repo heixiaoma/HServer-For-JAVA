@@ -154,13 +154,3 @@ HServerQueue.removeQueue("A");
 
 
 ```
-
-延时队列
-```java
-//延时队列
-HServerQueue.sendQueue("A","立即执行");
-HServerQueue.sendDelayQueue("A",5,"5秒后执行");
-HServerQueue.sendDelayQueue("A",1,"1秒后立即执行");
-HServerQueue.sendIdDelayQueue("A","queueId",6,"6秒后立即执行");
-HServerQueue.removeQueueData("A","queueId");
-```
