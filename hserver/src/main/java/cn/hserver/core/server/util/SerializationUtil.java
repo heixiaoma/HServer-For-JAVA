@@ -15,9 +15,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SerializationUtil {
 
-    private static ConcurrentHashMap cachedSchema = new ConcurrentHashMap();
+    private static final ConcurrentHashMap cachedSchema = new ConcurrentHashMap();
 
-    private static Objenesis objenesis = new ObjenesisStd();
+    private static final Objenesis objenesis = new ObjenesisStd();
 
     private SerializationUtil() {
 

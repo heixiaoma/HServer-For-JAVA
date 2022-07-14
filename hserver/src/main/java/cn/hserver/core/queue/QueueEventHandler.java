@@ -17,8 +17,8 @@ import java.lang.reflect.Method;
 public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<QueueData> {
     private static final Logger log = LoggerFactory.getLogger(QueueEventHandler.class);
 
-    private String queueName;
-    private Method method;
+    private final String queueName;
+    private final Method method;
 
     public QueueEventHandler(String queueName, Method method) {
         this.queueName = queueName;
@@ -42,14 +42,12 @@ public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<Q
             method.invoke(IocUtil.getBean(queueName), args);
         } catch (Exception e) {
             if (e instanceof InvocationTargetException) {
-                log.error(ExceptionUtil.getMessage(((InvocationTargetException)e).getTargetException()));
+                log.error(ExceptionUtil.getMessage(((InvocationTargetException) e).getTargetException()));
             } else {
                 log.error(ExceptionUtil.getMessage(e));
             }
-        }finally {
-            if (queueData.getThreadSize()==1){
-                queueData.getfQueue().poll();
-            }
+        } finally {
+            queueData.gethQueue().removeRun(queueData.getQueueId());
         }
     }
 }

@@ -1,7 +1,7 @@
 
 ## 消息队列的使用
 
-队列核心技术使用的是disruptor
+队列核心技术使用的是disruptor+leveldb 无序队列和延时队列
 
 生产者
 
@@ -150,4 +150,17 @@ for (int i = 0; i < 10; i++) {
 }
 HServerQueue.removeQueue("A");
 
+
+
+
+```
+
+延时队列
+```java
+//延时队列
+HServerQueue.sendQueue("A","立即执行");
+HServerQueue.sendDelayQueue("A",5,"5秒后执行");
+HServerQueue.sendDelayQueue("A",1,"1秒后立即执行");
+HServerQueue.sendIdDelayQueue("A","queueId",6,"6秒后立即执行");
+HServerQueue.removeQueueData("A","queueId");
 ```
