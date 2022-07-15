@@ -37,7 +37,7 @@ public class ParameterUtil {
     /**
      * 需要这map在初始化就被赋值了
      */
-    private final static ConcurrentHashMap<Class, ConcurrentHashMap<Method, String[]>> PARAM_NAME_MAP = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<Class, ConcurrentHashMap<Method, ControllerParameter>> PARAM_NAME_MAP = new ConcurrentHashMap<>();
 
     public static Object[] getMethodArgs(Class cs, Method method, HServerContext hServerContext) throws Exception {
         Parameter[] parameterTypes = method.getParameters();
@@ -45,7 +45,8 @@ public class ParameterUtil {
             return null;
         }
         Object[] objects = new Object[parameterTypes.length];
-        String[] strings = PARAM_NAME_MAP.get(cs).get(method);
+        ControllerParameter controllerParameter = PARAM_NAME_MAP.get(cs).get(method);
+        String[] strings = controllerParameter.getName();
         if (parameterTypes.length != strings.length) {
             throw new Exception(method.getName() + "-方法参数获取异常");
         }
@@ -78,7 +79,9 @@ public class ParameterUtil {
                             objects[i] = ConstConfig.JSONADAPTER.convertMapToObject(invokeData(requestParams), parameterType.getType());
                         }
                         //参数校验工具
-                        ValidateUtil.validate(objects[i]);
+                        if (controllerParameter.isValidate) {
+                            ValidateUtil.validate(objects[i]);
+                        }
                     }
                 } catch (Exception e) {
                     if (e instanceof ValidateException) {
@@ -142,14 +145,15 @@ public class ParameterUtil {
 
     public static void addParam(Class cs, Method method) throws Exception {
         String[] paramNames = getParamNames(method);
+        boolean validate = ValidateUtil.isValidate(method);
         if (method.getParameterTypes().length == paramNames.length) {
             if (PARAM_NAME_MAP.containsKey(cs)) {
-                ConcurrentHashMap<Method, String[]> concurrentHashMap = PARAM_NAME_MAP.get(cs);
-                concurrentHashMap.put(method, paramNames);
+                ConcurrentHashMap<Method, ParameterUtil.ControllerParameter> concurrentHashMap = PARAM_NAME_MAP.get(cs);
+                concurrentHashMap.put(method, new ControllerParameter(paramNames, validate));
                 PARAM_NAME_MAP.put(cs, concurrentHashMap);
             } else {
-                ConcurrentHashMap<Method, String[]> concurrentHashMap = new ConcurrentHashMap<>();
-                concurrentHashMap.put(method, paramNames);
+                ConcurrentHashMap<Method, ParameterUtil.ControllerParameter> concurrentHashMap = new ConcurrentHashMap<>();
+                concurrentHashMap.put(method, new ControllerParameter(paramNames, validate));
                 PARAM_NAME_MAP.put(cs, concurrentHashMap);
             }
         } else {
@@ -247,11 +251,31 @@ public class ParameterUtil {
                     object = res;
                     break;
                 default:
-                   return null;
+                    return null;
             }
         } catch (Exception ignored) {
         }
         return object;
     }
+
+
+    public static class ControllerParameter {
+        private final String[] name;
+        private final boolean isValidate;
+
+        public ControllerParameter(String[] name, boolean isValidate) {
+            this.name = name;
+            this.isValidate = isValidate;
+        }
+
+        public String[] getName() {
+            return name;
+        }
+
+        public boolean isValidate() {
+            return isValidate;
+        }
+    }
+
 
 }
