@@ -162,7 +162,6 @@ public class MybatisInit {
                 JarEntry jar = (JarEntry) entry.nextElement();
                 String name = jar.getName();
                 if (name.startsWith(mapperPath) && name.endsWith(".xml")) {
-                    System.out.println("/" + name);
                     xmlInput.put(name, MybatisInit.class.getResourceAsStream("/" + name));
                 }
             }
