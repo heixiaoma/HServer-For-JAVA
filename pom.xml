@@ -21,6 +21,7 @@
         <module>hserver-plugin-rpc</module>
         <module>hserver-plugin-maven</module>
         <module>hserver-plugin-web</module>
+        <module>hserver-plugin-mqtt</module>
     </modules>
 
     <properties>

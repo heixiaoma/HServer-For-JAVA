@@ -3,7 +3,6 @@ package cn.hserver.core.server.util;
 import cn.hserver.core.ioc.annotation.validate.*;
 import cn.hserver.core.server.exception.ValidateException;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;

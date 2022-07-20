@@ -1,6 +1,5 @@
 package cn.hserver.plugin.web.interfaces;
 
-import cn.hserver.core.interfaces.ProgressStatus;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import cn.hserver.core.server.context.Cookie;

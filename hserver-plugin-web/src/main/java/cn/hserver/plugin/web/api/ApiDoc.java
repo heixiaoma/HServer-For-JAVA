@@ -1,6 +1,6 @@
 package cn.hserver.plugin.web.api;
 
-import cn.hserver.core.ioc.annotation.RequestMethod;
+import cn.hserver.plugin.web.annotation.RequestMethod;
 import cn.hserver.core.ioc.ref.ClasspathPackageScanner;
 import cn.hserver.core.ioc.ref.PackageScanner;
 import cn.hserver.plugin.web.annotation.*;

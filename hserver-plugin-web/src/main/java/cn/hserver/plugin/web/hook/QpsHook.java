@@ -4,7 +4,7 @@ import cn.hserver.plugin.web.annotation.QpsLimit;
 import com.google.common.util.concurrent.RateLimiter;
 import cn.hserver.core.interfaces.HookAdapter;
 import cn.hserver.core.ioc.annotation.Hook;
-import cn.hserver.core.server.exception.QpsException;
+import cn.hserver.plugin.web.exception.QpsException;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;

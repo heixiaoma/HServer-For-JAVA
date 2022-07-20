@@ -8,7 +8,7 @@ import io.netty.handler.codec.http.LastHttpContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.hserver.plugin.web.interfaces.HttpResponse;
-import cn.hserver.core.interfaces.ProgressStatus;
+import cn.hserver.plugin.web.interfaces.ProgressStatus;
 import cn.hserver.core.server.util.ExceptionUtil;
 import cn.hserver.core.server.util.FreemarkerUtil;
 

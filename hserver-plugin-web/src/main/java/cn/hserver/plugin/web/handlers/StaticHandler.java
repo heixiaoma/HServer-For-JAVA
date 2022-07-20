@@ -5,7 +5,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import cn.hserver.plugin.web.context.ConstConfig;
 import cn.hserver.plugin.web.context.StaticFile;
 import cn.hserver.plugin.web.context.HServerContext;
-import cn.hserver.core.server.exception.BusinessException;
+import cn.hserver.plugin.web.exception.BusinessException;
 
 import java.io.*;
 import java.net.JarURLConnection;

@@ -1,7 +1,5 @@
 package cn.hserver.plugin.web.annotation;
 
-import cn.hserver.core.ioc.annotation.Logical;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

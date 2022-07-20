@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.ssl.SslContext;
 import io.netty.util.concurrent.EventExecutorGroup;
-import cn.hserver.core.server.json.JackSonJsonAdapter;
-import cn.hserver.core.server.json.JsonAdapter;
+import cn.hserver.plugin.web.json.JackSonJsonAdapter;
+import cn.hserver.plugin.web.json.JsonAdapter;
 
 import java.io.File;
 
