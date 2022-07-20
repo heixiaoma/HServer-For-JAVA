@@ -105,6 +105,11 @@ public class InitBean {
         } catch (Exception e) {
             log.error(ExceptionUtil.getMessage(e));
         }
+
+
+
+
+
         try {
             //初始化控制器
             initController(scan);
@@ -226,6 +231,10 @@ public class InitBean {
     private static void initBean(PackageScanner scan) throws Exception {
         Set<Class<?>> clasps = scan.getAnnotationList(Bean.class);
         for (Class aClass : clasps) {
+
+
+
+
             //检测这个Bean是否是全局异常处理的类
             if (GlobalException.class.isAssignableFrom(aClass)) {
                 IocUtil.addListBean(GlobalException.class.getName(), aClass.newInstance());

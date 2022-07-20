@@ -13,6 +13,11 @@ public interface PluginAdapter {
      */
     void startIocInit();
 
+
+    void iocInitBean(Class classz);
+
+    void iocInit();
+
     /**
      * 初始化完成
      */

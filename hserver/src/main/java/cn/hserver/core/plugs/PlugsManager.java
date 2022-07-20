@@ -17,10 +17,16 @@ import java.util.Set;
 public class PlugsManager implements PluginAdapter {
     private static final Logger log = LoggerFactory.getLogger(PlugsManager.class);
 
-    private Set<String> plugPackages = new HashSet<>();
-    private Set<PluginAdapter> obj = new HashSet<>();
+    private final Set<String> plugPackages = new HashSet<>();
+    private final Set<PluginAdapter> obj = new HashSet<>();
 
-    public PlugsManager() {
+    public static final PlugsManager PLUGS_MANAGER = new PlugsManager();
+
+    public static PlugsManager getPlugin(){
+        return PLUGS_MANAGER;
+    }
+
+    private PlugsManager() {
         ServiceLoader<PluginAdapter> loadedParsers = ServiceLoader.load(PluginAdapter.class);
         for (PluginAdapter pluginAdapter : loadedParsers) {
             obj.add(pluginAdapter);
@@ -51,9 +57,16 @@ public class PlugsManager implements PluginAdapter {
     }
 
     @Override
+    public void iocInit() {
+        for (PluginAdapter plugAdapter : obj) {
+            plugAdapter.startIocInit();
+        }
+    }
+
+    @Override
     public void iocInitEnd() {
         for (PluginAdapter plugAdapter : obj) {
-            plugAdapter.iocInitEnd();
+            plugAdapter.iocInit();
         }
     }
 

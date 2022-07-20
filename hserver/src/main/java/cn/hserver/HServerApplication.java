@@ -12,7 +12,6 @@ import cn.hserver.core.log.HServerLogConfig;
 import cn.hserver.core.properties.PropertiesInit;
 import cn.hserver.core.server.HServer;
 import cn.hserver.core.server.context.ConstConfig;
-import cn.hserver.core.server.json.JsonAdapter;
 import cn.hserver.core.server.util.EnvironmentUtil;
 import cn.hserver.core.server.util.ExceptionUtil;
 import cn.hserver.core.server.util.PackageUtil;
@@ -34,7 +33,6 @@ public class HServerApplication {
 
     public static Class<?> mainClass;
 
-    private static final PlugsManager PLUGS_MANAGER = new PlugsManager();
 
     //单端口
     public static void run(Class<?> mainClass, Integer port, String... args) {
@@ -100,7 +98,7 @@ public class HServerApplication {
             scanPackage = new HashSet<>();
             scanPackage.add(mainClass.getPackage().getName());
         }
-        scanPackage.addAll(PLUGS_MANAGER.getPlugPackages());
+        scanPackage.addAll(PlugsManager.getPlugin().getPlugPackages());
         scanPackage.add(HServerApplication.class.getPackage().getName());
         log.info("初始化配置文件");
         PropertiesInit.configFile();
@@ -124,13 +122,13 @@ public class HServerApplication {
         log.info("Class动态修改完成");
         log.info("HServer 启动中....");
         log.info("Package 扫描中");
-        PLUGS_MANAGER.startIocInit();
+        PlugsManager.getPlugin().startIocInit();
         InitBean.init(scanPackage);
-        PLUGS_MANAGER.iocInitEnd();
+        PlugsManager.getPlugin().iocInitEnd();
         log.info("IOC 装配中");
-        PLUGS_MANAGER.startInjection();
+        PlugsManager.getPlugin().startInjection();
         InitBean.injection();
-        PLUGS_MANAGER.injectionEnd();
+        PlugsManager.getPlugin().injectionEnd();
         log.info("IOC 全部装配完成");
     }
 
