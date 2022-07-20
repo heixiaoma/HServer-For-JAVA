@@ -43,6 +43,11 @@ public class ConstConfig {
     public static Integer backLog = 8192;
 
     /**
+     * 默认端口
+     */
+    public static Integer[] PORTS = new Integer[]{8888};
+
+    /**
      * 配置文件
      */
     public static String profiles = System.getProperty("env");

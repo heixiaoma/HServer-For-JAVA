@@ -143,9 +143,4 @@ public class HServerApplication {
             }
         }
     }
-
-    public static void setJson(JsonAdapter jsonAdapter) {
-        ConstConfig.JSONADAPTER = jsonAdapter;
-    }
-
 }
