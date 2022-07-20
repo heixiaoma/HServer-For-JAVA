@@ -1,7 +1,6 @@
 package cn.hserver.core.server.util;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
-import io.netty.util.concurrent.FastThreadLocal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,9 +1,10 @@
-package cn.hserver.core.server.util;
+package cn.hserver.plugin.web.util;
 
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
+
 import java.io.StringWriter;
 import java.util.Map;
 

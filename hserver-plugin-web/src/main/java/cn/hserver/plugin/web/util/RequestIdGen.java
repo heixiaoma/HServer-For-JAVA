@@ -1,6 +1,5 @@
 package cn.hserver.plugin.web.util;
 
-import cn.hserver.core.server.util.IpUtil;
 
 import java.lang.management.ManagementFactory;
 import java.util.concurrent.atomic.AtomicLong;

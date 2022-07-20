@@ -60,6 +60,7 @@ public class InitBean {
         if (packageNames == null) {
             return;
         }
+
         PackageScanner scan = new ClasspathPackageScanner(packageNames);
 
         try {

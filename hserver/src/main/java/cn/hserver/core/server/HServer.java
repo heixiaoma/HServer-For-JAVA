@@ -98,16 +98,16 @@ public class HServer {
         }
         bootstrap.option(ChannelOption.SO_BACKLOG, backLog);
         bootstrap.childHandler(new ServerInitializer());
-        String portStr = "";
+        StringBuilder portStr = new StringBuilder();
         for (Integer port : ports) {
-            portStr = portStr + (port + " ");
+            portStr.append(port).append(" ");
             Channel channel = bootstrap.bind(port).sync().channel();
             channels.put(channel, "TCP Server Port:" + port);
         }
         log.info("HServer 启动完成");
         System.out.println();
 
-        System.out.println(getHello(typeName, portStr));
+        System.out.println(getHello(typeName, portStr.toString()));
         System.out.println();
         shutdownHook();
         initOk();
@@ -115,7 +115,7 @@ public class HServer {
 
     private void shutdownHook() {
 
-        publishMessage(APP_NAME + "上线，IP：" + IpUtil.getLocalIP());
+        publishMessage(APP_NAME + "上线，IP：" + HServerIpUtil.getLocalIP());
 
         channels.forEach((k, v) -> new NamedThreadFactory("hserver_close").newThread(() -> {
             try {
@@ -128,7 +128,7 @@ public class HServer {
 
         Thread shutdown = new NamedThreadFactory("hserver_shutdown").newThread(() -> {
             log.info("服务即将关闭");
-            publishMessage(APP_NAME + "下线，IP：" + IpUtil.getLocalIP());
+            publishMessage(APP_NAME + "下线，IP：" + HServerIpUtil.getLocalIP());
             List<ServerCloseAdapter> listBean = IocUtil.getListBean(ServerCloseAdapter.class);
             if (listBean != null) {
                 for (ServerCloseAdapter serverCloseAdapter : listBean) {

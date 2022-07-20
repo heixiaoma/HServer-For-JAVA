@@ -123,7 +123,7 @@ public class HServerApplication {
         log.info("HServer 启动中....");
         log.info("Package 扫描中");
         PlugsManager.getPlugin().startIocInit();
-        InitBean.init(scanPackage);
+        InitBean.init(PackageUtil.deduplication(scanPackage));
         PlugsManager.getPlugin().iocInitEnd();
         log.info("IOC 装配中");
         PlugsManager.getPlugin().startInjection();

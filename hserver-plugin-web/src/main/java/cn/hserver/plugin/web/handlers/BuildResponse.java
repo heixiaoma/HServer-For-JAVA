@@ -1,6 +1,7 @@
 package cn.hserver.plugin.web.handlers;
 
 import cn.hserver.plugin.web.context.*;
+import cn.hserver.plugin.web.util.FreemarkerUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -10,7 +11,6 @@ import cn.hserver.plugin.web.exception.BusinessBean;
 import cn.hserver.plugin.web.exception.BusinessException;
 import cn.hserver.core.server.util.ByteBufUtil;
 import cn.hserver.core.server.util.ExceptionUtil;
-import cn.hserver.core.server.util.FreemarkerUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
