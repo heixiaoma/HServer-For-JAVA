@@ -22,11 +22,12 @@ public class ClasspathPackageScanner implements PackageScanner {
     public ClasspathPackageScanner(Set<String> packageNames) {
         packageNames.forEach(basePackage -> {
             List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, false);
-            for (Class<?> aClass : classes) {
+           a: for (Class<?> aClass : classes) {
                 Annotation[] annotations = aClass.getAnnotations();
                 for (Annotation annotation : annotations) {
-                    if (annotation.annotationType().equals(HServerType.class)) {
+                    if (annotation.annotationType().getAnnotation(HServerType.class)!=null) {
                         add(aClass,annotation.getClass());
+                        continue a;
                     }
                 }
                 //单元测试模式。存在就加载
