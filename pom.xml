@@ -20,6 +20,7 @@
         <module>hserver-plugin-mybatis</module>
         <module>hserver-plugin-rpc</module>
         <module>hserver-plugin-maven</module>
+        <module>hserver-plugin-web</module>
     </modules>
 
     <properties>
