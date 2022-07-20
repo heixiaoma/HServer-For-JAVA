@@ -26,7 +26,7 @@ public class ClasspathPackageScanner implements PackageScanner {
                 Annotation[] annotations = aClass.getAnnotations();
                 for (Annotation annotation : annotations) {
                     if (annotation.annotationType().getAnnotation(HServerType.class)!=null) {
-                        add(aClass,annotation.getClass());
+                        add(aClass,annotation.annotationType());
                         continue a;
                     }
                 }

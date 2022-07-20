@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false">
 
-    <define name="dataFormat" class="cn.hserver.core.log.HServerDataDefiner"/>
+    <define name="dataFormatConsole" class="cn.hserver.core.log.HServerDataDefinerConsole"/>
+    <define name="dataFormatFile" class="cn.hserver.core.log.HServerDataDefinerFile"/>
 
     <!--可视化的高亮样式-->
     <property name="STDOUT_PATTERN"
-              value="${dataFormat}"/>
+              value="${dataFormatConsole}"/>
 
     <!--文件存储的样式-->
     <property name="FILE_PATTERN"
-              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5.5level --- [%17.17thread] %-40.40logger{40} [%4.4line] [%requestId] : %msg%n"/>
+              value="${dataFormatFile}"/>
 
     <!--文件存储地址-->
     <property name="LOGGINE_FILE_HOME" value="log"/>

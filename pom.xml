@@ -60,6 +60,18 @@
                 <artifactId>hserver-plugin-maven</artifactId>
                 <version>3.0.M3</version>
             </dependency>
+
+            <dependency>
+                <groupId>cn.hserver</groupId>
+                <artifactId>hserver-plugin-web</artifactId>
+                <version>3.0.M3</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hserver</groupId>
+                <artifactId>hserver-plugin-mqtt</artifactId>
+                <version>3.0.M3</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

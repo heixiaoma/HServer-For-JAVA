@@ -46,6 +46,10 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
                     return;
                 }
             }
+            /**
+             * 协议无解对其关闭
+             */
+            ctx.close();
         }
     }
 
