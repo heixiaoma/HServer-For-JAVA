@@ -9,6 +9,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@HServerType
 public @interface Hook {
     Class[] value();
 }

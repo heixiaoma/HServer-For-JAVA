@@ -1,5 +1,8 @@
 package cn.hserver.plugin.web.annotation;
 
+import cn.hserver.core.ioc.annotation.HServerBoot;
+import cn.hserver.core.ioc.annotation.HServerType;
+
 import java.lang.annotation.*;
 
 /**
@@ -8,6 +11,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@HServerType
 public @interface WebSocket {
     String value();
 }

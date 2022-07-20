@@ -12,7 +12,7 @@ import java.util.*;
  * @author hxm
  */
 public class ClasspathPackageScanner implements PackageScanner {
-    private Map<Class, Set<Class<?>>> annotationClass = new HashMap<>();
+    private final Map<Class, Set<Class<?>>> annotationClass = new HashMap<>();
 
     /**
      * 初始化
@@ -23,27 +23,11 @@ public class ClasspathPackageScanner implements PackageScanner {
         packageNames.forEach(basePackage -> {
             List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, false);
             for (Class<?> aClass : classes) {
-                //类级别的注解
-                if (aClass.getAnnotation(Bean.class) != null) {
-                    add(aClass, Bean.class);
-                }
-                if (aClass.getAnnotation(WebSocket.class) != null) {
-                    add(aClass, WebSocket.class);
-                }
-                if (aClass.getAnnotation(Configuration.class) != null) {
-                    add(aClass, Configuration.class);
-                }
-                if (aClass.getAnnotation(Controller.class) != null) {
-                    add(aClass, Controller.class);
-                }
-                if (aClass.getAnnotation(Hook.class) != null) {
-                    add(aClass, Hook.class);
-                }
-                if (aClass.getAnnotation(QueueListener.class) != null) {
-                    add(aClass, QueueListener.class);
-                }
-                if (aClass.getAnnotation(ConfigurationProperties.class) != null) {
-                    add(aClass, ConfigurationProperties.class);
+                Annotation[] annotations = aClass.getAnnotations();
+                for (Annotation annotation : annotations) {
+                    if (annotation.annotationType().equals(HServerType.class)) {
+                        add(aClass,annotation.getClass());
+                    }
                 }
                 //单元测试模式。存在就加载
                 try {

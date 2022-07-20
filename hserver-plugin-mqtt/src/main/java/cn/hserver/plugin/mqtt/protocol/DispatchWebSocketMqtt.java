@@ -1,5 +1,7 @@
 package cn.hserver.plugin.mqtt.protocol;
 
+import cn.hserver.core.ioc.annotation.Bean;
+import cn.hserver.core.ioc.annotation.Order;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.mqtt.MqttDecoder;
@@ -10,8 +12,8 @@ import cn.hserver.plugin.mqtt.handlers.MqttHeartBeatBrokerHandler;
 /**
  * @author hxm
  */
-//@Order(2)
-//@Bean
+@Order(2)
+@Bean
 public class DispatchWebSocketMqtt implements ProtocolDispatcherAdapter {
 
     @Override

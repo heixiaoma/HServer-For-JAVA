@@ -8,7 +8,5 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@HServerType
-public @interface ConfigurationProperties {
-    String prefix() default "";
+public @interface HServerType {
 }

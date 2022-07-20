@@ -1,5 +1,7 @@
 package cn.hserver.core.ioc.annotation.queue;
 
+import cn.hserver.core.ioc.annotation.HServerBoot;
+
 import java.lang.annotation.*;
 
 /**
@@ -11,6 +13,7 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@HServerBoot
 public @interface QueueListener {
     /**
      * 队列名

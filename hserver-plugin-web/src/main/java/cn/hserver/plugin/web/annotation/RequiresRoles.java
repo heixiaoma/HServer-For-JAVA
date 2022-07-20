@@ -1,5 +1,8 @@
 package cn.hserver.plugin.web.annotation;
 
+import cn.hserver.core.ioc.annotation.HServerBoot;
+import cn.hserver.core.ioc.annotation.HServerType;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -11,6 +14,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
+@HServerType
 public @interface RequiresRoles {
 
     String[] value();
