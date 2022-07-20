@@ -7,7 +7,7 @@ import cn.hserver.plugin.web.router.RouterInfo;
 import cn.hserver.plugin.web.router.RouterManager;
 import cn.hserver.plugin.web.router.RouterPermission;
 import cn.hserver.core.server.util.ExceptionUtil;
-import cn.hserver.core.server.util.ParameterUtil;
+import cn.hserver.plugin.web.util.ParameterUtil;
 import cn.hserver.plugin.web.context.*;
 import cn.hserver.plugin.web.interfaces.*;
 import io.netty.channel.ChannelHandlerContext;

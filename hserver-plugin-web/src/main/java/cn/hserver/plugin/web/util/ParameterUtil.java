@@ -1,18 +1,20 @@
-package cn.hserver.core.server.util;
+package cn.hserver.plugin.web.util;
 
+import cn.hserver.core.server.util.ExceptionUtil;
+import cn.hserver.core.server.util.ObjConvertUtil;
+import cn.hserver.plugin.web.context.ConstConfig;
+import cn.hserver.plugin.web.context.HServerContext;
+import cn.hserver.plugin.web.context.MimeType;
+import cn.hserver.plugin.web.exception.ValidateException;
+import cn.hserver.plugin.web.interfaces.HttpRequest;
+import cn.hserver.plugin.web.interfaces.HttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import javassist.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.hserver.core.interfaces.HttpRequest;
-import cn.hserver.core.interfaces.HttpResponse;
 import javassist.bytecode.CodeAttribute;
 import javassist.bytecode.LocalVariableAttribute;
 import javassist.bytecode.MethodInfo;
-import cn.hserver.core.server.context.ConstConfig;
-import cn.hserver.core.server.context.HServerContext;
-import cn.hserver.core.server.context.MimeType;
-import cn.hserver.core.server.exception.ValidateException;
 
 import java.lang.reflect.*;
 import java.lang.reflect.Modifier;
@@ -58,7 +60,7 @@ public class ParameterUtil {
                 String typeName = strings[i];
                 Map<String, List<String>> requestParams = hServerContext.getRequest().getRequestParams();
                 try {
-                    Object convert = convert(parameterType.getType(), requestParams.get(typeName) == null ? null : requestParams.get(typeName).get(0));
+                    Object convert = ObjConvertUtil.convert(parameterType.getType(), requestParams.get(typeName) == null ? null : requestParams.get(typeName).get(0));
                     if (convert != null) {
                         objects[i] = convert;
                     } else {
@@ -157,102 +159,6 @@ public class ParameterUtil {
         }
     }
 
-
-    public static Object convert(Class<?> type, String res) {
-        Object object = null;
-        try {
-            switch (type.getName()) {
-                case "int":
-                    if (res == null) {
-                        object = 0;
-                    } else {
-                        object = Integer.parseInt(res);
-                    }
-                    break;
-                case "java.lang.Integer":
-                    object = Integer.parseInt(res);
-                    break;
-
-                case "double":
-                    if (res == null) {
-                        object = 0.0;
-                    } else {
-                        object = Double.parseDouble(res);
-                    }
-                    break;
-                case "java.lang.Double":
-                    object = Double.parseDouble(res);
-                    break;
-
-                case "long":
-                    if (res == null) {
-                        object = 0L;
-                    } else {
-                        object = Long.parseLong(res);
-                    }
-                    break;
-                case "java.lang.Long":
-                    object = Long.parseLong(res);
-                    break;
-                case "short":
-                    if (res == null) {
-                        object = 0;
-                    } else {
-                        object = Short.parseShort(res);
-                    }
-                    break;
-                case "java.lang.Short":
-                    object = Short.parseShort(res);
-                    break;
-                case "float":
-                    if (res == null) {
-                        object = 0;
-                    } else {
-                        object = Float.parseFloat(res);
-                    }
-                    break;
-                case "java.lang.Float":
-                    object = Float.parseFloat(res);
-                    break;
-                case "boolean":
-                    if (res == null) {
-                        object = false;
-                    } else {
-                        object = Boolean.parseBoolean(res);
-                    }
-                    break;
-                case "java.lang.Boolean":
-                    object = Boolean.parseBoolean(res);
-                    break;
-                case "byte":
-                    if (res == null) {
-                        object = false;
-                    } else {
-                        object = Byte.parseByte(res);
-                    }
-                    break;
-                case "java.lang.Byte":
-                    object = Byte.parseByte(res);
-                    break;
-
-                case "java.lang.BigInteger":
-                    object = BigInteger.valueOf(Long.parseLong(res));
-                    break;
-
-                case "java.lang.BigDecimal":
-                    object = BigDecimal.valueOf(Long.parseLong(res));
-                    break;
-
-                case "java.lang.String":
-                    object = res;
-                    break;
-                default:
-                    return null;
-            }
-        } catch (Exception ignored) {
-        }
-        return object;
-    }
 
 
     public static class ControllerParameter {

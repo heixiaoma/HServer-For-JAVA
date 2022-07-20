@@ -12,7 +12,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import cn.hserver.core.server.util.ByteBufUtil;
 import cn.hserver.core.server.util.HServerIpUtil;
-import cn.hserver.core.server.util.RequestIdGen;
+import cn.hserver.plugin.web.util.RequestIdGen;
 
 import java.util.List;
 import java.util.Map;

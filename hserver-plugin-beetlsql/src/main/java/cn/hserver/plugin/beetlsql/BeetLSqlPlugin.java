@@ -20,6 +20,10 @@ public class BeetLSqlPlugin implements PluginAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(BeetLSqlPlugin.class);
 
+    @Override
+    public void startApp() {
+
+    }
 
     @Override
     public void startIocInit() {

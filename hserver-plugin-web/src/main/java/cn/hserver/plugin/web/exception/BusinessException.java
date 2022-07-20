@@ -1,7 +1,7 @@
 package cn.hserver.plugin.web.exception;
 
+import cn.hserver.plugin.web.context.Webkit;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import cn.hserver.core.server.context.Webkit;
 
 /**
  * 业务异常
@@ -30,7 +30,7 @@ public class BusinessException extends RuntimeException {
         super();
     }
 
-    public BusinessException(Integer httpCode, String errorDescription,Throwable throwable,Webkit webkit) {
+    public BusinessException(Integer httpCode, String errorDescription, Throwable throwable, Webkit webkit) {
         super();
         this.httpCode = httpCode;
         this.errorDescription = errorDescription;

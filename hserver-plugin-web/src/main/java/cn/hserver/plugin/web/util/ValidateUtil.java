@@ -1,7 +1,8 @@
-package cn.hserver.core.server.util;
+package cn.hserver.plugin.web.util;
 
-import cn.hserver.core.ioc.annotation.validate.*;
-import cn.hserver.core.server.exception.ValidateException;
+
+import cn.hserver.plugin.web.annotation.validate.*;
+import cn.hserver.plugin.web.exception.ValidateException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

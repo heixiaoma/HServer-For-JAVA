@@ -10,6 +10,8 @@ import cn.hserver.core.ioc.ref.PackageScanner;
  */
 public interface PluginAdapter {
 
+    void startApp();
+
     /**
      * 开始初始化
      */

@@ -63,23 +63,6 @@ public class PropertiesInit {
         if (instance.get("track").trim().length() > 0) {
             ConstConfig.TRACK = Boolean.valueOf(instance.get("track"));
         }
-        if (instance.get("readLimit").trim().length() > 0) {
-            ConstConfig.READ_LIMIT = Long.valueOf(instance.get("readLimit"));
-        }
-        if (instance.get("writeLimit").trim().length() > 0) {
-            ConstConfig.WRITE_LIMIT = Long.valueOf(instance.get("writeLimit"));
-        }
-        if (instance.get("httpContentSize").trim().length() > 0) {
-            ConstConfig.HTTP_CONTENT_SIZE = instance.getInt("httpContentSize");
-        }
-        Integer businessPool = instance.getInt("businessPool");
-        if (businessPool != null && businessPool > 0) {
-            ConstConfig.BUSINESS_EVENT =TTLUtil.getEventLoop(businessPool,"hserver_business");
-        }
-        if (businessPool != null && businessPool < 0) {
-            ConstConfig.BUSINESS_EVENT = null;
-        } else {
-            ConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(50,"hserver_business");
-        }
+
     }
 }

@@ -1,6 +1,5 @@
 package cn.hserver.plugin.web.handlers;
 
-import cn.hserver.core.server.handlers.DispatcherHandler;
 import com.alibaba.ttl.threadpool.TtlExecutors;
 import cn.hserver.plugin.web.context.HServerContext;
 import io.netty.channel.ChannelHandlerContext;
@@ -26,12 +25,12 @@ public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
             executor = TtlExecutors.getTtlExecutor(ctx.executor());
             cache.put(i, executor);
         }
-        future.thenApplyAsync(req -> cn.hserver.core.server.handlers.DispatcherHandler.staticFile(hServerContext), executor)
-                .thenApplyAsync(cn.hserver.core.server.handlers.DispatcherHandler::permission, executor)
-                .thenApplyAsync(cn.hserver.core.server.handlers.DispatcherHandler::filter, executor)
-                .thenApplyAsync(cn.hserver.core.server.handlers.DispatcherHandler::findController, executor)
-                .thenApplyAsync(cn.hserver.core.server.handlers.DispatcherHandler::buildResponse, executor)
-                .exceptionally(cn.hserver.core.server.handlers.DispatcherHandler::handleException)
+        future.thenApplyAsync(req -> DispatcherHandler.staticFile(hServerContext), executor)
+                .thenApplyAsync(DispatcherHandler::permission, executor)
+                .thenApplyAsync(DispatcherHandler::filter, executor)
+                .thenApplyAsync(DispatcherHandler::findController, executor)
+                .thenApplyAsync(DispatcherHandler::buildResponse, executor)
+                .exceptionally(DispatcherHandler::handleException)
                 .thenAcceptAsync(msg -> DispatcherHandler.writeResponse(ctx, future, msg), executor);
     }
 

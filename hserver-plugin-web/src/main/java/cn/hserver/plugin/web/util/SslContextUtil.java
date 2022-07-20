@@ -1,10 +1,11 @@
-package cn.hserver.core.server.util;
+package cn.hserver.plugin.web.util;
 
+import cn.hserver.core.server.util.ExceptionUtil;
+import cn.hserver.core.server.util.PropUtil;
+import cn.hserver.plugin.web.context.ConstConfig;
 import io.netty.handler.ssl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.hserver.core.server.HServer;
-import cn.hserver.core.server.context.ConstConfig;
 
 import java.io.File;
 import java.io.InputStream;
@@ -37,8 +38,8 @@ public class SslContextUtil {
             }
 
             //看看是不是resources里面的
-            InputStream cinput = HServer.class.getResourceAsStream("/ssl/" + certFilePath);
-            InputStream pinput = HServer.class.getResourceAsStream("/ssl/" + privateKeyPath);
+            InputStream cinput = SslContextUtil.class.getResourceAsStream("/ssl/" + certFilePath);
+            InputStream pinput = SslContextUtil.class.getResourceAsStream("/ssl/" + privateKeyPath);
 
             if (cinput != null && pinput != null) {
                 SslContextBuilder sslContext = SslContextBuilder.forServer(cinput, pinput, privateKeyPwd).sslProvider(defaultSslProvider());

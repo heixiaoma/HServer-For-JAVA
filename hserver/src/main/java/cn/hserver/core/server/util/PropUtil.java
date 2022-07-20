@@ -2,7 +2,7 @@ package cn.hserver.core.server.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.hserver.core.server.context.HeadMap;
+import cn.hserver.core.server.context.ConfigMap;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -18,7 +18,7 @@ public class PropUtil {
 
     private static PropUtil propUtil;
 
-    private static final HeadMap data = new HeadMap();
+    private static final ConfigMap data = new ConfigMap();
 
     private PropUtil() {
     }

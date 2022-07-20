@@ -3,14 +3,20 @@ package cn.hserver.plugin.web;
 import cn.hserver.core.interfaces.PluginAdapter;
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.ioc.ref.PackageScanner;
+import cn.hserver.core.log.HServerPatternLayout;
 import cn.hserver.core.server.util.ExceptionUtil;
-import cn.hserver.core.server.util.ParameterUtil;
+import cn.hserver.core.server.util.PropUtil;
+import cn.hserver.core.server.util.TTLUtil;
+import cn.hserver.plugin.web.context.ConstConfig;
+import cn.hserver.plugin.web.util.ParameterUtil;
 import cn.hserver.plugin.web.annotation.*;
 import cn.hserver.plugin.web.handlers.WebSocketServerHandler;
 import cn.hserver.plugin.web.interfaces.*;
+import cn.hserver.plugin.web.log.RequestIdClassicConverter;
 import cn.hserver.plugin.web.router.RouterInfo;
 import cn.hserver.plugin.web.router.RouterManager;
 import cn.hserver.plugin.web.router.RouterPermission;
+import cn.hserver.plugin.web.util.SslContextUtil;
 import io.netty.handler.codec.http.HttpMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,44 +32,71 @@ public class WebPlugin implements PluginAdapter {
 
 
     @Override
-    public void startIocInit() {
-
+    public void startApp() {
+        PropUtil instance = PropUtil.getInstance();
+        if (instance.get("readLimit").trim().length() > 0) {
+            ConstConfig.READ_LIMIT = Long.valueOf(instance.get("readLimit"));
+        }
+        if (instance.get("writeLimit").trim().length() > 0) {
+            ConstConfig.WRITE_LIMIT = Long.valueOf(instance.get("writeLimit"));
+        }
+        if (instance.get("httpContentSize").trim().length() > 0) {
+            ConstConfig.HTTP_CONTENT_SIZE = instance.getInt("httpContentSize");
+        }
+        Integer businessPool = instance.getInt("businessPool");
+        if (businessPool != null && businessPool > 0) {
+            ConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(businessPool,"hserver_business");
+        }
+        if (businessPool != null && businessPool < 0) {
+            ConstConfig.BUSINESS_EVENT = null;
+        } else {
+            ConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(50,"hserver_business");
+        }
+        HServerPatternLayout.defaultConverterMap.put("requestId", RequestIdClassicConverter.class.getName());
     }
 
     @Override
-    public boolean iocInitBean(Class aClass) {
-        //检测这个Bean是否是全局异常处理的类
-        if (GlobalException.class.isAssignableFrom(aClass)) {
-            IocUtil.addListBean(GlobalException.class.getName(), aClass.newInstance());
-            return true;
-        }
+    public void startIocInit() {
+    }
 
-        //检测这个Bean是否是权限认证的
-        if (PermissionAdapter.class.isAssignableFrom(aClass)) {
-            IocUtil.addListBean(PermissionAdapter.class.getName(), aClass.newInstance());
-            return true;
+    @Override
+    public boolean iocInitBean(Class aClass)  {
+        try {
+            //检测这个Bean是否是全局异常处理的类
+            if (GlobalException.class.isAssignableFrom(aClass)) {
+                IocUtil.addListBean(GlobalException.class.getName(), aClass.newInstance());
+                return true;
+            }
 
-        }
+            //检测这个Bean是否是权限认证的
+            if (PermissionAdapter.class.isAssignableFrom(aClass)) {
+                IocUtil.addListBean(PermissionAdapter.class.getName(), aClass.newInstance());
+                return true;
 
-        //检测这个Bean是否是FilterAdapter的
-        if (FilterAdapter.class.isAssignableFrom(aClass)) {
-            IocUtil.addListBean(FilterAdapter.class.getName(), aClass.newInstance());
-            return true;
+            }
 
-        }
+            //检测这个Bean是否是FilterAdapter的
+            if (FilterAdapter.class.isAssignableFrom(aClass)) {
+                IocUtil.addListBean(FilterAdapter.class.getName(), aClass.newInstance());
+                return true;
 
-        //检测这个Bean是否是LimitAdapter的
-        if (LimitAdapter.class.isAssignableFrom(aClass)) {
-            IocUtil.addListBean(LimitAdapter.class.getName(), aClass.newInstance());
-            return true;
+            }
 
-        }
+            //检测这个Bean是否是LimitAdapter的
+            if (LimitAdapter.class.isAssignableFrom(aClass)) {
+                IocUtil.addListBean(LimitAdapter.class.getName(), aClass.newInstance());
+                return true;
 
-        //检测这个Bean是否是response的
-        if (ResponseAdapter.class.isAssignableFrom(aClass)) {
-            IocUtil.addListBean(ResponseAdapter.class.getName(), aClass.newInstance());
-            return true;
+            }
 
+            //检测这个Bean是否是response的
+            if (ResponseAdapter.class.isAssignableFrom(aClass)) {
+                IocUtil.addListBean(ResponseAdapter.class.getName(), aClass.newInstance());
+                return true;
+
+            }
+        }catch (Exception e){
+            log.error(ExceptionUtil.getMessage(e));
         }
         return false;
 
@@ -100,7 +133,7 @@ public class WebPlugin implements PluginAdapter {
 
     @Override
     public void injectionEnd() {
-
+        SslContextUtil.setSsl();
     }
 
     private static void initWebSocket(PackageScanner scan) throws Exception {

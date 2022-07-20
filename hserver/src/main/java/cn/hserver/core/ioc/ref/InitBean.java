@@ -1,18 +1,14 @@
 package cn.hserver.core.ioc.ref;
 
 import cn.hserver.core.plugs.PlugsManager;
+import cn.hserver.core.server.util.*;
 import javassist.util.proxy.ProxyObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.hserver.core.server.util.HookProxyFactory;
 import cn.hserver.core.queue.QueueDispatcher;
 import cn.hserver.core.interfaces.*;
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.ioc.annotation.*;
-import cn.hserver.core.server.util.ClassLoadUtil;
-import cn.hserver.core.server.util.ExceptionUtil;
-import cn.hserver.core.server.util.ParameterUtil;
-import cn.hserver.core.server.util.PropUtil;
 import cn.hserver.core.task.TaskManager;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -130,7 +126,7 @@ public class InitBean {
                 try {
                     PropUtil instance = PropUtil.getInstance();
                     String s = instance.get(value == null ? field.getName() : value + "." + field.getName(), null);
-                    Object convert = ParameterUtil.convert(field.getType(), s);
+                    Object convert = ObjConvertUtil.convert(field.getType(), s);
                     if (convert != null) {
                         field.setAccessible(true);
                         field.set(o, convert);
@@ -440,7 +436,7 @@ public class InitBean {
                 declaredField.setAccessible(true);
                 PropUtil instance = PropUtil.getInstance();
                 String s = instance.get(annotation.value());
-                Object convert = ParameterUtil.convert(declaredField.getType(), s);
+                Object convert = ObjConvertUtil.convert(declaredField.getType(), s);
                 declaredField.set(v, convert);
             } catch (Exception e) {
                 log.error("{}----->{}：@Value装配错误", v.getClass().getSimpleName(), v.getClass().getSimpleName());

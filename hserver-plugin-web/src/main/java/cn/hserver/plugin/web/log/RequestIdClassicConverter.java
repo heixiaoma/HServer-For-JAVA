@@ -1,9 +1,9 @@
-package cn.hserver.core.log;
+package cn.hserver.plugin.web.log;
 
 import ch.qos.logback.classic.pattern.ClassicConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import cn.hserver.core.server.context.HServerContextHolder;
-import cn.hserver.core.server.context.Webkit;
+import cn.hserver.plugin.web.context.HServerContextHolder;
+import cn.hserver.plugin.web.context.Webkit;
 
 /**
  * @author hxm

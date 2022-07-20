@@ -29,6 +29,11 @@ public class RpcPlugin implements PluginAdapter {
     private static Set<String> ServerNames = new CopyOnWriteArraySet<>();
 
     @Override
+    public void startApp() {
+
+    }
+
+    @Override
     public void startIocInit() {
 
     }

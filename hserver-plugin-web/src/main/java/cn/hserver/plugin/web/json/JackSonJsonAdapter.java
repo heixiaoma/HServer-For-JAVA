@@ -1,9 +1,9 @@
 package cn.hserver.plugin.web.json;
 
+import cn.hserver.plugin.web.context.ConstConfig;
 import com.fasterxml.jackson.databind.JavaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.hserver.core.server.context.ConstConfig;
 import cn.hserver.core.server.util.ExceptionUtil;
 
 import java.lang.reflect.Parameter;

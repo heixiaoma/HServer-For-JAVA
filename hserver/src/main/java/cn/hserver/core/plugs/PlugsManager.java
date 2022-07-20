@@ -39,6 +39,13 @@ public class PlugsManager implements PluginAdapter {
         return plugPackages;
     }
 
+    @Override
+    public void startApp() {
+        for (PluginAdapter plugAdapter : obj) {
+            plugAdapter.startApp();
+        }
+    }
+
     public void addPlugins(Class... plugsClass) {
         for (Class aClass : plugsClass) {
             try {

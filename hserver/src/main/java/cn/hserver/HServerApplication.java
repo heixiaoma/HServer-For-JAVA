@@ -85,8 +85,8 @@ public class HServerApplication {
             log.error(ExceptionUtil.getMessage(e));
             return;
         }
+        PlugsManager.getPlugin().startApp();
         HServerLogConfig.init();
-
         log.info("检查包文件");
         Set<String> scanPackage;
         if (mainClass == null) {

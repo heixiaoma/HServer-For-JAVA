@@ -96,8 +96,6 @@ public class HServer {
             bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
             typeName = "Nio";
         }
-        //看看有没有SSL
-        SslContextUtil.setSsl();
         bootstrap.option(ChannelOption.SO_BACKLOG, backLog);
         bootstrap.childHandler(new ServerInitializer());
         String portStr = "";
