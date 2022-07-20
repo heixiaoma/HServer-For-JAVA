@@ -9,8 +9,6 @@ import cn.hserver.core.server.context.ConstConfig;
 import java.io.File;
 import java.io.InputStream;
 
-import static io.netty.handler.codec.http2.Http2SecurityUtil.CIPHERS;
-
 public class SslContextUtil {
 
     private static final Logger log = LoggerFactory.getLogger(SslContextUtil.class);

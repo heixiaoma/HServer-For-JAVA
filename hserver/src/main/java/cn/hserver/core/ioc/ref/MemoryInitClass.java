@@ -1,6 +1,5 @@
 package cn.hserver.core.ioc.ref;
 
-import io.netty.util.concurrent.AbstractEventExecutorGroup;
 import javassist.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

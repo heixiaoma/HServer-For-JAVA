@@ -36,7 +36,6 @@
         <dependency>
             <groupId>cn.hserver</groupId>
             <artifactId>hserver</artifactId>
-            <version>3.0.M3</version>
             <scope>provided</scope>
         </dependency>
 

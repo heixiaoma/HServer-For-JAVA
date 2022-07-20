@@ -1,10 +1,6 @@
 package cn.hserver.core.server.util;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpHeaders;
 import javassist.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
