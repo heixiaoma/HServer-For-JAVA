@@ -9,17 +9,11 @@ import cn.hserver.core.queue.QueueDispatcher;
 import cn.hserver.core.interfaces.*;
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.ioc.annotation.*;
-import cn.hserver.core.server.handlers.WebSocketServerHandler;
-import cn.hserver.core.server.router.RouterInfo;
-import cn.hserver.core.server.router.RouterManager;
-import cn.hserver.core.server.router.RouterPermission;
 import cn.hserver.core.server.util.ClassLoadUtil;
 import cn.hserver.core.server.util.ExceptionUtil;
 import cn.hserver.core.server.util.ParameterUtil;
 import cn.hserver.core.server.util.PropUtil;
 import cn.hserver.core.task.TaskManager;
-import io.netty.handler.codec.http.HttpMethod;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -33,34 +27,33 @@ public class InitBean {
     private static final Logger log = LoggerFactory.getLogger(InitBean.class);
 
     private static void sortOrder() {
-        Class<?>[] order = new Class[]{LimitAdapter.class, FilterAdapter.class, GlobalException.class, InitRunner.class, HumAdapter.class, ResponseAdapter.class, LogAdapter.class, ProtocolDispatcherAdapter.class, ServerCloseAdapter.class};
-        for (Class<?> aClass : order) {
-            List<?> listBean = IocUtil.getListBean(aClass);
-            List newObjectList = new ArrayList<>();
-            if (listBean != null && listBean.size() > 1) {
-                int temp = 1;
-                for (Object o : listBean) {
-                    Order annotation = o.getClass().getAnnotation(Order.class);
-                    if (annotation != null) {
-                        if (temp > annotation.value()) {
-                            //向后添加
-                            newObjectList.add(0, o);
-                            temp = annotation.value();
+        IocUtil.getAll().forEach((k, v) -> {
+            if (v instanceof List) {
+                List<?> listBean = (List<?>) v;
+                List newObjectList = new ArrayList<>();
+                if (listBean.size() > 1) {
+                    int temp = 1;
+                    for (Object o : listBean) {
+                        Order annotation = o.getClass().getAnnotation(Order.class);
+                        if (annotation != null) {
+                            if (temp > annotation.value()) {
+                                //向后添加
+                                newObjectList.add(0, o);
+                                temp = annotation.value();
+                            } else {
+                                //向前添加
+                                newObjectList.add(o);
+                                temp = annotation.value();
+                            }
                         } else {
-                            //向前添加
                             newObjectList.add(o);
-                            temp = annotation.value();
                         }
-                    } else {
-                        newObjectList.add(o);
                     }
+                    IocUtil.remove(k);
+                    IocUtil.addBean(k, newObjectList);
                 }
-                IocUtil.remove(aClass);
-                IocUtil.addBean(aClass.getName(), newObjectList);
             }
-
-        }
-
+        });
     }
 
 
