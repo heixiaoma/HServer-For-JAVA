@@ -1,5 +1,6 @@
 package cn.hserver.plugin.beetlsql;
 
+import cn.hserver.core.ioc.ref.PackageScanner;
 import cn.hserver.plugin.beetlsql.annotation.BeetlSQL;
 import cn.hserver.core.interfaces.PluginAdapter;
 import cn.hserver.core.ioc.IocUtil;
@@ -22,6 +23,16 @@ public class BeetLSqlPlugin implements PluginAdapter {
 
     @Override
     public void startIocInit() {
+
+    }
+
+    @Override
+    public boolean iocInitBean(Class classz) {
+        return false;
+    }
+
+    @Override
+    public void iocInit(PackageScanner packageScanner) {
 
     }
 

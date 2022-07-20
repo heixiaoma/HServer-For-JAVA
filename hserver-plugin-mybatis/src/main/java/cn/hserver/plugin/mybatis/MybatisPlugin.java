@@ -1,5 +1,6 @@
 package cn.hserver.plugin.mybatis;
 
+import cn.hserver.core.ioc.ref.PackageScanner;
 import cn.hserver.plugin.mybatis.annotation.Mybatis;
 import cn.hserver.plugin.mybatis.proxy.MybatisProxy;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -27,6 +28,16 @@ public class MybatisPlugin implements PluginAdapter {
 
     @Override
     public void startIocInit() {
+
+    }
+
+    @Override
+    public boolean iocInitBean(Class classz) {
+        return false;
+    }
+
+    @Override
+    public void iocInit(PackageScanner packageScanner) {
 
     }
 

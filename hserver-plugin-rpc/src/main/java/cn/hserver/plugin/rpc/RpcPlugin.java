@@ -1,6 +1,7 @@
 package cn.hserver.plugin.rpc;
 
 
+import cn.hserver.core.ioc.ref.PackageScanner;
 import cn.hserver.plugin.rpc.annotation.Resource;
 import cn.hserver.plugin.rpc.annotation.RpcService;
 import cn.hserver.plugin.rpc.config.RpcConfig;
@@ -29,6 +30,16 @@ public class RpcPlugin implements PluginAdapter {
 
     @Override
     public void startIocInit() {
+
+    }
+
+    @Override
+    public boolean iocInitBean(Class classz) {
+        return false;
+    }
+
+    @Override
+    public void iocInit(PackageScanner packageScanner) {
 
     }
 

@@ -1,9 +1,9 @@
 package cn.hserver.plugin.web.router;
 
+import cn.hserver.plugin.web.annotation.RequiresPermissions;
+import cn.hserver.plugin.web.annotation.RequiresRoles;
+import cn.hserver.plugin.web.annotation.Sign;
 import io.netty.handler.codec.http.HttpMethod;
-import cn.hserver.core.ioc.annotation.RequiresPermissions;
-import cn.hserver.core.ioc.annotation.RequiresRoles;
-import cn.hserver.core.ioc.annotation.Sign;
 
 /**
  * @author hxm

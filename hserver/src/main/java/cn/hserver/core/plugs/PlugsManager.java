@@ -1,5 +1,6 @@
 package cn.hserver.core.plugs;
 
+import cn.hserver.core.ioc.ref.PackageScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.hserver.core.interfaces.PluginAdapter;
@@ -57,16 +58,26 @@ public class PlugsManager implements PluginAdapter {
     }
 
     @Override
-    public void iocInit() {
+    public boolean iocInitBean(Class classz) {
         for (PluginAdapter plugAdapter : obj) {
-            plugAdapter.startIocInit();
+            if (plugAdapter.iocInitBean(classz)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void iocInit(PackageScanner packageScanner) {
+        for (PluginAdapter plugAdapter : obj) {
+            plugAdapter.iocInit(packageScanner);
         }
     }
 
     @Override
     public void iocInitEnd() {
         for (PluginAdapter plugAdapter : obj) {
-            plugAdapter.iocInit();
+            plugAdapter.iocInitEnd();
         }
     }
 

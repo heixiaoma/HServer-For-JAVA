@@ -1,5 +1,6 @@
 package cn.hserver.core.ioc.ref;
 
+import cn.hserver.core.plugs.PlugsManager;
 import javassist.util.proxy.ProxyObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,13 +88,6 @@ public class InitBean {
         }
 
         try {
-            //初始化Websocket
-            initWebSocket(scan);
-        } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
-        }
-
-        try {
             //测试类
             initTest(scan);
         } catch (Exception e) {
@@ -106,22 +100,20 @@ public class InitBean {
             log.error(ExceptionUtil.getMessage(e));
         }
 
-
-
-
-
-        try {
-            //初始化控制器
-            initController(scan);
-        } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
-        }
         try {
             //初始化Hook
             initHook(scan, packageNames);
         } catch (Exception e) {
             log.error(ExceptionUtil.getMessage(e));
         }
+
+        try {
+            PlugsManager.getPlugin().iocInit(scan);
+        } catch (Exception e) {
+            log.error("插件初始过程异常：{}", ExceptionUtil.getMessage(e));
+        }
+
+
         try {
             //初始化队列
             QueueDispatcher.init(scan);
@@ -201,16 +193,6 @@ public class InitBean {
         }
     }
 
-    private static void initWebSocket(PackageScanner scan) throws Exception {
-        Set<Class<?>> clasps = scan.getAnnotationList(WebSocket.class);
-        for (Class aClass : clasps) {
-            //检查注解里面是否有值
-            WebSocket annotation = (WebSocket) aClass.getAnnotation(WebSocket.class);
-            IocUtil.addBean(aClass.getName(), aClass.newInstance());
-            WebSocketServerHandler.WEB_SOCKET_ROUTER.put(annotation.value(), aClass.getName());
-        }
-
-    }
 
     private static void initTest(PackageScanner scan) throws Exception {
         try {
@@ -231,16 +213,10 @@ public class InitBean {
     private static void initBean(PackageScanner scan) throws Exception {
         Set<Class<?>> clasps = scan.getAnnotationList(Bean.class);
         for (Class aClass : clasps) {
-
-
-
-
-            //检测这个Bean是否是全局异常处理的类
-            if (GlobalException.class.isAssignableFrom(aClass)) {
-                IocUtil.addListBean(GlobalException.class.getName(), aClass.newInstance());
+            //检查这个bean是否是插件的数据
+            if (PlugsManager.getPlugin().iocInitBean(aClass)) {
                 continue;
             }
-
             //检测这个Bean是否是初始化的类
             if (InitRunner.class.isAssignableFrom(aClass)) {
                 IocUtil.addListBean(InitRunner.class.getName(), aClass.newInstance());
@@ -258,52 +234,22 @@ public class InitBean {
                 IocUtil.addListBean(ServerCloseAdapter.class.getName(), aClass.newInstance());
                 continue;
             }
-
+            //检测这个Bean是否是track的
+            if (TrackAdapter.class.isAssignableFrom(aClass)) {
+                IocUtil.addListBean(TrackAdapter.class.getName(), aClass.newInstance());
+                continue;
+            }
             //检测这个Bean是否是日志扩展的数据
             if (LogAdapter.class.isAssignableFrom(aClass)) {
                 IocUtil.addListBean(LogAdapter.class.getName(), aClass.newInstance());
                 continue;
             }
 
-            //检测这个Bean是否是权限认证的
-            if (PermissionAdapter.class.isAssignableFrom(aClass)) {
-                IocUtil.addListBean(PermissionAdapter.class.getName(), aClass.newInstance());
-                continue;
-            }
-
-            //检测这个Bean是否是track的
-            if (TrackAdapter.class.isAssignableFrom(aClass)) {
-                IocUtil.addListBean(TrackAdapter.class.getName(), aClass.newInstance());
-                continue;
-            }
-
-            //检测这个Bean是否是FilterAdapter的
-            if (FilterAdapter.class.isAssignableFrom(aClass)) {
-                IocUtil.addListBean(FilterAdapter.class.getName(), aClass.newInstance());
-                continue;
-            }
-
-            //检测这个Bean是否是LimitAdapter的
-            if (LimitAdapter.class.isAssignableFrom(aClass)) {
-                IocUtil.addListBean(LimitAdapter.class.getName(), aClass.newInstance());
-                continue;
-            }
-
-            //检测这个Bean是否是response的
-            if (ResponseAdapter.class.isAssignableFrom(aClass)) {
-                IocUtil.addListBean(ResponseAdapter.class.getName(), aClass.newInstance());
-                continue;
-            }
             if (ProtocolDispatcherAdapter.class.isAssignableFrom(aClass)) {
                 IocUtil.addListBean(ProtocolDispatcherAdapter.class.getName(), aClass.newInstance());
                 continue;
             }
 
-            //检测这个Bean是否是Mqtt的
-            if (MqttAdapter.class.isAssignableFrom(aClass)) {
-                IocUtil.addBean(MqttAdapter.class.getName(), aClass.newInstance());
-                continue;
-            }
 
             //检查注解里面是否有值
             Bean annotation = (Bean) aClass.getAnnotation(Bean.class);
@@ -331,111 +277,6 @@ public class InitBean {
         }
     }
 
-    /**
-     * 初始化控制器
-     */
-    private static void initController(PackageScanner scan) throws Exception {
-        /**
-         * 检查是否有方法注解
-         */
-        Set<Class<?>> clasps = scan.getAnnotationList(Controller.class);
-        for (Class aClass : clasps) {
-            //检查注解里面是否有值
-            Method[] methods = aClass.getDeclaredMethods();
-            for (Method method : methods) {
-                Controller controller = (Controller) aClass.getAnnotation(Controller.class);
-                String controllerPath = controller.value().trim();
-                /**
-                 * 这里对方法控制器的注解的方法参数，进行初始化
-                 * 非控制器的方法过滤排除
-                 */
-                Annotation[] annotations = method.getAnnotations();
-                if (Arrays.stream(annotations).noneMatch(annotation -> annotation.annotationType().getAnnotation(Request.class) != null)) {
-                    continue;
-                }
-                try {
-                    ParameterUtil.addParam(aClass, method);
-                } catch (Exception ignored) {
-                    continue;
-                }
-                //细化后的注解
-                Class[] classes = new Class[]{GET.class, POST.class, HEAD.class, PUT.class, PATCH.class, DELETE.class, OPTIONS.class, CONNECT.class, TRACE.class};
-                for (Class aClass1 : classes) {
-                    Annotation annotation = method.getAnnotation(aClass1);
-                    if (annotation != null) {
-                        Method value = aClass1.getMethod("value");
-                        value.setAccessible(true);
-                        String path = controllerPath + value.invoke(annotation).toString();
-                        RouterInfo routerInfo = new RouterInfo();
-                        method.setAccessible(true);
-                        routerInfo.setMethod(method);
-                        routerInfo.setaClass(aClass);
-                        routerInfo.setUrl(path);
-                        routerInfo.setReqMethodName(HttpMethod.valueOf(aClass1.getSimpleName()));
-                        RouterManager.addRouter(routerInfo);
-                        //检查权限
-                        Sign sign = method.getAnnotation(Sign.class);
-                        RequiresRoles requiresRoles = method.getAnnotation(RequiresRoles.class);
-                        RequiresPermissions requiresPermissions = method.getAnnotation(RequiresPermissions.class);
-                        //有一个不为空都存一次
-                        if (sign != null || requiresRoles != null || requiresPermissions != null) {
-                            RouterPermission routerPermission = new RouterPermission();
-                            routerPermission.setUrl(path);
-                            routerPermission.setReqMethodName(HttpMethod.valueOf(aClass1.getSimpleName()));
-                            routerPermission.setSign(sign);
-                            routerPermission.setRequiresRoles(requiresRoles);
-                            routerPermission.setRequiresPermissions(requiresPermissions);
-                            routerPermission.setControllerPackageName(aClass.getName());
-                            routerPermission.setControllerName(controller.name().trim());
-                            RouterManager.addPermission(routerPermission);
-                        }
-                    }
-                }
-                //通用版注解
-                RequestMapping requestMapping = method.getAnnotation(RequestMapping.class);
-                if (requestMapping != null) {
-                    RequestMethod[] requestMethods = requestMapping.method();
-                    String[] requestMethod;
-                    if (requestMethods.length == 0) {
-                        requestMethod = RequestMethod.getRequestMethodAll();
-                    } else {
-                        String[] rm = new String[requestMethods.length];
-                        for (int i = 0; i < requestMethods.length; i++) {
-                            rm[i] = requestMethods[i].name();
-                        }
-                        requestMethod = rm;
-                    }
-                    for (String s : requestMethod) {
-                        String path = controllerPath + requestMapping.value();
-                        RouterInfo routerInfo = new RouterInfo();
-                        method.setAccessible(true);
-                        routerInfo.setMethod(method);
-                        routerInfo.setUrl(path);
-                        routerInfo.setaClass(aClass);
-                        routerInfo.setReqMethodName(HttpMethod.valueOf(s));
-                        RouterManager.addRouter(routerInfo);
-                        //检查权限
-                        Sign sign = method.getAnnotation(Sign.class);
-                        RequiresRoles requiresRoles = method.getAnnotation(RequiresRoles.class);
-                        RequiresPermissions requiresPermissions = method.getAnnotation(RequiresPermissions.class);
-                        //有一个不为空都存一次
-                        if (sign != null || requiresRoles != null || requiresPermissions != null) {
-                            RouterPermission routerPermission = new RouterPermission();
-                            routerPermission.setUrl(path);
-                            routerPermission.setReqMethodName(HttpMethod.valueOf(s));
-                            routerPermission.setSign(sign);
-                            routerPermission.setRequiresRoles(requiresRoles);
-                            routerPermission.setRequiresPermissions(requiresPermissions);
-                            routerPermission.setControllerPackageName(aClass.getName());
-                            routerPermission.setControllerName(controller.name().trim());
-                            RouterManager.addPermission(routerPermission);
-                        }
-                    }
-                }
-            }
-            IocUtil.addBean(aClass.getName(), aClass.newInstance());
-        }
-    }
 
     private static HookCheck checkHook(Class aClass1) {
         /**
