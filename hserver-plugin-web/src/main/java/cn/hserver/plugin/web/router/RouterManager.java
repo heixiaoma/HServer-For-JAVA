@@ -31,6 +31,11 @@ public class RouterManager {
      */
     private final static Map<HttpMethod, Map<String, RouterInfo>> router = new ConcurrentHashMap<>();
 
+    /**
+     * 池子 <uri,<method,method_info>>
+     */
+    private final static Map<String, Map<String, RouterInfo>> router2 = new ConcurrentHashMap<>();
+
     private final static Map<HttpMethod, Map<String, RouterPermission>> routerPermission = new ConcurrentHashMap<>();
 
     /**
@@ -80,6 +85,7 @@ public class RouterManager {
             /**
              * 检查是否是需要匹配的那种URL
              */
+            //todo 设置正则规则的URL
             List<String> pattern = isPattern(url);
             if (pattern.size() > 0) {
                 String s = url;
@@ -91,18 +97,19 @@ public class RouterManager {
                     }
                 }
                 Map<String, PatternUri> ispauri = ISPAURI(routerInfo.getReqMethodName());
-                if (ispauri != null) {
-                    s = "^" + s;
-                    ispauri.put(s, new PatternUri(pattern, url, s));
-                }
+                s = "^" + s;
+                ispauri.put(s, new PatternUri(pattern, url, s));
             }
-            Map<String, RouterInfo> router = router(routerInfo.getReqMethodName());
-            if (router != null) {
-                if (router.containsKey(url)) {
-                    log.warn("url< {} >映射已经存在，可能会影响程序使用", url);
-                }
-                router.put(url, routerInfo);
+            //todo 设置正常URL内容
+            Map<String, RouterInfo> httpMethodRouterInfoMap = router2.get(url);
+            if (httpMethodRouterInfoMap == null) {
+                httpMethodRouterInfoMap = new ConcurrentHashMap<>();
+                router2.put(url, httpMethodRouterInfoMap);
             }
+            if (httpMethodRouterInfoMap.containsKey(routerInfo.getReqMethodName().name())) {
+                log.warn("url< {} >映射路径已经存在，可能会影响程序使用，class:{},method:{}", url, routerInfo.getaClass().getName(), routerInfo.getMethod().getName());
+            }
+            httpMethodRouterInfoMap.put(routerInfo.getReqMethodName().name(), routerInfo);
         }
     }
 
