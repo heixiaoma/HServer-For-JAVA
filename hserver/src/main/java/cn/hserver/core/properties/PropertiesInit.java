@@ -63,6 +63,9 @@ public class PropertiesInit {
         if (instance.get("track").trim().length() > 0) {
             ConstConfig.TRACK = Boolean.valueOf(instance.get("track"));
         }
+        if (instance.get("epoll").trim().length() > 0) {
+            ConstConfig.EPOLL = Boolean.valueOf(instance.get("epoll"));
+        }
 
     }
 }

@@ -9,6 +9,7 @@ public class HServerDataDefinerConsole extends PropertyDefinerBase {
     public String getPropertyValue() {
         Boolean runjar = ConstConfig.RUNJAR;
         boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
+        //web框架会提供这个请求ID
         String requestId = HServerPatternLayout.defaultConverterMap.get("requestId");
         if (runjar && isWindows) {
             //非高亮格式
