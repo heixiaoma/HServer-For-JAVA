@@ -57,10 +57,7 @@ public class RouterManager {
     public static void addRouter(RouterInfo routerInfo) {
         if (routerInfo != null) {
             String url = routerInfo.getUrl();
-            /**
-             * 检查是否是需要匹配的那种URL
-             */
-            //todo 设置正则规则的URL
+            //对URL检查是否是正则的 如果是正则的就进行替换为正则的方便后期校验
             List<String> pattern = isPattern(url);
             if (pattern.size() > 0) {
                 String s = url;
@@ -106,10 +103,17 @@ public class RouterManager {
         return patterns;
     }
 
-    private static PatternUri isPattern(String url, HttpMethod method) {
+    private static PatternUri isPattern(String url, HttpMethod method) throws MethodNotSupportException {
         for (String next : ISPAURI.keySet()) {
             if (Pattern.compile(next).matcher(url).find()) {
-                return ISPAURI.get(next).get(method.name());
+                Map<String, PatternUri> stringPatternUriMap = ISPAURI.get(next);
+                if (stringPatternUriMap!=null){
+                    PatternUri patternUri = stringPatternUriMap.get(method.name());
+                    if (patternUri!=null){
+                        return patternUri;
+                    }
+                    throw new MethodNotSupportException();
+                }
             }
         }
         return null;
@@ -163,7 +167,7 @@ public class RouterManager {
         if (routerInfo != null) {
             return routerInfo;
         } else {
-            throw new MethodNotSupportException("不支持当前请求方式");
+            throw new MethodNotSupportException();
         }
     }
 
@@ -174,9 +178,13 @@ public class RouterManager {
         if (routerPermission != null) {
             return routerPermission;
         } else {
-            PatternUri pattern = isPattern(url, requestType);
-            if (pattern != null) {
-                return stringRouterPermissionMap.get(pattern.getOrgUrl());
+            try {
+                PatternUri pattern = isPattern(url, requestType);
+                if (pattern != null) {
+                    return stringRouterPermissionMap.get(pattern.getOrgUrl());
+                }
+            }catch (MethodNotSupportException e){
+                return null;
             }
         }
         return null;
