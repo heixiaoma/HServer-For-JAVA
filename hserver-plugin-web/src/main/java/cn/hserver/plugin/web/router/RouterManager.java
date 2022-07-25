@@ -71,13 +71,13 @@ public class RouterManager {
                         s = s.replaceAll("\\{" + pattern.get(i) + "\\}", "(.+?)");
                     }
                 }
-                Map<String, PatternUri> ispauri = ISPAURI.get(routerInfo.getUrl());
+                s = "^" + s;
+                Map<String, PatternUri> ispauri = ISPAURI.get(s);
                 if (ispauri == null) {
                     ispauri = new ConcurrentHashMap<>();
-                    ISPAURI.put(routerInfo.getUrl(), ispauri);
+                    ISPAURI.put(s, ispauri);
                 }
-                s = "^" + s;
-                ispauri.put(s, new PatternUri(pattern, url, s, routerInfo.getReqMethodName().name()));
+                ispauri.put(routerInfo.getReqMethodName().name(), new PatternUri(pattern, url, s, routerInfo.getReqMethodName().name()));
             }
 
             Map<String, RouterInfo> httpMethodRouterInfoMap = router2.get(url);
@@ -107,16 +107,9 @@ public class RouterManager {
     }
 
     private static PatternUri isPattern(String url, HttpMethod method) {
-        Map<String, PatternUri> ispauri = ISPAURI.get(url);
-        if (ispauri == null) {
-            return null;
-        }
-        for (String next : ispauri.keySet()) {
+        for (String next : ISPAURI.keySet()) {
             if (Pattern.compile(next).matcher(url).find()) {
-                PatternUri patternUri = ispauri.get(next);
-                if (patternUri.getRequestType().equals(method.name())) {
-                    return patternUri;
-                }
+                return ISPAURI.get(next).get(method.name());
             }
         }
         return null;
@@ -126,12 +119,10 @@ public class RouterManager {
         if (routerPermission != null) {
             String url = routerPermission.getUrl();
             Map<String, RouterPermission> stringRouterPermissionMap = routerPermission(routerPermission.getReqMethodName());
-            if (stringRouterPermissionMap != null) {
-                if (stringRouterPermissionMap.containsKey(url)) {
-                    log.warn("url< {} >权限映射已经存在，可能会影响程序使用", url);
-                }
-                stringRouterPermissionMap.put(url, routerPermission);
+            if (stringRouterPermissionMap.containsKey(url)) {
+                log.warn("url< {} >权限映射已经存在，可能会影响程序使用", url);
             }
+            stringRouterPermissionMap.put(url, routerPermission);
         }
     }
 
@@ -172,7 +163,7 @@ public class RouterManager {
         if (routerInfo != null) {
             return routerInfo;
         } else {
-            throw new MethodNotSupportException();
+            throw new MethodNotSupportException("不支持当前请求方式");
         }
     }
 
