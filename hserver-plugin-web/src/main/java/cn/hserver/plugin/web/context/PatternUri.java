@@ -8,12 +8,33 @@ import java.util.List;
  */
 public class PatternUri {
 
+    /**
+     * 方法参数KEY
+     */
     private List<String> keys;
 
+    /**
+     * 正则URL
+     */
     private String orgUrl;
 
+    /**
+     * 匹配的URL传递的真实URL
+     */
     private String patternUrl;
 
+    /**
+     * http请求类型
+     */
+    private String requestType;
+
+    public String getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(String requestType) {
+        this.requestType = requestType;
+    }
 
     public List<String> getKeys() {
         return keys;
@@ -39,9 +60,10 @@ public class PatternUri {
         this.patternUrl = patternUrl;
     }
 
-    public PatternUri(List<String> keys, String orgUrl, String patternUrl) {
+    public PatternUri(List<String> keys, String orgUrl, String patternUrl,String requestType) {
         this.keys = keys;
         this.orgUrl = orgUrl;
         this.patternUrl = patternUrl;
+        this.requestType=requestType;
     }
 }

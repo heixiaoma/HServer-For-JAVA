@@ -2,6 +2,7 @@ package cn.hserver.plugin.web.handlers;
 
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.plugin.web.exception.BusinessException;
+import cn.hserver.plugin.web.exception.MethodNotSupportException;
 import cn.hserver.plugin.web.exception.NotFoundException;
 import cn.hserver.plugin.web.router.RouterInfo;
 import cn.hserver.plugin.web.router.RouterManager;
@@ -182,17 +183,28 @@ public class DispatcherHandler {
         if (hServerContext.getWebkit().httpResponse.hasData()) {
             return hServerContext;
         }
-
-        RouterInfo routerInfo = RouterManager.getRouterInfo(hServerContext.getRequest().getUri(), hServerContext.getRequest().getRequestType(), hServerContext);
-        if (routerInfo == null) {
+        RouterInfo routerInfo=null;
+        try {
+             routerInfo = RouterManager.getRouterInfo(hServerContext.getRequest().getUri(), hServerContext.getRequest().getRequestType(), hServerContext);
+            if (routerInfo == null) {
+                StringBuilder error = new StringBuilder();
+                error.append("未找到对应的控制器，请求方式：")
+                        .append(hServerContext.getRequest().getRequestType().toString())
+                        .append("，请求路径：")
+                        .append(hServerContext.getRequest().getUri())
+                        .append("，来源IP：")
+                        .append(hServerContext.getRequest().getIpAddress());
+                throw new BusinessException(HttpResponseStatus.NOT_FOUND.code(), error.toString(), new NotFoundException("不能找到处理当前请求的资源"), hServerContext.getWebkit());
+            }
+        }catch (MethodNotSupportException e){
             StringBuilder error = new StringBuilder();
-            error.append("未找到对应的控制器，请求方式：")
+            error.append("控制器不允许的请求方法：")
                     .append(hServerContext.getRequest().getRequestType().toString())
                     .append("，请求路径：")
                     .append(hServerContext.getRequest().getUri())
                     .append("，来源IP：")
                     .append(hServerContext.getRequest().getIpAddress());
-            throw new BusinessException(HttpResponseStatus.NOT_FOUND.code(), error.toString(), new NotFoundException("不能找到处理当前请求的资源"), hServerContext.getWebkit());
+            throw new BusinessException(HttpResponseStatus.METHOD_NOT_ALLOWED.code(), error.toString(), new NotFoundException("不能找到处理当前请求的资源"), hServerContext.getWebkit());
         }
         Method method = routerInfo.getMethod();
         Class<?> aClass = routerInfo.getaClass();

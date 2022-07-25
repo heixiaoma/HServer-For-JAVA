@@ -4,6 +4,7 @@ import cn.hserver.plugin.web.annotation.RequestMethod;
 import cn.hserver.plugin.web.context.HServerContext;
 import cn.hserver.plugin.web.context.PatternUri;
 import cn.hserver.plugin.web.context.Request;
+import cn.hserver.plugin.web.exception.MethodNotSupportException;
 import io.netty.handler.codec.http.HttpMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,39 +28,21 @@ public class RouterManager {
     private static final Logger log = LoggerFactory.getLogger(RouterManager.class);
 
     /**
-     * 路由线程池，关系映射
-     */
-    private final static Map<HttpMethod, Map<String, RouterInfo>> router = new ConcurrentHashMap<>();
-
-    /**
      * 池子 <uri,<method,method_info>>
      */
     private final static Map<String, Map<String, RouterInfo>> router2 = new ConcurrentHashMap<>();
 
-    private final static Map<HttpMethod, Map<String, RouterPermission>> routerPermission = new ConcurrentHashMap<>();
-
-    /**
-     * 清除
-     */
-    public static synchronized void clearRouterManager() {
-        router.clear();
-        routerPermission.clear();
-    }
-
-
     /**
      * 记录url是否是需要url正则匹配的
+     * 池子 <uri,<method,method_info>>
      */
-    private final static Map<HttpMethod, Map<String, PatternUri>> ISPAURI = new ConcurrentHashMap<>();
+    private final static Map<String, Map<String, PatternUri>> ISPAURI = new ConcurrentHashMap<>();
 
-    private static Map<String, PatternUri> ISPAURI(HttpMethod method) {
-        Map<String, PatternUri> stringPatternUriMap = ISPAURI.get(method);
-        if (stringPatternUriMap == null) {
-            stringPatternUriMap = new ConcurrentHashMap<>();
-            ISPAURI.put(method, stringPatternUriMap);
-        }
-        return stringPatternUriMap;
-    }
+    /**
+     * 存储路由权限
+     */
+    private final static Map<HttpMethod, Map<String, RouterPermission>> routerPermission = new ConcurrentHashMap<>();
+
 
     private static Map<String, RouterPermission> routerPermission(HttpMethod method) {
         Map<String, RouterPermission> stringRouterPermissionMap = routerPermission.get(method);
@@ -70,14 +53,6 @@ public class RouterManager {
         return stringRouterPermissionMap;
     }
 
-    private static Map<String, RouterInfo> router(HttpMethod method) {
-        Map<String, RouterInfo> stringRouterInfoMap = router.get(method);
-        if (stringRouterInfoMap == null) {
-            stringRouterInfoMap = new ConcurrentHashMap<>();
-            router.put(method, stringRouterInfoMap);
-        }
-        return stringRouterInfoMap;
-    }
 
     public static void addRouter(RouterInfo routerInfo) {
         if (routerInfo != null) {
@@ -96,11 +71,15 @@ public class RouterManager {
                         s = s.replaceAll("\\{" + pattern.get(i) + "\\}", "(.+?)");
                     }
                 }
-                Map<String, PatternUri> ispauri = ISPAURI(routerInfo.getReqMethodName());
+                Map<String, PatternUri> ispauri = ISPAURI.get(routerInfo.getUrl());
+                if (ispauri == null) {
+                    ispauri = new ConcurrentHashMap<>();
+                    ISPAURI.put(routerInfo.getUrl(), ispauri);
+                }
                 s = "^" + s;
-                ispauri.put(s, new PatternUri(pattern, url, s));
+                ispauri.put(s, new PatternUri(pattern, url, s, routerInfo.getReqMethodName().name()));
             }
-            //todo 设置正常URL内容
+
             Map<String, RouterInfo> httpMethodRouterInfoMap = router2.get(url);
             if (httpMethodRouterInfoMap == null) {
                 httpMethodRouterInfoMap = new ConcurrentHashMap<>();
@@ -128,15 +107,16 @@ public class RouterManager {
     }
 
     private static PatternUri isPattern(String url, HttpMethod method) {
-        Map<String, PatternUri> ispauri = ISPAURI(method);
+        Map<String, PatternUri> ispauri = ISPAURI.get(url);
         if (ispauri == null) {
             return null;
         }
-        Iterator<String> iterator = ispauri.keySet().iterator();
-        while (iterator.hasNext()) {
-            String next = iterator.next();
+        for (String next : ispauri.keySet()) {
             if (Pattern.compile(next).matcher(url).find()) {
-                return ispauri.get(next);
+                PatternUri patternUri = ispauri.get(next);
+                if (patternUri.getRequestType().equals(method.name())) {
+                    return patternUri;
+                }
             }
         }
         return null;
@@ -156,17 +136,10 @@ public class RouterManager {
     }
 
 
-    public static RouterInfo getRouterInfo(String url, HttpMethod requestType, HServerContext hServerContext) {
+    public static RouterInfo getRouterInfo(String url, HttpMethod requestType, HServerContext hServerContext) throws MethodNotSupportException {
         Request request = hServerContext.getRequest();
-        Map<String, RouterInfo> router = router(requestType);
+        Map<String, RouterInfo> router = router2.get(url);
         if (router == null) {
-            return null;
-        }
-        RouterInfo routerInfo = router.get(url);
-        //默认检查一次正常URl
-        if (routerInfo != null) {
-            return routerInfo;
-        } else {
             //二次检查匹配规则的URL;
             PatternUri pattern = isPattern(url, requestType);
             if (pattern != null) {
@@ -184,18 +157,28 @@ public class RouterManager {
                     }
 
                 }
-                return router.get(pattern.getOrgUrl());
+                Map<String, RouterInfo> stringRouterInfoMap = router2.get(pattern.getOrgUrl());
+                if (stringRouterInfoMap == null) {
+                    return null;
+                }
+                return stringRouterInfoMap.get(pattern.getRequestType());
             }
+            return null;
         }
-        return null;
+
+
+        RouterInfo routerInfo = router.get(requestType.name());
+        //默认检查一次正常URl
+        if (routerInfo != null) {
+            return routerInfo;
+        } else {
+            throw new MethodNotSupportException();
+        }
     }
 
 
     public static RouterPermission getRouterPermission(String url, HttpMethod requestType) {
         Map<String, RouterPermission> stringRouterPermissionMap = routerPermission(requestType);
-        if (stringRouterPermissionMap == null) {
-            return null;
-        }
         RouterPermission routerPermission = stringRouterPermissionMap.get(url);
         if (routerPermission != null) {
             return routerPermission;
@@ -214,9 +197,7 @@ public class RouterManager {
         for (String s : requestMethodAll) {
             HttpMethod httpMethod = HttpMethod.valueOf(s);
             Map<String, RouterPermission> stringRouterPermissionMap = routerPermission(httpMethod);
-            if (stringRouterPermissionMap != null) {
-                stringRouterPermissionMap.forEach((a, b) -> permissions.add(b));
-            }
+            stringRouterPermissionMap.forEach((a, b) -> permissions.add(b));
         }
         return permissions;
     }
