@@ -51,7 +51,7 @@ public class HServer {
     private EventLoopGroup humClientBossGroup = null;
     //TCP
     private EventLoopGroup bossGroup = null;
-    public static EventLoopGroup workerGroup = null;
+    private EventLoopGroup workerGroup = null;
 
     public HServer(Integer[] ports, String[] args) {
         this.ports=ports;
@@ -148,8 +148,8 @@ public class HServer {
             if (this.bossGroup != null) {
                 this.bossGroup.shutdownGracefully();
             }
-            if (workerGroup != null) {
-                workerGroup.shutdownGracefully();
+            if (this.workerGroup != null) {
+                this.workerGroup.shutdownGracefully();
             }
             log.info("服务关闭完成");
         });

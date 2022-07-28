@@ -48,16 +48,16 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
             if (globalTrafficShapingHandler == null) {
                 globalTrafficShapingHandler = new GlobalTrafficShapingHandler(ctx.executor(), WebConstConfig.WRITE_LIMIT, WebConstConfig.READ_LIMIT);
             }
-            pipeline.addLast(globalTrafficShapingHandler);
+            pipeline.addLast(WebConstConfig.BUSINESS_EVENT, globalTrafficShapingHandler);
         }
-        pipeline.addLast(new HttpServerCodec());
-        pipeline.addLast(new HttpObjectAggregator(WebConstConfig.HTTP_CONTENT_SIZE));
+        pipeline.addLast(WebConstConfig.BUSINESS_EVENT, new HttpServerCodec());
+        pipeline.addLast(WebConstConfig.BUSINESS_EVENT, new HttpObjectAggregator(WebConstConfig.HTTP_CONTENT_SIZE));
         //有websocket才走他
         if (WebSocketServerHandler.WEB_SOCKET_ROUTER.size() > 0) {
-            pipeline.addLast(new WebSocketServerHandler());
+            pipeline.addLast(WebConstConfig.BUSINESS_EVENT, new WebSocketServerHandler());
         }
-        pipeline.addLast(new HServerContentHandler());
-        pipeline.addLast(new RouterHandler());
+        pipeline.addLast(WebConstConfig.BUSINESS_EVENT, new HServerContentHandler());
+        pipeline.addLast(WebConstConfig.BUSINESS_EVENT, new RouterHandler());
     }
 
 
