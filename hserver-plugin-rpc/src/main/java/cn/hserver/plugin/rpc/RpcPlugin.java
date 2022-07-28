@@ -26,7 +26,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class RpcPlugin implements PluginAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(RpcPlugin.class);
-    private static Set<String> ServerNames = new CopyOnWriteArraySet<>();
+    private static final Set<String> ServerNames = new CopyOnWriteArraySet<>();
 
     @Override
     public void startApp() {
