@@ -77,9 +77,9 @@ HServer是一个基于Netty开发的一个功能强大，资源丰富，开发�
 * 流量整形
 * Netty 原生响应支持自己扩展
 
-### 原理与流程
+### 概念图
 
-![原理](https://gitee.com/HServer/HServer/raw/master/doc/架构图2.jpg)
+![原理](https://gitee.com/HServer/HServer/raw/master/doc/planning_map.png)
 
 ### 压测数据 DeePin 8h 16g i7-9700k
 
