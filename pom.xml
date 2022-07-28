@@ -62,12 +62,6 @@
 
             <dependency>
                 <groupId>cn.hserver</groupId>
-                <artifactId>hserver-plugin-maven</artifactId>
-                <version>3.0.M3</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-web</artifactId>
                 <version>3.0.M3</version>
             </dependency>
@@ -79,6 +73,26 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>cn.hserver</groupId>
+                    <artifactId>hserver-plugin-maven</artifactId>
+                    <version>3.0.M3</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 
     <licenses>
