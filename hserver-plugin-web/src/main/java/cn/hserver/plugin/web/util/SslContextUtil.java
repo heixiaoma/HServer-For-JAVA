@@ -2,7 +2,7 @@ package cn.hserver.plugin.web.util;
 
 import cn.hserver.core.server.util.ExceptionUtil;
 import cn.hserver.core.server.util.PropUtil;
-import cn.hserver.plugin.web.context.ConstConfig;
+import cn.hserver.plugin.web.context.WebConstConfig;
 import io.netty.handler.ssl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +21,9 @@ public class SslContextUtil {
 
     public static void setSsl() {
         PropUtil instance = PropUtil.getInstance();
-        String certFilePath = instance.get("certPath");
-        String privateKeyPath = instance.get("privateKeyPath");
-        String privateKeyPwd = instance.get("privateKeyPwd");
+        String certFilePath = instance.get("web.certPath");
+        String privateKeyPath = instance.get("web.privateKeyPath");
+        String privateKeyPwd = instance.get("web.privateKeyPwd");
         if (privateKeyPath == null || certFilePath == null || privateKeyPath.trim().length() == 0 || certFilePath.trim().length() == 0) {
             return;
         }
@@ -33,7 +33,7 @@ public class SslContextUtil {
             File pfile = new File(privateKeyPath);
             if (cfile.isFile() && pfile.isFile()) {
                 SslContextBuilder sslContext = SslContextBuilder.forServer(cfile, pfile, privateKeyPwd).sslProvider(defaultSslProvider());
-                ConstConfig.sslContext = sslContext.build();
+                WebConstConfig.sslContext = sslContext.build();
                 return;
             }
 
@@ -43,7 +43,7 @@ public class SslContextUtil {
 
             if (cinput != null && pinput != null) {
                 SslContextBuilder sslContext = SslContextBuilder.forServer(cinput, pinput, privateKeyPwd).sslProvider(defaultSslProvider());
-                ConstConfig.sslContext = sslContext.build();
+                WebConstConfig.sslContext = sslContext.build();
                 cinput.close();
                 pinput.close();
             }

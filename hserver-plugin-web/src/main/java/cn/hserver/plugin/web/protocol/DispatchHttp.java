@@ -3,7 +3,7 @@ package cn.hserver.plugin.web.protocol;
 import cn.hserver.core.interfaces.ProtocolDispatcherAdapter;
 import cn.hserver.core.ioc.annotation.Bean;
 import cn.hserver.core.ioc.annotation.Order;
-import cn.hserver.plugin.web.context.ConstConfig;
+import cn.hserver.plugin.web.context.WebConstConfig;
 import cn.hserver.plugin.web.handlers.HServerContentHandler;
 import cn.hserver.plugin.web.handlers.RouterHandler;
 import cn.hserver.plugin.web.handlers.WebSocketServerHandler;
@@ -33,8 +33,8 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
 
         //如果是https
         if (isHttps(headers[0], headers[1], headers[2])) {
-            if (ConstConfig.sslContext != null) {
-                pipeline.addLast(new OptionalSslHandler(ConstConfig.sslContext));
+            if (WebConstConfig.sslContext != null) {
+                pipeline.addLast(new OptionalSslHandler(WebConstConfig.sslContext));
                 httpHandler(ctx);
             }
             return true;
@@ -44,20 +44,20 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
 
     public static void httpHandler(ChannelHandlerContext ctx) {
         ChannelPipeline pipeline = ctx.pipeline();
-        if (ConstConfig.WRITE_LIMIT != null && ConstConfig.READ_LIMIT != null) {
+        if (WebConstConfig.WRITE_LIMIT != null && WebConstConfig.READ_LIMIT != null) {
             if (globalTrafficShapingHandler == null) {
-                globalTrafficShapingHandler = new GlobalTrafficShapingHandler(ctx.executor(), ConstConfig.WRITE_LIMIT, ConstConfig.READ_LIMIT);
+                globalTrafficShapingHandler = new GlobalTrafficShapingHandler(ctx.executor(), WebConstConfig.WRITE_LIMIT, WebConstConfig.READ_LIMIT);
             }
-            pipeline.addLast(ConstConfig.BUSINESS_EVENT, globalTrafficShapingHandler);
+            pipeline.addLast(WebConstConfig.BUSINESS_EVENT, globalTrafficShapingHandler);
         }
-        pipeline.addLast(ConstConfig.BUSINESS_EVENT, new HttpServerCodec());
-        pipeline.addLast(ConstConfig.BUSINESS_EVENT, new HttpObjectAggregator(ConstConfig.HTTP_CONTENT_SIZE));
+        pipeline.addLast(WebConstConfig.BUSINESS_EVENT, new HttpServerCodec());
+        pipeline.addLast(WebConstConfig.BUSINESS_EVENT, new HttpObjectAggregator(WebConstConfig.HTTP_CONTENT_SIZE));
         //有websocket才走他
         if (WebSocketServerHandler.WEB_SOCKET_ROUTER.size() > 0) {
-            pipeline.addLast(ConstConfig.BUSINESS_EVENT, new WebSocketServerHandler());
+            pipeline.addLast(WebConstConfig.BUSINESS_EVENT, new WebSocketServerHandler());
         }
-        pipeline.addLast(ConstConfig.BUSINESS_EVENT, new HServerContentHandler());
-        pipeline.addLast(ConstConfig.BUSINESS_EVENT, new RouterHandler());
+        pipeline.addLast(WebConstConfig.BUSINESS_EVENT, new HServerContentHandler());
+        pipeline.addLast(WebConstConfig.BUSINESS_EVENT, new RouterHandler());
     }
 
 

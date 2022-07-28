@@ -1,8 +1,8 @@
 package cn.hserver.plugin.web.handlers;
 
 
+import cn.hserver.core.server.context.ConstConfig;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import cn.hserver.plugin.web.context.ConstConfig;
 import cn.hserver.plugin.web.context.StaticFile;
 import cn.hserver.plugin.web.context.HServerContext;
 import cn.hserver.plugin.web.exception.BusinessException;

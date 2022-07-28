@@ -2,9 +2,9 @@ package cn.hserver.plugin.web.util;
 
 import cn.hserver.core.server.util.ExceptionUtil;
 import cn.hserver.core.server.util.ObjConvertUtil;
-import cn.hserver.plugin.web.context.ConstConfig;
 import cn.hserver.plugin.web.context.HServerContext;
 import cn.hserver.plugin.web.context.MimeType;
+import cn.hserver.plugin.web.context.WebConstConfig;
 import cn.hserver.plugin.web.exception.ValidateException;
 import cn.hserver.plugin.web.interfaces.HttpRequest;
 import cn.hserver.plugin.web.interfaces.HttpResponse;
@@ -70,11 +70,11 @@ public class ParameterUtil {
                             //payload
                             String rawData = hServerContext.getRequest().getRawData();
                             if (rawData != null) {
-                                objects[i] = ConstConfig.JSONADAPTER.convertObject(rawData, parameterType);
+                                objects[i] = WebConstConfig.JSONADAPTER.convertObject(rawData, parameterType);
                             }
                         } else if (requestParams.size() > 0) {
                             //正常的表单
-                            objects[i] = ConstConfig.JSONADAPTER.convertMapToObject(invokeData(requestParams), parameterType.getType());
+                            objects[i] = WebConstConfig.JSONADAPTER.convertMapToObject(invokeData(requestParams), parameterType.getType());
                         }
                         //参数校验工具
                         if (controllerParameter.isValidate) {

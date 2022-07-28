@@ -1,6 +1,6 @@
 package cn.hserver.plugin.web.json;
 
-import cn.hserver.plugin.web.context.ConstConfig;
+import cn.hserver.plugin.web.context.WebConstConfig;
 import com.fasterxml.jackson.databind.JavaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +22,9 @@ public class JackSonJsonAdapter implements JsonAdapter {
     public Object convertObject(String data, Parameter type) {
         try {
             if (Collection.class.isAssignableFrom(type.getType()) || Map.class.isAssignableFrom(type.getType())) {
-                return ConstConfig.OBJECT_MAPPER.readValue(data, getParameterizedTypeImplType((ParameterizedType) type.getParameterizedType()));
+                return WebConstConfig.OBJECT_MAPPER.readValue(data, getParameterizedTypeImplType((ParameterizedType) type.getParameterizedType()));
             } else {
-                return ConstConfig.OBJECT_MAPPER.readValue(data, type.getType());
+                return WebConstConfig.OBJECT_MAPPER.readValue(data, type.getType());
             }
         } catch (Throwable e) {
             return null;
@@ -34,7 +34,7 @@ public class JackSonJsonAdapter implements JsonAdapter {
     @Override
     public Object convertObject(String data, Class type) {
         try {
-            return ConstConfig.OBJECT_MAPPER.readValue(data, type);
+            return WebConstConfig.OBJECT_MAPPER.readValue(data, type);
         } catch (Throwable e) {
             return null;
         }
@@ -42,13 +42,13 @@ public class JackSonJsonAdapter implements JsonAdapter {
 
     @Override
     public Object convertMapToObject(Map data, Class type) {
-        return ConstConfig.OBJECT_MAPPER.convertValue(data, type);
+        return WebConstConfig.OBJECT_MAPPER.convertValue(data, type);
     }
 
     @Override
     public String convertString(Object data) {
         try {
-            return ConstConfig.OBJECT_MAPPER.writeValueAsString(data);
+            return WebConstConfig.OBJECT_MAPPER.writeValueAsString(data);
         } catch (Exception e) {
             log.error(ExceptionUtil.getMessage(e));
             return null;
@@ -70,18 +70,18 @@ public class JackSonJsonAdapter implements JsonAdapter {
         if (Collection.class.isAssignableFrom(typeClass)) {
             Type listActualTypeArgument = parameterizedType.getActualTypeArguments()[0];
             if (listActualTypeArgument instanceof ParameterizedType) {
-                return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(List.class, getParameterizedTypeImplType((ParameterizedType) listActualTypeArgument));
+                return WebConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(List.class, getParameterizedTypeImplType((ParameterizedType) listActualTypeArgument));
             } else {
-                return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(List.class, getTypeClass(parameterizedType.getActualTypeArguments()[0]));
+                return WebConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(List.class, getTypeClass(parameterizedType.getActualTypeArguments()[0]));
             }
         } else if (Map.class.isAssignableFrom(typeClass)) {
             Type mapActualTypeArgument = parameterizedType.getActualTypeArguments()[1];
             if (mapActualTypeArgument instanceof ParameterizedType) {
-                JavaType keyType = ConstConfig.OBJECT_MAPPER.getTypeFactory().constructType(getTypeClass(parameterizedType.getActualTypeArguments()[0]));
-                return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(Map.class, keyType, getParameterizedTypeImplType((ParameterizedType) mapActualTypeArgument));
+                JavaType keyType = WebConstConfig.OBJECT_MAPPER.getTypeFactory().constructType(getTypeClass(parameterizedType.getActualTypeArguments()[0]));
+                return WebConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(Map.class, keyType, getParameterizedTypeImplType((ParameterizedType) mapActualTypeArgument));
 
             } else {
-                return ConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(Map.class, getTypeClass(parameterizedType.getActualTypeArguments()[0]), getTypeClass(parameterizedType.getActualTypeArguments()[1]));
+                return WebConstConfig.OBJECT_MAPPER.getTypeFactory().constructParametricType(Map.class, getTypeClass(parameterizedType.getActualTypeArguments()[0]), getTypeClass(parameterizedType.getActualTypeArguments()[1]));
             }
         }
         return null;

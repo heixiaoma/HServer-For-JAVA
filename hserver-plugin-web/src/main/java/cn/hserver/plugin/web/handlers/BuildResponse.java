@@ -1,5 +1,6 @@
 package cn.hserver.plugin.web.handlers;
 
+import cn.hserver.core.server.context.ConstConfig;
 import cn.hserver.plugin.web.context.*;
 import cn.hserver.plugin.web.util.FreemarkerUtil;
 import io.netty.buffer.Unpooled;
@@ -21,7 +22,6 @@ import java.util.Objects;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.FOUND;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
-import static cn.hserver.plugin.web.context.ConstConfig.SERVER_NAME;
 
 
 /**
@@ -145,7 +145,7 @@ public class BuildResponse {
         build.setMethod(httpRequest.getRequestType().name());
         build.setUrl(httpRequest.getUri());
         build.setVersion(ConstConfig.VERSION);
-        build.setBugAddress(ConstConfig.BUG_ADDRESS);
+        build.setBugAddress(WebConstConfig.BUG_ADDRESS);
 
         Map<Object, Object> data = new HashMap<>();
         data.put("business", build);
@@ -181,7 +181,7 @@ public class BuildResponse {
 
     private static void writeException(ChannelHandlerContext ctx, Throwable cause, HttpResponseStatus status) {
         String message = ExceptionUtil.getMessage(cause);
-        message = SERVER_NAME+":" + ConstConfig.VERSION + "服务器异常:\n" + message;
+        message = WebConstConfig.SERVER_NAME+":" + ConstConfig.VERSION + "服务器异常:\n" + message;
 
         FullHttpResponse response = new DefaultFullHttpResponse(
                 HttpVersion.HTTP_1_1,

@@ -1,5 +1,6 @@
 package cn.hserver.plugin.web.handlers;
 
+import cn.hserver.core.server.context.ConstConfig;
 import cn.hserver.plugin.web.context.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -16,9 +17,6 @@ import cn.hserver.plugin.web.util.RequestIdGen;
 
 import java.util.List;
 import java.util.Map;
-
-import static cn.hserver.plugin.web.context.ConstConfig.SERVER_NAME;
-
 
 /**
  * @author hxm
@@ -64,9 +62,9 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         Webkit webkit = new Webkit();
         webkit.httpRequest = hServerContext.getRequest();
         webkit.httpResponse = hServerContext.getResponse();
-        webkit.httpResponse.setHeader(ConstConfig.REQUEST_ID, id);
-        webkit.httpResponse.setHeader(SERVER_NAME, ConstConfig.VERSION);
-        webkit.httpResponse.setHeader("Server",SERVER_NAME);
+        webkit.httpResponse.setHeader(WebConstConfig.REQUEST_ID, id);
+        webkit.httpResponse.setHeader(WebConstConfig.SERVER_NAME, ConstConfig.VERSION);
+        webkit.httpResponse.setHeader("Server",WebConstConfig.SERVER_NAME);
         hServerContext.setWebkit(webkit);
         HServerContextHolder.setWebKit(webkit);
         channelHandlerContext.fireChannelRead(hServerContext);

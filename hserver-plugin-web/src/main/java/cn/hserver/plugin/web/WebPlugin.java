@@ -7,7 +7,7 @@ import cn.hserver.core.log.HServerPatternLayout;
 import cn.hserver.core.server.util.ExceptionUtil;
 import cn.hserver.core.server.util.PropUtil;
 import cn.hserver.core.server.util.TTLUtil;
-import cn.hserver.plugin.web.context.ConstConfig;
+import cn.hserver.plugin.web.context.WebConstConfig;
 import cn.hserver.plugin.web.util.ParameterUtil;
 import cn.hserver.plugin.web.annotation.*;
 import cn.hserver.plugin.web.handlers.WebSocketServerHandler;
@@ -34,24 +34,26 @@ public class WebPlugin implements PluginAdapter {
     @Override
     public void startApp() {
         PropUtil instance = PropUtil.getInstance();
-        if (instance.get("readLimit").trim().length() > 0) {
-            ConstConfig.READ_LIMIT = Long.valueOf(instance.get("readLimit"));
+        //配置文件初始化
+        if (instance.get("web.readLimit").trim().length() > 0) {
+            WebConstConfig.READ_LIMIT = Long.valueOf(instance.get("web.readLimit"));
         }
-        if (instance.get("writeLimit").trim().length() > 0) {
-            ConstConfig.WRITE_LIMIT = Long.valueOf(instance.get("writeLimit"));
+        if (instance.get("web.writeLimit").trim().length() > 0) {
+            WebConstConfig.WRITE_LIMIT = Long.valueOf(instance.get("web.writeLimit"));
         }
-        if (instance.get("httpContentSize").trim().length() > 0) {
-            ConstConfig.HTTP_CONTENT_SIZE = instance.getInt("httpContentSize");
+        if (instance.get("web.httpContentSize").trim().length() > 0) {
+            WebConstConfig.HTTP_CONTENT_SIZE = instance.getInt("web.httpContentSize");
         }
-        Integer businessPool = instance.getInt("businessPool");
+        Integer businessPool = instance.getInt("web.businessPool");
         if (businessPool != null && businessPool > 0) {
-            ConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(businessPool,"hserver_business");
+            WebConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(businessPool,"hserver_business");
         }
         if (businessPool != null && businessPool < 0) {
-            ConstConfig.BUSINESS_EVENT = null;
+            WebConstConfig.BUSINESS_EVENT = null;
         } else {
-            ConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(50,"hserver_business");
+            WebConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(50,"hserver_business");
         }
+        //日志初始化
         HServerPatternLayout.defaultConverterMap.put("requestId", RequestIdClassicConverter.class.getName());
     }
 
