@@ -94,7 +94,6 @@ worker线程池
 **1.建立一个maven项目，导入依赖**
 
 ```xml
-
 <parent>
     <artifactId>hserver-parent</artifactId>
     <groupId>cn.hserver</groupId>
