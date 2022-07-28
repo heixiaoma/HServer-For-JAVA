@@ -79,7 +79,7 @@ HServer是一个基于Netty开发的一个功能强大，资源丰富，开发�
 
 ### 概念图
 
-![原理](https://gitee.com/HServer/HServer/raw/master/doc/planning_map.png)
+![原理](https://gitee.com/HServer/HServer/raw/master/doc/planning_map.jpg)
 
 ### 压测数据 DeePin 8h 16g i7-9700k
 
