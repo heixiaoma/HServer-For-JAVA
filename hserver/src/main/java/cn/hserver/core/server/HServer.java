@@ -1,5 +1,6 @@
 package cn.hserver.core.server;
 
+import cn.hserver.core.interfaces.ProtocolDispatcherAdapter;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
@@ -77,38 +78,41 @@ public class HServer {
                 .handler(new HumClientHandler());
         HumClient.channel = humClient.bind(0).sync().channel();
         channels.put(HumClient.channel, "UDP Client Port:0");
-        //TCP Server
-        String typeName;
-        ServerBootstrap bootstrap = new ServerBootstrap();
-        if (EpollUtil.check()) {
-            bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
-            bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-            bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-            bossGroup =TTLUtil.getEventLoop(bossPool,"hserver_epoll_boss");
-            workerGroup =TTLUtil.getEventLoop(workerPool,"hserver_epoll_worker");
-            bootstrap.group(bossGroup, workerGroup).channel(EpollServerSocketChannel.class);
-            typeName = "Epoll";
-        } else {
-            bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-            bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-            bossGroup =TTLUtil.getEventLoop(bossPool,"hserver_boss");
-            workerGroup =TTLUtil.getEventLoop(workerPool,"hserver_worker");
-            bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
-            typeName = "Nio";
-        }
-        bootstrap.option(ChannelOption.SO_BACKLOG, backLog);
-        bootstrap.childHandler(new ServerInitializer());
-        StringBuilder portStr = new StringBuilder();
-        for (Integer port : ports) {
-            portStr.append(port).append(" ");
-            Channel channel = bootstrap.bind(port).sync().channel();
-            channels.put(channel, "TCP Server Port:" + port);
+
+        List<ProtocolDispatcherAdapter> listBean = IocUtil.getListBean(ProtocolDispatcherAdapter.class);
+        if (listBean!=null&&!listBean.isEmpty()) {
+            //TCP Server
+            String typeName;
+            ServerBootstrap bootstrap = new ServerBootstrap();
+            if (EpollUtil.check()) {
+                bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
+                bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+                bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
+                bossGroup = TTLUtil.getEventLoop(bossPool, "hserver_epoll_boss");
+                workerGroup = TTLUtil.getEventLoop(workerPool, "hserver_epoll_worker");
+                bootstrap.group(bossGroup, workerGroup).channel(EpollServerSocketChannel.class);
+                typeName = "Epoll";
+            } else {
+                bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+                bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
+                bossGroup = TTLUtil.getEventLoop(bossPool, "hserver_boss");
+                workerGroup = TTLUtil.getEventLoop(workerPool, "hserver_worker");
+                bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
+                typeName = "Nio";
+            }
+            bootstrap.option(ChannelOption.SO_BACKLOG, backLog);
+            bootstrap.childHandler(new ServerInitializer());
+            StringBuilder portStr = new StringBuilder();
+            for (Integer port : ports) {
+                portStr.append(port).append(" ");
+                Channel channel = bootstrap.bind(port).sync().channel();
+                channels.put(channel, "TCP Server Port:" + port);
+            }
+            System.out.println();
+            System.out.println(getHello(typeName, portStr.toString()));
+            System.out.println();
         }
         log.info("HServer 启动完成");
-        System.out.println();
-
-        System.out.println(getHello(typeName, portStr.toString()));
-        System.out.println();
         shutdownHook();
         initOk();
     }
