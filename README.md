@@ -102,11 +102,27 @@ worker线程池
 </parent>
 
 <dependencies>
-<dependency>
-    <groupId>cn.hserver</groupId>
-    <artifactId>hserver</artifactId>
-</dependency>
+<!--    核心依赖-->
+    <dependency>
+        <artifactId>hserver</artifactId>
+        <groupId>cn.hserver</groupId>
+    </dependency>
+<!--    web框架 -->
+    <dependency>
+        <artifactId>hserver-plugin-web</artifactId>
+        <groupId>cn.hserver</groupId>
+    </dependency>
 </dependencies>
+<!--    打包jar -->
+<build>
+    <plugins>
+        <plugin>
+            <artifactId>hserver-plugin-maven</artifactId>
+            <groupId>cn.hserver</groupId>
+        </plugin>
+    </plugins>
+</build>
+
 
 ```
 
