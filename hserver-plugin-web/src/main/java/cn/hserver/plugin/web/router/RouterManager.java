@@ -57,10 +57,7 @@ public class RouterManager {
     public static void addRouter(RouterInfo routerInfo) {
         if (routerInfo != null) {
             String url = routerInfo.getUrl();
-            /**
-             * 检查是否是需要匹配的那种URL
-             */
-            //todo 设置正则规则的URL
+            //对URL检查是否是正则的 如果是正则的就进行替换为正则的方便后期校验
             List<String> pattern = isPattern(url);
             if (pattern.size() > 0) {
                 String s = url;
@@ -71,13 +68,13 @@ public class RouterManager {
                         s = s.replaceAll("\\{" + pattern.get(i) + "\\}", "(.+?)");
                     }
                 }
-                Map<String, PatternUri> ispauri = ISPAURI.get(routerInfo.getUrl());
+                s = "^" + s;
+                Map<String, PatternUri> ispauri = ISPAURI.get(s);
                 if (ispauri == null) {
                     ispauri = new ConcurrentHashMap<>();
-                    ISPAURI.put(routerInfo.getUrl(), ispauri);
+                    ISPAURI.put(s, ispauri);
                 }
-                s = "^" + s;
-                ispauri.put(s, new PatternUri(pattern, url, s, routerInfo.getReqMethodName().name()));
+                ispauri.put(routerInfo.getReqMethodName().name(), new PatternUri(pattern, url, s, routerInfo.getReqMethodName().name()));
             }
 
             Map<String, RouterInfo> httpMethodRouterInfoMap = router2.get(url);
@@ -106,16 +103,16 @@ public class RouterManager {
         return patterns;
     }
 
-    private static PatternUri isPattern(String url, HttpMethod method) {
-        Map<String, PatternUri> ispauri = ISPAURI.get(url);
-        if (ispauri == null) {
-            return null;
-        }
-        for (String next : ispauri.keySet()) {
+    private static PatternUri isPattern(String url, HttpMethod method) throws MethodNotSupportException {
+        for (String next : ISPAURI.keySet()) {
             if (Pattern.compile(next).matcher(url).find()) {
-                PatternUri patternUri = ispauri.get(next);
-                if (patternUri.getRequestType().equals(method.name())) {
-                    return patternUri;
+                Map<String, PatternUri> stringPatternUriMap = ISPAURI.get(next);
+                if (stringPatternUriMap!=null){
+                    PatternUri patternUri = stringPatternUriMap.get(method.name());
+                    if (patternUri!=null){
+                        return patternUri;
+                    }
+                    throw new MethodNotSupportException();
                 }
             }
         }
@@ -126,12 +123,10 @@ public class RouterManager {
         if (routerPermission != null) {
             String url = routerPermission.getUrl();
             Map<String, RouterPermission> stringRouterPermissionMap = routerPermission(routerPermission.getReqMethodName());
-            if (stringRouterPermissionMap != null) {
-                if (stringRouterPermissionMap.containsKey(url)) {
-                    log.warn("url< {} >权限映射已经存在，可能会影响程序使用", url);
-                }
-                stringRouterPermissionMap.put(url, routerPermission);
+            if (stringRouterPermissionMap.containsKey(url)) {
+                log.warn("url< {} >权限映射已经存在，可能会影响程序使用", url);
             }
+            stringRouterPermissionMap.put(url, routerPermission);
         }
     }
 
@@ -183,9 +178,13 @@ public class RouterManager {
         if (routerPermission != null) {
             return routerPermission;
         } else {
-            PatternUri pattern = isPattern(url, requestType);
-            if (pattern != null) {
-                return stringRouterPermissionMap.get(pattern.getOrgUrl());
+            try {
+                PatternUri pattern = isPattern(url, requestType);
+                if (pattern != null) {
+                    return stringRouterPermissionMap.get(pattern.getOrgUrl());
+                }
+            }catch (MethodNotSupportException e){
+                return null;
             }
         }
         return null;

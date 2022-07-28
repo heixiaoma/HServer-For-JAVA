@@ -5,7 +5,7 @@ package cn.hserver.plugin.web.exception;
  */
 public class MethodNotSupportException extends Exception {
     public MethodNotSupportException() {
-        super();
+        super("不支持当前请求方式");
     }
 
     public MethodNotSupportException(String s) {

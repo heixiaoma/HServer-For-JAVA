@@ -204,7 +204,7 @@ public class DispatcherHandler {
                     .append(hServerContext.getRequest().getUri())
                     .append("，来源IP：")
                     .append(hServerContext.getRequest().getIpAddress());
-            throw new BusinessException(HttpResponseStatus.METHOD_NOT_ALLOWED.code(), error.toString(), new NotFoundException("不能找到处理当前请求的资源"), hServerContext.getWebkit());
+            throw new BusinessException(HttpResponseStatus.METHOD_NOT_ALLOWED.code(), error.toString(),e, hServerContext.getWebkit());
         }
         Method method = routerInfo.getMethod();
         Class<?> aClass = routerInfo.getaClass();

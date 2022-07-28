@@ -80,6 +80,11 @@ public class ConstConfig {
     public static Boolean TRACK = false;
 
     /**
+     * 可以epoll时是否使用
+     */
+    public static Boolean EPOLL = true;
+
+    /**
      * 跟踪扩展包
      */
     public static String[] TRACK_EXT_PACKAGES = new String[0];
