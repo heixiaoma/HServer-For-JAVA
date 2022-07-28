@@ -33,6 +33,12 @@ public class WebPlugin implements PluginAdapter {
 
     @Override
     public void startApp() {
+        //日志初始化
+        HServerPatternLayout.defaultConverterMap.put("requestId", RequestIdClassicConverter.class.getName());
+    }
+
+    @Override
+    public void startIocInit() {
         PropUtil instance = PropUtil.getInstance();
         //配置文件初始化
         if (instance.get("web.readLimit").trim().length() > 0) {
@@ -53,12 +59,6 @@ public class WebPlugin implements PluginAdapter {
         } else {
             WebConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(50,"hserver_business");
         }
-        //日志初始化
-        HServerPatternLayout.defaultConverterMap.put("requestId", RequestIdClassicConverter.class.getName());
-    }
-
-    @Override
-    public void startIocInit() {
     }
 
     @Override
