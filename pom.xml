@@ -7,7 +7,7 @@
     <groupId>cn.hserver</groupId>
     <artifactId>hserver-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.0.M5</version>
+    <version>3.0.M6</version>
 
     <name>hserver-parent</name>
     <url>https://gitee.com/HServer/HServer</url>
@@ -39,37 +39,37 @@
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver</artifactId>
-                <version>3.0.M5</version>
+                <version>3.0.M6</version>
             </dependency>
 
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-beetlsql</artifactId>
-                <version>3.0.M5</version>
+                <version>3.0.M6</version>
             </dependency>
 
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-mybatis</artifactId>
-                <version>3.0.M5</version>
+                <version>3.0.M6</version>
             </dependency>
 
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-rpc</artifactId>
-                <version>3.0.M5</version>
+                <version>3.0.M6</version>
             </dependency>
 
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-web</artifactId>
-                <version>3.0.M5</version>
+                <version>3.0.M6</version>
             </dependency>
 
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-mqtt</artifactId>
-                <version>3.0.M5</version>
+                <version>3.0.M6</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -80,7 +80,7 @@
                 <plugin>
                     <groupId>cn.hserver</groupId>
                     <artifactId>hserver-plugin-maven</artifactId>
-                    <version>3.0.M5</version>
+                    <version>3.0.M6</version>
                     <executions>
                         <execution>
                             <phase>package</phase>
