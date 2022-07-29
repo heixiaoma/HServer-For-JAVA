@@ -1,6 +1,7 @@
 package cn.hserver.plugin.druid.web;
 
 
+import cn.hserver.plugin.druid.web.config.HtmlConst;
 import cn.hserver.plugin.web.annotation.Controller;
 import cn.hserver.plugin.web.annotation.GET;
 import cn.hserver.plugin.web.annotation.RequestMapping;
@@ -24,7 +25,7 @@ public class StatViewController {
         String druidPath = "support/http/resources/";
         String url = druidPath + uri;
         if (uri.endsWith("json")) {
-            response.sendJsonString(statService.service(uri));
+            response.sendJsonString(statService.service("/"+uri));
         } else {
             if (url.endsWith(".jpg")) {
                 byte[] bytes = Utils.readByteArrayFromResource(url);
@@ -33,6 +34,9 @@ public class StatViewController {
                 }
             }
             String text = Utils.readFromResource(url);
+            if (url.contains("header.html")){
+                text= HtmlConst.HEADER;
+            }
             if (text == null) {
                 return;
             }

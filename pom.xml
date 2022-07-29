@@ -60,6 +60,11 @@
                 <artifactId>hserver-plugin-rpc</artifactId>
                 <version>3.0.M6</version>
             </dependency>
+            <dependency>
+                <groupId>cn.hserver</groupId>
+                <artifactId>hserver-plugin-druid</artifactId>
+                <version>3.0.M6</version>
+            </dependency>
 
             <dependency>
                 <groupId>cn.hserver</groupId>
