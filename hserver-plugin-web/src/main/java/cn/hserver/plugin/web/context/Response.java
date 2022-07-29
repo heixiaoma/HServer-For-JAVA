@@ -134,14 +134,18 @@ public class Response implements HttpResponse {
     @Override
     public void sendJsonString(String jsonStr) {
         this.result = jsonStr;
-        headers.put("content-type", "application/json;charset=UTF-8");
+        if (!headers.containsKey("content-type")) {
+            headers.put("content-type", "application/json;charset=UTF-8");
+        }
     }
 
     @Override
     public void sendJson(Object object) {
         try {
             this.result = WebConstConfig.JSONADAPTER.convertString(object);
-            headers.put("content-type", "application/json;charset=UTF-8");
+            if (!headers.containsKey("content-type")) {
+                headers.put("content-type", "application/json;charset=UTF-8");
+            }
         } catch (Exception e) {
             log.error(ExceptionUtil.getMessage(e));
         }
@@ -187,7 +191,9 @@ public class Response implements HttpResponse {
         } catch (Exception e) {
             log.error(ExceptionUtil.getMessage(e));
         }
-        headers.put("content-type", "text/html;charset=UTF-8");
+        if (!headers.containsKey("content-type")) {
+            headers.put("content-type", "text/html;charset=UTF-8");
+        }
     }
 
     @Override
