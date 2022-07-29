@@ -26,7 +26,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 public class Response implements HttpResponse {
     private static final Logger log = LoggerFactory.getLogger(Response.class);
 
-    private Map<String, String> headers = new ConcurrentHashMap<>();
+    private final HeadMap headers = new HeadMap();
 
     private File file;
 
@@ -150,13 +150,17 @@ public class Response implements HttpResponse {
     @Override
     public void sendHtml(String html) {
         this.result = html;
-        headers.put("content-type", "text/html;charset=UTF-8");
+        if (!headers.containsKey("content-type")) {
+            headers.put("content-type", "text/html;charset=UTF-8");
+        }
     }
 
     @Override
     public void sendText(String text) {
         this.result = text;
-        headers.put("content-type", "text/plain;charset=UTF-8");
+        if (!headers.containsKey("content-type")) {
+            headers.put("content-type", "text/plain;charset=UTF-8");
+        }
     }
 
     /**

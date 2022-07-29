@@ -22,6 +22,7 @@
         <module>hserver-plugin-maven</module>
         <module>hserver-plugin-web</module>
         <module>hserver-plugin-mqtt</module>
+        <module>hserver-plugin-druid</module>
     </modules>
 
     <properties>
