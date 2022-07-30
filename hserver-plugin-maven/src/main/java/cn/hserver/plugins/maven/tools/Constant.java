@@ -14,9 +14,9 @@ public class Constant {
 
     public static final String START_CLASS = "Start-Class";
 
-    public static final String HEAD_PACKAGE = "cn.hserver.core.loader";
+    public static final String HEAD_PACKAGE = "cn.hserver.plugin.loader";
 
-    public static final String MAIN_CLASS = "cn.hserver.core.loader.HServerJarMainClassStart";
+    public static final String MAIN_CLASS = "cn.hserver.plugin.loader.HServerJarMainClassStart";
 
 
 }

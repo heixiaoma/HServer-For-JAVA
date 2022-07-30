@@ -40,6 +40,12 @@
 
 
     <dependencies>
+
+        <dependency>
+            <groupId>cn.hserver</groupId>
+            <artifactId>hserver-plugin-loader</artifactId>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.maven/maven-archiver -->
         <dependency>
             <groupId>org.apache.maven</groupId>

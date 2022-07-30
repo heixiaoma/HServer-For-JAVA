@@ -34,7 +34,8 @@ public class Repackager {
     private final File source;
 
     private Layout layout;
-    private Log logger;
+
+    private final Log logger;
 
     public Repackager(File source, Log logger) {
         this.logger = logger;
@@ -201,7 +202,6 @@ public class Repackager {
 
 
     private String getStartClass() throws IOException {
-        ClassPool pool = ClassPool.getDefault();
         File f = getBackupFile();
         URL url1 = f.toURI().toURL();
         URLClassLoader myClassLoader = new URLClassLoader(new URL[]{url1}, Thread.currentThread().getContextClassLoader());

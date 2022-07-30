@@ -24,6 +24,7 @@
         <module>hserver-plugin-mqtt</module>
         <module>hserver-plugin-druid</module>
         <module>hserver-plugin-gateway</module>
+        <module>hserver-plugin-loader</module>
     </modules>
 
     <properties>
@@ -72,7 +73,11 @@
                 <artifactId>hserver-plugin-web</artifactId>
                 <version>3.0.M6</version>
             </dependency>
-
+            <dependency>
+                <groupId>cn.hserver</groupId>
+                <artifactId>hserver-plugin-loader</artifactId>
+                <version>3.0.M6</version>
+            </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-mqtt</artifactId>

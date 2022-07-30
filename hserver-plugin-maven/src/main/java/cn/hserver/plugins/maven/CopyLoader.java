@@ -1,9 +1,15 @@
 package cn.hserver.plugins.maven;
 
 
+import cn.hserver.plugin.loader.MainMethodRunner;
+import org.apache.commons.io.IOUtils;
+
 import java.io.*;
-import java.util.Enumeration;
-import java.util.UUID;
+import java.net.URI;
+import java.net.URL;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
@@ -12,94 +18,68 @@ import java.util.jar.JarOutputStream;
  * @author hxm
  */
 public class CopyLoader {
-    static String path;
-    static String name;
-    static String tempName;
-    static String HServerName = "HServer.jar";
 
     public static void start(File file) throws Exception {
-        CopyLoader.name = file.getName();
-        CopyLoader.tempName = UUID.randomUUID().toString() + ".jar";
-        CopyLoader.HServerName = UUID.randomUUID().toString() + ".jar";
-        CopyLoader.path = (file.getAbsolutePath().replace(name, ""));
-        getHServerJar();
-        setLoader();
-        organizeFiles();
+        //获取classloader路径
+        ProtectionDomain protectionDomain = MainMethodRunner.class.getProtectionDomain();
+        CodeSource codeSource = protectionDomain.getCodeSource();
+        URI location = (codeSource == null ? null : codeSource.getLocation().toURI());
+        String path = (location == null ? null : location.getSchemeSpecificPart());
+        if (path != null && (path.endsWith(".jar") || path.endsWith(".jar!/"))) {
+            String s = path.replaceAll("file:", "").replaceAll("!/", "");
+            updateJarFile(file,new File(s));
+        }
     }
 
+    public static void updateJarFile(File srcJarFile,File destJarFile) throws IOException {
+        File tmpJarFile = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
+        JarFile jarFile = new JarFile(srcJarFile);
+        boolean jarUpdated = false;
 
-    private static void organizeFiles() {
-        new File(path + name).delete();
-        new File(path + HServerName).delete();
-        new File(path + tempName).renameTo(new File(path + name));
+        try {
+            JarOutputStream tempJarOutputStream = new JarOutputStream(new FileOutputStream(tmpJarFile));
+            try {
+                // 写classloader
+                JarFile classLoaderJarfile = new JarFile(destJarFile);
+                Enumeration<JarEntry> entries = classLoaderJarfile.entries();
+                while (entries.hasMoreElements()) {
+                    JarEntry jarEntry = entries.nextElement();
+                    try {
+                        if (!jarEntry.isDirectory() && jarEntry.getName().contains("cn/hserver/plugin/loader/") && jarEntry.getName().endsWith(".class")) {
+                            tempJarOutputStream.putNextEntry(jarEntry);
+                            tempJarOutputStream.write(IOUtils.toByteArray(classLoaderJarfile.getInputStream(jarEntry)));
+                        }
+                    }catch (Exception ignored){}
+                }
+                // 源 项目文件
+                Enumeration<?> jarEntries = jarFile.entries();
+                while (jarEntries.hasMoreElements()) {
+                    try {
+                        JarEntry entry = (JarEntry) jarEntries.nextElement();
+                        tempJarOutputStream.putNextEntry(entry);
+                        InputStream entryInputStream = jarFile
+                                .getInputStream(entry);
+                        tempJarOutputStream.write(IOUtils.toByteArray(entryInputStream));
+                    }catch (Exception ignored){
+                    }
+                }
+                jarUpdated = true;
+            } catch (Exception ex) {
+                tempJarOutputStream.putNextEntry(new JarEntry("stub"));
+            } finally {
+                tempJarOutputStream.close();
+            }
 
-    }
-
-    private static void setLoader() throws IOException {
-        JarFile jarfile = new JarFile(path + HServerName);
-        JarFile targetJarfile = new JarFile(path + name);
-        JarOutputStream jarOutputStream = new JarOutputStream(new FileOutputStream(path + tempName));
-        //写loader 文件
-        Enumeration<JarEntry> entries = jarfile.entries();
-        while (entries.hasMoreElements()) {
-            JarEntry jarEntry = entries.nextElement();
-            if (!jarEntry.isDirectory() && jarEntry.getName().contains("cn/hserver/core/loader/") && jarEntry.getName().endsWith(".class")) {
-                jarOutputStream.putNextEntry(jarEntry);
-                byte[] bytes = toByteArray(jarfile.getInputStream(jarEntry));
-                jarOutputStream.write(bytes);
+        } finally {
+            jarFile.close();
+            if (!jarUpdated) {
+                tmpJarFile.delete();
             }
         }
-        //写原文件
-        Enumeration<JarEntry> targetEntries = targetJarfile.entries();
-        while (targetEntries.hasMoreElements()) {
-            JarEntry entry = targetEntries.nextElement();
-            InputStream entryInputStream = targetJarfile
-                    .getInputStream(entry);
-            jarOutputStream.putNextEntry(entry);
-            jarOutputStream.write(toByteArray(entryInputStream));
+
+        if (jarUpdated) {
+            srcJarFile.delete();
+            tmpJarFile.renameTo(srcJarFile);
         }
-        jarOutputStream.flush();
-        jarOutputStream.close();
-        targetJarfile.close();
-        jarfile.close();
     }
-
-    private static void getHServerJar() throws Exception {
-        JarFile jarfile = new JarFile(path + name);
-        Enumeration<JarEntry> entries = jarfile.entries();
-        while (entries.hasMoreElements()) {
-            JarEntry jarEntry = entries.nextElement();
-            if (jarEntry.getName().endsWith(".jar") && jarEntry.getName().startsWith("lib/hserver")) {
-                InputStream inputStream = jarfile.getInputStream(jarEntry);
-                writeToLocal(path + HServerName, inputStream);
-                break;
-            }
-        }
-        jarfile.close();
-
-    }
-
-    private static byte[] toByteArray(InputStream input) throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] buffer = new byte[4096];
-        int n = 0;
-        while (-1 != (n = input.read(buffer))) {
-            output.write(buffer, 0, n);
-        }
-        return output.toByteArray();
-    }
-
-    private static void writeToLocal(String destination, InputStream input)
-            throws IOException {
-        int index;
-        byte[] bytes = new byte[1024];
-        FileOutputStream downloadFile = new FileOutputStream(destination);
-        while ((index = input.read(bytes)) != -1) {
-            downloadFile.write(bytes, 0, index);
-            downloadFile.flush();
-        }
-        downloadFile.close();
-        input.close();
-    }
-
 }
