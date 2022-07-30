@@ -23,6 +23,7 @@
         <module>hserver-plugin-web</module>
         <module>hserver-plugin-mqtt</module>
         <module>hserver-plugin-druid</module>
+        <module>hserver-plugin-gateway</module>
     </modules>
 
     <properties>
