@@ -56,7 +56,11 @@
                 <artifactId>hserver-plugin-mybatis</artifactId>
                 <version>3.0.M6</version>
             </dependency>
-
+            <dependency>
+                <groupId>cn.hserver</groupId>
+                <artifactId>hserver-plugin-gateway</artifactId>
+                <version>3.0.M6</version>
+            </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-rpc</artifactId>
