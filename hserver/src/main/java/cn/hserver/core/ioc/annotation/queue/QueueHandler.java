@@ -1,7 +1,6 @@
 package cn.hserver.core.ioc.annotation.queue;
 
 
-import cn.hserver.core.ioc.annotation.HServerBoot;
 
 import java.lang.annotation.*;
 
