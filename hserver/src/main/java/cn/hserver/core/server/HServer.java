@@ -1,6 +1,7 @@
 package cn.hserver.core.server;
 
 import cn.hserver.core.interfaces.ProtocolDispatcherAdapter;
+import cn.hserver.core.server.context.ConstConfig;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
@@ -84,7 +85,7 @@ public class HServer {
             //TCP Server
             String typeName;
             ServerBootstrap bootstrap = new ServerBootstrap();
-            if (EpollUtil.check()) {
+            if (EpollUtil.check()&& ConstConfig.EPOLL) {
                 bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
                 bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
                 bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
