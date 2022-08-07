@@ -5,6 +5,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
+import io.netty.handler.stream.ChunkedWriteHandler;
 
 public class FrontendHandler extends ChannelInboundHandlerAdapter {
 
@@ -43,7 +44,7 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
             b.channel(NioSocketChannel.class).handler(new ChannelInitializer<Channel>() {
                 @Override
                 protected void initChannel(Channel ch) {
-                    ch.pipeline().addLast(new HttpClientCodec(), new HttpObjectAggregator(2000));
+                    ch.pipeline().addLast(new HttpClientCodec(),new ChunkedWriteHandler());
                     ch.pipeline().addLast(new BackendHandler(inboundChannel));
                 }
             });
