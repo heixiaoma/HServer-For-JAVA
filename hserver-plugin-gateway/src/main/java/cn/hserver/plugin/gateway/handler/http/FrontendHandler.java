@@ -28,6 +28,7 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
             outboundChannel.writeAndFlush(msg);
         } else {
             closeOnFlush(ctx.channel());
+            //泄漏
         }
     }
 
@@ -52,6 +53,7 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
                     future.channel().writeAndFlush(msg);
                 } else {
                     future.channel().close();
+                    //泄漏
                 }
             });
             outboundChannel = f.channel();

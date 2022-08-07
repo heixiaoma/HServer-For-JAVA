@@ -45,6 +45,7 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
                     ctx.channel().read();
                 } else {
                     future.channel().close();
+                    //泄漏
                 }
             });
         }
