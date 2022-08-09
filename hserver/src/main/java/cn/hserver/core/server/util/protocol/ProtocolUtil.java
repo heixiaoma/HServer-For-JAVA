@@ -1,4 +1,4 @@
-package cn.hserver.core.server.util;
+package cn.hserver.core.server.util.protocol;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
