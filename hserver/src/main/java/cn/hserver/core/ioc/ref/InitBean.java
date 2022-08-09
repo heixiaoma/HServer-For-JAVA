@@ -13,7 +13,9 @@ import cn.hserver.core.task.TaskManager;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.Collator;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author hxm
@@ -26,27 +28,20 @@ public class InitBean {
         IocUtil.getAll().forEach((k, v) -> {
             if (v instanceof List) {
                 List<?> listBean = (List<?>) v;
-                List newObjectList = new ArrayList<>();
+                List<ListBean> newObjectList = new ArrayList<>();
                 if (listBean.size() > 1) {
-                    int temp = 1;
                     for (Object o : listBean) {
                         Order annotation = o.getClass().getAnnotation(Order.class);
                         if (annotation != null) {
-                            if (temp > annotation.value()) {
-                                //向后添加
-                                newObjectList.add(0, o);
-                                temp = annotation.value();
-                            } else {
-                                //向前添加
-                                newObjectList.add(o);
-                                temp = annotation.value();
-                            }
+                            newObjectList.add(new ListBean(o, annotation.value()));
                         } else {
-                            newObjectList.add(o);
+                            newObjectList.add(new ListBean(o,0));
                         }
                     }
                     IocUtil.remove(k);
-                    IocUtil.addBean(k, newObjectList);
+                    List<Object> collect = newObjectList.stream().sorted(Comparator.comparing(ListBean::getSort)).map(ListBean::getObject)
+                            .collect(Collectors.toList());
+                    IocUtil.addBean(k, collect);
                 }
             }
         });
