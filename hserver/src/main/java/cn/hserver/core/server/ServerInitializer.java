@@ -9,6 +9,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import cn.hserver.core.interfaces.ProtocolDispatcherAdapter;
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.server.util.ByteBufUtil;
+import io.netty.util.ReferenceCountUtil;
 
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
              * 协议无解对其关闭
              */
             ctx.close();
+            ReferenceCountUtil.release(in);
         }
     }
 
