@@ -14,6 +14,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author hxm
@@ -26,7 +27,7 @@ public class InitBean {
         IocUtil.getAll().forEach((k, v) -> {
             if (v instanceof List) {
                 List<?> listBean = (List<?>) v;
-                List newObjectList = new ArrayList<>();
+                CopyOnWriteArrayList<Object> newObjectList = new CopyOnWriteArrayList<>();
                 if (listBean.size() > 1) {
                     int temp = 1;
                     for (Object o : listBean) {
