@@ -1,16 +1,15 @@
-package cn.hserver.plugin.gateway.handler.http;
+package cn.hserver.plugin.gateway.handler.http7;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpObject;
 
-public class BackendHandler extends ChannelInboundHandlerAdapter {
+public class Http7BackendHandler extends ChannelInboundHandlerAdapter {
 
     private final Channel inboundChannel;
 
-    public BackendHandler(Channel inboundChannel) {
+    public Http7BackendHandler(Channel inboundChannel) {
         this.inboundChannel = inboundChannel;
     }
 
@@ -25,12 +24,12 @@ public class BackendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        FrontendHandler.closeOnFlush(inboundChannel);
+        Http7FrontendHandler.closeOnFlush(inboundChannel);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
-        FrontendHandler.closeOnFlush(ctx.channel());
+        Http7FrontendHandler.closeOnFlush(ctx.channel());
     }
 }
