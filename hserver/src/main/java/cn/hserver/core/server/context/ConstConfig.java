@@ -96,4 +96,9 @@ public class ConstConfig {
      */
     public static String[] TRACK_NO_PACKAGES = new String[0];
 
+    /**
+     * 前置以协议大小
+     */
+    public static Integer PRE_PROTOCOL_MAX_SIZE = 1024;
+
 }

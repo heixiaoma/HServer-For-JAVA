@@ -1,5 +1,6 @@
 package cn.hserver.core.server;
 
+import cn.hserver.core.server.context.ConstConfig;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -33,7 +34,7 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
             /**
              * copy 最多512个字节作为消息头数据判断
              */
-            ByteBuf slice = in.slice(0, Math.min(in.readableBytes(), 1024));
+            ByteBuf slice = in.slice(0, Math.min(in.readableBytes(), ConstConfig.PRE_PROTOCOL_MAX_SIZE));
             byte[] bytes = ByteBufUtil.byteBufToBytes(slice);
             ChannelPipeline pipeline = ctx.pipeline();
             List<ProtocolDispatcherAdapter> listBean = IocUtil.getListBean(ProtocolDispatcherAdapter.class);

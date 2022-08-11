@@ -33,6 +33,12 @@ public class PropertiesInit {
         if (humPort != null) {
             ConstConfig.HUM_PORT = humPort;
         }
+
+        Integer PRE_PROTOCOL_MAX_SIZE = instance.getInt("preProtocolMaxSize");
+        if (PRE_PROTOCOL_MAX_SIZE != null) {
+            ConstConfig.PRE_PROTOCOL_MAX_SIZE = PRE_PROTOCOL_MAX_SIZE;
+        }
+
         String trackExtPackages = instance.get("trackExtPackages");
         if (trackExtPackages.trim().length() > 0) {
             ConstConfig.TRACK_EXT_PACKAGES=trackExtPackages.split(",");
