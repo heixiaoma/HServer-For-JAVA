@@ -7,7 +7,7 @@ public class GateWayConfig {
     /**
      * 是否是HTTP网关
      */
-    public static GatewayMode GATEWAY_MODE = GatewayMode.HTTP;
+    public static GatewayMode GATEWAY_MODE = GatewayMode.HTTP_7;
 
     /**
      * 网关占用端口

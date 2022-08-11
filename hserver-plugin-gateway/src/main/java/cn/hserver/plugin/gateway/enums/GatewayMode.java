@@ -1,7 +1,8 @@
 package cn.hserver.plugin.gateway.enums;
 
 public enum GatewayMode {
-    HTTP("http"),
+    HTTP_7("http7"),
+    HTTP_4("http4"),
     TCP("tcp"),
     ;
 

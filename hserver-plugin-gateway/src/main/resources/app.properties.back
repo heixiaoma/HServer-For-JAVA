@@ -1,4 +1,4 @@
 #网关匹配端口
 gateway.port=8888
 #网关类型
-gateway.mode=http
+gateway.mode=http7
