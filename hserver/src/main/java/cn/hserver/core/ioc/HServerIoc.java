@@ -32,6 +32,11 @@ public class HServerIoc implements Ioc {
             if (o instanceof List) {
                 List o1 = (List) o;
                 for (int i = 0; i < o1.size(); i++) {
+                    //如果子类存在，父类直接跳过不被加入
+                    if (bean.getClass().isAssignableFrom(o1.get(i).getClass())) {
+                        return;
+                    }
+                    //如果这个类是List中的子类，我们优先使用子类重写父类功能
                     if (o1.get(i).getClass().isAssignableFrom(bean.getClass())) {
                         o1.remove(i);
                     }
