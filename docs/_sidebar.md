@@ -1,34 +1,42 @@
 <!-- docs/_sidebar.md -->
 
 * [HServer是什么](zh-cn/index.md)
-* [注解认识](zh-cn/annotation.md)
-* [常见用例](zh-cn/example.md)
-* [参数校验器](zh-cn/check.md)
-* [文件上传下载](zh-cn/file.md)
-* [全局request,response获取](zh-cn/reqresp.md)
 * [Hook操作](zh-cn/hook.md)
-* [拦截器](zh-cn/filter.md)
 * [定时器](zh-cn/task.md)
-* [全局异常处理](zh-cn/exception.md)
-* [生命周期方法](zh-cn/lifecycle.md)
 * [日志拦截](zh-cn/log.md)
-* [websocket](zh-cn/websocket.md)
-* [Mqtt](zh-cn/mqtt.md)
-* [鉴权认证相关操作](zh-cn/authentication.md)
-* [文档生成](zh-cn/apidoc.md)
 * [消息队列的使用](zh-cn/mq.md)
-* [并发限制](zh-cn/limit.md)
 * [Track跟踪](zh-cn/track.md)
 * [HUM消息](zh-cn/hum.md)
-* [自定义JSON序列化](zh-cn/json.md)
-* [自定义协议](zh-cn/protocol.md)
-* [单元测试](zh-cn/unit.md)
 * [配置文件](zh-cn/prop.md)
+* [单元测试](zh-cn/unit.md)
 * [插件开发](zh-cn/plugin.md)
+* [自定义协议](zh-cn/protocol.md)
+* [程序打包](zh-cn/plugin/jar.md)
 * [Linux内核优化](zh-cn/optimization.md)
-* 插件使用
-    * [程序打包](zh-cn/plugin/jar.md)
-    * [Beetlsql](zh-cn/plugin/beetle.md)
+* 一 、Web插件
+    * [注解认识](zh-cn/plugin/web/annotation.md)
+    * [常见用例](zh-cn/plugin/web/example.md)
+    * [参数校验器](zh-cn/plugin/web/check.md)
+    * [文件上传下载](zh-cn/plugin/web/file.md)
+    * [全局request,response获取](zh-cn/plugin/web/reqresp.md)
+    * [拦截器](zh-cn/plugin/web/filter.md)
+    * [全局异常处理](zh-cn/plugin/web/exception.md)
+    * [生命周期方法](zh-cn/plugin/web/lifecycle.md)
+    * [websocket](zh-cn/plugin/web/websocket.md)
+    * [鉴权认证相关操作](zh-cn/plugin/web/authentication.md)
+    * [文档生成](zh-cn/plugin/web/apidoc.md)
+    * [并发限制](zh-cn/plugin/web/limit.md)
+    * [自定义JSON序列化](zh-cn/plugin/web/json.md)
+* 二、Rpc插件
+* 三、Mybatis插件
     * [Mybatis](zh-cn/plugin/mybatis.md)
+* 四、Mqtt插件
+    * [Mqtt](zh-cn/mqtt.md)
+* 五、GateWay插件
+* 六、Druid插件
+* 七、Beetlsql插件
+    * [Beetlsql](zh-cn/plugin/beetle.md)
+* 八、Redis插件
     * [Redis](zh-cn/plugin/redis.md)
+* 九、Mongodb
     * [Mongodb](zh-cn/plugin/mongodb.md)
