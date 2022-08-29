@@ -46,7 +46,8 @@ preProtocolMaxSize=1024
 
 #日志级别 debug info error ...
 level=debug
-
+#自定义日志名字
+logbackName=logback-dev.xml
 
 #队列数据缓存位置 默认当前项目下
 persistPath=/user/mcl/data

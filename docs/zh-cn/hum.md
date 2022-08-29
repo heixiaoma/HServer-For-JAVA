@@ -32,7 +32,10 @@ public class HumMsg implements HumAdapter {
 ```
 
 - 主动发送消息
-- 默认9527端口，可以在配置文件中自定义端口: humPort=9527
+- 默认9527端口，可以在配置文件中自定义端口: 
+```properties
+humPort=9527
+```
 ```java
 //广播推送
  HumClient.sendMessage("666");

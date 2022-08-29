@@ -7,6 +7,7 @@
 * [消息队列的使用](zh-cn/mq.md)
 * [Track跟踪](zh-cn/track.md)
 * [HUM消息](zh-cn/hum.md)
+* [生命周期方法](zh-cn/lifecycle.md)
 * [配置文件](zh-cn/prop.md)
 * [单元测试](zh-cn/unit.md)
 * [插件开发](zh-cn/plugin.md)
@@ -21,19 +22,24 @@
     * [全局request,response获取](zh-cn/plugin/web/reqresp.md)
     * [拦截器](zh-cn/plugin/web/filter.md)
     * [全局异常处理](zh-cn/plugin/web/exception.md)
-    * [生命周期方法](zh-cn/plugin/web/lifecycle.md)
     * [websocket](zh-cn/plugin/web/websocket.md)
     * [鉴权认证相关操作](zh-cn/plugin/web/authentication.md)
     * [文档生成](zh-cn/plugin/web/apidoc.md)
     * [并发限制](zh-cn/plugin/web/limit.md)
     * [自定义JSON序列化](zh-cn/plugin/web/json.md)
+    * [配置文件](zh-cn/plugin/web/prop.md)
+
 * 二、Rpc插件
+    * [Rpc](zh-cn/plugin/rpc/index.md)
+
 * 三、Mybatis插件
     * [Mybatis](zh-cn/plugin/mybatis.md)
 * 四、Mqtt插件
     * [Mqtt](zh-cn/mqtt.md)
 * 五、GateWay插件
 * 六、Druid插件
+    * [Druid](zh-cn/plugin/druid/index.md)
+
 * 七、Beetlsql插件
     * [Beetlsql](zh-cn/plugin/beetle.md)
 * 八、Redis插件

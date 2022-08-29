@@ -1,4 +1,10 @@
 ## **Mqtt**
+```xml
+<dependency>
+    <groupId>cn.hserver</groupId>
+    <artifactId>hserver-plugin-mqtt</artifactId>
+</dependency>
+```
 
 请继承MqttAdapter类 并用@Bean 标记
 其他操作可以重写父类的一些方法

@@ -1,15 +1,15 @@
-
-##  插件开发
+## 插件开发
 
 1. 添加POM依赖 scope 设置为 provided
 
 ```xml
-        <dependency>
-            <groupId>cn.hserver</groupId>
-            <artifactId>hserver</artifactId>
-            <version>${hserver.version}</version>
-            <scope>provided</scope>
-        </dependency>
+
+<dependency>
+    <groupId>cn.hserver</groupId>
+    <artifactId>hserver</artifactId>
+    <version>${hserver.version}</version>
+    <scope>provided</scope>
+</dependency>
 ```
 
 2. 实现接口PluginAdapter
@@ -18,32 +18,55 @@
 /**
  * @author hxm
  */
-public class BeetLSqlPlugin implements PluginAdapter {
 
-    private static final Logger log = LoggerFactory.getLogger(BeetLSqlPlugin.class);
+/**
+ * 插件适配器
+ *
+ * @author hxm
+ */
+public interface PluginAdapter {
+
+    /**
+     * 启动APP时执行，此时日志类还没有被初始化，不要进行日志输出
+     */
+    void startApp();
+
+    /**
+     * 开始初始化
+     */
+    void startIocInit();
+
+    /**
+     * ioc初始化bean对象
+     * @param classz
+     * @return
+     */
+    boolean iocInitBean(Class classz);
 
 
-    @Override
-    public void startIocInit() {
+    /**
+     * 开始初始化获取初始化的被扫描的的对象
+     * @param packageScanner
+     */
+    void iocInit(PackageScanner packageScanner);
 
-    }
+    /**
+     * 初始化完成
+     */
+    void iocInitEnd();
 
-    @Override
-    public void iocInitEnd() {
+    /**
+     * 开始注入
+     */
+    void startInjection();
 
-    }
-
-    @Override
-    public void startInjection() {
-
-    }
-
-    @Override
-    public void injectionEnd() {
-      
-    }
+    /**
+     * 注入完成
+     */
+    void injectionEnd();
 
 }
+
 ```
 
 3. spi处理
