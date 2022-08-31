@@ -53,6 +53,10 @@ web.writeLimit=100
 #消息体大小 默认int.maxValue
 web.httpContentSize=999999
 
+
+#URL 全局更目录定义
+web.rootPath=/app1
+
 #-----------------ssl-------------
 #注意下载的证书中 key文件需要转换成 pk8 文件
 #因为netty4不支持pkcs12格式的私钥, 所以需要将私钥转换成pkcs8格式.
