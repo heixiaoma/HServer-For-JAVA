@@ -44,6 +44,9 @@ public class WebPlugin implements PluginAdapter {
         if (instance.get("web.readLimit").trim().length() > 0) {
             WebConstConfig.READ_LIMIT = Long.valueOf(instance.get("web.readLimit"));
         }
+        if (instance.get("web.rootPath").trim().length() > 0) {
+            WebConstConfig.ROOT_PATH = instance.get("web.rootPath");
+        }
         if (instance.get("web.writeLimit").trim().length() > 0) {
             WebConstConfig.WRITE_LIMIT = Long.valueOf(instance.get("web.writeLimit"));
         }
@@ -52,17 +55,17 @@ public class WebPlugin implements PluginAdapter {
         }
         Integer businessPool = instance.getInt("web.businessPool");
         if (businessPool != null && businessPool > 0) {
-            WebConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(businessPool,"hserver_business");
+            WebConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(businessPool, "hserver_business");
         }
         if (businessPool != null && businessPool < 0) {
             WebConstConfig.BUSINESS_EVENT = null;
         } else {
-            WebConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(50,"hserver_business");
+            WebConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(50, "hserver_business");
         }
     }
 
     @Override
-    public boolean iocInitBean(Class aClass)  {
+    public boolean iocInitBean(Class aClass) {
         try {
             //检测这个Bean是否是全局异常处理的类
             if (GlobalException.class.isAssignableFrom(aClass)) {
@@ -97,7 +100,7 @@ public class WebPlugin implements PluginAdapter {
                 return true;
 
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(ExceptionUtil.getMessage(e));
         }
         return false;
@@ -146,9 +149,7 @@ public class WebPlugin implements PluginAdapter {
             IocUtil.addBean(aClass.getName(), aClass.newInstance());
             WebSocketServerHandler.WEB_SOCKET_ROUTER.put(annotation.value(), aClass.getName());
         }
-
     }
-
 
     /**
      * 初始化控制器
@@ -163,7 +164,7 @@ public class WebPlugin implements PluginAdapter {
             Method[] methods = aClass.getDeclaredMethods();
             for (Method method : methods) {
                 Controller controller = (Controller) aClass.getAnnotation(Controller.class);
-                String controllerPath = controller.value().trim();
+                String controllerPath = WebConstConfig.ROOT_PATH.trim() + controller.value().trim();
                 /**
                  * 这里对方法控制器的注解的方法参数，进行初始化
                  * 非控制器的方法过滤排除

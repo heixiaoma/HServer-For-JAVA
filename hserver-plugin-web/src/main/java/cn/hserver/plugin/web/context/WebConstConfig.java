@@ -78,5 +78,10 @@ public class WebConstConfig {
      */
     public final static String SERVER_NAME = "HServer-Web";
 
+    /**
+     * 程序URL基础地址
+     */
+    public static String ROOT_PATH = "";
+
 
 }

@@ -52,7 +52,6 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
              * 协议无解对其关闭
              */
             ctx.close();
-            ReferenceCountUtil.release(in);
         }
     }
 
