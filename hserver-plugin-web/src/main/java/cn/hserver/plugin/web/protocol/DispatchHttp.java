@@ -32,12 +32,12 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
         }
 
         //如果是https
-        if (isHttps(headers[0], headers[1], headers[2])) {
+        if (isHttps(headers[0])) {
             if (WebConstConfig.sslContext != null) {
                 pipeline.addLast(new OptionalSslHandler(WebConstConfig.sslContext));
                 httpHandler(ctx);
+                return true;
             }
-            return true;
         }
         return false;
     }
@@ -74,12 +74,12 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
                         magic1 == 'C' && magic2 == 'O';   // CONNECT
     }
 
-    private boolean isHttps(int magic1, int magic2, int magic3) {
+    private boolean isHttps(int magic1) {
         /**
          * https 交互按 client hello ->sever hello 开头协议表达
          * （22,3,1）转为16进制为 1603010
          */
-        return magic1 == 22 && magic2 == 3 && magic3 == 1;
+        return magic1 == 22;
     }
 
 }
