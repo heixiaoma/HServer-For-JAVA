@@ -56,8 +56,7 @@ public class WebPlugin implements PluginAdapter {
         Integer businessPool = instance.getInt("web.businessPool");
         if (businessPool != null && businessPool > 0) {
             WebConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(businessPool, "hserver_business");
-        }
-        if (businessPool != null && businessPool < 0) {
+        }else if (businessPool != null && businessPool < 0) {
             WebConstConfig.BUSINESS_EVENT = null;
         } else {
             WebConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(50, "hserver_business");
