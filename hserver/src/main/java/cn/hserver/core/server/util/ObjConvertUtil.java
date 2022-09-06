@@ -95,7 +95,11 @@ public class ObjConvertUtil {
                     object = res;
                     break;
                 default:
-                    return null;
+                    if (type.getSuperclass().isAssignableFrom(Enum.class)) {
+                        object = Enum.valueOf((Class<? extends Enum>) type, res);
+                    } else {
+                        return null;
+                    }
             }
         } catch (Exception ignored) {
         }
