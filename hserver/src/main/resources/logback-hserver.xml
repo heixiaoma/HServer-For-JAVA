@@ -29,18 +29,6 @@
         </encoder>
     </appender>
 
-    <appender name="STDOUT_WIN"
-              class="ch.qos.logback.core.ConsoleAppender">
-        <encoder
-                class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-            <layout class="cn.hserver.core.log.HServerPatternLayout">
-                <pattern>
-                    ${logging.console.pattern:-${FILE_PATTERN}}
-                </pattern>
-            </layout>
-        </encoder>
-    </appender>
-
     <!-- 自定义-->
     <appender name="HSERVER_EXT" class="cn.hserver.core.log.HServerLogAsyncAppender">
     </appender>
