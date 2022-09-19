@@ -26,8 +26,8 @@ public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
             cache.put(i, executor);
         }
         future.thenApplyAsync(req -> DispatcherHandler.staticFile(hServerContext), executor)
-                .thenApplyAsync(DispatcherHandler::permission, executor)
                 .thenApplyAsync(DispatcherHandler::filter, executor)
+                .thenApplyAsync(DispatcherHandler::permission, executor)
                 .thenApplyAsync(DispatcherHandler::findController, executor)
                 .thenApplyAsync(DispatcherHandler::buildResponse, executor)
                 .exceptionally(DispatcherHandler::handleException)
