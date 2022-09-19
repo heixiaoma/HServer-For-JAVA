@@ -58,6 +58,17 @@ public class DispatcherHandler {
         if (hServerContext.isStaticFile()) {
             return hServerContext;
         }
+        /**
+         * 检查下Webkit是否设置了值
+         *  文本输出
+         *  下载
+         *  重定向
+         *
+         */
+        if (hServerContext.getWebkit().httpResponse.hasData()) {
+            return hServerContext;
+        }
+
         List<PermissionAdapter> listBean = IocUtil.getListBean(PermissionAdapter.class);
         if (listBean != null) {
             RouterPermission routerPermission = RouterManager.getRouterPermission(hServerContext.getRequest().getUri(), hServerContext.getRequest().getRequestType());
