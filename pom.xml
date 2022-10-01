@@ -25,7 +25,7 @@
         <module>hserver-plugin-druid</module>
         <module>hserver-plugin-gateway</module>
         <module>hserver-plugin-loader</module>
-        <module>hserver-plugin-v8</module>
+        <module>hserver-plugin-node</module>
     </modules>
 
     <properties>
