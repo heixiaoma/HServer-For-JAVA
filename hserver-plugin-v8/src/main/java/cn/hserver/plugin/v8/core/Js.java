@@ -15,12 +15,13 @@ public class Js {
 
     private final NodeJS nodeJS;
 
+
     public Js(File file) {
         this.nodeJS = NodeJS.createNodeJS(file);
     }
 
     public Js() {
-        this.nodeJS = NodeJS.createNodeJS(null);
+        this(null);
     }
 
     public NodeJS getNodeJS() {
