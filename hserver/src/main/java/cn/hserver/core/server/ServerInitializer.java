@@ -1,5 +1,6 @@
 package cn.hserver.core.server;
 
+import cn.hserver.core.interfaces.ProtocolDispatcherSuperAdapter;
 import cn.hserver.core.server.context.ConstConfig;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -22,6 +23,12 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
     @Override
     protected void initChannel(Channel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
+        List<ProtocolDispatcherSuperAdapter> listBean = IocUtil.getListBean(ProtocolDispatcherSuperAdapter.class);
+        for (ProtocolDispatcherSuperAdapter protocolDispatcherSuperAdapter : listBean) {
+            if (protocolDispatcherSuperAdapter.dispatcher(ch,pipeline)){
+                return;
+            }
+        }
         pipeline.addLast(new ProtocolDispatcher());
     }
 

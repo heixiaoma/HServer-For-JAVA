@@ -1,22 +1,31 @@
 package cn.hserver.plugin.gateway.handler.http7;
 
+import cn.hserver.plugin.gateway.business.BusinessHttp7;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpObject;
 
 public class Http7BackendHandler extends ChannelInboundHandlerAdapter {
 
     private final Channel inboundChannel;
 
-    public Http7BackendHandler(Channel inboundChannel) {
+    private BusinessHttp7 businessHttp7;
+
+    public Http7BackendHandler(Channel inboundChannel,BusinessHttp7 businessHttp7) {
         this.inboundChannel = inboundChannel;
+        this.businessHttp7=businessHttp7;
     }
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
         if (msg instanceof HttpObject) {
-            inboundChannel.writeAndFlush(msg);
+            Object out = businessHttp7.out(inboundChannel,msg);
+            if (out==null){
+                return;
+            }
+            inboundChannel.writeAndFlush(out);
         } else {
             ctx.channel().close();
         }

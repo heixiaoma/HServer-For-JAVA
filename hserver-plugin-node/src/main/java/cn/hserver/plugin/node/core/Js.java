@@ -6,10 +6,9 @@ import com.caoccao.javet.interop.V8Host;
 import com.caoccao.javet.interop.converters.JavetProxyConverter;
 import com.caoccao.javet.interop.executors.IV8Executor;
 import com.caoccao.javet.node.modules.NodeModuleModule;
-import com.sun.org.slf4j.internal.Logger;
-import com.sun.org.slf4j.internal.LoggerFactory;
 import java.io.File;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Js {
     private static final Logger log = LoggerFactory.getLogger(Js.class);

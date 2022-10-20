@@ -1,5 +1,7 @@
 package cn.hserver.plugin.gateway.handler.http4;
 
+import cn.hserver.core.ioc.IocUtil;
+import cn.hserver.plugin.gateway.business.BusinessHttp4;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -10,8 +12,11 @@ public class  Http4BackendHandler extends ChannelInboundHandlerAdapter {
 
     private final Channel inboundChannel;
 
-    public Http4BackendHandler(Channel inboundChannel) {
+    private final BusinessHttp4 businessHttp4;
+
+    public Http4BackendHandler(Channel inboundChannel,BusinessHttp4 businessHttp4) {
         this.inboundChannel = inboundChannel;
+        this.businessHttp4= businessHttp4;
     }
 
     @Override
@@ -21,12 +26,16 @@ public class  Http4BackendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-        inboundChannel.writeAndFlush(msg).addListener((ChannelFutureListener) future -> {
+        Object out = businessHttp4.out(inboundChannel,msg);
+        if (out==null){
+            return;
+        }
+        inboundChannel.writeAndFlush(out).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
                 ctx.channel().read();
             } else {
                 future.channel().close();
-                ReferenceCountUtil.release(msg);
+                ReferenceCountUtil.release(out);
             }
         });
     }

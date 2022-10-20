@@ -1,16 +1,20 @@
 package cn.hserver.plugin.gateway.handler.tcp;
 
+import cn.hserver.plugin.gateway.business.BusinessTcp;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.ReferenceCountUtil;
 
 public class BackendHandler extends ChannelInboundHandlerAdapter {
 
     private final Channel inboundChannel;
+    private final BusinessTcp businessTcp;
 
-    public BackendHandler(Channel inboundChannel) {
+    public BackendHandler(Channel inboundChannel, BusinessTcp businessTcp) {
         this.inboundChannel = inboundChannel;
+        this.businessTcp = businessTcp;
     }
 
     @Override
@@ -20,10 +24,15 @@ public class BackendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-        inboundChannel.writeAndFlush(msg).addListener((ChannelFutureListener) future -> {
+        Object out = businessTcp.out(inboundChannel,msg);
+        if (out==null){
+            return;
+        }
+        inboundChannel.writeAndFlush(out).addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
                 ctx.channel().read();
             } else {
+                ReferenceCountUtil.release(out);
                 future.channel().close();
             }
         });

@@ -236,11 +236,17 @@ public class InitBean {
                 continue;
             }
 
+            //单端口多协议情况
             if (ProtocolDispatcherAdapter.class.isAssignableFrom(aClass)) {
                 IocUtil.addListBean(ProtocolDispatcherAdapter.class.getName(), aClass.newInstance());
                 continue;
             }
 
+            //连接后返回数据情况
+            if (ProtocolDispatcherSuperAdapter.class.isAssignableFrom(aClass)) {
+                IocUtil.addListBean(ProtocolDispatcherSuperAdapter.class.getName(), aClass.newInstance());
+                continue;
+            }
 
             //检查注解里面是否有值
             Bean annotation = (Bean) aClass.getAnnotation(Bean.class);

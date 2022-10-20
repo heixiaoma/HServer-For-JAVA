@@ -1,6 +1,11 @@
 package cn.hserver.plugin.gateway.handler.http7;
 
+import cn.hserver.core.ioc.IocUtil;
+import cn.hserver.plugin.gateway.business.Business;
+import cn.hserver.plugin.gateway.business.BusinessHttp7;
+import cn.hserver.plugin.gateway.business.BusinessTcp;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -14,6 +19,16 @@ import io.netty.util.ReferenceCountUtil;
 public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
 
     private Channel outboundChannel;
+
+    private  BusinessHttp7 businessHttp7;
+
+    public Http7FrontendHandler() {
+        for (Business business : IocUtil.getListBean(Business.class)) {
+            if (business instanceof BusinessHttp7) {
+                this.businessHttp7 = (BusinessHttp7)business;
+            }
+        }
+    }
 
     static void closeOnFlush(Channel ch) {
         if (ch.isActive()) {
@@ -32,34 +47,34 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-
+        //数据入场
+        Object in = businessHttp7.in(ctx,(FullHttpRequest) msg);
+        if (in == null) {
+            return;
+        }
         if (outboundChannel == null) {
-            HttpRequest httpRequest = (HttpRequest) msg;
-            String host = httpRequest.headers().get("Host");
-
-
             final Channel inboundChannel = ctx.channel();
-
             Bootstrap b = new Bootstrap();
             b.group(ctx.channel().eventLoop());
             b.channel(NioSocketChannel.class).handler(new ChannelInitializer<Channel>() {
                 @Override
                 protected void initChannel(Channel ch) {
-                    ch.pipeline().addLast(new HttpClientCodec(),new ChunkedWriteHandler());
-                    ch.pipeline().addLast(new Http7BackendHandler(inboundChannel));
+                    ch.pipeline().addLast(new HttpClientCodec(), new ChunkedWriteHandler());
+                    ch.pipeline().addLast(new Http7BackendHandler(inboundChannel,businessHttp7));
                 }
             });
-            ChannelFuture f = b.connect("127.0.0.1", -1).addListener((ChannelFutureListener) future -> {
+            //数据代理服务选择器
+            ChannelFuture f = b.connect(businessHttp7.getProxyHost(ctx,(FullHttpRequest) in,ctx.channel().localAddress())).addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
-                    future.channel().writeAndFlush(msg);
+                    future.channel().writeAndFlush(in);
                 } else {
                     future.channel().close();
-                    ReferenceCountUtil.release(msg);
+                    ReferenceCountUtil.release(in);
                 }
             });
             outboundChannel = f.channel();
         } else {
-            read(ctx, msg);
+            read(ctx, in);
         }
 
     }

@@ -1,20 +1,19 @@
-# hserver-plugin-gateway
-该插件提供tcp和http两种级别的数据拦截转发功能，让网关支持其他协议或者http协议
+package cn.hserver.plugin.gateway.business;
 
-# BusinessTcp BusinessHttp7 BusinessHttp4
-我们提供了这三个类，来进行代理的数据传输
-tcp就是最原始的数据包 http7模式不支持ws http4支持ws
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 
-我们通过继承类重写对应的方法即可
+import java.net.SocketAddress;
 
-```java
+public interface Business<T,U> {
     /**
-    * 数据入场
-    * 业务处理模式，拦截器 限流等
-    *
-    * @param t
-    * @return
-    */
+     * 数据入场
+     * 业务处理模式，拦截器 限流等
+     *
+     * @param t
+     * @return
+     */
     Object in(ChannelHandlerContext ctx,T t);
 
 
@@ -37,4 +36,5 @@ tcp就是最原始的数据包 http7模式不支持ws http4支持ws
      * @return
      */
     Object out(Channel channel, U u);
-```
+
+}
