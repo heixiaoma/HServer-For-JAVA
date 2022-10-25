@@ -37,9 +37,9 @@
 * 四、Mqtt插件
     * [Mqtt](zh-cn/mqtt.md)
 * 五、GateWay插件
+    * [Gateway](zh-cn/plugin/gateway.md)
 * 六、Druid插件
     * [Druid](zh-cn/plugin/druid/index.md)
-
 * 七、Beetlsql插件
     * [Beetlsql](zh-cn/plugin/beetle.md)
 * 八、Redis插件

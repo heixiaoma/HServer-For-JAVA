@@ -24,7 +24,7 @@
         <netty.version>4.1.77.Final</netty.version>
         <transmittable.version>2.12.4</transmittable.version>
         <logback.version>1.2.11</logback.version>
-        <javassist.version>3.29.0-GA</javassist.version>
+        <javassist.version>3.29.1-GA </javassist.version>
         <protostuff.version>1.1.6</protostuff.version>
         <objenesis.version>3.2</objenesis.version>
         <junit.version>4.13.2</junit.version>
