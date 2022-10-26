@@ -45,7 +45,6 @@ public class BackendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
         FrontendHandler.closeOnFlush(ctx.channel());
     }
 }

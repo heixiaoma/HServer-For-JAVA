@@ -40,7 +40,6 @@ public class Http7BackendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
         Http7FrontendHandler.closeOnFlush(ctx.channel());
     }
 }

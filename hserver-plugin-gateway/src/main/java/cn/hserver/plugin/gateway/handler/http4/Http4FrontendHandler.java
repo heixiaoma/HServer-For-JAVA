@@ -94,7 +94,6 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
         closeOnFlush(ctx.channel());
     }
 }

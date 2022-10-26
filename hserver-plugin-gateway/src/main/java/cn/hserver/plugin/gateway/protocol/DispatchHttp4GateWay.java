@@ -2,6 +2,7 @@ package cn.hserver.plugin.gateway.protocol;
 
 import cn.hserver.core.interfaces.ProtocolDispatcherAdapter;
 import cn.hserver.core.ioc.annotation.Bean;
+import cn.hserver.core.server.context.ConstConfig;
 import cn.hserver.core.server.util.protocol.HostUtil;
 import cn.hserver.core.server.util.protocol.ProtocolUtil;
 import cn.hserver.core.server.util.protocol.SSLUtils;

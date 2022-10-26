@@ -143,7 +143,6 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
         closeOnFlush(ctx.channel());
     }
 
