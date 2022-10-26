@@ -49,7 +49,7 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
         //数据入场
-        Object in = businessHttp7.in(ctx,(FullHttpRequest) msg);
+        Object in = businessHttp7.in(ctx,msg);
         if (in == null) {
             return;
         }
@@ -65,7 +65,7 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
                 }
             });
             //数据代理服务选择器
-            ChannelFuture f = b.connect(businessHttp7.getProxyHost(ctx,(FullHttpRequest) in,ctx.channel().localAddress())).addListener((ChannelFutureListener) future -> {
+            ChannelFuture f = b.connect(businessHttp7.getProxyHost(ctx,in,ctx.channel().localAddress())).addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
                     future.channel().writeAndFlush(in);
                 } else {

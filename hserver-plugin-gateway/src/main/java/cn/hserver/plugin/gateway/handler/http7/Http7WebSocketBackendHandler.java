@@ -6,6 +6,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.websocketx.WebSocketClientHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketHandshakeException;
+import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +51,7 @@ public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter{
                 log.info("websocket连接失败!");
                 handshakeFuture.setFailure(e);
             }
+            ReferenceCountUtil.release(msg);
             return;
         }
         if (msg instanceof WebSocketFrame) {
@@ -60,6 +62,7 @@ public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter{
             inboundChannel.writeAndFlush(out);
         } else {
             ctx.channel().close();
+            ReferenceCountUtil.release(msg);
         }
     }
 

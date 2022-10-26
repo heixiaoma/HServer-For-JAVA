@@ -6,6 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpObject;
+import io.netty.util.ReferenceCountUtil;
 
 public class Http7BackendHandler extends ChannelInboundHandlerAdapter {
 
@@ -28,6 +29,7 @@ public class Http7BackendHandler extends ChannelInboundHandlerAdapter {
             inboundChannel.writeAndFlush(out);
         } else {
             ctx.channel().close();
+            ReferenceCountUtil.release(msg);
         }
     }
 
