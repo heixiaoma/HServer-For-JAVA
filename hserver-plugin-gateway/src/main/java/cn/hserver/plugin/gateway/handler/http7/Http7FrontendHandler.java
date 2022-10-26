@@ -61,7 +61,7 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
             b.channel(NioSocketChannel.class).handler(new ChannelInitializer<Channel>() {
                 @Override
                 protected void initChannel(Channel ch) {
-                    ch.pipeline().addLast(new HttpClientCodec(), new HttpObjectAggregator(Integer.MAX_VALUE), new ChunkedWriteHandler());
+                    ch.pipeline().addLast(new HttpClientCodec(), new HttpObjectAggregator(Integer.MAX_VALUE));
                     ch.pipeline().addLast(new Http7BackendHandler(inboundChannel,businessHttp7));
                 }
             });
