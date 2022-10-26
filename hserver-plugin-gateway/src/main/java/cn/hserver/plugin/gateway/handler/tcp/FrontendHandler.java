@@ -12,18 +12,19 @@ import io.netty.util.ReferenceCountUtil;
 public class FrontendHandler extends ChannelInboundHandlerAdapter {
 
     private Channel outboundChannel;
-    private BusinessTcp businessTcp;
+    private static BusinessTcp businessTcp;
 
     public FrontendHandler() {
         for (Business business : IocUtil.getListBean(Business.class)) {
             if (business instanceof BusinessTcp) {
-                this.businessTcp = (BusinessTcp)business;
+                businessTcp = (BusinessTcp) business;
             }
         }
     }
 
     static void closeOnFlush(Channel ch) {
         if (ch.isActive()) {
+            businessTcp.close(ch);
             ch.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
         }
     }
@@ -60,7 +61,6 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
                 } else {
                     ReferenceCountUtil.release(in);
                     future.channel().close();
-                    //泄漏
                 }
             });
         }

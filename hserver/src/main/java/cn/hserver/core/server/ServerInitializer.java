@@ -20,13 +20,16 @@ import java.util.List;
  */
 public class ServerInitializer extends ChannelInitializer<Channel> {
 
+    private final static List<ProtocolDispatcherSuperAdapter> listBean = IocUtil.getListBean(ProtocolDispatcherSuperAdapter.class);
+
     @Override
     protected void initChannel(Channel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-        List<ProtocolDispatcherSuperAdapter> listBean = IocUtil.getListBean(ProtocolDispatcherSuperAdapter.class);
-        for (ProtocolDispatcherSuperAdapter protocolDispatcherSuperAdapter : listBean) {
-            if (protocolDispatcherSuperAdapter.dispatcher(ch,pipeline)){
-                return;
+        if (listBean != null && !listBean.isEmpty()) {
+            for (ProtocolDispatcherSuperAdapter protocolDispatcherSuperAdapter : listBean) {
+                if (protocolDispatcherSuperAdapter.dispatcher(ch, pipeline)) {
+                    return;
+                }
             }
         }
         pipeline.addLast(new ProtocolDispatcher());

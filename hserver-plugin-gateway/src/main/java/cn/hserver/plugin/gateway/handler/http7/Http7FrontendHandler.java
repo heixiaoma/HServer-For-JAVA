@@ -20,18 +20,19 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
 
     private Channel outboundChannel;
 
-    private  BusinessHttp7 businessHttp7;
+    private  static BusinessHttp7 businessHttp7;
 
     public Http7FrontendHandler() {
         for (Business business : IocUtil.getListBean(Business.class)) {
             if (business instanceof BusinessHttp7) {
-                this.businessHttp7 = (BusinessHttp7)business;
+                businessHttp7 = (BusinessHttp7)business;
             }
         }
     }
 
     static void closeOnFlush(Channel ch) {
         if (ch.isActive()) {
+            businessHttp7.close(ch);
             ch.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
         }
     }

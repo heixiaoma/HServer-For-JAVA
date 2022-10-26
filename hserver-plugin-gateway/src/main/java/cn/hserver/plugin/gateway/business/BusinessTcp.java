@@ -26,4 +26,9 @@ public class BusinessTcp implements Business<Object,Object>{
     public Object out(Channel channel, Object o) {
         return o;
     }
+
+    @Override
+    public void close(Channel channel) {
+
+    }
 }

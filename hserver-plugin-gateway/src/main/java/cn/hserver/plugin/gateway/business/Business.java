@@ -6,7 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.net.SocketAddress;
 
-public interface Business<T,U> {
+public interface Business<T, U> {
     /**
      * 数据入场
      * 业务处理模式，拦截器 限流等
@@ -14,7 +14,7 @@ public interface Business<T,U> {
      * @param t
      * @return
      */
-    Object in(ChannelHandlerContext ctx,T t);
+    Object in(ChannelHandlerContext ctx, T t);
 
 
     /**
@@ -25,7 +25,7 @@ public interface Business<T,U> {
      * @param sourceSocketAddress
      * @return
      */
-    SocketAddress getProxyHost(ChannelHandlerContext ctx,T t,SocketAddress sourceSocketAddress);
+    SocketAddress getProxyHost(ChannelHandlerContext ctx, T t, SocketAddress sourceSocketAddress);
 
 
     /**
@@ -37,4 +37,10 @@ public interface Business<T,U> {
      */
     Object out(Channel channel, U u);
 
+    /**
+     * 链接关闭
+     *
+     * @param channel
+     */
+    void close(Channel channel);
 }

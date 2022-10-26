@@ -27,4 +27,9 @@ public class BusinessHttp4 implements Business<Http4Data,Object>{
     public Object out(Channel channel, Object o) {
         return o;
     }
+
+    @Override
+    public void close(Channel channel) {
+
+    }
 }

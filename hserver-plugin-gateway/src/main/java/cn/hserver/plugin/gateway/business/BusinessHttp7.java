@@ -2,29 +2,31 @@ package cn.hserver.plugin.gateway.business;
 
 
 import cn.hserver.core.ioc.annotation.Bean;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpObject;
 
 import java.net.SocketAddress;
 
 @Bean
-public class BusinessHttp7 implements Business<FullHttpRequest, Object>{
+public class BusinessHttp7 implements Business<Object, Object>{
 
     @Override
-    public Object in(ChannelHandlerContext ctx, FullHttpRequest fullHttpRequest) {
-        return fullHttpRequest;
+    public Object in(ChannelHandlerContext ctx, Object obj) {
+        return obj;
     }
 
     @Override
-    public SocketAddress getProxyHost(ChannelHandlerContext ctx,FullHttpRequest fullHttpRequest, SocketAddress sourceSocketAddress) {
+    public SocketAddress getProxyHost(ChannelHandlerContext ctx,Object fullHttpRequest, SocketAddress sourceSocketAddress) {
         return null;
     }
 
     @Override
     public Object out(Channel channel, Object obj) {
         return obj;
+    }
+
+    @Override
+    public void close(Channel channel) {
+
     }
 }

@@ -11,7 +11,7 @@ public class Http7BackendHandler extends ChannelInboundHandlerAdapter {
 
     private final Channel inboundChannel;
 
-    private BusinessHttp7 businessHttp7;
+    private final BusinessHttp7 businessHttp7;
 
     public Http7BackendHandler(Channel inboundChannel,BusinessHttp7 businessHttp7) {
         this.inboundChannel = inboundChannel;

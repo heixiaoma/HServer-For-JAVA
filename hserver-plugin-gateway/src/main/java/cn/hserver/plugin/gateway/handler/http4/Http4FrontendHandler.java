@@ -19,19 +19,20 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
 
     private Channel outboundChannel;
     private final String host;
-    private  BusinessHttp4 businessHttp4;
+    private static BusinessHttp4 businessHttp4;
 
     public Http4FrontendHandler(String host) {
         this.host = host;
         for (Business business : IocUtil.getListBean(Business.class)) {
             if (business instanceof BusinessHttp4) {
-                this.businessHttp4 = (BusinessHttp4)business;
+               businessHttp4 = (BusinessHttp4)business;
             }
         }
     }
 
     static void closeOnFlush(Channel ch) {
         if (ch.isActive()) {
+            businessHttp4.close(ch);
             ch.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
         }
     }
