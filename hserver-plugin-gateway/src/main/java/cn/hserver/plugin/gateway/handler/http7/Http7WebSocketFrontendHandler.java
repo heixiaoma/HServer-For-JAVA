@@ -10,9 +10,9 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketClientCompressionHandler;
-import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.ReferenceCountUtil;
 
+import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -23,7 +23,7 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
 
     private static BusinessHttp7 businessHttp7;
 
-    private  WebSocketServerHandshaker handshake;
+    private WebSocketServerHandshaker handshake;
 
     public Http7WebSocketFrontendHandler() {
         for (Business business : IocUtil.getListBean(Business.class)) {
@@ -65,7 +65,7 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
     private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame msg) {
         if (outboundChannel != null) {
             Object in = businessHttp7.in(ctx, msg);
-            if (in==null){
+            if (in == null) {
                 return;
             }
             outboundChannel.writeAndFlush(in);
@@ -76,6 +76,12 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
         if (outboundChannel == null) {
             Bootstrap b = new Bootstrap();
             b.group(ctx.channel().eventLoop());
+
+            SocketAddress proxyHost = businessHttp7.getProxyHost(ctx, request, ctx.channel().localAddress());
+            if (!request.headers().contains(HttpHeaderNames.ORIGIN)) {
+                request.headers().add(HttpHeaderNames.ORIGIN, proxyHost.toString()+request.uri());
+            }
+
             WebSocketClientHandshaker webSocketClientHandshaker = WebSocketClientHandshakerFactory.newHandshaker(
                     new URI(request.uri()), WebSocketVersion.V13, null, true, request.headers());
             Http7WebSocketBackendHandler handler = new Http7WebSocketBackendHandler(
@@ -90,15 +96,15 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                 }
             });
             //数据代理服务选择器
-            ChannelFuture f = b.connect(businessHttp7.getProxyHost(ctx, request, ctx.channel().localAddress())).addListener((ChannelFutureListener) future -> {
+            ChannelFuture f = b.connect(proxyHost).addListener((ChannelFutureListener) future -> {
                 if (future.isSuccess()) {
-                    try{
-                        handler.handshakeFuture().addListener((future1)->{
+                    try {
+                        handler.handshakeFuture().addListener((future1) -> {
                             future1.sync();
                             future.channel().writeAndFlush(request);
                         });
-                    }catch (Exception  e){
-                    e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 } else {
                     future.channel().close();
