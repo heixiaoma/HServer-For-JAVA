@@ -1,22 +1,24 @@
 package cn.hserver.plugin.gateway.handler.http4;
 
-import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.plugin.gateway.business.BusinessHttp4;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class  Http4BackendHandler extends ChannelInboundHandlerAdapter {
+public class Http4BackendHandler extends ChannelInboundHandlerAdapter {
+    private static final Logger log = LoggerFactory.getLogger(Http4BackendHandler.class);
 
     private final Channel inboundChannel;
 
     private final BusinessHttp4 businessHttp4;
 
-    public Http4BackendHandler(Channel inboundChannel,BusinessHttp4 businessHttp4) {
+    public Http4BackendHandler(Channel inboundChannel, BusinessHttp4 businessHttp4) {
         this.inboundChannel = inboundChannel;
-        this.businessHttp4= businessHttp4;
+        this.businessHttp4 = businessHttp4;
     }
 
     @Override
@@ -26,18 +28,25 @@ public class  Http4BackendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-        Object out = businessHttp4.out(inboundChannel,msg);
-        if (out==null){
-            return;
-        }
-        inboundChannel.writeAndFlush(out).addListener((ChannelFutureListener) future -> {
-            if (future.isSuccess()) {
-                ctx.channel().read();
-            } else {
-                future.channel().close();
-                ReferenceCountUtil.release(out);
+        try {
+            Object out = businessHttp4.out(inboundChannel, msg);
+            if (out == null) {
+                return;
             }
-        });
+            inboundChannel.writeAndFlush(out).addListener((ChannelFutureListener) future -> {
+                if (future.isSuccess()) {
+                    ctx.channel().read();
+                } else {
+                    future.channel().close();
+                    ReferenceCountUtil.release(out);
+                }
+            });
+        } catch (Throwable e) {
+            log.error(e.getMessage(), e);
+        } finally {
+            ctx.channel().close();
+            ReferenceCountUtil.release(msg);
+        }
     }
 
     @Override

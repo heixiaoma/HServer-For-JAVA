@@ -51,7 +51,7 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-
+        try{
         Object in = businessHttp4.in(ctx,new Http4Data(host, msg));
         if (in == null) {
             return;
@@ -82,6 +82,12 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
                     ReferenceCountUtil.release(msg);
                 }
             });
+        }
+        } catch (Throwable e) {
+            log.error(e.getMessage(), e);
+        } finally {
+            ctx.close();
+            ReferenceCountUtil.release(msg);
         }
     }
 

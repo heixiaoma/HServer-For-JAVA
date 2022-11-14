@@ -8,8 +8,11 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.ReferenceCountUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FrontendHandler extends ChannelInboundHandlerAdapter {
+    private static final Logger log = LoggerFactory.getLogger(FrontendHandler.class);
 
     private Channel outboundChannel;
     private static BusinessTcp businessTcp;
@@ -31,6 +34,7 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws InterruptedException {
+        try{
         final Channel inboundChannel = ctx.channel();
         Bootstrap b = new Bootstrap();
         b.group(inboundChannel.eventLoop());
@@ -46,23 +50,36 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
         });
         outboundChannel = f.channel();
         ctx.channel().config().setAutoRead(false);
+        } catch (Throwable e) {
+            log.error(e.getMessage(), e);
+        } finally {
+            ctx.close();
+        }
     }
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-        Object in = businessTcp.in(ctx, msg);
-        if (in == null) {
-            return;
-        }
-        if (outboundChannel.isActive()) {
-            outboundChannel.writeAndFlush(in).addListener((ChannelFutureListener) future -> {
-                if (future.isSuccess()) {
-                    ctx.channel().read();
-                } else {
-                    ReferenceCountUtil.release(in);
-                    future.channel().close();
-                }
-            });
+
+        try {
+            Object in = businessTcp.in(ctx, msg);
+            if (in == null) {
+                return;
+            }
+            if (outboundChannel.isActive()) {
+                outboundChannel.writeAndFlush(in).addListener((ChannelFutureListener) future -> {
+                    if (future.isSuccess()) {
+                        ctx.channel().read();
+                    } else {
+                        ReferenceCountUtil.release(in);
+                        future.channel().close();
+                    }
+                });
+            }
+        } catch (Throwable e) {
+            log.error(e.getMessage(), e);
+        } finally {
+            ctx.close();
+            ReferenceCountUtil.release(msg);
         }
     }
 

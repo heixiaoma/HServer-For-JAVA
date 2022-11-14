@@ -6,8 +6,11 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BackendHandler extends ChannelInboundHandlerAdapter {
+    private static final Logger log = LoggerFactory.getLogger(BackendHandler.class);
 
     private final Channel inboundChannel;
     private final BusinessTcp businessTcp;
@@ -24,18 +27,25 @@ public class BackendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-        Object out = businessTcp.out(inboundChannel,msg);
-        if (out==null){
-            return;
-        }
-        inboundChannel.writeAndFlush(out).addListener((ChannelFutureListener) future -> {
-            if (future.isSuccess()) {
-                ctx.channel().read();
-            } else {
-                ReferenceCountUtil.release(out);
-                future.channel().close();
+        try {
+            Object out = businessTcp.out(inboundChannel,msg);
+            if (out==null){
+                return;
             }
-        });
+            inboundChannel.writeAndFlush(out).addListener((ChannelFutureListener) future -> {
+                if (future.isSuccess()) {
+                    ctx.channel().read();
+                } else {
+                    ReferenceCountUtil.release(out);
+                    future.channel().close();
+                }
+            });
+        }catch (Throwable e){
+            log.error(e.getMessage(),e);
+        }finally {
+            ctx.channel().close();
+            ReferenceCountUtil.release(msg);
+        }
     }
 
     @Override

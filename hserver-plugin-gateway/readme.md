@@ -89,7 +89,7 @@ public class Http7 extends BusinessHttp7 {
         //修改http请求
         if (msg instanceof HttpRequest) {
             HttpRequest msg1 = (HttpRequest) msg;
-            msg1.headers().add("gateway", "xxxx");
+            msg1.headers().set("gateway", "xxxx");
             msg = msg1;
         }
         //修改ws数据
@@ -118,7 +118,7 @@ public class Http7 extends BusinessHttp7 {
         //http响应拦截修改
         if (msg instanceof FullHttpResponse) {
             FullHttpResponse msg1 = (FullHttpResponse) msg;
-            msg1.headers().add("gateway", "hserver-gateway");
+            msg1.headers().set("gateway", "hserver-gateway");
         }
         //ws 响应拦截修改
         if (msg instanceof WebSocketFrame) {

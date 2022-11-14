@@ -55,11 +55,15 @@ public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter{
             return;
         }
         if (msg instanceof WebSocketFrame) {
-            Object out = businessHttp7.out(inboundChannel, msg);
-            if (out == null) {
-                return;
+            try {
+                Object out = businessHttp7.out(inboundChannel, msg);
+                if (out == null) {
+                    return;
+                }
+                inboundChannel.writeAndFlush(out);
+            }catch (Throwable e){
+                log.error(e.getMessage(),e);
             }
-            inboundChannel.writeAndFlush(out);
         } else {
             ctx.channel().close();
             ReferenceCountUtil.release(msg);

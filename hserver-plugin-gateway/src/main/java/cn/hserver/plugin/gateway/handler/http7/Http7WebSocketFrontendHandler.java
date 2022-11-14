@@ -11,6 +11,8 @@ import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketClientCompressionHandler;
 import io.netty.util.ReferenceCountUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.SocketAddress;
 import java.net.URI;
@@ -18,6 +20,7 @@ import java.net.URISyntaxException;
 
 
 public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter {
+    private static final Logger log = LoggerFactory.getLogger(Http7WebSocketFrontendHandler.class);
 
     private Channel outboundChannel;
 
@@ -64,58 +67,67 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
 
     private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame msg) {
         if (outboundChannel != null) {
-            Object in = businessHttp7.in(ctx, msg);
-            if (in == null) {
-                return;
+            try {
+                Object in = businessHttp7.in(ctx, msg);
+                if (in == null) {
+                    return;
+                }
+                outboundChannel.writeAndFlush(in);
+            } catch (Throwable e) {
+                log.error(e.getMessage(), e);
             }
-            outboundChannel.writeAndFlush(in);
         }
     }
 
     private void writeWebSocket(ChannelHandlerContext ctx, HttpRequest request) throws URISyntaxException {
-        if (outboundChannel == null) {
-            Bootstrap b = new Bootstrap();
-            b.group(ctx.channel().eventLoop());
 
-            SocketAddress proxyHost = businessHttp7.getProxyHost(ctx, request, ctx.channel().localAddress());
-            if (!request.headers().contains(HttpHeaderNames.ORIGIN)) {
-                request.headers().add(HttpHeaderNames.ORIGIN, proxyHost.toString()+request.uri());
-            }
+        try {
 
-            WebSocketClientHandshaker webSocketClientHandshaker = WebSocketClientHandshakerFactory.newHandshaker(
-                    new URI(request.uri()), WebSocketVersion.V13, null, true, request.headers());
-            Http7WebSocketBackendHandler handler = new Http7WebSocketBackendHandler(
-                    webSocketClientHandshaker,
-                    ctx.channel(),
-                    businessHttp7
-            );
-            b.channel(NioSocketChannel.class).handler(new ChannelInitializer<Channel>() {
-                @Override
-                protected void initChannel(Channel ch) {
-                    ch.pipeline().addLast(new HttpClientCodec(), new HttpObjectAggregator(Integer.MAX_VALUE), WebSocketClientCompressionHandler.INSTANCE, handler);
+            if (outboundChannel == null) {
+                Bootstrap b = new Bootstrap();
+                b.group(ctx.channel().eventLoop());
+
+                SocketAddress proxyHost = businessHttp7.getProxyHost(ctx, request, ctx.channel().localAddress());
+                if (!request.headers().contains(HttpHeaderNames.ORIGIN)) {
+                    request.headers().add(HttpHeaderNames.ORIGIN, proxyHost.toString() + request.uri());
                 }
-            });
-            //数据代理服务选择器
-            ChannelFuture f = b.connect(proxyHost).addListener((ChannelFutureListener) future -> {
-                if (future.isSuccess()) {
-                    try {
-                        handler.handshakeFuture().addListener((future1) -> {
-                            future1.sync();
-                            future.channel().writeAndFlush(request);
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
+
+                WebSocketClientHandshaker webSocketClientHandshaker = WebSocketClientHandshakerFactory.newHandshaker(
+                        new URI(request.uri()), WebSocketVersion.V13, null, true, request.headers());
+                Http7WebSocketBackendHandler handler = new Http7WebSocketBackendHandler(
+                        webSocketClientHandshaker,
+                        ctx.channel(),
+                        businessHttp7
+                );
+                b.channel(NioSocketChannel.class).handler(new ChannelInitializer<Channel>() {
+                    @Override
+                    protected void initChannel(Channel ch) {
+                        ch.pipeline().addLast(new HttpClientCodec(), new HttpObjectAggregator(Integer.MAX_VALUE), WebSocketClientCompressionHandler.INSTANCE, handler);
                     }
-                } else {
-                    future.channel().close();
-                    ReferenceCountUtil.release(request);
-                }
-            });
-            outboundChannel = f.channel();
-        } else {
-            read(ctx, request);
+                });
+                //数据代理服务选择器
+                ChannelFuture f = b.connect(proxyHost).addListener((ChannelFutureListener) future -> {
+                    if (future.isSuccess()) {
+                        try {
+                            handler.handshakeFuture().addListener((future1) -> {
+                                future1.sync();
+                                future.channel().writeAndFlush(request);
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        future.channel().close();
+                        ReferenceCountUtil.release(request);
+                    }
+                });
+                outboundChannel = f.channel();
+            } else {
+                read(ctx, request);
+            }
+        } catch (Throwable e) {
+            log.error(e.getMessage(), e);
         }
-
     }
 
     private void handleHttpRequest(ChannelHandlerContext ctx, HttpRequest req) throws Exception {
