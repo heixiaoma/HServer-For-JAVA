@@ -80,7 +80,6 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
     }
 
     private void writeWebSocket(ChannelHandlerContext ctx, HttpRequest request) throws URISyntaxException {
-
         try {
 
             if (outboundChannel == null) {
@@ -121,11 +120,11 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                                 e.printStackTrace();
                                 ReferenceCountUtil.release(request);
                             }
-                            businessHttp7.connectController(ctx,true,count.incrementAndGet(),null);
+                            businessHttp7.connectController(ctx, true, count.incrementAndGet(), null);
                         } else {
                             future.channel().close();
                             ReferenceCountUtil.release(request);
-                            if (businessHttp7.connectController(ctx,false,count.incrementAndGet(),future.cause())){
+                            if (businessHttp7.connectController(ctx, false, count.incrementAndGet(), future.cause())) {
                                 b.connect(proxyHost).addListener(this);
                             }
                         }
@@ -144,6 +143,11 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
 
     private void handleHttpRequest(ChannelHandlerContext ctx, HttpRequest req) throws Exception {
         if (isWebSocketRequest(req)) {
+            Object in = businessHttp7.in(ctx, req);
+            if (in == null) {
+                return;
+            }
+            req = (HttpRequest) in;
             WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(req.uri(), null, true);
             this.handshake = wsFactory.newHandshaker(req);
             if (this.handshake == null) {
