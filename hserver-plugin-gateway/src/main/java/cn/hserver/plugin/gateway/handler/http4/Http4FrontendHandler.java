@@ -82,11 +82,11 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
                         outboundChannel = future.channel();
                         inboundChannel.read();
                         write(ctx, msg);
-                        businessHttp4.connectController(true,null);
+                        businessHttp4.connectController(ctx,true,null);
                     } else {
                         inboundChannel.close();
                         ReferenceCountUtil.release(msg);
-                        if (businessHttp4.connectController(false,future.cause())){
+                        if (businessHttp4.connectController(ctx,false,future.cause())){
                             b.connect(proxyHost).addListener(this);
                         }
                     }

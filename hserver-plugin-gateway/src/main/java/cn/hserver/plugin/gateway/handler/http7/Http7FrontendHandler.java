@@ -86,11 +86,11 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
                     public void operationComplete(ChannelFuture future) throws Exception {
                         if (future.isSuccess()) {
                             future.channel().writeAndFlush(in);
-                            businessHttp7.connectController(true,null);
+                            businessHttp7.connectController(ctx,true,null);
                         } else {
                             future.channel().close();
                             ReferenceCountUtil.release(in);
-                            if (businessHttp7.connectController(false,future.cause())){
+                            if (businessHttp7.connectController(ctx,false,future.cause())){
                                 b.connect(proxyHost).addListener(this);
                             }
                         }

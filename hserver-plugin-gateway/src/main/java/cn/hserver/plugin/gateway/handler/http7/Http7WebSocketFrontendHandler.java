@@ -119,12 +119,12 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                                 e.printStackTrace();
                             }
 
-                            businessHttp7.connectController(true,null);
+                            businessHttp7.connectController(ctx,true,null);
 
                         } else {
                             future.channel().close();
                             ReferenceCountUtil.release(request);
-                            if (businessHttp7.connectController(false,future.cause())){
+                            if (businessHttp7.connectController(ctx,false,future.cause())){
                                 b.connect(proxyHost).addListener(this);
                             }
                         }

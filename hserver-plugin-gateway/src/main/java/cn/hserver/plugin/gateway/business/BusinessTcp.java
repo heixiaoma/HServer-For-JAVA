@@ -33,7 +33,7 @@ public class BusinessTcp implements Business<Object,Object>{
     }
 
     @Override
-    public boolean connectController(boolean connectResult, Throwable error) {
+    public boolean connectController(ChannelHandlerContext ctx,boolean connectResult, Throwable error) {
         return false;
     }
 }

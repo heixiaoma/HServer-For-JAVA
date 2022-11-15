@@ -49,10 +49,10 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
                 public void operationComplete(ChannelFuture future) throws Exception {
                     if (future.isSuccess()) {
                         inboundChannel.read();
-                        businessTcp.connectController(true, null);
+                        businessTcp.connectController(ctx,true, null);
                     } else {
                         inboundChannel.close();
-                        if (businessTcp.connectController(false, future.cause())) {
+                        if (businessTcp.connectController(ctx,false, future.cause())) {
                             b.connect(proxyHost).addListener(this);
                         }
                     }
