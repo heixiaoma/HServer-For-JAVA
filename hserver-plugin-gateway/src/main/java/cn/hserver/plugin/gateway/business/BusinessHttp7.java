@@ -34,4 +34,9 @@ public class BusinessHttp7 implements Business<Object, Object>{
     public boolean connectController(ChannelHandlerContext ctx,boolean connectResult,int connectNum, Throwable error) {
         return false;
     }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+
+    }
 }

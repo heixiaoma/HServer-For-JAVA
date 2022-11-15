@@ -80,6 +80,7 @@ public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter{
         if (!handshakeFuture.isDone()) {
             handshakeFuture.setFailure(cause);
         }
+        businessHttp7.exceptionCaught(ctx,cause);
         Http7FrontendHandler.closeOnFlush(ctx.channel());
     }
 }

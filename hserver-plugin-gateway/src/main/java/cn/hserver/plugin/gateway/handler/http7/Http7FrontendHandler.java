@@ -120,6 +120,7 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        businessHttp7.exceptionCaught(ctx,cause);
         closeOnFlush(ctx.channel());
     }
 }

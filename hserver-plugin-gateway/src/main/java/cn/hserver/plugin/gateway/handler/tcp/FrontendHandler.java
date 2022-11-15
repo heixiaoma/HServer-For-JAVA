@@ -105,6 +105,7 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        businessTcp.exceptionCaught(ctx,cause);
         closeOnFlush(ctx.channel());
     }
 }
