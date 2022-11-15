@@ -11,6 +11,8 @@ import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.SocketAddress;
+
 public class FrontendHandler extends ChannelInboundHandlerAdapter {
     private static final Logger log = LoggerFactory.getLogger(FrontendHandler.class);
 
@@ -34,22 +36,30 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws InterruptedException {
-        try{
-        final Channel inboundChannel = ctx.channel();
-        Bootstrap b = new Bootstrap();
-        b.group(inboundChannel.eventLoop());
-        b.option(ChannelOption.AUTO_READ, true)
-                .channel(NioSocketChannel.class)
-                .handler(new BackendHandler(inboundChannel, businessTcp));
-        ChannelFuture f = b.connect(businessTcp.getProxyHost(ctx, null, ctx.channel().remoteAddress())).addListener((ChannelFutureListener) future -> {
-            if (future.isSuccess()) {
-                inboundChannel.read();
-            } else {
-                inboundChannel.close();
-            }
-        });
-        outboundChannel = f.channel();
-        ctx.channel().config().setAutoRead(false);
+        try {
+            final Channel inboundChannel = ctx.channel();
+            Bootstrap b = new Bootstrap();
+            b.group(inboundChannel.eventLoop());
+            b.option(ChannelOption.AUTO_READ, true)
+                    .channel(NioSocketChannel.class)
+                    .handler(new BackendHandler(inboundChannel, businessTcp));
+            SocketAddress proxyHost = businessTcp.getProxyHost(ctx, null, ctx.channel().remoteAddress());
+            ChannelFuture f = b.connect().addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture future) throws Exception {
+                    if (future.isSuccess()) {
+                        inboundChannel.read();
+                        businessTcp.connectController(true, null);
+                    } else {
+                        inboundChannel.close();
+                        if (businessTcp.connectController(false, future.cause())) {
+                            b.connect(proxyHost).addListener(this);
+                        }
+                    }
+                }
+            });
+            outboundChannel = f.channel();
+            ctx.channel().config().setAutoRead(false);
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
         } finally {

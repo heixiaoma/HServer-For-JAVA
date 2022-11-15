@@ -106,19 +106,28 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                     }
                 });
                 //数据代理服务选择器
-                ChannelFuture f = b.connect(proxyHost).addListener((ChannelFutureListener) future -> {
-                    if (future.isSuccess()) {
-                        try {
-                            handler.handshakeFuture().addListener((future1) -> {
-                                future1.sync();
-                                future.channel().writeAndFlush(request);
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                ChannelFuture f = b.connect(proxyHost).addListener(new ChannelFutureListener() {
+                    @Override
+                    public void operationComplete(ChannelFuture future) throws Exception {
+                        if (future.isSuccess()) {
+                            try {
+                                handler.handshakeFuture().addListener((future1) -> {
+                                    future1.sync();
+                                    future.channel().writeAndFlush(request);
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            businessHttp7.connectController(true,null);
+
+                        } else {
+                            future.channel().close();
+                            ReferenceCountUtil.release(request);
+                            if (businessHttp7.connectController(false,future.cause())){
+                                b.connect(proxyHost).addListener(this);
+                            }
                         }
-                    } else {
-                        future.channel().close();
-                        ReferenceCountUtil.release(request);
                     }
                 });
                 outboundChannel = f.channel();

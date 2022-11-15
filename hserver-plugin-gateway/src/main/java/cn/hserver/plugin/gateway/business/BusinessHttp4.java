@@ -30,6 +30,10 @@ public class BusinessHttp4 implements Business<Http4Data,Object>{
 
     @Override
     public void close(Channel channel) {
+    }
 
+    @Override
+    public boolean connectController(boolean connectResult, Throwable error) {
+        return false;
     }
 }

@@ -81,12 +81,19 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
                     }
                 });
                 //数据代理服务选择器
-                ChannelFuture f = b.connect(proxyHost).addListener((ChannelFutureListener) future -> {
-                    if (future.isSuccess()) {
-                        future.channel().writeAndFlush(in);
-                    } else {
-                        future.channel().close();
-                        ReferenceCountUtil.release(in);
+                ChannelFuture f = b.connect(proxyHost).addListener(new ChannelFutureListener() {
+                    @Override
+                    public void operationComplete(ChannelFuture future) throws Exception {
+                        if (future.isSuccess()) {
+                            future.channel().writeAndFlush(in);
+                            businessHttp7.connectController(true,null);
+                        } else {
+                            future.channel().close();
+                            ReferenceCountUtil.release(in);
+                            if (businessHttp7.connectController(false,future.cause())){
+                                b.connect(proxyHost).addListener(this);
+                            }
+                        }
                     }
                 });
                 outboundChannel = f.channel();

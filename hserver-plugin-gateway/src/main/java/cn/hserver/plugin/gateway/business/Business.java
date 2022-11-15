@@ -43,4 +43,10 @@ public interface Business<T, U> {
      * @param channel
      */
     void close(Channel channel);
+
+    /**
+     * 失败是否重连，同时告知连接结果
+     * 返回真标识重新重连
+     */
+    boolean connectController(boolean connectResult, Throwable error);
 }

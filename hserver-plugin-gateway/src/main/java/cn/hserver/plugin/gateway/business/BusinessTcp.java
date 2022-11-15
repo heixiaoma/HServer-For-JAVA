@@ -31,4 +31,9 @@ public class BusinessTcp implements Business<Object,Object>{
     public void close(Channel channel) {
 
     }
+
+    @Override
+    public boolean connectController(boolean connectResult, Throwable error) {
+        return false;
+    }
 }

@@ -14,6 +14,8 @@ import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.SocketAddress;
+
 public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
     private static final Logger log = LoggerFactory.getLogger(Http4FrontendHandler.class);
 
@@ -72,14 +74,22 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
             b.option(ChannelOption.AUTO_READ, true)
                     .channel(NioSocketChannel.class)
                     .handler(new Http4BackendHandler(inboundChannel, businessHttp4));
-            b.connect(businessHttp4.getProxyHost(ctx,new Http4Data(host, msg), ctx.channel().remoteAddress())).addListener((ChannelFutureListener) future -> {
-                if (future.isSuccess()) {
-                    outboundChannel = future.channel();
-                    inboundChannel.read();
-                    write(ctx, msg);
-                } else {
-                    inboundChannel.close();
-                    ReferenceCountUtil.release(msg);
+            SocketAddress proxyHost = businessHttp4.getProxyHost(ctx, new Http4Data(host, msg), ctx.channel().remoteAddress());
+            b.connect(proxyHost).addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture future) throws Exception {
+                    if (future.isSuccess()) {
+                        outboundChannel = future.channel();
+                        inboundChannel.read();
+                        write(ctx, msg);
+                        businessHttp4.connectController(true,null);
+                    } else {
+                        inboundChannel.close();
+                        ReferenceCountUtil.release(msg);
+                        if (businessHttp4.connectController(false,future.cause())){
+                            b.connect(proxyHost).addListener(this);
+                        }
+                    }
                 }
             });
         }
