@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.SocketAddress;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FrontendHandler extends ChannelInboundHandlerAdapter {
     private static final Logger log = LoggerFactory.getLogger(FrontendHandler.class);
@@ -44,15 +45,17 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
                     .channel(NioSocketChannel.class)
                     .handler(new BackendHandler(inboundChannel, businessTcp));
             SocketAddress proxyHost = businessTcp.getProxyHost(ctx, null, ctx.channel().remoteAddress());
+            final AtomicInteger count = new AtomicInteger(0);
+
             ChannelFuture f = b.connect().addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(ChannelFuture future) throws Exception {
                     if (future.isSuccess()) {
                         inboundChannel.read();
-                        businessTcp.connectController(ctx,true, null);
+                        businessTcp.connectController(ctx, true, count.incrementAndGet(), null);
                     } else {
                         inboundChannel.close();
-                        if (businessTcp.connectController(ctx,false, future.cause())) {
+                        if (businessTcp.connectController(ctx, false, count.incrementAndGet(), future.cause())) {
                             b.connect(proxyHost).addListener(this);
                         }
                     }

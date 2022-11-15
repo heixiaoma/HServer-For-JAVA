@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.SocketAddress;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
     private static final Logger log = LoggerFactory.getLogger(Http4FrontendHandler.class);
@@ -27,7 +28,7 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
         this.host = host;
         for (Business business : IocUtil.getListBean(Business.class)) {
             if (business instanceof BusinessHttp4) {
-               businessHttp4 = (BusinessHttp4)business;
+                businessHttp4 = (BusinessHttp4) business;
             }
         }
     }
@@ -53,46 +54,47 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-        try{
-        Object in = businessHttp4.in(ctx,new Http4Data(host, msg));
-        if (in == null) {
-            return;
-        }
-
-        if (outboundChannel != null) {
-            if (outboundChannel.isActive()) {
-                write(ctx, msg);
-            } else {
-                outboundChannel.close();
-                outboundChannel = null;
-                ReferenceCountUtil.release(msg);
+        try {
+            Object in = businessHttp4.in(ctx, new Http4Data(host, msg));
+            if (in == null) {
+                return;
             }
-        } else {
-            final Channel inboundChannel = ctx.channel();
-            Bootstrap b = new Bootstrap();
-            b.group(inboundChannel.eventLoop());
-            b.option(ChannelOption.AUTO_READ, true)
-                    .channel(NioSocketChannel.class)
-                    .handler(new Http4BackendHandler(inboundChannel, businessHttp4));
-            SocketAddress proxyHost = businessHttp4.getProxyHost(ctx, new Http4Data(host, msg), ctx.channel().remoteAddress());
-            b.connect(proxyHost).addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture future) throws Exception {
-                    if (future.isSuccess()) {
-                        outboundChannel = future.channel();
-                        inboundChannel.read();
-                        write(ctx, msg);
-                        businessHttp4.connectController(ctx,true,null);
-                    } else {
-                        inboundChannel.close();
-                        ReferenceCountUtil.release(msg);
-                        if (businessHttp4.connectController(ctx,false,future.cause())){
-                            b.connect(proxyHost).addListener(this);
+
+            if (outboundChannel != null) {
+                if (outboundChannel.isActive()) {
+                    write(ctx, msg);
+                } else {
+                    outboundChannel.close();
+                    outboundChannel = null;
+                    ReferenceCountUtil.release(msg);
+                }
+            } else {
+                final Channel inboundChannel = ctx.channel();
+                Bootstrap b = new Bootstrap();
+                b.group(inboundChannel.eventLoop());
+                b.option(ChannelOption.AUTO_READ, true)
+                        .channel(NioSocketChannel.class)
+                        .handler(new Http4BackendHandler(inboundChannel, businessHttp4));
+                SocketAddress proxyHost = businessHttp4.getProxyHost(ctx, new Http4Data(host, msg), ctx.channel().remoteAddress());
+               final AtomicInteger count = new AtomicInteger(0);
+                b.connect(proxyHost).addListener(new ChannelFutureListener() {
+                    @Override
+                    public void operationComplete(ChannelFuture future) throws Exception {
+                        if (future.isSuccess()) {
+                            outboundChannel = future.channel();
+                            inboundChannel.read();
+                            write(ctx, msg);
+                            businessHttp4.connectController(ctx, true, count.incrementAndGet(), null);
+                        } else {
+                            inboundChannel.close();
+                            ReferenceCountUtil.release(msg);
+                            if (businessHttp4.connectController(ctx, false, count.incrementAndGet(), future.cause())) {
+                                b.connect(proxyHost).addListener(this);
+                            }
                         }
                     }
-                }
-            });
-        }
+                });
+            }
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
         } finally {

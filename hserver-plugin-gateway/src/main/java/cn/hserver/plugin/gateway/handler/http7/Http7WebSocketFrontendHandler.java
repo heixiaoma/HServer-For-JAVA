@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter {
@@ -105,6 +106,8 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                         ch.pipeline().addLast(new HttpClientCodec(), new HttpObjectAggregator(Integer.MAX_VALUE), WebSocketClientCompressionHandler.INSTANCE, handler);
                     }
                 });
+                final AtomicInteger count = new AtomicInteger(0);
+
                 //数据代理服务选择器
                 ChannelFuture f = b.connect(proxyHost).addListener(new ChannelFutureListener() {
                     @Override
@@ -119,12 +122,12 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                                 e.printStackTrace();
                             }
 
-                            businessHttp7.connectController(ctx,true,null);
+                            businessHttp7.connectController(ctx,true,count.incrementAndGet(),null);
 
                         } else {
                             future.channel().close();
                             ReferenceCountUtil.release(request);
-                            if (businessHttp7.connectController(ctx,false,future.cause())){
+                            if (businessHttp7.connectController(ctx,false,count.incrementAndGet(),future.cause())){
                                 b.connect(proxyHost).addListener(this);
                             }
                         }

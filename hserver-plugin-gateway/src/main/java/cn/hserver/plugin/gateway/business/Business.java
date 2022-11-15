@@ -48,5 +48,5 @@ public interface Business<T, U> {
      * 失败是否重连，同时告知连接结果
      * 返回真标识重新重连
      */
-    boolean connectController(ChannelHandlerContext ctx,boolean connectResult, Throwable error);
+    boolean connectController(ChannelHandlerContext ctx,boolean connectResult,int connectNum, Throwable error);
 }
