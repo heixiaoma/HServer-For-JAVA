@@ -72,7 +72,6 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-
         try {
             Object in = businessTcp.in(ctx, msg);
             if (in == null) {
@@ -90,9 +89,8 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
             }
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
-        } finally {
-            ctx.close();
             ReferenceCountUtil.release(msg);
+            throw e;
         }
     }
 

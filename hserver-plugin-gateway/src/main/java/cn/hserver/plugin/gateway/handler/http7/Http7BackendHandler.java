@@ -32,7 +32,6 @@ public class Http7BackendHandler extends ChannelInboundHandlerAdapter {
                 inboundChannel.writeAndFlush(out);
             }catch (Throwable e){
                 log.error(e.getMessage(),e);
-            }finally {
                 ctx.channel().close();
                 ReferenceCountUtil.release(msg);
             }

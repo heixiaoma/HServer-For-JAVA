@@ -61,7 +61,6 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
         } else if (msg instanceof WebSocketFrame) {
             handleWebSocketFrame(ctx, (WebSocketFrame) msg);
         } else {
-            ReferenceCountUtil.retain(msg);
             ctx.fireChannelRead(msg);
         }
     }
@@ -120,10 +119,9 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                                 });
                             } catch (Exception e) {
                                 e.printStackTrace();
+                                ReferenceCountUtil.release(request);
                             }
-
                             businessHttp7.connectController(ctx,true,count.incrementAndGet(),null);
-
                         } else {
                             future.channel().close();
                             ReferenceCountUtil.release(request);
@@ -139,6 +137,8 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
             }
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
+            ReferenceCountUtil.release(request);
+            throw e;
         }
     }
 
@@ -153,7 +153,6 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                 writeWebSocket(ctx, req);
             }
         } else {
-            ReferenceCountUtil.retain(req);
             ctx.fireChannelRead(req);
         }
     }

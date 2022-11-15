@@ -17,7 +17,7 @@ public class GateWayPlugin implements PluginAdapter {
         }
         Integer port = PropUtil.getInstance().getInt("gateway.port");
         if (port != null) {
-
+            GateWayConfig.PORT = port;
         }
     }
 

@@ -97,9 +97,8 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
             }
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
-        } finally {
-            ctx.close();
             ReferenceCountUtil.release(msg);
+            throw e;
         }
     }
 

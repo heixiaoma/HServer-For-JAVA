@@ -43,7 +43,6 @@ public class Http4BackendHandler extends ChannelInboundHandlerAdapter {
             });
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
-        } finally {
             ctx.channel().close();
             ReferenceCountUtil.release(msg);
         }

@@ -62,27 +62,24 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
             if (in == null) {
                 return;
             }
-
-
             if (outboundChannel == null) {
                 final Channel inboundChannel = ctx.channel();
                 Bootstrap b = new Bootstrap();
                 b.group(ctx.channel().eventLoop());
                 InetSocketAddress proxyHost = (InetSocketAddress) businessHttp7.getProxyHost(ctx, in, ctx.channel().localAddress());
-                SSLEngine sslEngine = HttpsMapperSslContextFactory.getClientContext().createSSLEngine();
-                sslEngine.setUseClientMode(true);
                 b.channel(NioSocketChannel.class).handler(new ChannelInitializer<Channel>() {
                     @Override
                     protected void initChannel(Channel ch) {
                         if (proxyHost.getPort() == 443) {
+                            SSLEngine sslEngine = HttpsMapperSslContextFactory.getClientContext().createSSLEngine();
+                            sslEngine.setUseClientMode(true);
                             ch.pipeline().addFirst(new SslHandler(sslEngine));
                         }
-                        ch.pipeline().addLast(new HttpClientCodec(), new HttpContentDecompressor(), new HttpObjectAggregator(Integer.MAX_VALUE));
+                        ch.pipeline().addLast(new HttpClientCodec(),new HttpContentDecompressor(), new HttpObjectAggregator(Integer.MAX_VALUE));
                         ch.pipeline().addLast(new Http7BackendHandler(inboundChannel, businessHttp7));
                     }
                 });
                 final AtomicInteger count = new AtomicInteger(0);
-
                 //数据代理服务选择器
                 ChannelFuture f = b.connect(proxyHost).addListener(new ChannelFutureListener() {
                     @Override
@@ -105,9 +102,8 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
             }
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
-        } finally {
-            ctx.close();
             ReferenceCountUtil.release(msg);
+            throw e;
         }
     }
 
