@@ -28,7 +28,7 @@ public class DispatchHttp4GateWay implements ProtocolDispatcherAdapter {
     public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers) {
         InetSocketAddress socketAddress = (InetSocketAddress) ctx.channel().localAddress();
         //TCP模式
-        if (GateWayConfig.GATEWAY_MODE == GatewayMode.HTTP_4 && socketAddress.getPort() == GateWayConfig.PORT) {
+        if (GateWayConfig.GATEWAY_MODE == GatewayMode.HTTP_4 && GateWayConfig.PORT.contains(socketAddress.getPort())) {
             //解析入场host
             String host = HostUtil.getHost(ByteBuffer.wrap(headers));
             if (host != null) {
@@ -36,7 +36,7 @@ public class DispatchHttp4GateWay implements ProtocolDispatcherAdapter {
                 return true;
             } else {
                 log.error("不是标准http数据包");
-                ProtocolUtil.print(ctx,DispatchHttp4GateWay.class.getName(),headers);
+                ProtocolUtil.print(ctx, DispatchHttp4GateWay.class.getName(), headers);
                 return false;
             }
         }

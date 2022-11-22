@@ -8,6 +8,9 @@ import cn.hserver.plugin.gateway.business.Business;
 import cn.hserver.plugin.gateway.config.GateWayConfig;
 import cn.hserver.plugin.gateway.enums.GatewayMode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GateWayPlugin implements PluginAdapter {
     @Override
     public void startApp() {
@@ -15,9 +18,14 @@ public class GateWayPlugin implements PluginAdapter {
         if (mode != null) {
             GateWayConfig.GATEWAY_MODE = mode;
         }
-        Integer port = PropUtil.getInstance().getInt("gateway.port");
-        if (port != null) {
-            GateWayConfig.PORT = port;
+        String port = PropUtil.getInstance().get("gateway.port");
+        if (port != null && port.trim().length() > 0) {
+            String[] split = port.split(",");
+            List<Integer> ports = new ArrayList<>();
+            for (String s : split) {
+                ports.add(Integer.parseInt(s));
+            }
+            GateWayConfig.PORT = ports;
         }
     }
 

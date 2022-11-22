@@ -21,7 +21,7 @@ public class DispatchTcpGateWay implements ProtocolDispatcherSuperAdapter {
     public boolean dispatcher(Channel channel, ChannelPipeline pipeline) {
         InetSocketAddress socketAddress = (InetSocketAddress) channel.localAddress();
         //TCP模式
-        if (GateWayConfig.GATEWAY_MODE == GatewayMode.TCP && socketAddress.getPort() == GateWayConfig.PORT) {
+        if (GateWayConfig.GATEWAY_MODE == GatewayMode.TCP && GateWayConfig.PORT.contains(socketAddress.getPort())) {
             pipeline.addLast(new FrontendHandler());
             return true;
         }

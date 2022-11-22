@@ -2,6 +2,9 @@ package cn.hserver.plugin.gateway.config;
 
 import cn.hserver.plugin.gateway.enums.GatewayMode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GateWayConfig {
 
     /**
@@ -12,6 +15,10 @@ public class GateWayConfig {
     /**
      * 网关占用端口
      */
-    public static Integer PORT = 8888;
+    public static List<Integer> PORT = new ArrayList<Integer>(){
+        {
+            add(8888);
+        }
+    };
 
 }
