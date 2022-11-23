@@ -23,6 +23,8 @@ public class DispatchHttp7GateWay implements ProtocolDispatcherAdapter {
     public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers) {
         InetSocketAddress socketAddress = (InetSocketAddress) ctx.channel().localAddress();
         if (GateWayConfig.GATEWAY_MODE == GatewayMode.HTTP_7 && GateWayConfig.PORT.contains(socketAddress.getPort())) {
+            pipeline.channel().config().setWriteBufferHighWaterMark(GateWayConfig.HM*1024*1024);
+            pipeline.channel().config().setWriteBufferLowWaterMark(GateWayConfig.LM*1024*1024);
             pipeline.addLast(new HttpServerCodec(), new HttpObjectAggregator(Integer.MAX_VALUE));
             pipeline.addLast(new Http7WebSocketFrontendHandler());
             pipeline.addLast(new Http7FrontendHandler());

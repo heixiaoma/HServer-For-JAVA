@@ -53,6 +53,13 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
+    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
+        log.debug("限制操作，让两个通道实现同步读写 开关状态:{}",ctx.channel().isWritable());
+        ctx.channel().config().setAutoRead(ctx.channel().isWritable());
+        outboundChannel.config().setAutoRead(ctx.channel().isWritable());
+    }
+
+    @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
         try {
             Object in = businessHttp4.in(ctx, new Http4Data(host, msg));

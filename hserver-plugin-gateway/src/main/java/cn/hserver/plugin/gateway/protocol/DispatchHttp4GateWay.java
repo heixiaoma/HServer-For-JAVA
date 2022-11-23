@@ -32,6 +32,8 @@ public class DispatchHttp4GateWay implements ProtocolDispatcherAdapter {
             //解析入场host
             String host = HostUtil.getHost(ByteBuffer.wrap(headers));
             if (host != null) {
+                pipeline.channel().config().setWriteBufferHighWaterMark(GateWayConfig.HM*1024*1024);
+                pipeline.channel().config().setWriteBufferLowWaterMark(GateWayConfig.LM*1024*1024);
                 pipeline.addLast(new Http4FrontendHandler(host));
                 return true;
             } else {

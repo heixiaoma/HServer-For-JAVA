@@ -22,6 +22,8 @@ public class DispatchTcpGateWay implements ProtocolDispatcherSuperAdapter {
         InetSocketAddress socketAddress = (InetSocketAddress) channel.localAddress();
         //TCP模式
         if (GateWayConfig.GATEWAY_MODE == GatewayMode.TCP && GateWayConfig.PORT.contains(socketAddress.getPort())) {
+            pipeline.channel().config().setWriteBufferHighWaterMark(GateWayConfig.HM*1024*1024);
+            pipeline.channel().config().setWriteBufferLowWaterMark(GateWayConfig.LM*1024*1024);
             pipeline.addLast(new FrontendHandler());
             return true;
         }

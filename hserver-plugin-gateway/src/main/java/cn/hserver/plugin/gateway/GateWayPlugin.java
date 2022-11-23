@@ -27,6 +27,16 @@ public class GateWayPlugin implements PluginAdapter {
             }
             GateWayConfig.PORT = ports;
         }
+
+        Integer high = PropUtil.getInstance().getInt("gateway.high");
+        if (port != null ) {
+            GateWayConfig.HM = high;
+        }
+
+        Integer low = PropUtil.getInstance().getInt("gateway.low");
+        if (port != null ) {
+            GateWayConfig.LM = low;
+        }
     }
 
     @Override

@@ -12,6 +12,9 @@ public class GateWayConfig {
      */
     public static GatewayMode GATEWAY_MODE = GatewayMode.HTTP_7;
 
+    public static Integer HM = 10;
+    public static Integer LM = 5;
+
     /**
      * 网关占用端口
      */
