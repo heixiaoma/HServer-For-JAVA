@@ -54,7 +54,7 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
             SocketAddress proxyHost = businessTcp.getProxyHost(ctx, null, ctx.channel().remoteAddress());
             final AtomicInteger count = new AtomicInteger(0);
 
-            ChannelFuture f = b.connect().addListener(new ChannelFutureListener() {
+            ChannelFuture f = b.connect(proxyHost).addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(ChannelFuture future) throws Exception {
                     if (future.isSuccess()) {

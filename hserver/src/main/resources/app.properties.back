@@ -45,7 +45,7 @@ epoll=true
 preProtocolMaxSize=1024
 
 #日志级别 debug info error ...
-level=debug
+log=debug
 #自定义日志名字
 logbackName=logback-dev.xml
 

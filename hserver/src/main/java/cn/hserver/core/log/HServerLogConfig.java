@@ -69,8 +69,8 @@ public class HServerLogConfig {
         in.close();
         Logger root = loggerContext.getLogger("ROOT");
         if (root != null) {
-            if (PropUtil.getInstance().get("level").trim().length() > 0) {
-                root.setLevel(Level.toLevel(PropUtil.getInstance().get("level").trim()));
+            if (PropUtil.getInstance().get("log").trim().length() > 0) {
+                root.setLevel(Level.toLevel(PropUtil.getInstance().get("log").trim()));
             }
         }
     }
