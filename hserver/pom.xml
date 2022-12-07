@@ -21,11 +21,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skipTests>true</skipTests>
 
-        <netty.version>4.1.77.Final</netty.version>
-        <transmittable.version>2.12.4</transmittable.version>
+        <netty.version>4.1.85.Final</netty.version>
+        <transmittable.version>2.14.2</transmittable.version>
         <logback.version>1.2.11</logback.version>
-        <javassist.version>3.29.1-GA </javassist.version>
-        <protostuff.version>1.1.6</protostuff.version>
+        <javassist.version>3.29.2-GA</javassist.version>
+        <protostuff.version>1.2.2</protostuff.version>
         <objenesis.version>3.2</objenesis.version>
         <junit.version>4.13.2</junit.version>
         <disruptor.version>3.4.4</disruptor.version>
