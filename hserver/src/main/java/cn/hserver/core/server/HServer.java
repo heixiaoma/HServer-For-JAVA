@@ -60,25 +60,27 @@ public class HServer {
     }
 
     public void run() throws Exception {
-        //UDP Server
-        humServerBossGroup = new NioEventLoopGroup();
-        Bootstrap humServer = new Bootstrap();
-        humServer.group(humServerBossGroup)
-                .channel(NioDatagramChannel.class)
-                .option(ChannelOption.SO_BROADCAST, true)
-                .option(ChannelOption.SO_REUSEADDR, true)
-                .handler(new HumServerHandler());
-        Channel humChannel = humServer.bind(HUM_PORT).sync().channel();
-        channels.put(humChannel, "UDP Server Port:" + HUM_PORT);
-        //UDP Client
-        humClientBossGroup = new NioEventLoopGroup();
-        Bootstrap humClient = new Bootstrap();
-        humClient.group(humClientBossGroup)
-                .channel(NioDatagramChannel.class)
-                .option(ChannelOption.SO_BROADCAST, true)
-                .handler(new HumClientHandler());
-        HumClient.channel = humClient.bind(0).sync().channel();
-        channels.put(HumClient.channel, "UDP Client Port:0");
+        if (ConstConfig.HUM_OPEN) {
+            //UDP Server
+            humServerBossGroup = new NioEventLoopGroup();
+            Bootstrap humServer = new Bootstrap();
+            humServer.group(humServerBossGroup)
+                    .channel(NioDatagramChannel.class)
+                    .option(ChannelOption.SO_BROADCAST, true)
+                    .option(ChannelOption.SO_REUSEADDR, true)
+                    .handler(new HumServerHandler());
+            Channel humChannel = humServer.bind(HUM_PORT).sync().channel();
+            channels.put(humChannel, "UDP Server Port:" + HUM_PORT);
+            //UDP Client
+            humClientBossGroup = new NioEventLoopGroup();
+            Bootstrap humClient = new Bootstrap();
+            humClient.group(humClientBossGroup)
+                    .channel(NioDatagramChannel.class)
+                    .option(ChannelOption.SO_BROADCAST, true)
+                    .handler(new HumClientHandler());
+            HumClient.channel = humClient.bind(0).sync().channel();
+            channels.put(HumClient.channel, "UDP Client Port:0");
+        }
 
         List<ProtocolDispatcherAdapter> listBean = IocUtil.getListBean(ProtocolDispatcherAdapter.class);
         if (listBean!=null&&!listBean.isEmpty()) {

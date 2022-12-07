@@ -3,6 +3,9 @@
 #应用名字，默认HServer
 appName=HServer
 
+#开启hum
+humOpen=true
+
 #hum消息端口，默认9527
 humPort=9527
 

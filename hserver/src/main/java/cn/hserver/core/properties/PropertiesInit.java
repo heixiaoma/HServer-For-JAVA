@@ -29,6 +29,11 @@ public class PropertiesInit {
         if (backLog != null) {
             ConstConfig.backLog = backLog;
         }
+
+        String humOpen = instance.get("humOpen");
+        if (humOpen != null) {
+            ConstConfig.HUM_OPEN = Boolean.valueOf(humOpen);
+        }
         Integer humPort = instance.getInt("humPort");
         if (humPort != null) {
             ConstConfig.HUM_PORT = humPort;

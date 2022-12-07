@@ -101,4 +101,9 @@ public class ConstConfig {
      */
     public static Integer PRE_PROTOCOL_MAX_SIZE = 1024;
 
+
+    /**
+     * 是否开启HUM消息
+     */
+    public static Boolean HUM_OPEN = true;
 }

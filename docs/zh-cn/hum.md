@@ -35,6 +35,8 @@ public class HumMsg implements HumAdapter {
 - 默认9527端口，可以在配置文件中自定义端口: 
 ```properties
 humPort=9527
+#开启hum 默认开启
+humOpen=true
 ```
 ```java
 //广播推送
