@@ -38,6 +38,8 @@ import static cn.hserver.core.server.context.ConstConfig.*;
 
 public class HServer {
 
+    private Map<ChannelOption<Object>, Object> tcpOptions;
+
     private static final Logger log = LoggerFactory.getLogger(HServer.class);
 
     private final Integer[] ports;
@@ -54,9 +56,10 @@ public class HServer {
     private EventLoopGroup bossGroup = null;
     private EventLoopGroup workerGroup = null;
 
-    public HServer(Integer[] ports, String[] args) {
-        this.ports=ports;
+    public HServer(Integer[] ports, String[] args, Map<ChannelOption<Object>, Object> tcpOptions) {
+        this.ports = ports;
         this.args = args;
+        this.tcpOptions = tcpOptions;
     }
 
     public void run() throws Exception {
@@ -83,11 +86,14 @@ public class HServer {
         }
 
         List<ProtocolDispatcherAdapter> listBean = IocUtil.getListBean(ProtocolDispatcherAdapter.class);
-        if (listBean!=null&&!listBean.isEmpty()) {
+        if (listBean != null && !listBean.isEmpty()) {
             //TCP Server
             String typeName;
             ServerBootstrap bootstrap = new ServerBootstrap();
-            if (EpollUtil.check()&& ConstConfig.EPOLL) {
+            if (tcpOptions!=null){
+                tcpOptions.forEach(bootstrap::option);
+            }
+            if (EpollUtil.check() && ConstConfig.EPOLL) {
                 bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
                 bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
                 bootstrap.childOption(ChannelOption.TCP_NODELAY, true);

@@ -1,5 +1,6 @@
 package cn.hserver;
 
+import io.netty.channel.ChannelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.hserver.core.plugs.PlugsManager;
@@ -17,10 +18,7 @@ import cn.hserver.core.server.util.ExceptionUtil;
 import cn.hserver.core.server.util.PackageUtil;
 import cn.hserver.core.task.TaskManager;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static cn.hserver.core.server.context.ConstConfig.TRACK_EXT_PACKAGES;
 
@@ -29,10 +27,21 @@ import static cn.hserver.core.server.context.ConstConfig.TRACK_EXT_PACKAGES;
  * @author hxm
  */
 public class HServerApplication {
+
     private static final Logger log = LoggerFactory.getLogger(HServerApplication.class);
+
+    private static final Map<ChannelOption<Object>, Object> TCP_OPTIONS = new HashMap<>();
 
     public static Class<?> mainClass;
 
+    /**
+     * 添加一些netty options选项
+     * @param key
+     * @param value
+     */
+    public static void addTcpOptions(ChannelOption<Object> key, Object value) {
+        TCP_OPTIONS.put(key, value);
+    }
 
     //单端口
     public static void run(Class<?> mainClass, Integer port, String... args) {
@@ -62,15 +71,13 @@ public class HServerApplication {
         initTestOk();
     }
 
-
     private static void startServer(String[] args) {
         try {
-            new HServer(ConstConfig.PORTS, args).run();
+            new HServer(ConstConfig.PORTS, args, TCP_OPTIONS).run();
         } catch (Exception e) {
             log.error(ExceptionUtil.getMessage(e));
         }
     }
-
 
     private static void iocInit(Class<?> mainClass) {
         iocInit(null, mainClass);
