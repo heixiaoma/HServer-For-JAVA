@@ -36,9 +36,8 @@ import static cn.hserver.core.server.context.ConstConfig.*;
  * @author hxm
  */
 
-public class HServer {
+public class HServer extends AbsHServer {
 
-    private Map<ChannelOption<Object>, Object> tcpOptions;
 
     private static final Logger log = LoggerFactory.getLogger(HServer.class);
 
@@ -56,13 +55,12 @@ public class HServer {
     private EventLoopGroup bossGroup = null;
     private EventLoopGroup workerGroup = null;
 
-    public HServer(Integer[] ports, String[] args, Map<ChannelOption<Object>, Object> tcpOptions) {
+    public HServer(Integer[] ports, String[] args) {
         this.ports = ports;
         this.args = args;
-        this.tcpOptions = tcpOptions;
     }
 
-    public void run() throws Exception {
+    public void start() throws Exception {
         if (ConstConfig.HUM_OPEN) {
             //UDP Server
             humServerBossGroup = new NioEventLoopGroup();
@@ -97,15 +95,15 @@ public class HServer {
                 bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
                 bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
                 bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-                bossGroup = TTLUtil.getEventLoop(bossPool, "hserver_epoll_boss");
-                workerGroup = TTLUtil.getEventLoop(workerPool, "hserver_epoll_worker");
+                bossGroup = EventLoopUtil.getEventLoop(bossPool, "hserver_epoll_boss");
+                workerGroup = EventLoopUtil.getEventLoop(workerPool, "hserver_epoll_worker");
                 bootstrap.group(bossGroup, workerGroup).channel(EpollServerSocketChannel.class);
                 typeName = "Epoll";
             } else {
                 bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
                 bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-                bossGroup = TTLUtil.getEventLoop(bossPool, "hserver_boss");
-                workerGroup = TTLUtil.getEventLoop(workerPool, "hserver_worker");
+                bossGroup = EventLoopUtil.getEventLoop(bossPool, "hserver_boss");
+                workerGroup = EventLoopUtil.getEventLoop(workerPool, "hserver_worker");
                 bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
                 typeName = "Nio";
             }
@@ -128,16 +126,7 @@ public class HServer {
 
     private void shutdownHook() {
 
-        publishMessage(APP_NAME + "上线，IP：" + HServerIpUtil.getLocalIP());
 
-        channels.forEach((k, v) -> new NamedThreadFactory("hserver_close").newThread(() -> {
-            try {
-                k.closeFuture().sync();
-                log.info("channel关闭,描述信息：{}", v);
-            } catch (InterruptedException e) {
-                log.error(ExceptionUtil.getMessage(e));
-            }
-        }).start());
 
         Thread shutdown = new NamedThreadFactory("hserver_shutdown").newThread(() -> {
             log.info("服务即将关闭");
@@ -177,36 +166,5 @@ public class HServer {
         }
     }
 
-    private String getHello(String typeName, String port) {
-        InputStream banner = HServer.class.getResourceAsStream("/banner.txt");
-        try {
-            if (banner != null) {
-                InputStreamReader inputStreamReader = new InputStreamReader(banner);
-                String result = new BufferedReader(inputStreamReader)
-                        .lines().collect(Collectors.joining(System.lineSeparator()));
-                inputStreamReader.close();
-                banner.close();
-                return result;
-            }
-        } catch (IOException e) {
-            log.error("banner.txt 流关闭错误{}", e.getMessage());
-        }
-
-        //GRAFFtit 字体
-        return "  ___ ___  _________ \t运行方式：" + typeName + "\t端口：" + port + "\n" +
-                " /   |   \\/   _____/ ______________  __ ___________ \n" +
-                "/    ~    \\_____  \\_/ __ \\_  __ \\  \\/ // __ \\_  __ \\\n" +
-                "\\    Y    /        \\  ___/|  | \\/\\   /\\  ___/|  | \\/\n" +
-                " \\___|_  /_______  /\\___  >__|    \\_/  \\___  >__|   \n" +
-                "       \\/        \\/     \\/                 \\/       ";
-    }
-
-
-    public void publishMessage(String message) {
-        HumMessage humMessage = new HumMessage();
-        humMessage.setData(message);
-        humMessage.setType(SERVER_NAME);
-        HumClient.sendMessage(humMessage);
-    }
 
 }

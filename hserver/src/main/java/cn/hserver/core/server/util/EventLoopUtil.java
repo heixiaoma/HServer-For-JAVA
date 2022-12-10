@@ -1,17 +1,17 @@
 package cn.hserver.core.server.util;
 
-import cn.hserver.core.server.context.ConstConfig;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 
-public class TTLUtil {
+public class EventLoopUtil {
 
     public static EventLoopGroup getEventLoop(int size, String name) {
-        if (EpollUtil.check() && ConstConfig.EPOLL) {
+        if (EpollUtil.check()) {
             return new EpollEventLoopGroup(size, new NamedThreadFactory(name));
         } else {
             return new NioEventLoopGroup(size, new NamedThreadFactory(name));
         }
     }
+
 }

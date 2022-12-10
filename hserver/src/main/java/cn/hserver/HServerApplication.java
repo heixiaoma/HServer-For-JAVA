@@ -30,37 +30,26 @@ public class HServerApplication {
 
     private static final Logger log = LoggerFactory.getLogger(HServerApplication.class);
 
-    private static final Map<ChannelOption<Object>, Object> TCP_OPTIONS = new HashMap<>();
-
     public static Class<?> mainClass;
 
-    /**
-     * 添加一些netty options选项
-     * @param key
-     * @param value
-     */
-    public static void addTcpOptions(ChannelOption<Object> key, Object value) {
-        TCP_OPTIONS.put(key, value);
-    }
-
     //单端口
-    public static void run(Class<?> mainClass, Integer port, String... args) {
+    public static HServer run(Class<?> mainClass, Integer port, String... args) {
         ConstConfig.PORTS = new Integer[]{port};
         iocInit(mainClass);
-        startServer(args);
+        return startServer(args);
     }
 
     //多端口
-    public static void run(Class<?> mainClass, Integer[] ports, String... args) {
+    public static HServer run(Class<?> mainClass, Integer[] ports, String... args) {
         ConstConfig.PORTS = ports;
         iocInit(mainClass);
-        startServer(args);
+        return startServer(args);
     }
 
     //无端口，默认端口，或者配置端口
-    public static void run(Class<?> mainClass, String... args) {
+    public static HServer run(Class<?> mainClass, String... args) {
         iocInit(mainClass);
-        startServer(args);
+        return startServer(args);
     }
 
     /**
@@ -71,12 +60,13 @@ public class HServerApplication {
         initTestOk();
     }
 
-    private static void startServer(String[] args) {
+    private static HServer startServer(String[] args) {
         try {
-            new HServer(ConstConfig.PORTS, args, TCP_OPTIONS).run();
+            return new HServer(ConstConfig.PORTS, args);
         } catch (Exception e) {
             log.error(ExceptionUtil.getMessage(e));
         }
+        return null;
     }
 
     private static void iocInit(Class<?> mainClass) {
