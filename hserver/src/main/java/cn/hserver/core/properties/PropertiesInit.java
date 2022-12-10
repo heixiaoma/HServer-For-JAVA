@@ -2,7 +2,7 @@ package cn.hserver.core.properties;
 
 import cn.hserver.core.server.context.ConstConfig;
 import cn.hserver.core.server.util.PropUtil;
-import cn.hserver.core.server.util.TTLUtil;
+import cn.hserver.core.server.util.EventLoopUtil;
 
 /**
  * @author hxm

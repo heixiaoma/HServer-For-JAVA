@@ -59,7 +59,7 @@ public class HServer {
         this.args = args;
     }
 
-    public void run() throws Exception {
+    public void run(Map<ChannelOption<Object>, Object> tcpOptions) throws Exception {
         if (ConstConfig.HUM_OPEN) {
             //UDP Server
             humServerBossGroup = new NioEventLoopGroup();
@@ -87,19 +87,22 @@ public class HServer {
             //TCP Server
             String typeName;
             ServerBootstrap bootstrap = new ServerBootstrap();
-            if (EpollUtil.check()&& ConstConfig.EPOLL) {
+            if (tcpOptions!=null){
+                tcpOptions.forEach(bootstrap::option);
+            }
+            if (EpollUtil.check()) {
                 bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
                 bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
                 bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-                bossGroup = TTLUtil.getEventLoop(bossPool, "hserver_epoll_boss");
-                workerGroup = TTLUtil.getEventLoop(workerPool, "hserver_epoll_worker");
+                bossGroup = EventLoopUtil.getEventLoop(bossPool, "hserver_epoll_boss");
+                workerGroup = EventLoopUtil.getEventLoop(workerPool, "hserver_epoll_worker");
                 bootstrap.group(bossGroup, workerGroup).channel(EpollServerSocketChannel.class);
                 typeName = "Epoll";
             } else {
                 bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
                 bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-                bossGroup = TTLUtil.getEventLoop(bossPool, "hserver_boss");
-                workerGroup = TTLUtil.getEventLoop(workerPool, "hserver_worker");
+                bossGroup = EventLoopUtil.getEventLoop(bossPool, "hserver_boss");
+                workerGroup = EventLoopUtil.getEventLoop(workerPool, "hserver_worker");
                 bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
                 typeName = "Nio";
             }

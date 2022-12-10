@@ -4,9 +4,9 @@ import cn.hserver.core.interfaces.PluginAdapter;
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.ioc.ref.PackageScanner;
 import cn.hserver.core.log.HServerPatternLayout;
+import cn.hserver.core.server.util.EventLoopUtil;
 import cn.hserver.core.server.util.ExceptionUtil;
 import cn.hserver.core.server.util.PropUtil;
-import cn.hserver.core.server.util.TTLUtil;
 import cn.hserver.plugin.web.context.WebConstConfig;
 import cn.hserver.plugin.web.util.ParameterUtil;
 import cn.hserver.plugin.web.annotation.*;
@@ -55,11 +55,11 @@ public class WebPlugin implements PluginAdapter {
         }
         Integer businessPool = instance.getInt("web.businessPool");
         if (businessPool != null && businessPool > 0) {
-            WebConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(businessPool, "hserver_business");
+            WebConstConfig.BUSINESS_EVENT = EventLoopUtil.getEventLoop(businessPool, "hserver_business");
         }else if (businessPool != null && businessPool < 0) {
             WebConstConfig.BUSINESS_EVENT = null;
         } else {
-            WebConstConfig.BUSINESS_EVENT = TTLUtil.getEventLoop(50, "hserver_business");
+            WebConstConfig.BUSINESS_EVENT = EventLoopUtil.getEventLoop(50, "hserver_business");
         }
     }
 
