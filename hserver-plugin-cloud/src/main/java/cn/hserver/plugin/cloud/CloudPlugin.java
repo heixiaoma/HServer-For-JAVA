@@ -43,6 +43,7 @@ public class CloudPlugin implements PluginAdapter {
 
     @Override
     public void injectionEnd() {
+        StartDiscoveryServer.init();
         log.info("cloud 启动完成");
     }
 }

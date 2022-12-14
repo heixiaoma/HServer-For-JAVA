@@ -28,6 +28,16 @@ public class ServerInstance {
      */
     private String serviceName;
 
+    private String clusterName;
+
+    public String getClusterName() {
+        return clusterName;
+    }
+
+    public void setClusterName(String clusterName) {
+        this.clusterName = clusterName;
+    }
+
     /**
      * user extended attributes.
      */
@@ -36,12 +46,13 @@ public class ServerInstance {
     public ServerInstance() {
     }
 
-    public ServerInstance(String ip, int port, double weight, boolean healthy, String serviceName, Map<String, String> metadata) {
+    public ServerInstance(String ip, int port, double weight, boolean healthy, String serviceName, String clusterName, Map<String, String> metadata) {
         this.ip = ip;
         this.port = port;
         this.weight = weight;
         this.healthy = healthy;
         this.serviceName = serviceName;
+        this.clusterName = clusterName;
         this.metadata = metadata;
     }
 

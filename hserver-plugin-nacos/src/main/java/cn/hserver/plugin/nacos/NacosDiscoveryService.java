@@ -12,7 +12,10 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -74,6 +77,7 @@ public class NacosDiscoveryService implements DiscoveryService {
                             k.getWeight(),
                             k.isHealthy(),
                             k.getServiceName(),
+                            k.getClusterName(),
                             k.getMetadata()
                     )
             ).collect(Collectors.toList());
@@ -94,16 +98,21 @@ public class NacosDiscoveryService implements DiscoveryService {
                     NamingEvent evn = (NamingEvent) event;
                     List<Instance> instances = evn.getInstances();
                     log.debug("服务变化：" + instances);
+
+                    Map<String, List<ServerInstance>> data = new HashMap<>();
                     for (Instance k : instances) {
-                        discoveryHandler.handler(new ServerInstance(
+                        List<ServerInstance> serverInstances = data.computeIfAbsent(k.getClusterName(), k1 -> new ArrayList<>());
+                        serverInstances.add(new ServerInstance(
                                 k.getIp(),
                                 k.getPort(),
                                 k.getWeight(),
                                 k.isHealthy(),
                                 k.getServiceName(),
+                                k.getClusterName(),
                                 k.getMetadata()
                         ));
                     }
+                    discoveryHandler.handler(data);
                 }
             };
             naming.subscribe(service, group, listener);
