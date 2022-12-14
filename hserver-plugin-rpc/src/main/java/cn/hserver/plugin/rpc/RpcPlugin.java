@@ -101,7 +101,7 @@ public class RpcPlugin implements PluginAdapter {
 
     public void changeRpcService(Object o) {
         //检测当前的Bean是不是Rpc服务
-        RpcService rpcService = (RpcService) o.getClass().getAnnotation(RpcService.class);
+        RpcService rpcService = o.getClass().getAnnotation(RpcService.class);
         //说明是rpc服务，单独存储一份她的数据哦
         if (rpcService != null) {
             if (rpcService.value().trim().length() > 0) {
@@ -109,8 +109,8 @@ public class RpcPlugin implements PluginAdapter {
                 IocUtil.addBean(rpcService.value(), o);
             } else {
                 //没有自定义服务名字
-                Class[] interfaces = o.getClass().getInterfaces();
-                if (interfaces != null && interfaces.length > 0) {
+                Class<?>[] interfaces = o.getClass().getInterfaces();
+                if (interfaces.length > 0) {
                     IocUtil.addBean(interfaces[0].getName(), o);
                 } else {
                     log.error("RPC没有实现任何接口，预计调用过程会出现问题:{}", o.getClass().getSimpleName());
@@ -120,7 +120,7 @@ public class RpcPlugin implements PluginAdapter {
     }
 
     private void autoZr(Object v) {
-        Class par = v.getClass();
+        Class<?> par = v.getClass();
         while (!par.equals(Object.class)) {
             //获取当前类的所有字段
             Field[] declaredFields = par.getDeclaredFields();
@@ -152,7 +152,7 @@ public class RpcPlugin implements PluginAdapter {
         }
     }
 
-    private void check(Class aClass) {
+    private void check(Class<?> aClass) {
         Method[] declaredMethods = aClass.getDeclaredMethods();
         for (Method declaredMethod : declaredMethods) {
             if (!declaredMethod.getReturnType().isAssignableFrom(CompletableFuture.class)) {

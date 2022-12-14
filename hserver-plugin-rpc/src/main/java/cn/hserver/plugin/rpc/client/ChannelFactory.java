@@ -8,8 +8,8 @@ import org.apache.commons.pool2.impl.DefaultPooledObject;
  * 通道工厂
  */
 public class ChannelFactory implements PooledObjectFactory<NettyChannel> {
-    private String host;
-    private int port;
+    private final String host;
+    private final int port;
 
     ChannelFactory(String host,int port){
         this.host=host;

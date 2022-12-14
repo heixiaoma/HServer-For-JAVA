@@ -8,7 +8,8 @@ import cn.hserver.plugin.rpc.codec.InvokeServiceData;
 
 import java.util.UUID;
 
-public class ClientProxy {
+public class
+ClientProxy {
 
     public ClientProxy() {
     }
