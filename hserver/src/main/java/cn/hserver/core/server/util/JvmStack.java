@@ -23,7 +23,7 @@ public class JvmStack {
         MemoryMXBean memory = ManagementFactory.getMemoryMXBean();
         MemoryUsage headMemory = memory.getHeapMemoryUsage();
 
-        String info = String.format("\n初始: %s\t 最大: %s\t 已经使用: %s\t 交给虚拟机使用的: %s\t 使用率: %s\n",
+        String info = String.format("初始: %s\t 最大: %s\t 已经使用: %s\t 交给虚拟机使用的: %s\t 使用率: %s",
                 headMemory.getInit() / MB + "MB",
                 headMemory.getMax() / MB + "MB", headMemory.getUsed() / MB + "MB",
                 headMemory.getCommitted() / MB + "MB",
@@ -33,7 +33,7 @@ public class JvmStack {
         log.info(info);
         MemoryUsage nonheadMemory = memory.getNonHeapMemoryUsage();
 
-        info = String.format("初始: %s\t 最大: %s\t 已经使用: %s\t 交给虚拟机使用的: %s\t  使用率: %s\n",
+        info = String.format("初始: %s\t 最大: %s\t 已经使用: %s\t 交给虚拟机使用的: %s\t  使用率: %s",
                 nonheadMemory.getInit() / MB + "MB",
                 nonheadMemory.getMax() / MB + "MB", nonheadMemory.getUsed() / MB + "MB",
                 nonheadMemory.getCommitted() / MB + "MB",
@@ -45,7 +45,7 @@ public class JvmStack {
         //打印堆外内存
         long maxDirectMemory = PlatformDependent.maxDirectMemory();
         long usedDirectMemory = PlatformDependent.usedDirectMemory();
-        info = String.format("堆外内存 最大: %s\t 已经使用: %s\n",
+        info = String.format("堆外内存 最大: %s\t 已经使用: %s",
                 maxDirectMemory / MB + "MB",
                 usedDirectMemory / MB + "MB"
         );
