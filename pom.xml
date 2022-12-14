@@ -90,6 +90,16 @@
                 <artifactId>hserver-plugin-mqtt</artifactId>
                 <version>3.1.M3</version>
             </dependency>
+            <dependency>
+                <groupId>cn.hserver</groupId>
+                <artifactId>hserver-plugin-cloud</artifactId>
+                <version>3.1.M3</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hserver</groupId>
+                <artifactId>hserver-plugin-nacos</artifactId>
+                <version>3.1.M3</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

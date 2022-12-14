@@ -24,12 +24,15 @@
             <artifactId>hserver</artifactId>
             <scope>provided</scope>
         </dependency>
-
         <!--注册配置中心-->
         <dependency>
             <groupId>com.alibaba.nacos</groupId>
             <artifactId>nacos-client</artifactId>
             <version>${nacos.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hserver</groupId>
+            <artifactId>hserver-plugin-cloud</artifactId>
         </dependency>
     </dependencies>
 
