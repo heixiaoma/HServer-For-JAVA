@@ -26,6 +26,8 @@
         <module>hserver-plugin-gateway</module>
         <module>hserver-plugin-loader</module>
         <module>hserver-plugin-node</module>
+        <module>hserver-plugin-nacos</module>
+        <module>hserver-plugin-cloud</module>
     </modules>
 
     <properties>
