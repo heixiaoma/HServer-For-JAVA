@@ -27,16 +27,6 @@ public class GateWayPlugin implements PluginAdapter {
             }
             GateWayConfig.PORT = ports;
         }
-
-        Integer high = PropUtil.getInstance().getInt("gateway.high");
-        if (port != null ) {
-            GateWayConfig.HM = high;
-        }
-
-        Integer low = PropUtil.getInstance().getInt("gateway.low");
-        if (port != null ) {
-            GateWayConfig.LM = low;
-        }
     }
 
     @Override
@@ -47,7 +37,7 @@ public class GateWayPlugin implements PluginAdapter {
     @Override
     public boolean iocInitBean(Class aClass) {
         try {
-            //检测这个Bean是否是全局异常处理的类
+            //检测这个Bean是否是Business的子类类
             if (Business.class.isAssignableFrom(aClass)) {
                 IocUtil.addListBean(Business.class.getName(), aClass.newInstance());
                 return true;

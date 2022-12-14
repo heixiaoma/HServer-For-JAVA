@@ -53,6 +53,11 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
         }
     }
 
+    @Override
+    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
+        log.debug("限制操作，让两个通道实现同步读写 开关状态:{}",ctx.channel().isWritable());
+        ctx.channel().config().setAutoRead(ctx.channel().isWritable());
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

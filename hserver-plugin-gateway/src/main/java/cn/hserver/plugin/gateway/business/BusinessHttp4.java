@@ -3,10 +3,8 @@ package cn.hserver.plugin.gateway.business;
 
 import cn.hserver.core.ioc.annotation.Bean;
 import cn.hserver.plugin.gateway.bean.Http4Data;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.FullHttpRequest;
 
 import java.net.SocketAddress;
 
