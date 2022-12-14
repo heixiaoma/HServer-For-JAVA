@@ -30,7 +30,7 @@ public class NacosDiscoveryService implements DiscoveryService {
     public boolean register(RegProp regProp) {
         this.regProp = regProp;
         try {
-            naming = NamingFactory.createNamingService(regProp.getRegisterName());
+            naming = NamingFactory.createNamingService(regProp.getRegisterAddress());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return false;

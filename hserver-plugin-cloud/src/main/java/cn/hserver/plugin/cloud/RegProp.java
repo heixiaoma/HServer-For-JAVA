@@ -5,6 +5,8 @@ import cn.hserver.core.ioc.annotation.ConfigurationProperties;
 @ConfigurationProperties(prefix = "app.cloud.reg")
 public class RegProp {
     //注册名字
+    private String registerAddress;
+    //注册名字
     private String registerName;
     //注册我的Ip
     private String registerMyIp;
@@ -12,6 +14,14 @@ public class RegProp {
     private Integer registerMyPort;
     //注册分组
     private String groupName = "DEFAULT_GROUP";
+
+    public String getRegisterAddress() {
+        return registerAddress;
+    }
+
+    public void setRegisterAddress(String registerAddress) {
+        this.registerAddress = registerAddress;
+    }
 
     public String getRegisterName() {
         return registerName;
