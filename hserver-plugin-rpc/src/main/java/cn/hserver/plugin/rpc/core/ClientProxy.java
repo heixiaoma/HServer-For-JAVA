@@ -8,13 +8,12 @@ import cn.hserver.plugin.rpc.codec.InvokeServiceData;
 
 import java.util.UUID;
 
-public class
-ClientProxy {
+public class ClientProxy {
 
     public ClientProxy() {
     }
 
-    public static Object getProxy(Class clazz, Resource resource) throws InstantiationException, IllegalAccessException {
+    public static Object getProxy(Class<?> clazz, Resource resource) throws InstantiationException, IllegalAccessException {
         ProxyFactory proxyFactory = new ProxyFactory();
         if (clazz.isInterface()) {
             proxyFactory.setInterfaces(new Class[]{clazz});
@@ -34,6 +33,7 @@ ClientProxy {
             String requestId = UUID.randomUUID().toString();
             invokeServiceData.setRequestId(requestId);
             invokeServiceData.setServerName(resource.serverName());
+            invokeServiceData.setGroupName(resource.groupName());
             invokeServiceData.setObjects(args);
             return RpcClient.call(invokeServiceData);
         });

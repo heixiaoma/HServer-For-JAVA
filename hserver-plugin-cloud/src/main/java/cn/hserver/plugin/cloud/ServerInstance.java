@@ -28,6 +28,9 @@ public class ServerInstance {
      */
     private String serviceName;
 
+    /**
+     * 用户定义的服务名
+     */
     private String clusterName;
 
     public String getClusterName() {
@@ -105,7 +108,7 @@ public class ServerInstance {
     }
 
     public String getEq() {
-        return this.getIp()+getPort()+getServiceName()+isHealthy();
+        return this.getIp()+getPort()+getClusterName()+isHealthy();
     }
 
 }

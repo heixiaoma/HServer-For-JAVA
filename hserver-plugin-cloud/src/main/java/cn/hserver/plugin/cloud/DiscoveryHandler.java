@@ -1,20 +1,24 @@
 package cn.hserver.plugin.cloud;
 
-import cn.hserver.core.ioc.annotation.Bean;
-
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Bean
-public class DiscoveryHandler {
+public interface DiscoveryHandler {
 
-    private final static Map<String, DynamicRoundRobin> S_DATA = new ConcurrentHashMap<>();
+    //分组，服务名，list服务
+    Map<String, Map<String, DynamicRoundRobin>> S_DATA = new ConcurrentHashMap<>();
 
-    public void handler(Map<String, List<ServerInstance>> data) {
+    default void handler(String group, Map<String, List<ServerInstance>> data) {
+        Map<String, DynamicRoundRobin> stringDynamicRoundRobinMap = S_DATA.get(group);
+        if (stringDynamicRoundRobinMap == null) {
+            stringDynamicRoundRobinMap = new ConcurrentHashMap<>();
+            S_DATA.put(group, stringDynamicRoundRobinMap);
+        }
+        online(group, data);
         if (data.size() > 0) {
             data.forEach((k, v) -> {
-                DynamicRoundRobin dynamicRoundRobin = S_DATA.get(k);
+                DynamicRoundRobin dynamicRoundRobin = S_DATA.get(group).get(k);
                 if (dynamicRoundRobin != null) {
                     dynamicRoundRobin.removeAll();
                     for (ServerInstance serverInstance : v) {
@@ -25,21 +29,22 @@ public class DiscoveryHandler {
                     for (ServerInstance serverInstance : v) {
                         dynamicRoundRobin1.add(serverInstance);
                     }
-                    S_DATA.put(k, dynamicRoundRobin1);
+                    S_DATA.get(group).put(k, dynamicRoundRobin1);
                 }
             });
         } else {
-            S_DATA.forEach((k,v)-> v.removeAll());
-            S_DATA.clear();
+            S_DATA.get(group).forEach((k, v) -> v.removeAll());
+            S_DATA.get(group).clear();
         }
     }
 
+    void online(String group, Map<String, List<ServerInstance>> data);
 
     /**
      * 获取一个
      */
-    public DynamicRoundRobin getDynamicRoundRobin(String service) {
-        return S_DATA.get(service);
+    default DynamicRoundRobin getDynamicRoundRobin(String group, String service) {
+        return S_DATA.get(group).get(service);
     }
 
 }

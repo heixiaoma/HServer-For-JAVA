@@ -2,10 +2,12 @@ package cn.hserver.plugin.rpc;
 
 
 import cn.hserver.core.ioc.ref.PackageScanner;
+import cn.hserver.plugin.cloud.DiscoveryService;
 import cn.hserver.plugin.rpc.annotation.Resource;
 import cn.hserver.plugin.rpc.annotation.RpcService;
-import cn.hserver.plugin.rpc.config.RpcConfig;
+import cn.hserver.plugin.rpc.bean.ServerInfo;
 import cn.hserver.plugin.rpc.core.ClientProxy;
+import cn.hserver.plugin.rpc.core.RpcDisHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.hserver.core.interfaces.PluginAdapter;
@@ -13,7 +15,6 @@ import cn.hserver.core.ioc.IocUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,7 +27,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class RpcPlugin implements PluginAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(RpcPlugin.class);
-    private static final Set<String> ServerNames = new CopyOnWriteArraySet<>();
+    private static final Set<ServerInfo> ServerNames = new CopyOnWriteArraySet<>();
 
     @Override
     public void startApp() {
@@ -69,16 +70,13 @@ public class RpcPlugin implements PluginAdapter {
         serverReg();
     }
 
+    //订阅服务
     private void serverReg() {
-        RpcConfig bean = IocUtil.getBean(RpcConfig.class);
-        if (bean != null) {
-            bean.getRpcAdapter().rpcMode(bean.getRpcServers(), new ArrayList<>(ServerNames));
-        } else {
-            log.error("RPC插件参数未配置");
+        DiscoveryService DISCOVERY_SERVICE = IocUtil.getBean(DiscoveryService.DISCOVERY_SERVICE, DiscoveryService.class);
+        for (ServerInfo serverInfo : ServerNames) {
+            DISCOVERY_SERVICE.subscribe(serverInfo.getGroupName(), serverInfo.getServerName(), RpcDisHandler.getRpcDisHandler());
         }
     }
-
-
     private void rpc() {
         //rpc注入开始
         Map<String, Object> all = IocUtil.getAll();
@@ -140,8 +138,7 @@ public class RpcPlugin implements PluginAdapter {
         if (annotation != null) {
             try {
                 check(declaredField.getType());
-                String s = annotation.serverName();
-                ServerNames.add(s);
+                ServerNames.add(new ServerInfo(annotation.serverName(), annotation.groupName()));
                 declaredField.setAccessible(true);
                 Object proxy = ClientProxy.getProxy(declaredField.getType(), annotation);
                 declaredField.set(v, proxy);

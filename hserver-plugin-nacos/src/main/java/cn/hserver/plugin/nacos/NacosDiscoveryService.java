@@ -48,6 +48,7 @@ public class NacosDiscoveryService implements DiscoveryService {
                     regProp.getRegisterName()
             );
         } catch (Exception e) {
+            log.error(e.getMessage(),e);
             return false;
         }
         return true;
@@ -91,8 +92,8 @@ public class NacosDiscoveryService implements DiscoveryService {
         if (group == null) {
             group = Constants.DEFAULT_GROUP;
         }
-
         try {
+            String finalGroup = group;
             EventListener listener = event -> {
                 if (event instanceof NamingEvent) {
                     NamingEvent evn = (NamingEvent) event;
@@ -112,7 +113,7 @@ public class NacosDiscoveryService implements DiscoveryService {
                                 k.getMetadata()
                         ));
                     }
-                    discoveryHandler.handler(data);
+                    discoveryHandler.handler(finalGroup,data);
                 }
             };
             naming.subscribe(service, group, listener);
