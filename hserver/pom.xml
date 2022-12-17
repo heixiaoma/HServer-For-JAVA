@@ -21,7 +21,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skipTests>true</skipTests>
 
-        <netty.version>4.1.85.Final</netty.version>
+        <netty.version>4.1.86.Final</netty.version>
         <transmittable.version>2.14.2</transmittable.version>
         <logback.version>1.2.11</logback.version>
         <javassist.version>3.29.2-GA</javassist.version>
