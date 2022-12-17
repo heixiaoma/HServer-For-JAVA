@@ -10,6 +10,7 @@ public class InvokeServiceData implements Serializable {
     private Class[] parameterTypes;
     private Object[] objects;
     private String serverName;
+    private String groupName;
 
     public InvokeServiceData() {
     }
@@ -60,5 +61,13 @@ public class InvokeServiceData implements Serializable {
 
     public void setServerName(String serverName) {
         this.serverName = serverName;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 }

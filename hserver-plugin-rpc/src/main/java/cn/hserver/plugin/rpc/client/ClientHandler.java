@@ -37,13 +37,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (IdleStateEvent.class.isAssignableFrom(evt.getClass())) {
             IdleStateEvent event = (IdleStateEvent) evt;
-            if (event.state() == IdleState.READER_IDLE) {
-//                log.debug("读空闲");
-            } else if (event.state() == IdleState.WRITER_IDLE) {
-                ctx.channel().writeAndFlush(new Msg<>(MsgType.HEART));
-                log.debug("写空闲，发送心跳");
-            } else if (event.state() == IdleState.ALL_IDLE) {
-                log.debug("读写空闲，发送心跳");
+            if (event.state() == IdleState.ALL_IDLE) {
                 ctx.channel().writeAndFlush(new Msg<>(MsgType.HEART));
             }
         }

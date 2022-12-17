@@ -8,5 +8,9 @@ import java.lang.annotation.*;
 public @interface Resource {
     String value() default "";
 
+    //服务名
     String serverName();
+
+    //组名
+    String groupName() default "";
 }

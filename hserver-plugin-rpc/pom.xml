@@ -28,6 +28,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>cn.hserver</groupId>
+            <artifactId>hserver-plugin-cloud</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -35,12 +41,6 @@
             <version>${commons.version}</version>
         </dependency>
 
-        <!--注册配置中心-->
-        <dependency>
-            <groupId>com.alibaba.nacos</groupId>
-            <artifactId>nacos-client</artifactId>
-            <version>${nacos.version}</version>
-        </dependency>
 
     </dependencies>
 </project>
