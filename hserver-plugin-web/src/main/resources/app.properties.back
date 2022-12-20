@@ -11,6 +11,8 @@ web.httpContentSize=999999
 
 #URL 全局更目录定义
 web.rootPath=
+# websocket最大帧大小
+web.maxWebsocketFrameLength=65536
 
 #-----------------ssl-------------
 #注意下载的证书中 key文件需要转换成 pk8 文件

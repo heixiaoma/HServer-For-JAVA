@@ -1,5 +1,6 @@
 package cn.hserver.plugin.web.handlers;
 
+import cn.hserver.plugin.web.context.WebConstConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.hserver.plugin.web.interfaces.WebSocketHandler;
@@ -12,6 +13,8 @@ import io.netty.util.ReferenceCountUtil;
 import cn.hserver.plugin.web.context.WsType;
 import cn.hserver.core.server.util.ByteBufUtil;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,13 +27,14 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     public static final Map<String, String> WEB_SOCKET_ROUTER = new ConcurrentHashMap<>();
     //处理多数据
     private StringBuilder frameBuffer = null;
+    private ByteArrayOutputStream byteArrayOutputStream = null;
     private WebSocketServerHandshaker handshake;
     private WebSocketHandler webSocketHandler;
     private String uid;
     private HttpRequest request;
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Object msg) {
+    protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws IOException {
         if (msg instanceof HttpRequest) {
             /**
              * 看看是不是第一次握手。
@@ -50,6 +54,11 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     }
 
     @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        log.error(cause.getMessage(),cause);
+    }
+
+    @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         if (request != null && uid != null) {
             this.webSocketHandler.disConnect(new Ws(ctx, uid, request, WsType.CLOSE));
@@ -58,7 +67,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 
     private void handleHttpRequest(ChannelHandlerContext ctx, HttpRequest req) {
         if (isWebSocketRequest(req)) {
-            WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(req.uri(), null, true);
+            WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(req.uri(), null, true, WebConstConfig.MAX_WEBSOCKET_FRAME_LENGTH);
             this.handshake = wsFactory.newHandshaker(req);
             if (this.handshake == null) {
                 WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
@@ -87,8 +96,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     }
 
 
-
-    private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
+    private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) throws IOException {
         if (frame instanceof CloseWebSocketFrame) {
             this.handshake.close(ctx.channel(), (CloseWebSocketFrame) frame.retain());
             return;
@@ -104,20 +112,34 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
                 frameBuffer.append(((TextWebSocketFrame) frame).text());
             }
         } else if (frame instanceof BinaryWebSocketFrame) {
-            this.webSocketHandler.onMessage(new Ws(ctx, ByteBufUtil.byteBufToBytes(frame.content()), uid, request, WsType.BINARY));
-            return;
+            if (frame.isFinalFragment()) {
+                this.webSocketHandler.onMessage(new Ws(ctx, frame.content().array(), uid, request, WsType.BINARY));
+                return;
+            } else {
+                byteArrayOutputStream = new ByteArrayOutputStream();
+                byteArrayOutputStream.write(frame.content().array());
+            }
         } else if (frame instanceof ContinuationWebSocketFrame) {
             if (frameBuffer != null) {
                 frameBuffer.append(((ContinuationWebSocketFrame) frame).text());
+            } else if (byteArrayOutputStream != null) {
+                byteArrayOutputStream.write(frame.content().array());
+                byteArrayOutputStream.flush();
             } else {
                 log.warn("ContinuationWebSocketFrame 帧不完整，缓存出现了null");
             }
         }
         if (frame.isFinalFragment()) {
-            this.webSocketHandler.onMessage(new Ws(ctx, frameBuffer.toString(), uid, request, WsType.TEXT));
-            frameBuffer = null;
+            if (frameBuffer != null) {
+                this.webSocketHandler.onMessage(new Ws(ctx, frameBuffer.toString(), uid, request, WsType.TEXT));
+                frameBuffer = null;
+            } else if (byteArrayOutputStream != null) {
+                byte[] bytes = byteArrayOutputStream.toByteArray();
+                this.webSocketHandler.onMessage(new Ws(ctx, bytes, uid, request, WsType.BINARY));
+                byteArrayOutputStream.close();
+                byteArrayOutputStream = null;
+            }
         }
-
     }
 
     private boolean isWebSocketRequest(HttpRequest req) {

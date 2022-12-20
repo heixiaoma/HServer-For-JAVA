@@ -70,6 +70,11 @@ public class WebConstConfig {
     public static Integer HTTP_CONTENT_SIZE = Integer.MAX_VALUE;
 
     /**
+     * 最大websocket FRAME 长度
+     */
+    public static Integer MAX_WEBSOCKET_FRAME_LENGTH = 65536;
+
+    /**
      * 请求ID
      */
     public final static String REQUEST_ID = "hRequestId";

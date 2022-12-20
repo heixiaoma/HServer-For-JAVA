@@ -53,6 +53,9 @@ public class WebPlugin implements PluginAdapter {
         if (instance.get("web.httpContentSize").trim().length() > 0) {
             WebConstConfig.HTTP_CONTENT_SIZE = instance.getInt("web.httpContentSize");
         }
+        if (instance.get("web.maxWebsocketFrameLength").trim().length() > 0) {
+            WebConstConfig.MAX_WEBSOCKET_FRAME_LENGTH = instance.getInt("web.maxWebsocketFrameLength");
+        }
         Integer businessPool = instance.getInt("web.businessPool");
         if (businessPool != null && businessPool > 0) {
             WebConstConfig.BUSINESS_EVENT = EventLoopUtil.getEventLoop(businessPool, "hserver_business");
