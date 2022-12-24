@@ -9,6 +9,9 @@ public class StartDiscoveryServer {
 
     public static void init() {
         RegProp regProp = IocUtil.getBean(RegProp.class);
+        if (regProp==null|| regProp.hasNull()){
+            throw new RuntimeException("未添配置注册中心信息, 请检查 app.cloud.reg 下的配置信息");
+        }
         final DiscoveryService bean = IocUtil.getBean(DiscoveryService.DISCOVERY_SERVICE, DiscoveryService.class);
         if (bean == null) {
             throw new RuntimeException("未添加注册中心依赖 如 nacos");

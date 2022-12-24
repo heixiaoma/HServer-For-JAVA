@@ -54,4 +54,12 @@ public class RegProp {
     public void setGroupName(String groupName) {
         this.groupName = groupName;
     }
+
+    public boolean hasNull() {
+        if (this.registerAddress == null || this.registerMyIp == null || this.registerMyPort == null || this.registerName == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

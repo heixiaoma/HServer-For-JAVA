@@ -2,6 +2,7 @@ package cn.hserver.plugin.gateway.protocol;
 
 import cn.hserver.core.interfaces.ProtocolDispatcherAdapter;
 import cn.hserver.core.ioc.annotation.Bean;
+import cn.hserver.core.ioc.annotation.Order;
 import cn.hserver.core.server.context.ConstConfig;
 import cn.hserver.core.server.util.protocol.HostUtil;
 import cn.hserver.core.server.util.protocol.ProtocolUtil;
@@ -21,9 +22,10 @@ import java.nio.ByteBuffer;
  * 网关模式
  */
 @Bean
+@Order(1)
 public class DispatchHttp4GateWay implements ProtocolDispatcherAdapter {
-    private static final Logger log = LoggerFactory.getLogger(DispatchHttp4GateWay.class);
 
+    private static final Logger log = LoggerFactory.getLogger(DispatchHttp4GateWay.class);
     @Override
     public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers) {
         InetSocketAddress socketAddress = (InetSocketAddress) ctx.channel().localAddress();

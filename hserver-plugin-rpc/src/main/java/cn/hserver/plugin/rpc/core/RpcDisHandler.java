@@ -23,16 +23,19 @@ public class RpcDisHandler implements DiscoveryHandler {
      * 触发，我就清除下
      */
     @Override
-    public void online(String group,Map<String, List<ServerInstance>> data) {
+    public void online(String group, Map<String, List<ServerInstance>> data) {
         SERVICE_DATA_MAP.forEach((k, v) -> {
             v.closeChannelPool();
         });
         SERVICE_DATA_MAP.clear();
     }
 
-    public ServiceData chose(String groupName,String service) {
+    public ServiceData chose(String groupName, String service) {
         //内部的
-        final DynamicRoundRobin dynamicRoundRobin = getDynamicRoundRobin(groupName,service);
+        final DynamicRoundRobin dynamicRoundRobin = getDynamicRoundRobin(groupName, service);
+        if (dynamicRoundRobin == null) {
+            return null;
+        }
         final ServerInstance choose = dynamicRoundRobin.choose();
         if (choose == null) {
             return null;

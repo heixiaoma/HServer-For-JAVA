@@ -21,7 +21,7 @@ public class RpcClient {
         try {
             ServiceData choose = RpcDisHandler.getRpcDisHandler().chose(invokeServiceData.getGroupName(), invokeServiceData.getServerName());
             if (choose == null) {
-                throw new RpcException("暂无服务:" + invokeServiceData.getServerName());
+                throw new RpcException(invokeServiceData.getGroupName()+" 分组下暂无服务:" + invokeServiceData.getServerName());
             }
             ChannelPool channelPool = choose.getChannelPool();
             NettyChannel resource = channelPool.getResource();

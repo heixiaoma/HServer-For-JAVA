@@ -44,7 +44,11 @@ public interface DiscoveryHandler {
      * 获取一个
      */
     default DynamicRoundRobin getDynamicRoundRobin(String group, String service) {
-        return S_DATA.get(group).get(service);
+        final Map<String, DynamicRoundRobin> stringDynamicRoundRobinMap = S_DATA.get(group);
+        if (stringDynamicRoundRobinMap == null) {
+            return null;
+        }
+        return stringDynamicRoundRobinMap.get(service);
     }
 
 }

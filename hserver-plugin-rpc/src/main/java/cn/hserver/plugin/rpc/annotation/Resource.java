@@ -12,5 +12,5 @@ public @interface Resource {
     String serverName();
 
     //组名
-    String groupName() default "";
+    String groupName() default "DEFAULT_GROUP";
 }

@@ -3,6 +3,7 @@ package cn.hserver.plugin.gateway.protocol;
 import cn.hserver.core.interfaces.ProtocolDispatcherAdapter;
 import cn.hserver.core.interfaces.ProtocolDispatcherSuperAdapter;
 import cn.hserver.core.ioc.annotation.Bean;
+import cn.hserver.core.ioc.annotation.Order;
 import cn.hserver.plugin.gateway.config.GateWayConfig;
 import cn.hserver.plugin.gateway.enums.GatewayMode;
 import cn.hserver.plugin.gateway.handler.tcp.FrontendHandler;
@@ -16,6 +17,7 @@ import java.net.InetSocketAddress;
  * 网关模式
  */
 @Bean
+@Order(1)
 public class DispatchTcpGateWay implements ProtocolDispatcherSuperAdapter {
     @Override
     public boolean dispatcher(Channel channel, ChannelPipeline pipeline) {
