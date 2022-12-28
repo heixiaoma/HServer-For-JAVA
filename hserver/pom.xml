@@ -23,7 +23,8 @@
 
         <netty.version>4.1.86.Final</netty.version>
         <transmittable.version>2.14.2</transmittable.version>
-        <logback.version>1.2.11</logback.version>
+        <logback.version>1.4.5</logback.version>
+        <slf4j.version>2.0.5</slf4j.version>
         <javassist.version>3.29.2-GA</javassist.version>
         <protostuff.version>1.2.2</protostuff.version>
         <objenesis.version>3.2</objenesis.version>
@@ -39,7 +40,11 @@
             <artifactId>netty-all</artifactId>
             <version>${netty.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
