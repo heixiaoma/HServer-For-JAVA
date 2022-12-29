@@ -75,7 +75,8 @@ public class MybatisPlugin implements PluginAdapter {
             }
             stringSqlSessionFactoryMap.forEach(IocUtil::addBean);
         } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
+            log.error(e.getMessage(),e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -147,8 +148,8 @@ public class MybatisPlugin implements PluginAdapter {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
                 log.error("装配错误");
+                throw new RuntimeException(e);
             }
         }
     }
@@ -166,8 +167,8 @@ public class MybatisPlugin implements PluginAdapter {
                     classes.add(declaredField.getType());
                 }
             } catch (Exception e) {
-                e.printStackTrace();
                 log.error("装配错误");
+                throw new RuntimeException(e);
             }
         }
     }

@@ -121,8 +121,8 @@ public class BeetLSqlPlugin implements PluginAdapter {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
-                log.error("装配错误");
+                log.error(e.getMessage(),e);
+                throw new RuntimeException(e);
             }
         }
     }

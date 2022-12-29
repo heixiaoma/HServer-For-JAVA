@@ -10,6 +10,7 @@ import cn.hserver.core.interfaces.*;
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.ioc.annotation.*;
 import cn.hserver.core.task.TaskManager;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -61,55 +62,31 @@ public class InitBean {
         if (packageNames == null) {
             return;
         }
-
         PackageScanner scan = new ClasspathPackageScanner(packageNames);
-
         try {
             //读取配置文件
             initConfigurationProperties(scan);
-        } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
-        }
 
-        try {
             //初始化配置类
             initConfiguration(scan);
-        } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
-        }
 
-        try {
             //测试类
             initTest(scan);
-        } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
-        }
-        try {
+
             //初始化容器bean
             initBean(scan);
-        } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
-        }
 
-        try {
             //初始化Hook
             initHook(scan, packageNames);
-        } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
-        }
 
-        try {
+            //插件初始
             PlugsManager.getPlugin().iocInit(scan);
-        } catch (Exception e) {
-            log.error("插件初始过程异常：{}", ExceptionUtil.getMessage(e));
-        }
 
-
-        try {
             //初始化队列
             QueueDispatcher.init(scan);
         } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
         //排序
         sortOrder();
@@ -125,18 +102,13 @@ public class InitBean {
             }
             Object o = clasp.newInstance();
             for (Field field : clasp.getDeclaredFields()) {
-                try {
-                    PropUtil instance = PropUtil.getInstance();
-                    String s = instance.get(value == null ? field.getName() : value + "." + field.getName(), null);
-                    Object convert = ObjConvertUtil.convert(field.getType(), s);
-                    if (convert != null) {
-                        field.setAccessible(true);
-                        field.set(o, convert);
-                    }
-                } catch (Exception e) {
-                    log.error(e.getMessage());
+                PropUtil instance = PropUtil.getInstance();
+                String s = instance.get(value == null ? field.getName() : value + "." + field.getName(), null);
+                Object convert = ObjConvertUtil.convert(field.getType(), s);
+                if (convert != null) {
+                    field.setAccessible(true);
+                    field.set(o, convert);
                 }
-
             }
             IocUtil.addBean(clasp.getName(), o);
         }
@@ -177,7 +149,7 @@ public class InitBean {
                         }
                     } catch (Exception e) {
                         log.warn("类：{} 方法：{}，执行异常，", aClass.getName(), method.getName());
-                        log.warn(ExceptionUtil.getMessage(e));
+                        throw new RuntimeException(e);
                     }
                 }
             }
@@ -448,6 +420,7 @@ public class InitBean {
                 declaredField.set(v, convert);
             } catch (Exception e) {
                 log.error("{}----->{}：@Value装配错误", v.getClass().getSimpleName(), v.getClass().getSimpleName());
+                throw new RuntimeException(e);
             }
         }
     }
@@ -521,6 +494,7 @@ public class InitBean {
                 }
             } catch (Exception e) {
                 log.error("装配错误:{},{}", declaredField.getName(), e.getMessage());
+                throw new RuntimeException(e);
             }
         }
     }

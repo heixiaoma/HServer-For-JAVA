@@ -19,7 +19,7 @@ public class StartDiscoveryServer {
         if (bean.register(regProp)){
             log.info("{}服务注册成功",regProp.getRegisterName());
         }else {
-            log.error("{}服务注册失败",regProp.getRegisterName());
+            throw new RuntimeException(String.format("%s 服务注册失败",regProp.getRegisterName()));
         }
     }
 }

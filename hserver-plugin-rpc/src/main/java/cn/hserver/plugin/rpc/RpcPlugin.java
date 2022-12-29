@@ -145,6 +145,7 @@ public class RpcPlugin implements PluginAdapter {
                 log.info("{}----->{}：装配完成，Rpc装配", proxy.getClass().getSimpleName(), v.getClass().getSimpleName());
             } catch (Exception e) {
                 log.error("{}----->{}：装配错误:RPC代理生成失败", v.getClass().getSimpleName(), v.getClass().getSimpleName());
+                throw new RuntimeException(e);
             }
         }
     }

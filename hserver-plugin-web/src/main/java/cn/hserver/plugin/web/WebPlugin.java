@@ -59,7 +59,7 @@ public class WebPlugin implements PluginAdapter {
         Integer businessPool = instance.getInt("web.businessPool");
         if (businessPool != null && businessPool > 0) {
             WebConstConfig.BUSINESS_EVENT = EventLoopUtil.getEventLoop(businessPool, "hserver_business");
-        }else if (businessPool != null && businessPool < 0) {
+        } else if (businessPool != null && businessPool < 0) {
             WebConstConfig.BUSINESS_EVENT = null;
         } else {
             WebConstConfig.BUSINESS_EVENT = EventLoopUtil.getEventLoop(50, "hserver_business");
@@ -103,7 +103,7 @@ public class WebPlugin implements PluginAdapter {
 
             }
         } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
+            throw new RuntimeException(e);
         }
         return false;
 
@@ -114,16 +114,10 @@ public class WebPlugin implements PluginAdapter {
         try {
             //初始化Websocket
             initWebSocket(scan);
-        } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
-        }
-
-
-        try {
             //初始化控制器
             initController(scan);
         } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
+            throw new RuntimeException(e);
         }
 
     }
