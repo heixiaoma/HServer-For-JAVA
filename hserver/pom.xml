@@ -30,6 +30,7 @@
         <objenesis.version>3.2</objenesis.version>
         <junit.version>4.13.2</junit.version>
         <disruptor.version>3.4.4</disruptor.version>
+        <guava.version>31.1-jre</guava.version>
     </properties>
 
     <dependencies>
@@ -96,6 +97,14 @@
             <groupId>com.alibaba</groupId>
             <artifactId>transmittable-thread-local</artifactId>
             <version>${transmittable.version}</version>
+        </dependency>
+
+
+        <!--   谷歌工具库     -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
 
     </dependencies>

@@ -24,13 +24,6 @@
             <version>${freemarker.version}</version>
         </dependency>
 
-        <!--   谷歌工具库     -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-
         <!-- JSON处理 -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -68,7 +61,6 @@
         <skipTests>true</skipTests>
 
         <jackson.version>2.14.1</jackson.version>
-        <guava.version>31.1-jre</guava.version>
         <freemarker.version>2.3.31</freemarker.version>
     </properties>
 

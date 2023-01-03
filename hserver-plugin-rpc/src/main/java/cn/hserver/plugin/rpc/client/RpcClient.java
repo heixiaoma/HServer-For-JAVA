@@ -6,16 +6,16 @@ import cn.hserver.plugin.rpc.exception.RpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.hserver.core.server.util.ExceptionUtil;
-
-import java.util.Map;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public class RpcClient {
     private static final Logger log = LoggerFactory.getLogger(RpcClient.class);
 
+    public static final Cache<String, CompletableFuture<?>> mapping = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
 
-    public static Map<String, CompletableFuture<?>> mapping = new ConcurrentHashMap<>();
 
     public static CompletableFuture<?> call(InvokeServiceData invokeServiceData) {
         try {

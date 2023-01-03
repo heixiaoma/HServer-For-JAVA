@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
     private static final Logger log = LoggerFactory.getLogger(ClientHandler.class);
 
-    private NettyChannel nettyChannel;
+    private final NettyChannel nettyChannel;
 
     public ClientHandler(NettyChannel nettyChannel) {
         this.nettyChannel = nettyChannel;
@@ -27,9 +27,13 @@ public class ClientHandler extends SimpleChannelInboundHandler<Msg> {
     protected void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
         if (msg.getMsgType() == MsgType.RESULT) {
             ResultData data = (ResultData) msg.getData();
-            CompletableFuture data1 = (CompletableFuture) data.getData();
-            CompletableFuture completableFuture = RpcClient.mapping.get(data.getRequestId());
-            RpcClient.mapping.remove(data.getRequestId());
+            final Object data2 = data.getData();
+            if (!(data2 instanceof CompletableFuture)){
+                throw new RuntimeException(String.format("返回类型错误，你设定的：%s，要求类型为：CompletableFuture",data2.getClass().getTypeName()));
+            }
+            CompletableFuture<?> data1 = (CompletableFuture<?>) data.getData();
+            CompletableFuture completableFuture = RpcClient.mapping.getIfPresent(data.getRequestId());
+            RpcClient.mapping.invalidate(data.getRequestId());
             completableFuture.complete(data1.get());
         }
     }
