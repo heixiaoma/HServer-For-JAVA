@@ -34,10 +34,10 @@ public interface HttpResponse {
      *
      * @param file
      * @param progressStatus
-     * @param ctx
+     * @param request
      * @throws Exception
      */
-    void setDownloadBigFile(File file, ProgressStatus progressStatus, ChannelHandlerContext ctx) throws Exception;
+    void setDownloadBigFile(File file, ProgressStatus progressStatus,HttpRequest request) throws Exception;
 
     /**
      * 流的下载文件

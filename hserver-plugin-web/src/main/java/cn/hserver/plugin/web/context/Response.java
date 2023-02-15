@@ -1,11 +1,9 @@
 package cn.hserver.plugin.web.context;
 
+import cn.hserver.plugin.web.interfaces.HttpRequest;
 import cn.hserver.plugin.web.util.FreemarkerUtil;
 import io.netty.channel.*;
-import io.netty.handler.codec.http.DefaultHttpResponse;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.LastHttpContent;
+import io.netty.handler.codec.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.hserver.plugin.web.interfaces.HttpResponse;
@@ -13,6 +11,7 @@ import cn.hserver.plugin.web.interfaces.ProgressStatus;
 import cn.hserver.core.server.util.ExceptionUtil;
 
 import java.io.*;
+import java.net.http.HttpHeaders;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -85,22 +84,52 @@ public class Response implements HttpResponse {
      * @param file
      */
     @Override
-    public void setDownloadBigFile(File file, ProgressStatus progressStatus, ChannelHandlerContext ctx) throws Exception {
+    public void setDownloadBigFile(File file, ProgressStatus progressStatus, HttpRequest request) throws Exception {
         isProxy(true);
+        ChannelHandlerContext ctx = request.getCtx();
         try {
             final RandomAccessFile raf = new RandomAccessFile(file, "r");
             long fileLength = raf.length();
-            DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.OK);
-            response.headers().set(HttpHeaderNames.CONTENT_LENGTH, fileLength);
-            response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/octet-stream");
-            response.headers().add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()));
+            HttpResponseStatus status = HttpResponseStatus.OK;
+            DefaultHttpHeaders headers = new DefaultHttpHeaders();
+            headers.set(HttpHeaderNames.ACCEPT_RANGES, HttpHeaderValues.BYTES);
+            headers.set(HttpHeaderNames.CONTENT_LENGTH, fileLength);
+            headers.set(HttpHeaderNames.CONTENT_TYPE, "application/octet-stream");
+            headers.add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()));
+            String range = request.getHeaders().get(HttpHeaderNames.RANGE);
+            long offset = 0L, length = raf.length();
+            if (range!=null&&range.trim().length()!=0) {// Range: bytes=1900544-  Range: bytes=1900544-6666666
+                range = range.substring(6);
+                String[] split = range.split("-");
+                try {
+                    offset = Long.parseLong(split[0]);
+                    if (split.length > 1 && split[1]!=null&&split[1].trim().length()!=0) {
+                        long end = Long.parseLong(split[1]);
+                        if (end <= length && offset >= end) {
+                            long endIndex = end - offset;
+                            headers.set(HttpHeaderNames.CONTENT_RANGE, "bytes " + offset + "-" + endIndex + "/" + length);
+                            length = endIndex - offset;
+                        }
+                    } else {
+                        headers.set(HttpHeaderNames.CONTENT_RANGE, "bytes " + offset + "-" + (length + offset - 1) + "/" + (offset + length));
+                        length = length - offset;
+                    }
+                    headers.set(HttpHeaderNames.CONTENT_LENGTH, length);// 重写响应长度
+                    status = HttpResponseStatus.PARTIAL_CONTENT;
+                } catch (Exception e) {
+                    log.warn("断点续传解析错误", e);
+                }
+            }
+
+            DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1,status);
+            response.headers().set(headers);
             ctx.write(response);
             ChannelFuture sendFileFuture = ctx.write(new DefaultFileRegion(raf.getChannel(), 0, fileLength), ctx.newProgressivePromise());
             sendFileFuture.addListener(new ChannelProgressiveFutureListener() {
                 @Override
                 public void operationComplete(ChannelProgressiveFuture future)
                         throws Exception {
-                    log.info("file {} transfer complete.", file.getName());
+                    log.debug("file {} transfer complete.", file.getName());
                     progressStatus.operationComplete(file.getAbsolutePath());
                     raf.close();
                 }
