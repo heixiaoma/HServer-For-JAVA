@@ -2,6 +2,7 @@ package cn.hserver.plugins.maven;
 
 
 import cn.hserver.plugin.loader.MainMethodRunner;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -79,7 +80,7 @@ public class CopyLoader {
 
         if (jarUpdated) {
             srcJarFile.delete();
-            tmpJarFile.renameTo(srcJarFile);
+            FileUtils.moveFile(tmpJarFile,srcJarFile);
         }
     }
 }
