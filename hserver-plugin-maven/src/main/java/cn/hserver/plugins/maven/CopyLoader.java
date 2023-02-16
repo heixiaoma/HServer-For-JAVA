@@ -7,7 +7,6 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.net.URI;
-import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.*;
