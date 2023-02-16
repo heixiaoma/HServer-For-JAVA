@@ -11,11 +11,9 @@ import cn.hserver.plugin.web.interfaces.ProgressStatus;
 import cn.hserver.core.server.util.ExceptionUtil;
 
 import java.io.*;
-import java.net.http.HttpHeaders;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
