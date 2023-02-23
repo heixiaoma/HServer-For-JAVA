@@ -29,6 +29,7 @@ import static cn.hserver.core.server.context.ConstConfig.TRACK_EXT_PACKAGES;
 public class HServerApplication {
     private static final Logger log = LoggerFactory.getLogger(HServerApplication.class);
     private static final Map<ChannelOption<Object>, Object> TCP_OPTIONS = new HashMap<>();
+    private static final Map<ChannelOption<Object>, Object> TCP_CHILD_OPTIONS = new HashMap<>();
 
     public static Class<?> mainClass;
 
@@ -39,6 +40,10 @@ public class HServerApplication {
      */
     public static <T> void addTcpOptions(ChannelOption<T> option, T value) {
         TCP_OPTIONS.put((ChannelOption)option, value);
+    }
+
+    public static <T> void addTcpChildOptions(ChannelOption<T> option, T value) {
+        TCP_CHILD_OPTIONS.put((ChannelOption)option, value);
     }
     //单端口
     public static void run(Class<?> mainClass, Integer port, String... args) {
@@ -71,7 +76,7 @@ public class HServerApplication {
 
     private static void startServer(String[] args) {
         try {
-            new HServer(ConstConfig.PORTS, args).run(TCP_OPTIONS);
+            new HServer(ConstConfig.PORTS, args).run(TCP_OPTIONS,TCP_CHILD_OPTIONS);
         } catch (Exception e) {
             log.error(ExceptionUtil.getMessage(e));
         }

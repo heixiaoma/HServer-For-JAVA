@@ -59,7 +59,7 @@ public class HServer {
         this.args = args;
     }
 
-    public void run(Map<ChannelOption<Object>, Object> tcpOptions) throws Exception {
+    public void run(Map<ChannelOption<Object>, Object> tcpOptions,Map<ChannelOption<Object>, Object> tcpChildOptions) throws Exception {
         if (ConstConfig.HUM_OPEN) {
             //UDP Server
             humServerBossGroup = new NioEventLoopGroup();
@@ -81,7 +81,6 @@ public class HServer {
             HumClient.channel = humClient.bind(0).sync().channel();
             channels.put(HumClient.channel, "UDP Client Port:0");
         }
-
         List<ProtocolDispatcherAdapter> listBean = IocUtil.getListBean(ProtocolDispatcherAdapter.class);
         if (listBean!=null&&!listBean.isEmpty()) {
             //TCP Server
@@ -89,6 +88,9 @@ public class HServer {
             ServerBootstrap bootstrap = new ServerBootstrap();
             if (tcpOptions!=null){
                 tcpOptions.forEach(bootstrap::option);
+            }
+            if (tcpChildOptions!=null){
+                tcpChildOptions.forEach(bootstrap::childOption);
             }
             if (EpollUtil.check()) {
                 bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
