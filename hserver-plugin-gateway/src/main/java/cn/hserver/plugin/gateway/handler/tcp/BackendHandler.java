@@ -14,6 +14,12 @@ public class BackendHandler extends ChannelInboundHandlerAdapter {
 
     private final Channel inboundChannel;
     private final BusinessTcp businessTcp;
+    @Override
+    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
+        log.debug("限制操作，让两个通道实现同步读写 开关状态:{}",ctx.channel().isWritable());
+        inboundChannel.config().setAutoRead(ctx.channel().isWritable());
+        super.channelWritabilityChanged(ctx);
+    }
 
     public BackendHandler(Channel inboundChannel, BusinessTcp businessTcp) {
         this.inboundChannel = inboundChannel;

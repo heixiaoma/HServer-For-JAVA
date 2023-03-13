@@ -15,7 +15,12 @@ public class Http4BackendHandler extends ChannelInboundHandlerAdapter {
     private final Channel inboundChannel;
 
     private final BusinessHttp4 businessHttp4;
-
+    @Override
+    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
+        log.debug("限制操作，让两个通道实现同步读写 开关状态:{}",ctx.channel().isWritable());
+        inboundChannel.config().setAutoRead(ctx.channel().isWritable());
+        super.channelWritabilityChanged(ctx);
+    }
     public Http4BackendHandler(Channel inboundChannel, BusinessHttp4 businessHttp4) {
         this.inboundChannel = inboundChannel;
         this.businessHttp4 = businessHttp4;
