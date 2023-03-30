@@ -66,15 +66,8 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
             if (in == null) {
                 return;
             }
-
-            if (outboundChannel != null) {
-                if (outboundChannel.isActive()) {
-                    write(ctx, msg);
-                } else {
-                    outboundChannel.close();
-                    outboundChannel = null;
-                    ReferenceCountUtil.release(msg);
-                }
+            if (outboundChannel != null&&outboundChannel.isActive()) {
+                write(ctx, msg);
             } else {
                 final Channel inboundChannel = ctx.channel();
                 Bootstrap b = new Bootstrap();
@@ -88,6 +81,7 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
                     @Override
                     public void operationComplete(ChannelFuture future) throws Exception {
                         if (future.isSuccess()) {
+                            ctx.channel().config().setAutoRead(false);
                             outboundChannel = future.channel();
                             inboundChannel.read();
                             write(ctx, msg);

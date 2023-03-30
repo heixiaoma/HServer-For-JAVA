@@ -73,7 +73,6 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
             ctx.channel().config().setAutoRead(false);
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
-        } finally {
             ctx.close();
         }
     }
