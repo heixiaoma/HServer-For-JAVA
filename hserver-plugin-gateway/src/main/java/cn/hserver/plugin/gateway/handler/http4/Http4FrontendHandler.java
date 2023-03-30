@@ -5,6 +5,7 @@ import cn.hserver.plugin.gateway.bean.Http4Data;
 import cn.hserver.plugin.gateway.business.Business;
 import cn.hserver.plugin.gateway.business.BusinessHttp4;
 import cn.hserver.plugin.gateway.business.BusinessHttp7;
+import cn.hserver.plugin.gateway.handler.tcp.BackendHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -42,57 +43,76 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
 
 
     public void write(ChannelHandlerContext ctx, Object msg) {
-        outboundChannel.writeAndFlush(msg).addListener((ChannelFutureListener) future -> {
-            if (future.isSuccess()) {
-                ctx.channel().read();
-            } else {
-                future.channel().close();
-                ReferenceCountUtil.release(msg);
-            }
-        });
+        if (outboundChannel!=null&&outboundChannel.isActive()) {
+            outboundChannel.writeAndFlush(msg).addListener((ChannelFutureListener) future -> {
+                if (!future.isSuccess()) {
+                    future.channel().close();
+                    ReferenceCountUtil.release(msg);
+                }
+            });
+        }
     }
 
     @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
-        log.debug("限制操作，让两个通道实现同步读写 开关状态:{}",ctx.channel().isWritable());
-        outboundChannel.config().setAutoRead(ctx.channel().isWritable());
+        if (outboundChannel != null && outboundChannel.isActive()) {
+            log.debug("限制操作，让两个通道实现同步读写 开关状态:{}", ctx.channel().isWritable());
+            outboundChannel.config().setAutoRead(ctx.channel().isWritable());
+        }
         super.channelWritabilityChanged(ctx);
+    }
+
+
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws InterruptedException {
+        try {
+            final Channel inboundChannel = ctx.channel();
+            Bootstrap b = new Bootstrap();
+            b.group(inboundChannel.eventLoop());
+            b.option(ChannelOption.AUTO_READ, true)
+                    .channel(NioSocketChannel.class)
+                    .handler(new Http4BackendHandler(inboundChannel, businessHttp4));
+            SocketAddress proxyHost = businessHttp4.getProxyHost(ctx, null, ctx.channel().remoteAddress());
+            final AtomicInteger count = new AtomicInteger(0);
+
+            ChannelFuture f = b.connect(proxyHost).addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture future) throws Exception {
+                    if (future.isSuccess()) {
+                        inboundChannel.read();
+                        businessHttp4.connectController(ctx, true, count.incrementAndGet(), null);
+                    } else {
+                        inboundChannel.close();
+                        if (businessHttp4.connectController(ctx, false, count.incrementAndGet(), future.cause())) {
+                            b.connect(proxyHost).addListener(this);
+                        }
+                    }
+                }
+            });
+            outboundChannel = f.channel();
+            ctx.channel().config().setAutoRead(false);
+        } catch (Throwable e) {
+            log.error(e.getMessage(), e);
+            ctx.close();
+        }
     }
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
+
         try {
             Object in = businessHttp4.in(ctx, new Http4Data(host, msg));
             if (in == null) {
                 return;
             }
-            if (outboundChannel != null&&outboundChannel.isActive()) {
-                write(ctx, msg);
-            } else {
-                final Channel inboundChannel = ctx.channel();
-                Bootstrap b = new Bootstrap();
-                b.group(inboundChannel.eventLoop());
-                b.option(ChannelOption.AUTO_READ, true)
-                        .channel(NioSocketChannel.class)
-                        .handler(new Http4BackendHandler(inboundChannel, businessHttp4));
-                SocketAddress proxyHost = businessHttp4.getProxyHost(ctx, new Http4Data(host, msg), ctx.channel().remoteAddress());
-               final AtomicInteger count = new AtomicInteger(0);
-                b.connect(proxyHost).addListener(new ChannelFutureListener() {
-                    @Override
-                    public void operationComplete(ChannelFuture future) throws Exception {
-                        if (future.isSuccess()) {
-                            ctx.channel().config().setAutoRead(false);
-                            outboundChannel = future.channel();
-                            inboundChannel.read();
-                            write(ctx, msg);
-                            businessHttp4.connectController(ctx, true, count.incrementAndGet(), null);
-                        } else {
-                            inboundChannel.close();
-                            ReferenceCountUtil.release(msg);
-                            if (businessHttp4.connectController(ctx, false, count.incrementAndGet(), future.cause())) {
-                                b.connect(proxyHost).addListener(this);
-                            }
-                        }
+            if (outboundChannel.isActive()) {
+                outboundChannel.writeAndFlush(in).addListener((ChannelFutureListener) future -> {
+                    if (future.isSuccess()) {
+                        ctx.channel().read();
+                    } else {
+                        ReferenceCountUtil.release(in);
+                        future.channel().close();
                     }
                 });
             }
@@ -112,7 +132,7 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        businessHttp4.exceptionCaught(ctx,cause);
+        businessHttp4.exceptionCaught(ctx, cause);
         closeOnFlush(ctx.channel());
     }
 }

@@ -42,8 +42,8 @@ public class Http4BackendHandler extends ChannelInboundHandlerAdapter {
                 if (future.isSuccess()) {
                     ctx.channel().read();
                 } else {
-                    future.channel().close();
                     ReferenceCountUtil.release(out);
+                    future.channel().close();
                 }
             });
         } catch (Throwable e) {
