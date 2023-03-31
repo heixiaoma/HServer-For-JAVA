@@ -43,7 +43,6 @@ public class Http7BackendHandler extends ChannelInboundHandlerAdapter {
                 if (!future.isSuccess()) {
                     ReleaseUtil.release(out);
                     future.channel().close();
-                    System.out.println("数据块写失败");
                 }
             });
         } catch (Throwable e) {
