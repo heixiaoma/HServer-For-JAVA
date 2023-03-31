@@ -3,6 +3,7 @@ package cn.hserver.plugin.gateway.handler.http7;
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.plugin.gateway.business.Business;
 import cn.hserver.plugin.gateway.business.BusinessHttp7;
+import cn.hserver.plugin.gateway.config.GateWayConfig;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
@@ -53,7 +54,12 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
 
     private void read(final ChannelHandlerContext ctx, Object msg) {
         if (msg instanceof HttpRequest || msg instanceof WebSocketFrame) {
-            outboundChannel.writeAndFlush(msg);
+            outboundChannel.writeAndFlush(msg).addListener((ChannelFutureListener) future -> {
+                if (!future.isSuccess()) {
+                    future.channel().close();
+                    ReferenceCountUtil.release(msg);
+                }
+            });
         } else {
             closeOnFlush(ctx.channel());
             ReferenceCountUtil.release(msg);
@@ -90,7 +96,7 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
 
             if (outboundChannel == null) {
                 Bootstrap b = new Bootstrap();
-                b.group(ctx.channel().eventLoop());
+                b.group(GateWayConfig.EVENT_EXECUTORS);
 
                 SocketAddress proxyHost = businessHttp7.getProxyHost(ctx, request, ctx.channel().localAddress());
                 if (!request.headers().contains(HttpHeaderNames.ORIGIN)) {

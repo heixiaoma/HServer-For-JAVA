@@ -1,8 +1,10 @@
 package cn.hserver.plugin.gateway.handler.tcp;
 
 import cn.hserver.core.ioc.IocUtil;
+import cn.hserver.core.server.util.ReleaseUtil;
 import cn.hserver.plugin.gateway.business.Business;
 import cn.hserver.plugin.gateway.business.BusinessTcp;
+import cn.hserver.plugin.gateway.config.GateWayConfig;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
@@ -48,8 +50,8 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
         try {
             final Channel inboundChannel = ctx.channel();
             Bootstrap b = new Bootstrap();
-            b.group(inboundChannel.eventLoop());
-            b.option(ChannelOption.AUTO_READ, true)
+            b.group(GateWayConfig.EVENT_EXECUTORS);
+            b
                     .channel(NioSocketChannel.class)
                     .handler(new BackendHandler(inboundChannel, businessTcp));
             SocketAddress proxyHost = businessTcp.getProxyHost(ctx, null, ctx.channel().remoteAddress());
@@ -59,7 +61,6 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
                 @Override
                 public void operationComplete(ChannelFuture future) throws Exception {
                     if (future.isSuccess()) {
-                        inboundChannel.read();
                         businessTcp.connectController(ctx, true, count.incrementAndGet(), null);
                     } else {
                         inboundChannel.close();
@@ -70,7 +71,6 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
                 }
             });
             outboundChannel = f.channel();
-            ctx.channel().config().setAutoRead(false);
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
             ctx.close();
@@ -82,21 +82,18 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
         try {
             Object in = businessTcp.in(ctx, msg);
             if (in == null) {
+                ReleaseUtil.release(in);
                 return;
             }
-            if (outboundChannel.isActive()) {
                 outboundChannel.writeAndFlush(in).addListener((ChannelFutureListener) future -> {
-                    if (future.isSuccess()) {
-                        ctx.channel().read();
-                    } else {
-                        ReferenceCountUtil.release(in);
+                    if (!future.isSuccess()) {
+                        ReleaseUtil.release(in);
                         future.channel().close();
                     }
                 });
-            }
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
-            ReferenceCountUtil.release(msg);
+            ReleaseUtil.release(msg);
             throw e;
         }
     }

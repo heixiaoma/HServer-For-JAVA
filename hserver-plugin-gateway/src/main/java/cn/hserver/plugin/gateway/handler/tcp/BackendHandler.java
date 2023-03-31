@@ -1,5 +1,6 @@
 package cn.hserver.plugin.gateway.handler.tcp;
 
+import cn.hserver.core.server.util.ReleaseUtil;
 import cn.hserver.plugin.gateway.business.BusinessTcp;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -36,20 +37,20 @@ public class BackendHandler extends ChannelInboundHandlerAdapter {
         try {
             Object out = businessTcp.out(inboundChannel,msg);
             if (out==null){
+                ReleaseUtil.release(msg);
                 return;
             }
             inboundChannel.writeAndFlush(out).addListener((ChannelFutureListener) future -> {
-                if (future.isSuccess()) {
-                    ctx.channel().read();
-                } else {
-                    ReferenceCountUtil.release(out);
+                if (!future.isSuccess()) {
+                    ReleaseUtil.release(out);
                     future.channel().close();
                 }
             });
         }catch (Throwable e){
             log.error(e.getMessage(),e);
             ctx.channel().close();
-            ReferenceCountUtil.release(msg);
+            ReleaseUtil.release(msg);
+
         }
     }
 

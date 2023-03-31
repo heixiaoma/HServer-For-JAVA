@@ -1,11 +1,13 @@
 package cn.hserver.plugin.gateway.handler.http4;
 
+import cn.hserver.core.server.util.ReleaseUtil;
 import cn.hserver.plugin.gateway.business.BusinessHttp4;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
+import io.netty.util.ReferenceCounted;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,29 +29,23 @@ public class Http4BackendHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) {
-        ctx.read();
-    }
-
-    @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
         try {
             Object out = businessHttp4.out(inboundChannel, msg);
             if (out == null) {
+                ReleaseUtil.release(msg);
                 return;
             }
             inboundChannel.writeAndFlush(out).addListener((ChannelFutureListener) future -> {
-                if (future.isSuccess()) {
-                    ctx.channel().read();
-                } else {
-                    ReferenceCountUtil.release(out);
+                if (!future.isSuccess()) {
+                    ReleaseUtil.release(out);
                     future.channel().close();
                 }
             });
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
             ctx.channel().close();
-            ReferenceCountUtil.release(msg);
+            ReleaseUtil.release(msg);
         }
     }
 

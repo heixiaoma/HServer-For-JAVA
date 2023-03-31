@@ -1,7 +1,9 @@
 package cn.hserver.plugin.gateway.handler.http7;
 
+import cn.hserver.core.server.util.ReleaseUtil;
 import cn.hserver.plugin.gateway.business.BusinessHttp7;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.HttpObject;
@@ -19,33 +21,35 @@ public class Http7BackendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
-        log.debug("限制操作，让两个通道实现同步读写 开关状态:{}",ctx.channel().isWritable());
+        log.debug("限制操作，让两个通道实现同步读写 开关状态:{}", ctx.channel().isWritable());
         inboundChannel.config().setAutoRead(ctx.channel().isWritable());
         super.channelWritabilityChanged(ctx);
     }
 
-    public Http7BackendHandler(Channel inboundChannel,BusinessHttp7 businessHttp7) {
+    public Http7BackendHandler(Channel inboundChannel, BusinessHttp7 businessHttp7) {
         this.inboundChannel = inboundChannel;
-        this.businessHttp7=businessHttp7;
+        this.businessHttp7 = businessHttp7;
     }
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-        if (msg instanceof HttpObject) {
-            try {
-                Object out = businessHttp7.out(inboundChannel, msg);
-                if (out == null) {
-                    return;
-                }
-                inboundChannel.writeAndFlush(out);
-            }catch (Throwable e){
-                log.error(e.getMessage(),e);
-                ctx.channel().close();
-                ReferenceCountUtil.release(msg);
+        try {
+            Object out = businessHttp7.out(inboundChannel, msg);
+            if (out == null) {
+                ReleaseUtil.release(msg);
+                return;
             }
-        } else {
+            inboundChannel.writeAndFlush(out).addListener((ChannelFutureListener) future -> {
+                if (!future.isSuccess()) {
+                    ReleaseUtil.release(out);
+                    future.channel().close();
+                    System.out.println("数据块写失败");
+                }
+            });
+        } catch (Throwable e) {
+            log.error(e.getMessage(), e);
             ctx.channel().close();
-            ReferenceCountUtil.release(msg);
+            ReleaseUtil.release(msg);
         }
     }
 

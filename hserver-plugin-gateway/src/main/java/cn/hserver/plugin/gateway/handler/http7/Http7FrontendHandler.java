@@ -1,9 +1,11 @@
 package cn.hserver.plugin.gateway.handler.http7;
 
 import cn.hserver.core.ioc.IocUtil;
+import cn.hserver.core.server.util.ReleaseUtil;
 import cn.hserver.plugin.gateway.business.Business;
 import cn.hserver.plugin.gateway.business.BusinessHttp7;
 import cn.hserver.plugin.gateway.business.BusinessTcp;
+import cn.hserver.plugin.gateway.config.GateWayConfig;
 import cn.hserver.plugin.gateway.ssl.HttpsMapperSslContextFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -57,7 +59,7 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
             outboundChannel.writeAndFlush(msg);
         } else {
             closeOnFlush(ctx.channel());
-            ReferenceCountUtil.release(msg);
+            ReleaseUtil.release(msg);
         }
     }
 
@@ -67,12 +69,13 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
         try {
             Object in = businessHttp7.in(ctx, msg);
             if (in == null) {
+                ReleaseUtil.release(msg);
                 return;
             }
             if (outboundChannel == null) {
                 final Channel inboundChannel = ctx.channel();
                 Bootstrap b = new Bootstrap();
-                b.group(ctx.channel().eventLoop());
+                b.group(GateWayConfig.EVENT_EXECUTORS);
                 InetSocketAddress proxyHost = (InetSocketAddress) businessHttp7.getProxyHost(ctx, in, ctx.channel().localAddress());
                 b.channel(NioSocketChannel.class).handler(new ChannelInitializer<Channel>() {
                     @Override
@@ -96,7 +99,7 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
                             businessHttp7.connectController(ctx,true,count.incrementAndGet(),null);
                         } else {
                             future.channel().close();
-                            ReferenceCountUtil.release(in);
+                            ReleaseUtil.release(in);
                             if (businessHttp7.connectController(ctx,false,count.incrementAndGet(),future.cause())){
                                 b.connect(proxyHost).addListener(this);
                             }
@@ -109,7 +112,7 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
             }
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
-            ReferenceCountUtil.release(msg);
+            ReleaseUtil.release(msg);
             throw e;
         }
     }

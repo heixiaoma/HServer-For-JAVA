@@ -1,5 +1,6 @@
 package cn.hserver.plugin.gateway.handler.http7;
 
+import cn.hserver.core.server.util.ReleaseUtil;
 import cn.hserver.plugin.gateway.business.BusinessHttp7;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -58,7 +59,7 @@ public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter{
                 log.info("websocket连接失败!");
                 handshakeFuture.setFailure(e);
             }
-            ReferenceCountUtil.release(msg);
+            ReleaseUtil.release(msg);
             return;
         }
         if (msg instanceof WebSocketFrame) {
@@ -73,7 +74,7 @@ public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter{
             }
         } else {
             ctx.channel().close();
-            ReferenceCountUtil.release(msg);
+            ReleaseUtil.release(msg);
         }
     }
 
