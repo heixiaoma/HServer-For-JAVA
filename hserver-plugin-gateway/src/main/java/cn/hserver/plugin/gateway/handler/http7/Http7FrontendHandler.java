@@ -72,7 +72,7 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
                 ReleaseUtil.release(msg);
                 return;
             }
-            if (outboundChannel == null) {
+            if (outboundChannel == null||!outboundChannel.isActive()) {
                 final Channel inboundChannel = ctx.channel();
                 Bootstrap b = new Bootstrap();
                 b.group(GateWayConfig.EVENT_EXECUTORS);
@@ -85,7 +85,7 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
                             sslEngine.setUseClientMode(true);
                             ch.pipeline().addFirst(new SslHandler(sslEngine));
                         }
-                        ch.pipeline().addLast(new HttpClientCodec(),new HttpContentDecompressor(), new HttpObjectAggregator(Integer.MAX_VALUE));
+                        ch.pipeline().addLast(new HttpClientCodec(), new HttpObjectAggregator(Integer.MAX_VALUE));
                         ch.pipeline().addLast(new Http7BackendHandler(inboundChannel, businessHttp7));
                     }
                 });
@@ -96,12 +96,13 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
                     public void operationComplete(ChannelFuture future) throws Exception {
                         if (future.isSuccess()) {
                             future.channel().writeAndFlush(in);
-                            businessHttp7.connectController(ctx,true,count.incrementAndGet(),null);
                         } else {
                             future.channel().close();
-                            ReleaseUtil.release(in);
                             if (businessHttp7.connectController(ctx,false,count.incrementAndGet(),future.cause())){
                                 b.connect(proxyHost).addListener(this);
+                            }else {
+                                ReleaseUtil.release(in);
+                                closeOnFlush(ctx.channel());
                             }
                         }
                     }

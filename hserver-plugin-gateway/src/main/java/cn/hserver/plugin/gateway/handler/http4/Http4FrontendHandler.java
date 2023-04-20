@@ -67,37 +67,41 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
                 });
         SocketAddress proxyHost = businessHttp4.getProxyHost(ctx, new Http4Data(host, null), ctx.channel().remoteAddress());
         final AtomicInteger count = new AtomicInteger(0);
-        ChannelFuture f = b.connect(proxyHost).addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture future) throws Exception {
-                if (future.isSuccess()) {
-                    businessHttp4.connectController(ctx,true,count.incrementAndGet(),null);
-                } else {
-                    future.channel().close();
-                    if (businessHttp4.connectController(ctx,false,count.incrementAndGet(),future.cause())){
-                        b.connect(proxyHost).addListener(this);
-                    }
+        //重连等待
+        while (true) {
+            try {
+                if (outboundChannel != null && outboundChannel.isActive()) {
+                    return;
+                }
+                outboundChannel = b.connect(proxyHost).sync().channel();
+            } catch (Exception e) {
+                if (!businessHttp4.connectController(ctx, false, count.incrementAndGet(), e)) {
+                    closeOnFlush(ctx.channel());
+                    return;
                 }
             }
-        });
-        outboundChannel = f.channel();
+        }
     }
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-
         try {
             Object in = businessHttp4.in(ctx, new Http4Data(host, msg));
             if (in == null) {
                 ReleaseUtil.release(msg);
                 return;
             }
-                outboundChannel.writeAndFlush(in).addListener((ChannelFutureListener) future -> {
-                    if (!future.isSuccess()) {
-                        ReleaseUtil.release(in);
-                        future.channel().close();
-                    }
-                });
+            if (outboundChannel == null || !outboundChannel.isActive()) {
+                ReleaseUtil.release(msg);
+                closeOnFlush(ctx.channel());
+                return;
+            }
+            outboundChannel.writeAndFlush(in).addListener((ChannelFutureListener) future -> {
+                if (!future.isSuccess()) {
+                    ReleaseUtil.release(in);
+                    future.channel().close();
+                }
+            });
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
             ReleaseUtil.release(msg);

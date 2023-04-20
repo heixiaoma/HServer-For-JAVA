@@ -17,7 +17,7 @@ public class BusinessHttp7 implements Business<Object, Object>{
 
     @Override
     public SocketAddress getProxyHost(ChannelHandlerContext ctx,Object fullHttpRequest, SocketAddress sourceSocketAddress) {
-        return null;
+        throw new RuntimeException("请配置需要代理的服务器");
     }
 
     @Override

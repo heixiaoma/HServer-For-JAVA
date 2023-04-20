@@ -11,7 +11,6 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.ReferenceCountUtil;
 import cn.hserver.plugin.web.context.WsType;
-import cn.hserver.core.server.util.ByteBufUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

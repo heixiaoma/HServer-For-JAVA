@@ -10,7 +10,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketHandshakeException;
 import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+@ChannelHandler.Sharable
 public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter{
     private static final Logger log = LoggerFactory.getLogger(Http7WebSocketBackendHandler.class);
 

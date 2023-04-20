@@ -94,7 +94,7 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
     private void writeWebSocket(ChannelHandlerContext ctx, HttpRequest request) throws URISyntaxException {
         try {
 
-            if (outboundChannel == null) {
+            if (outboundChannel == null||!outboundChannel.isActive()) {
                 Bootstrap b = new Bootstrap();
                 b.group(GateWayConfig.EVENT_EXECUTORS);
 
@@ -132,12 +132,13 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                                 e.printStackTrace();
                                 ReferenceCountUtil.release(request);
                             }
-                            businessHttp7.connectController(ctx, true, count.incrementAndGet(), null);
                         } else {
                             future.channel().close();
-                            ReferenceCountUtil.release(request);
                             if (businessHttp7.connectController(ctx, false, count.incrementAndGet(), future.cause())) {
                                 b.connect(proxyHost).addListener(this);
+                            }else {
+                                ReferenceCountUtil.release(request);
+                                closeOnFlush(ctx.channel());
                             }
                         }
                     }

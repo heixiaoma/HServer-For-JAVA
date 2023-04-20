@@ -8,10 +8,10 @@ import io.netty.util.ReferenceCounted;
  */
 public class ReleaseUtil {
     public static boolean release(Object msg) {
-        if (msg==null){
+        if (msg == null) {
             return false;
         }
-        if (msg == ReferenceCounted.class) {
+        if (msg instanceof ReferenceCounted) {
             ReferenceCounted msg1 = (ReferenceCounted) msg;
             if (msg1.refCnt() > 0) {
                 if (((ReferenceCounted) msg).refCnt() > 0) {

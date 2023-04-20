@@ -39,7 +39,7 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
-        log.debug("限制操作，让两个通道实现同步读写 开关状态:{}",ctx.channel().isWritable());
+        log.debug("限制操作，让两个通道实现同步读写 开关状态:{}", ctx.channel().isWritable());
         outboundChannel.config().setAutoRead(ctx.channel().isWritable());
         super.channelWritabilityChanged(ctx);
     }
@@ -56,21 +56,20 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
                     .handler(new BackendHandler(inboundChannel, businessTcp));
             SocketAddress proxyHost = businessTcp.getProxyHost(ctx, null, ctx.channel().remoteAddress());
             final AtomicInteger count = new AtomicInteger(0);
-
-            ChannelFuture f = b.connect(proxyHost).addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture future) throws Exception {
-                    if (future.isSuccess()) {
-                        businessTcp.connectController(ctx, true, count.incrementAndGet(), null);
-                    } else {
-                        inboundChannel.close();
-                        if (businessTcp.connectController(ctx, false, count.incrementAndGet(), future.cause())) {
-                            b.connect(proxyHost).addListener(this);
-                        }
+            //重连等待
+            while (true) {
+                try {
+                    if (outboundChannel != null && outboundChannel.isActive()) {
+                        return;
+                    }
+                    outboundChannel = b.connect(proxyHost).sync().channel();
+                } catch (Exception e) {
+                    if (!businessTcp.connectController(ctx, false, count.incrementAndGet(), e)) {
+                        closeOnFlush(ctx.channel());
+                        return;
                     }
                 }
-            });
-            outboundChannel = f.channel();
+            }
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
             ctx.close();
@@ -85,12 +84,17 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
                 ReleaseUtil.release(in);
                 return;
             }
-                outboundChannel.writeAndFlush(in).addListener((ChannelFutureListener) future -> {
-                    if (!future.isSuccess()) {
-                        ReleaseUtil.release(in);
-                        future.channel().close();
-                    }
-                });
+            if (outboundChannel == null || !outboundChannel.isActive()) {
+                ReleaseUtil.release(msg);
+                closeOnFlush(ctx.channel());
+                return;
+            }
+            outboundChannel.writeAndFlush(in).addListener((ChannelFutureListener) future -> {
+                if (!future.isSuccess()) {
+                    ReleaseUtil.release(in);
+                    future.channel().close();
+                }
+            });
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
             ReleaseUtil.release(msg);
@@ -107,7 +111,7 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        businessTcp.exceptionCaught(ctx,cause);
+        businessTcp.exceptionCaught(ctx, cause);
         closeOnFlush(ctx.channel());
     }
 }

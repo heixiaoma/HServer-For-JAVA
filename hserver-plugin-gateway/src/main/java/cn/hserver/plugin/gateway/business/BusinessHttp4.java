@@ -13,7 +13,7 @@ public class BusinessHttp4 implements Business<Http4Data,Object>{
 
     @Override
     public SocketAddress getProxyHost(ChannelHandlerContext ctx, Http4Data http4Data, SocketAddress sourceSocketAddress) {
-        return null;
+        throw new RuntimeException("请配置需要代理的服务器");
     }
 
     @Override

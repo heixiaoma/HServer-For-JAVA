@@ -154,3 +154,19 @@ public class Http7 extends BusinessHttp7 {
 
 
 ```
+
+# BusinessHttp7注意事项
+- 上传文件
+    - 由于是用的7层协议，网关会把所有数据拿完才会交给远端服务器。这也是为啥7层网关可以直接解码http数据包的原因
+    所以上传文件如果文件太大会导致netty的水位线溢出，导致文件中转失败，调整方案如下设置高低水位线就可以了
+- 下载文件
+    - 同理下载文件，当请求到达网关后，网关会走远端服务器把数据全部下载下来，然后在发给客服端，因此在内存的中的数据是相当庞大的，所以在这里建议调整好高低水位线。
+
+- 总结
+    - 当我们使用网关时尽量避免BusinessHttp7使用上传下载功能。因为可能会导致导致水位线不够存数据。当然如果你使用其他的业务处理器将不存在这个问题，其他处理器，
+    并没有这个编码解码过程，不会等待请求完成才解码，而是管道形式有多少数据发多少数据。
+
+```java
+        HServerApplication.addTcpChildOptions(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, 32 * 1024*1024*50);
+        HServerApplication.addTcpChildOptions(ChannelOption.WRITE_BUFFER_LOW_WATER_MARK, 32 * 1024);
+```
