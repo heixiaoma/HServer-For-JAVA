@@ -66,6 +66,10 @@ public class MybatisInit {
             }
             //设置超类mapper
             globalConfig.setSuperMapperClass(BaseMapper.class);
+            //自动填充
+            if (mybatisConfig.getMetaObjectHandler() != null) {
+                globalConfig.setMetaObjectHandler(mybatisConfig.getMetaObjectHandler());
+            }
             //给configuration注入GlobalConfig里面的配置
             GlobalConfigUtils.setGlobalConfig(configuration, globalConfig);
             //设置数据源

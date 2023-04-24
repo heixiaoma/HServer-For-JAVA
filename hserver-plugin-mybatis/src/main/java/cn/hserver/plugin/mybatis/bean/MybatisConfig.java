@@ -1,5 +1,6 @@
 package cn.hserver.plugin.mybatis.bean;
 
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -19,6 +20,8 @@ public class MybatisConfig {
 
     private Interceptor[] plugins;
 
+    private MetaObjectHandler metaObjectHandler;
+
     private Boolean mapUnderscoreToCamelCase = true;
 
     private IdentifierGenerator identifierGenerator;
@@ -37,6 +40,14 @@ public class MybatisConfig {
 
     public void setPlugins(Interceptor[] plugins) {
         this.plugins = plugins;
+    }
+
+    public MetaObjectHandler getMetaObjectHandler() {
+        return metaObjectHandler;
+    }
+
+    public void setMetaObjectHandler(MetaObjectHandler metaObjectHandler) {
+        this.metaObjectHandler = metaObjectHandler;
     }
 
     public Map<String, DataSource> getDataSources() {
