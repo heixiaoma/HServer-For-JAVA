@@ -57,7 +57,7 @@ public class MybatisInit {
             loadMapper(configuration, classes, dataSourceName);
             loadInterceptor(configuration, mybatisConfig.getPlugins());
             //构建mybatis-plus需要的globalconfig
-            GlobalConfig globalConfig = new GlobalConfig();
+            GlobalConfig globalConfig = GlobalConfigUtils.getGlobalConfig(configuration);
             //此参数会自动生成实现baseMapper的基础方法映射
             globalConfig.setSqlInjector(new DefaultSqlInjector());
             //设置id生成器
@@ -71,7 +71,7 @@ public class MybatisInit {
                 globalConfig.setMetaObjectHandler(mybatisConfig.getMetaObjectHandler());
             }
             //给configuration注入GlobalConfig里面的配置
-            GlobalConfigUtils.setGlobalConfig(configuration, globalConfig);
+//            GlobalConfigUtils.setGlobalConfig(configuration, globalConfig);
             //设置数据源
             Environment environment = new Environment(dataSourceName, new JdbcTransactionFactory(), mybatisConfig.getDataSources().get(dataSourceName));
             configuration.setEnvironment(environment);
