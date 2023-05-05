@@ -79,7 +79,8 @@ public class BuildResponse {
         }
 
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, MimeType.getFileType(response1.getFileName()) + ";charset=UTF-8");
-        response.headers().add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", response1.getFileName()));
+        //attachment下载模式，inline预览模式
+        response.headers().add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("inline; filename=\"%s\"", response1.getFileName()));
         return response;
     }
 

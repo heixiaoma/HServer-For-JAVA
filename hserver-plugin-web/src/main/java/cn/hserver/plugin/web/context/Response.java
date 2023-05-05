@@ -92,8 +92,8 @@ public class Response implements HttpResponse {
             DefaultHttpHeaders headers = new DefaultHttpHeaders();
             headers.set(HttpHeaderNames.ACCEPT_RANGES, HttpHeaderValues.BYTES);
             headers.set(HttpHeaderNames.CONTENT_LENGTH, fileLength);
-            headers.set(HttpHeaderNames.CONTENT_TYPE, "application/octet-stream");
-            headers.add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()));
+            headers.set(HttpHeaderNames.CONTENT_TYPE, MimeType.getFileType(file.getName()));
+            headers.add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("inline; filename=\"%s\"", file.getName()));
             String range = request.getHeaders().get(HttpHeaderNames.RANGE);
             long offset = 0L, length = raf.length();
             if (range!=null&&range.trim().length()!=0) {// Range: bytes=1900544-  Range: bytes=1900544-6666666
