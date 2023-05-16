@@ -145,7 +145,7 @@ public class MybatisFlexPlugin implements PluginAdapter {
                     //同类型注入
                     if (declaredField.getType().isAssignableFrom(mapper.getClass())) {
                         declaredField.set(v, mapper);
-                        log.info("{}----->{}：装配完成，{}", mapper.getClass().getSimpleName(), v.getClass().getSimpleName(), "Mybatis注入");
+                        log.info("{}----->{}：装配完成，{}", mapper.getClass().getSimpleName(), v.getClass().getSimpleName(), "MybatisFlex注入");
                     } else {
                         log.error("{}----->{}：装配错误:类型不匹配", v.getClass().getSimpleName(), v.getClass().getSimpleName());
                     }

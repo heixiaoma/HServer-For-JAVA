@@ -101,6 +101,11 @@
                 <artifactId>hserver-plugin-nacos</artifactId>
                 <version>3.3.M3</version>
             </dependency>
+            <dependency>
+                <groupId>cn.hserver</groupId>
+                <artifactId>hserver-plugin-mybatis_flex</artifactId>
+                <version>3.3.M3</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
