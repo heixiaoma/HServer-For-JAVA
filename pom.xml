@@ -28,6 +28,7 @@
         <module>hserver-plugin-node</module>
         <module>hserver-plugin-nacos</module>
         <module>hserver-plugin-cloud</module>
+        <module>hserver-plugin-mybatis_flex</module>
     </modules>
 
     <properties>

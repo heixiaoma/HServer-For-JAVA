@@ -1,34 +1,27 @@
-package cn.hserver.plugin.mybatis;
+package cn.hserver.plugin.mybatis.flex;
 
-import cn.hserver.core.ioc.ref.PackageScanner;
-import cn.hserver.plugin.mybatis.annotation.Mybatis;
-import cn.hserver.plugin.mybatis.proxy.MybatisProxy;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import cn.hserver.core.interfaces.PluginAdapter;
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.ioc.annotation.Autowired;
-import cn.hserver.core.server.util.ExceptionUtil;
-import cn.hserver.plugin.mybatis.bean.MybatisConfig;
+import cn.hserver.core.ioc.ref.PackageScanner;
+import cn.hserver.plugin.mybatis.flex.annotation.Mybatis;
+import com.mybatisflex.core.MybatisFlexBootstrap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Field;
 import java.util.*;
 
-/**
- *
- * 参考文献 https://blog.csdn.net/qq_42413011/article/details/118640420
- *
- * @author hxm
- */
-public class MybatisPlugin implements PluginAdapter {
+public class MybatisFlexPlugin implements PluginAdapter {
+    private static final Logger log = LoggerFactory.getLogger(MybatisFlexPlugin.class);
 
-    private static final Logger log = LoggerFactory.getLogger(MybatisPlugin.class);
+    private MybatisFlexBootstrap mybatisFlexBootstrap = null;
 
-    private Map<String, SqlSessionFactory> stringSqlSessionFactoryMap;
     @Override
     public void startApp() {
 
     }
+
     @Override
     public void startIocInit() {
 
@@ -47,7 +40,7 @@ public class MybatisPlugin implements PluginAdapter {
     @Override
     public void iocInitEnd() {
         //开始把自己的Sql装备进去
-        Set<Class> classes = new HashSet<>();
+        Set<Class<?>> classes = new HashSet<>();
         Map<String, Object> all = IocUtil.getAll();
         all.forEach((k, v) -> {
             if (v instanceof List) {
@@ -67,17 +60,7 @@ public class MybatisPlugin implements PluginAdapter {
                 }
             }
         });
-
-        try {
-            stringSqlSessionFactoryMap = MybatisInit.initMybatis(IocUtil.getBean(MybatisConfig.class), classes);
-            if (stringSqlSessionFactoryMap == null) {
-                return;
-            }
-            stringSqlSessionFactoryMap.forEach(IocUtil::addBean);
-        } catch (Exception e) {
-            log.error(e.getMessage(),e);
-            throw new RuntimeException(e);
-        }
+        mybatisFlexBootstrap = MybatisFlexConfig.init(classes);
     }
 
     @Override
@@ -87,7 +70,7 @@ public class MybatisPlugin implements PluginAdapter {
 
     @Override
     public void injectionEnd() {
-        if (stringSqlSessionFactoryMap == null) {
+        if (mybatisFlexBootstrap == null) {
             return;
         }
         //Bean对象
@@ -113,49 +96,7 @@ public class MybatisPlugin implements PluginAdapter {
         log.info("mybatis插件执行完成");
     }
 
-
-    /**
-     * Mybatis
-     *
-     * @param declaredField
-     * @param v
-     */
-    private void mybatisConfig(Field declaredField, Object v) {
-        //检查是否有注解@Autowired
-        Autowired annotation = declaredField.getAnnotation(Autowired.class);
-        if (annotation != null) {
-            declaredField.setAccessible(true);
-            //检查字段是类型是否被@Mybatis标注
-            Mybatis mybatis = declaredField.getType().getAnnotation(Mybatis.class);
-            try {
-                if (mybatis != null) {
-                    String value = mybatis.value();
-                    if (value.trim().length() == 0) {
-                        value = SqlSessionFactory.class.getName();
-                    }
-                    SqlSessionFactory sqlSessionFactory = stringSqlSessionFactoryMap.get(value);
-                    if (sqlSessionFactory == null) {
-                        log.error("数据源名字：{} 不存在", mybatis.value());
-                        return;
-                    }
-                    Object mapper = MybatisProxy.getInstance().getProxy(declaredField.getType(), sqlSessionFactory);
-                    //同类型注入
-                    if (declaredField.getType().isAssignableFrom(mapper.getClass())) {
-                        declaredField.set(v, mapper);
-                        log.info("{}----->{}：装配完成，{}", mapper.getClass().getSimpleName(), v.getClass().getSimpleName(), "Mybatis注入");
-                    } else {
-                        log.error("{}----->{}：装配错误:类型不匹配", v.getClass().getSimpleName(), v.getClass().getSimpleName());
-                    }
-                }
-            } catch (Exception e) {
-                log.error("装配错误");
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-
-    private void mybatisScan(Field declaredField, Set<Class> classes) {
+    private void mybatisScan(Field declaredField, Set<Class<?>> classes) {
         //检查是否有注解@Autowired
         Autowired annotation = declaredField.getAnnotation(Autowired.class);
         if (annotation != null) {
@@ -182,6 +123,38 @@ public class MybatisPlugin implements PluginAdapter {
             aClass = aClass.getSuperclass();
         }
         return fields;
+    }
+
+
+    /**
+     * Mybatis
+     *
+     * @param declaredField
+     * @param v
+     */
+    private void mybatisConfig(Field declaredField, Object v) {
+        //检查是否有注解@Autowired
+        Autowired annotation = declaredField.getAnnotation(Autowired.class);
+        if (annotation != null) {
+            declaredField.setAccessible(true);
+            //检查字段是类型是否被@Mybatis标注
+            Mybatis mybatis = declaredField.getType().getAnnotation(Mybatis.class);
+            try {
+                if (mybatis != null) {
+                    Object mapper = mybatisFlexBootstrap.getMapper(declaredField.getType());
+                    //同类型注入
+                    if (declaredField.getType().isAssignableFrom(mapper.getClass())) {
+                        declaredField.set(v, mapper);
+                        log.info("{}----->{}：装配完成，{}", mapper.getClass().getSimpleName(), v.getClass().getSimpleName(), "Mybatis注入");
+                    } else {
+                        log.error("{}----->{}：装配错误:类型不匹配", v.getClass().getSimpleName(), v.getClass().getSimpleName());
+                    }
+                }
+            } catch (Exception e) {
+                log.error("装配错误");
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 }
