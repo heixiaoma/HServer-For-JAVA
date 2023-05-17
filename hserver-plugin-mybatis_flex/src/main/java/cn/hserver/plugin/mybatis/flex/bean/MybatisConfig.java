@@ -13,6 +13,8 @@ import java.util.Map;
 public class MybatisConfig {
     private Map<String, DataSource> dataSources;
 
+    private String mapperLocations = "mapper";
+
     private Interceptor[] plugins;
 
     private Boolean mapUnderscoreToCamelCase = true;
@@ -47,5 +49,13 @@ public class MybatisConfig {
             dataSources = new HashMap<>();
         }
         dataSources.put(dataSourceName, dataSource);
+    }
+
+    public String getMapperLocations() {
+        return mapperLocations;
+    }
+
+    public void setMapperLocations(String mapperLocations) {
+        this.mapperLocations = mapperLocations;
     }
 }
