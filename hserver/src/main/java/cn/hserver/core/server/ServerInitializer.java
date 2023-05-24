@@ -2,7 +2,6 @@ package cn.hserver.core.server;
 
 import cn.hserver.core.interfaces.ProtocolDispatcherSuperAdapter;
 import cn.hserver.core.server.context.ConstConfig;
-import cn.hserver.core.server.handlers.CloseHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -60,13 +59,10 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
                 }
             }
 
-
             /**
-             * 最后没得协议无解对其关闭
+             * 协议无解对其关闭
              */
-            pipeline.addLast(new CloseHandler());
-            ctx.pipeline().remove(this);
-            ctx.fireChannelActive();
+            ctx.close();
         }
     }
 
