@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+
+/**
+ * 暴露出来的用户接口
+ */
 public interface DiscoveryHandler {
 
     //分组，服务名，list服务
@@ -38,10 +42,15 @@ public interface DiscoveryHandler {
         }
     }
 
+    /**
+     * 服务上线回调
+     * @param group
+     * @param data
+     */
     void online(String group, Map<String, List<ServerInstance>> data);
 
     /**
-     * 获取一个
+     * 获取一个有效的服务
      */
     default DynamicRoundRobin getDynamicRoundRobin(String group, String service) {
         final Map<String, DynamicRoundRobin> stringDynamicRoundRobinMap = S_DATA.get(group);
