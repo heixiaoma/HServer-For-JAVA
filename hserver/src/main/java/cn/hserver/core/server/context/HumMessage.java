@@ -2,7 +2,7 @@ package cn.hserver.core.server.context;
 
 public class HumMessage {
 
-    private String type="USER";
+    private String type = "USER";
 
     private Object data;
 
@@ -17,14 +17,13 @@ public class HumMessage {
     public HumMessage() {
     }
 
-    public HumMessage(String type,Object data) {
-        this.type=type;
+    public HumMessage(String type, Object data) {
+        this.type = type;
         this.data = data;
     }
 
-
-    public Object getData() {
-        return data;
+    public <T> T getData() {
+        return (T) data;
     }
 
     public void setData(Object data) {
