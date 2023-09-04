@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.hserver</groupId>
         <artifactId>hserver-parent</artifactId>
-        <version>3.3.M3</version>
+        <version>3.3.0</version>
     </parent>
 
     <artifactId>hserver-plugin-nacos</artifactId>

@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.hserver</groupId>
         <artifactId>hserver-parent</artifactId>
-        <version>3.3.M3</version>
+        <version>3.3.0</version>
     </parent>
 
     <artifactId>hserver-plugin-mybatis_flex</artifactId>
@@ -15,12 +15,12 @@
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-core</artifactId>
-            <version>1.2.4</version>
+            <version>1.6.4</version>
         </dependency>
         <dependency>
             <groupId>com.mybatis-flex</groupId>
             <artifactId>mybatis-flex-processor</artifactId>
-            <version>1.2.5</version>
+            <version>1.6.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
