@@ -37,13 +37,6 @@ public interface HttpRequest {
     String getNettyUri();
 
     /**
-     * 获取Netty的request
-     *
-     * @return
-     */
-    FullHttpRequest getNettyRequest();
-
-    /**
      * 请求方法类型
      *
      * @return

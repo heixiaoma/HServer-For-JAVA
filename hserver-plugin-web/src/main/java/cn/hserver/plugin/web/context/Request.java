@@ -32,7 +32,6 @@ public class Request implements HttpRequest {
     private Map<String, List<String>> requestParams = new ConcurrentHashMap<>();
     private Map<String, List<String>> urlParams = new ConcurrentHashMap<>();
     private HeadMap headers;
-    private FullHttpRequest nettyRequest;
     private final long createTime = System.currentTimeMillis();
     private HServerContentHandler handler;
 
@@ -95,10 +94,6 @@ public class Request implements HttpRequest {
         return nettyUri;
     }
 
-    @Override
-    public FullHttpRequest getNettyRequest() {
-        return this.nettyRequest;
-    }
 
     @Override
     public String getHeader(String headName) {
@@ -255,10 +250,6 @@ public class Request implements HttpRequest {
 
     public void setHeaders(HeadMap headers) {
         this.headers = headers;
-    }
-
-    public void setNettyRequest(FullHttpRequest nettyRequest) {
-        this.nettyRequest = nettyRequest;
     }
 
     public static ByteBuf getEmptyBuf() {

@@ -2,6 +2,7 @@ package cn.hserver.plugin.web.handlers;
 
 import cn.hserver.core.server.context.ConstConfig;
 import cn.hserver.plugin.web.context.*;
+import cn.hserver.plugin.web.interfaces.HttpRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -41,7 +42,6 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         request.setPort(HServerIpUtil.getClientPort(channelHandlerContext));
         request.setCtx(channelHandlerContext);
         request.setNettyUri(req.uri());
-        request.setNettyRequest(new DefaultFullHttpRequest(req.protocolVersion(), req.method(), req.uri(), Unpooled.copiedBuffer(req.content()), req.headers(), req.trailingHeaders()));
         handlerUrl(request, req);
         handlerBody(request, req);
         //获取URi，設置真實的URI
@@ -64,7 +64,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         webkit.httpResponse = hServerContext.getResponse();
         webkit.httpResponse.setHeader(WebConstConfig.REQUEST_ID, id);
         webkit.httpResponse.setHeader(WebConstConfig.SERVER_NAME, ConstConfig.VERSION);
-        webkit.httpResponse.setHeader("Server",WebConstConfig.SERVER_NAME);
+        webkit.httpResponse.setHeader("Server", WebConstConfig.SERVER_NAME);
         hServerContext.setWebkit(webkit);
         HServerContextHolder.setWebKit(webkit);
         channelHandlerContext.fireChannelRead(hServerContext);
@@ -92,11 +92,14 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
     }
 
     private void handlerBody(Request request, FullHttpRequest req) {
-        ByteBuf body = req.content().duplicate();
-        request.setBody(ByteBufUtil.byteBufToBytes(body));
         try {
             HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(FACTORY, req);
             List<InterfaceHttpData> bodyHttpDates = decoder.getBodyHttpDatas();
+            InterfaceHttpData interfaceHttpData = bodyHttpDates.stream().filter(k -> k.getHttpDataType() == InterfaceHttpData.HttpDataType.FileUpload).findFirst().orElse(null);
+            if (interfaceHttpData == null) {
+                ByteBuf body = req.content().duplicate();
+                request.setBody(ByteBufUtil.byteBufToBytes(body));
+            }
             bodyHttpDates.forEach(request::writeHttpData);
             decoder.destroy();
         } catch (Exception e) {
