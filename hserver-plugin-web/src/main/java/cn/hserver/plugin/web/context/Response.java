@@ -11,6 +11,7 @@ import cn.hserver.plugin.web.interfaces.ProgressStatus;
 import cn.hserver.core.server.util.ExceptionUtil;
 
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -93,7 +94,7 @@ public class Response implements HttpResponse {
             headers.set(HttpHeaderNames.ACCEPT_RANGES, HttpHeaderValues.BYTES);
             headers.set(HttpHeaderNames.CONTENT_LENGTH, fileLength);
             headers.set(HttpHeaderNames.CONTENT_TYPE, MimeType.getFileType(file.getName()));
-            headers.add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("inline; filename=\"%s\"", file.getName()));
+            headers.add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("inline; filename=\"%s\"", URLEncoder.encode(file.getName(),"UTF-8")));
             String range = request.getHeaders().get(HttpHeaderNames.RANGE);
             long offset = 0L, length = raf.length();
             if (range!=null&&range.trim().length()!=0) {// Range: bytes=1900544-  Range: bytes=1900544-6666666
