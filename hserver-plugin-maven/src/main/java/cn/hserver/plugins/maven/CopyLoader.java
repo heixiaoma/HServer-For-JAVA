@@ -7,6 +7,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.net.URI;
+import java.nio.file.Files;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.*;
@@ -37,7 +38,7 @@ public class CopyLoader {
         boolean jarUpdated = false;
 
         try {
-            JarOutputStream tempJarOutputStream = new JarOutputStream(new FileOutputStream(tmpJarFile));
+            JarOutputStream tempJarOutputStream = new JarOutputStream(Files.newOutputStream(tmpJarFile.toPath()));
             try {
                 // 写classloader
                 JarFile classLoaderJarfile = new JarFile(destJarFile);
