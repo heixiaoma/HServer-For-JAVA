@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.hserver</groupId>
         <artifactId>hserver-parent</artifactId>
-        <version>3.4.M2</version>
+        <version>3.4.M3</version>
     </parent>
 
     <artifactId>hserver-plugin-mybatis_flex</artifactId>
