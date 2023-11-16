@@ -7,6 +7,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.multipart.*;
+import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.netty.channel.ChannelHandlerContext;
@@ -93,11 +94,11 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
 
     private void handlerBody(Request request, FullHttpRequest req) {
         try {
+            ByteBuf body = req.content().duplicate();
             HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(FACTORY, req);
             List<InterfaceHttpData> bodyHttpDates = decoder.getBodyHttpDatas();
             InterfaceHttpData interfaceHttpData = bodyHttpDates.stream().filter(k -> k.getHttpDataType() == InterfaceHttpData.HttpDataType.FileUpload).findFirst().orElse(null);
             if (interfaceHttpData == null) {
-                ByteBuf body = req.content().duplicate();
                 request.setBody(ByteBufUtil.byteBufToBytes(body));
             }
             bodyHttpDates.forEach(request::writeHttpData);
