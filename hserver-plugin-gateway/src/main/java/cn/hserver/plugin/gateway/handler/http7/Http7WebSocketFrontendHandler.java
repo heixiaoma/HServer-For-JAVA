@@ -26,7 +26,7 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
 
     private Channel outboundChannel;
 
-    private static BusinessHttp7 businessHttp7;
+    private  BusinessHttp7 businessHttp7;
 
     private WebSocketServerHandshaker handshake;
 
@@ -47,7 +47,6 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
 
     static void closeOnFlush(Channel ch) {
         if (ch.isActive()) {
-            businessHttp7.close(ch);
             ch.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
         }
     }

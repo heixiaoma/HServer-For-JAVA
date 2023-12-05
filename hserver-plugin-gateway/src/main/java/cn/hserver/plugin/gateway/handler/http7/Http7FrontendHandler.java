@@ -30,7 +30,11 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
 
     private Channel outboundChannel;
 
-    private static BusinessHttp7 businessHttp7;
+    private BusinessHttp7 businessHttp7;
+
+    public BusinessHttp7 getBusinessHttp7() {
+        return businessHttp7;
+    }
 
     @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
@@ -53,12 +57,40 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private void read(final ChannelHandlerContext ctx, Object msg) {
-        if (msg instanceof FullHttpRequest) {
-            outboundChannel.writeAndFlush(msg);
-        } else {
-            closeOnFlush(ctx.channel());
-            ReleaseUtil.release(msg);
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        final Channel inboundChannel = ctx.channel();
+        Bootstrap b = new Bootstrap();
+        b.group(GateWayConfig.EVENT_EXECUTORS);
+        InetSocketAddress proxyHost = (InetSocketAddress) businessHttp7.getProxyHost(ctx, null, ctx.channel().localAddress());
+        b.channel(NioSocketChannel.class).handler(new ChannelInitializer<Channel>() {
+            @Override
+            protected void initChannel(Channel ch) {
+                if (proxyHost.getPort() == 443) {
+                    SSLEngine sslEngine = HttpsMapperSslContextFactory.getClientContext().createSSLEngine();
+                    sslEngine.setUseClientMode(true);
+                    ch.pipeline().addFirst(new SslHandler(sslEngine));
+                }
+                ch.pipeline().addLast(new HttpClientCodec(), new Http7ObjectAggregator(Integer.MAX_VALUE, businessHttp7.ignoreUrls()));
+                ch.pipeline().addLast(new Http7BackendHandler(inboundChannel, businessHttp7));
+            }
+        });
+
+        final AtomicInteger count = new AtomicInteger(0);
+        //重连等待
+        while (true) {
+            try {
+                if (outboundChannel != null && outboundChannel.isActive()) {
+                    return;
+                }
+                outboundChannel = b.connect(proxyHost).sync().channel();
+            } catch (Exception e) {
+                if (!businessHttp7.connectController(ctx, false, count.incrementAndGet(), e)) {
+                    closeOnFlush(ctx.channel());
+                    return;
+                }
+            }
         }
     }
 
@@ -71,45 +103,17 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
                 ReleaseUtil.release(msg);
                 return;
             }
-            if (outboundChannel == null||!outboundChannel.isActive()) {
-                final Channel inboundChannel = ctx.channel();
-                Bootstrap b = new Bootstrap();
-                b.group(GateWayConfig.EVENT_EXECUTORS);
-                InetSocketAddress proxyHost = (InetSocketAddress) businessHttp7.getProxyHost(ctx, in, ctx.channel().localAddress());
-                b.channel(NioSocketChannel.class).handler(new ChannelInitializer<Channel>() {
-                    @Override
-                    protected void initChannel(Channel ch) {
-                        if (proxyHost.getPort() == 443) {
-                            SSLEngine sslEngine = HttpsMapperSslContextFactory.getClientContext().createSSLEngine();
-                            sslEngine.setUseClientMode(true);
-                            ch.pipeline().addFirst(new SslHandler(sslEngine));
-                        }
-                        ch.pipeline().addLast(new HttpClientCodec(), new HttpObjectAggregator(Integer.MAX_VALUE));
-                        ch.pipeline().addLast(new Http7BackendHandler(inboundChannel, businessHttp7));
-                    }
-                });
-                final AtomicInteger count = new AtomicInteger(0);
-                //数据代理服务选择器
-                ChannelFuture f = b.connect(proxyHost).addListener(new ChannelFutureListener() {
-                    @Override
-                    public void operationComplete(ChannelFuture future) throws Exception {
-                        if (future.isSuccess()) {
-                            future.channel().writeAndFlush(in);
-                        } else {
-                            future.channel().close();
-                            if (businessHttp7.connectController(ctx,false,count.incrementAndGet(),future.cause())){
-                                b.connect(proxyHost).addListener(this);
-                            }else {
-                                ReleaseUtil.release(in);
-                                closeOnFlush(ctx.channel());
-                            }
-                        }
-                    }
-                });
-                outboundChannel = f.channel();
-            } else {
-                read(ctx, in);
+            if (outboundChannel == null || !outboundChannel.isActive()) {
+                ReleaseUtil.release(msg);
+                closeOnFlush(ctx.channel());
+                return;
             }
+            outboundChannel.writeAndFlush(in).addListener((ChannelFutureListener) future -> {
+                if (!future.isSuccess()) {
+                    ReleaseUtil.release(in);
+                    future.channel().close();
+                }
+            });
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
             ReleaseUtil.release(msg);

@@ -8,7 +8,17 @@ import io.netty.channel.ChannelHandlerContext;
 import java.net.SocketAddress;
 
 @Bean
-public class BusinessHttp7 implements Business<Object, Object>{
+public class BusinessHttp7 implements Business<Object, Object> {
+
+
+    /**
+     * 忽略的url进行消息聚合
+     * @return
+     */
+    public String ignoreUrls() {
+        return null;
+    }
+
 
     @Override
     public Object in(ChannelHandlerContext ctx, Object obj) {
@@ -16,7 +26,7 @@ public class BusinessHttp7 implements Business<Object, Object>{
     }
 
     @Override
-    public SocketAddress getProxyHost(ChannelHandlerContext ctx,Object fullHttpRequest, SocketAddress sourceSocketAddress) {
+    public SocketAddress getProxyHost(ChannelHandlerContext ctx, Object fullHttpRequest, SocketAddress sourceSocketAddress) {
         throw new RuntimeException("请配置需要代理的服务器");
     }
 
@@ -31,7 +41,7 @@ public class BusinessHttp7 implements Business<Object, Object>{
     }
 
     @Override
-    public boolean connectController(ChannelHandlerContext ctx,boolean connectResult,int connectNum, Throwable error) {
+    public boolean connectController(ChannelHandlerContext ctx, boolean connectResult, int connectNum, Throwable error) {
         return false;
     }
 

@@ -28,7 +28,7 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
 
     private Channel outboundChannel;
     private final String host;
-    private static BusinessHttp4 businessHttp4;
+    private  BusinessHttp4 businessHttp4;
 
     public Http4FrontendHandler(String host) {
         this.host = host;
