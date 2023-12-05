@@ -111,6 +111,7 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         if (outboundChannel != null) {
+            businessHttp4.close(ctx.channel());
             closeOnFlush(outboundChannel);
         }
     }

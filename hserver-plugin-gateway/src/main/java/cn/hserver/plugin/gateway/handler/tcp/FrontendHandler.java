@@ -32,7 +32,6 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
 
     static void closeOnFlush(Channel ch) {
         if (ch.isActive()) {
-            businessTcp.close(ch);
             ch.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
         }
     }
@@ -105,6 +104,7 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         if (outboundChannel != null) {
+            businessTcp.close(ctx.channel());
             closeOnFlush(outboundChannel);
         }
     }

@@ -177,7 +177,10 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         if (outboundChannel != null) {
+            businessHttp7.close(ctx.channel());
             closeOnFlush(outboundChannel);
+        }else {
+            ctx.fireChannelInactive();
         }
     }
 

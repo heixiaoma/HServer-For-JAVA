@@ -49,7 +49,6 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
 
     static void closeOnFlush(Channel ch) {
         if (ch.isActive()) {
-            businessHttp7.close(ch);
             ch.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
         }
     }
@@ -122,6 +121,9 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) {
         if (outboundChannel != null) {
             closeOnFlush(outboundChannel);
+            businessHttp7.close(ctx.channel());
+        }else {
+            ctx.fireChannelInactive();
         }
     }
 
