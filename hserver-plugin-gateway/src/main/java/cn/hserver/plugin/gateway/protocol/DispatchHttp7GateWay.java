@@ -7,8 +7,8 @@ import cn.hserver.core.ioc.annotation.Order;
 import cn.hserver.plugin.gateway.config.GateWayConfig;
 import cn.hserver.plugin.gateway.enums.GatewayMode;
 import cn.hserver.plugin.gateway.handler.http7.Http7FrontendHandler;
-import cn.hserver.plugin.gateway.handler.http7.Http7ObjectAggregator;
 import cn.hserver.plugin.gateway.handler.http7.Http7WebSocketFrontendHandler;
+import cn.hserver.plugin.gateway.handler.http7.aggregator.Http7UpObjectAggregator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
@@ -29,7 +29,7 @@ public class DispatchHttp7GateWay implements ProtocolDispatcherSuperAdapter {
         InetSocketAddress socketAddress = (InetSocketAddress) channel.localAddress();
         if (GateWayConfig.GATEWAY_MODE == GatewayMode.HTTP_7 && GateWayConfig.PORT.contains(socketAddress.getPort())) {
             Http7FrontendHandler http7FrontendHandler = new Http7FrontendHandler();
-            pipeline.addLast(new HttpServerCodec(), new Http7ObjectAggregator(Integer.MAX_VALUE,http7FrontendHandler.getBusinessHttp7().ignoreUrls()));
+            pipeline.addLast(new HttpServerCodec(), new Http7UpObjectAggregator(Integer.MAX_VALUE,channel,http7FrontendHandler.getBusinessHttp7().upIgnoreUrls()));
             pipeline.addLast(new Http7WebSocketFrontendHandler());
             pipeline.addLast(http7FrontendHandler);
             return true;

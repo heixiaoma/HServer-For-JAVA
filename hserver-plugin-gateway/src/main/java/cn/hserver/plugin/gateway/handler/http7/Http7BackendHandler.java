@@ -39,9 +39,14 @@ public class Http7BackendHandler extends ChannelInboundHandlerAdapter {
                 ReleaseUtil.release(msg);
                 return;
             }
+            if (!inboundChannel.isActive()){
+                System.out.println("通道无效");
+                ReleaseUtil.release(msg);
+                return;
+            }
             inboundChannel.writeAndFlush(out).addListener((ChannelFutureListener) future -> {
                 if (!future.isSuccess()) {
-                    ReleaseUtil.release(out);
+                    log.error(future.cause().getMessage(), future.cause());
                     future.channel().close();
                 }
             });

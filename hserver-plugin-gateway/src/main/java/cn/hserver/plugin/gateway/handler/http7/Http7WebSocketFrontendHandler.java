@@ -33,7 +33,9 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
     @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
         log.debug("限制操作，让两个通道实现同步读写 开关状态:{}",ctx.channel().isWritable());
-        outboundChannel.config().setAutoRead(ctx.channel().isWritable());
+        if (outboundChannel!=null) {
+            outboundChannel.config().setAutoRead(ctx.channel().isWritable());
+        }
         super.channelWritabilityChanged(ctx);
     }
 
@@ -67,13 +69,19 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof HttpRequest) {
-            handleHttpRequest(ctx, (HttpRequest) msg);
-        } else if (msg instanceof WebSocketFrame) {
-            handleWebSocketFrame(ctx, (WebSocketFrame) msg);
-        } else {
-            ctx.fireChannelRead(msg);
-        }
+
+        ReferenceCountUtil.retain(msg);
+        ctx.fireChannelRead(msg);
+
+//        if (msg instanceof HttpRequest) {
+//            handleHttpRequest(ctx, (HttpRequest) msg);
+//        } else if (msg instanceof WebSocketFrame) {
+//            handleWebSocketFrame(ctx, (WebSocketFrame) msg);
+//        } else {
+//            ReferenceCountUtil.retain(msg);
+//            ctx.fireChannelRead(msg);
+//        }
+
     }
 
     private void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame msg) {
@@ -169,6 +177,7 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                 writeWebSocket(ctx, req);
             }
         } else {
+            ReferenceCountUtil.retain(req);
             ctx.fireChannelRead(req);
         }
     }
@@ -185,6 +194,7 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        businessHttp7.exceptionCaught(ctx,cause);
         closeOnFlush(ctx.channel());
     }
 

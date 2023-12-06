@@ -6,6 +6,7 @@ import cn.hserver.plugin.gateway.business.Business;
 import cn.hserver.plugin.gateway.business.BusinessHttp7;
 import cn.hserver.plugin.gateway.business.BusinessTcp;
 import cn.hserver.plugin.gateway.config.GateWayConfig;
+import cn.hserver.plugin.gateway.handler.http7.aggregator.Http7DownObjectAggregator;
 import cn.hserver.plugin.gateway.ssl.HttpsMapperSslContextFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -39,7 +40,9 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
         log.debug("限制操作，让两个通道实现同步读写 开关状态:{}",ctx.channel().isWritable());
-        outboundChannel.config().setAutoRead(ctx.channel().isWritable());
+        if (outboundChannel!=null) {
+            outboundChannel.config().setAutoRead(ctx.channel().isWritable());
+        }
         super.channelWritabilityChanged(ctx);
     }
 
@@ -72,7 +75,7 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
                     sslEngine.setUseClientMode(true);
                     ch.pipeline().addFirst(new SslHandler(sslEngine));
                 }
-                ch.pipeline().addLast(new HttpClientCodec(), new Http7ObjectAggregator(Integer.MAX_VALUE, businessHttp7.ignoreUrls()));
+                ch.pipeline().addLast(new HttpClientCodec(), new Http7DownObjectAggregator(Integer.MAX_VALUE, inboundChannel,false,businessHttp7.downIgnoreUrls()));
                 ch.pipeline().addLast(new Http7BackendHandler(inboundChannel, businessHttp7));
             }
         });

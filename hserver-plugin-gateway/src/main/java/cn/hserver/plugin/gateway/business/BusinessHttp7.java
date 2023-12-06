@@ -15,7 +15,11 @@ public class BusinessHttp7 implements Business<Object, Object> {
      * 忽略的url进行消息聚合
      * @return
      */
-    public String ignoreUrls() {
+    public String upIgnoreUrls() {
+        return null;
+    }
+
+    public String downIgnoreUrls() {
         return null;
     }
 
