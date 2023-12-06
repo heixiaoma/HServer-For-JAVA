@@ -69,18 +69,14 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-
-        ReferenceCountUtil.retain(msg);
-        ctx.fireChannelRead(msg);
-
-//        if (msg instanceof HttpRequest) {
-//            handleHttpRequest(ctx, (HttpRequest) msg);
-//        } else if (msg instanceof WebSocketFrame) {
-//            handleWebSocketFrame(ctx, (WebSocketFrame) msg);
-//        } else {
-//            ReferenceCountUtil.retain(msg);
-//            ctx.fireChannelRead(msg);
-//        }
+        if (msg instanceof HttpRequest) {
+            handleHttpRequest(ctx, (HttpRequest) msg);
+        } else if (msg instanceof WebSocketFrame) {
+            handleWebSocketFrame(ctx, (WebSocketFrame) msg);
+        } else {
+            ReferenceCountUtil.retain(msg);
+            ctx.fireChannelRead(msg);
+        }
 
     }
 
