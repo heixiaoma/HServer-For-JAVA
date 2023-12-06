@@ -17,7 +17,7 @@ public class Http7DownObjectAggregator extends HttpObjectAggregator {
     private final String igUrlRules;
     private final Channel channel;
 
-    public Http7DownObjectAggregator(int maxContentLength, Channel channel, Boolean isReq, String igUrlRules) {
+    public Http7DownObjectAggregator(int maxContentLength, Channel channel, String igUrlRules) {
         super(maxContentLength);
         this.igUrlRules = igUrlRules;
         this.channel = channel;

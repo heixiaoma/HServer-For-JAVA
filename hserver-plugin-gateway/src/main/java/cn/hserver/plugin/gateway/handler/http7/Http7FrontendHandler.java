@@ -75,7 +75,7 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
                     sslEngine.setUseClientMode(true);
                     ch.pipeline().addFirst(new SslHandler(sslEngine));
                 }
-                ch.pipeline().addLast(new HttpClientCodec(), new Http7DownObjectAggregator(Integer.MAX_VALUE, inboundChannel,false,businessHttp7.downIgnoreUrls()));
+                ch.pipeline().addLast(new HttpClientCodec(), new Http7DownObjectAggregator(Integer.MAX_VALUE, inboundChannel,businessHttp7.downIgnoreUrls()));
                 ch.pipeline().addLast(new Http7BackendHandler(inboundChannel, businessHttp7));
             }
         });
