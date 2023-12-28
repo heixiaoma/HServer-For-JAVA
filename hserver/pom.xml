@@ -30,7 +30,7 @@
         <objenesis.version>3.2</objenesis.version>
         <junit.version>4.13.2</junit.version>
         <disruptor.version>3.4.4</disruptor.version>
-        <guava.version>31.1-jre</guava.version>
+        <guava.version>32.0.0-jre</guava.version>
     </properties>
 
     <dependencies>
