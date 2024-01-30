@@ -5,7 +5,7 @@
     <parent>
         <artifactId>hserver-parent</artifactId>
         <groupId>cn.hserver</groupId>
-        <version>3.4.M3</version>
+        <version>3.4.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -24,13 +24,13 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus</artifactId>
-            <version>3.5.3.2</version>
+            <version>3.5.5</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>5.3.27</version>
+            <version>5.3.31</version>
         </dependency>
 
         <dependency>
