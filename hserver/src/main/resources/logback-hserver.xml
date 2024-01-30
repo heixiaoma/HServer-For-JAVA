@@ -43,7 +43,7 @@
                 ${logging.file.path:-${LOGGINE_FILE_HOME_SAVE}}/${logging.file.name:-hserver}-%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
             <maxFileSize>${logging.file.max.size:-100MB}</maxFileSize>
-            <maxHistory>${logging.file.max.history:-60}</maxHistory>
+            <maxHistory>${logging.file.max.history:-180}</maxHistory>
             <totalSizeCap>${logging.file.total.size,cap:-20GB}</totalSizeCap>
         </rollingPolicy>
 
@@ -73,7 +73,7 @@
                 ${logging.file.path:-${LOGGINE_FILE_HOME_SAVE}}/${logging.file.name:-hserver}-error-%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
             <maxFileSize>${logging.file.max.size:-100MB}</maxFileSize>
-            <maxHistory>${logging.file.max.history:-60}</maxHistory>
+            <maxHistory>${logging.file.max.history:-180}</maxHistory>
             <totalSizeCap>${logging.file.total.size,cap:-20GB}</totalSizeCap>
         </rollingPolicy>
 
