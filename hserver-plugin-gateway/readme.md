@@ -1,9 +1,11 @@
 # hserver-plugin-gateway
-该插件提供tcp和http两种级别的数据拦截转发功能，让网关支持其他协议或者http协议
+数据流级别代理该插件提供tcp和http两种级别的数据拦截转发功能，让网关支持其他协议或者http协议
 
 # BusinessTcp BusinessHttp7 BusinessHttp4
 我们提供了这三个类，来进行代理的数据传输
 tcp就是最原始的数据包 http7模式是对数据包进行编码解码操作用户更容易修改 http4是解析出sni host+原始数据包
+
+
 
 我们通过继承类重写对应的方法即可
 
@@ -152,5 +154,15 @@ public class Http7 extends BusinessHttp7 {
 
 }
 
+
+```
+
+- 针对http7有一个消息编码忽略，如果url匹配者忽略消息的编码合并，通常在处理下载任务时，需要忽略，不然数据会全合并在内存，导致内存占用忒高，影响性能。
+
+```java
+
+    public String upIgnoreUrls() {
+        return null;
+    }
 
 ```
