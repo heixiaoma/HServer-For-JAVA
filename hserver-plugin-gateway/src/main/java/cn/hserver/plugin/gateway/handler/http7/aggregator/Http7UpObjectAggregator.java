@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class Http7UpObjectAggregator extends HttpObjectAggregator {
 
-    private final static  AttributeKey<String> URI = AttributeKey.valueOf("URI");
+    private final static AttributeKey<String> URI = AttributeKey.valueOf("URI");
     private final String igUrlRules;
     private final Channel channel;
 
@@ -26,11 +26,10 @@ public class Http7UpObjectAggregator extends HttpObjectAggregator {
 
     @Override
     protected boolean isStartMessage(HttpObject msg) throws Exception {
-        if (msg instanceof HttpRequest) {
+        if (msg instanceof HttpRequest && igUrlRules != null) {
             HttpRequest request = (HttpRequest) msg;
             String uri = request.uri();
             channel.attr(URI).set(uri);
-            // 根据具体的URL规则来判断是否不聚合消息
             if (uri.matches(igUrlRules)) {
                 return false;
             }
