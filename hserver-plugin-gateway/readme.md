@@ -161,8 +161,20 @@ public class Http7 extends BusinessHttp7 {
 
 ```java
 
-    public String upIgnoreUrls() {
-        return null;
-    }
+/**
+ * 忽略请求，但是不忽略响应，通常是上传文件
+ */
+@Override
+public String upIgnoreUrls() {
+        return "/upload*";
+}
+
+/**
+ * 忽略响应，但是不忽略请求，通常是上下载文件
+ */
+@Override
+public String downIgnoreUrls() {
+        return "/down*";
+}
 
 ```
