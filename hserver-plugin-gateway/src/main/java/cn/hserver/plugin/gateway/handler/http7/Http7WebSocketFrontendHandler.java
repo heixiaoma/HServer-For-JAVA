@@ -4,6 +4,7 @@ import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.plugin.gateway.business.Business;
 import cn.hserver.plugin.gateway.business.BusinessHttp7;
 import cn.hserver.plugin.gateway.config.GateWayConfig;
+import cn.hserver.plugin.gateway.handler.ReadWriteLimitHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
@@ -26,18 +27,10 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
 
     private Channel outboundChannel;
 
-    private  BusinessHttp7 businessHttp7;
+    private BusinessHttp7 businessHttp7;
 
     private WebSocketServerHandshaker handshake;
 
-    @Override
-    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
-        log.debug("限制操作，让两个通道实现同步读写 开关状态:{}",ctx.channel().isWritable());
-        if (outboundChannel!=null) {
-            outboundChannel.config().setAutoRead(ctx.channel().isWritable());
-        }
-        super.channelWritabilityChanged(ctx);
-    }
 
     public Http7WebSocketFrontendHandler() {
         for (Business business : IocUtil.getListBean(Business.class)) {
@@ -97,7 +90,7 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
     private void writeWebSocket(ChannelHandlerContext ctx, HttpRequest request) throws URISyntaxException {
         try {
 
-            if (outboundChannel == null||!outboundChannel.isActive()) {
+            if (outboundChannel == null || !outboundChannel.isActive()) {
                 Bootstrap b = new Bootstrap();
                 b.group(GateWayConfig.EVENT_EXECUTORS);
 
@@ -116,6 +109,7 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                 b.channel(NioSocketChannel.class).handler(new ChannelInitializer<Channel>() {
                     @Override
                     protected void initChannel(Channel ch) {
+                        ch.pipeline().addFirst(new ReadWriteLimitHandler(ctx.channel(), ch));
                         ch.pipeline().addLast(new HttpClientCodec(), new HttpObjectAggregator(Integer.MAX_VALUE), WebSocketClientCompressionHandler.INSTANCE, handler);
                     }
                 });
@@ -139,7 +133,7 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                             future.channel().close();
                             if (businessHttp7.connectController(ctx, false, count.incrementAndGet(), future.cause())) {
                                 b.connect(proxyHost).addListener(this);
-                            }else {
+                            } else {
                                 ReferenceCountUtil.release(request);
                                 closeOnFlush(ctx.channel());
                             }
@@ -183,14 +177,14 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
         if (outboundChannel != null) {
             businessHttp7.close(ctx.channel());
             closeOnFlush(outboundChannel);
-        }else {
+        } else {
             ctx.fireChannelInactive();
         }
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        businessHttp7.exceptionCaught(ctx,cause);
+        businessHttp7.exceptionCaught(ctx, cause);
         closeOnFlush(ctx.channel());
     }
 

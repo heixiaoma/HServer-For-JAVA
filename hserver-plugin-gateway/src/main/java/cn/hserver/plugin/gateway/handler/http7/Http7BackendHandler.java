@@ -18,14 +18,6 @@ public class Http7BackendHandler extends ChannelInboundHandlerAdapter {
 
     private final BusinessHttp7 businessHttp7;
 
-
-    @Override
-    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
-        log.debug("限制操作，让两个通道实现同步读写 开关状态:{}", ctx.channel().isWritable());
-        inboundChannel.config().setAutoRead(ctx.channel().isWritable());
-        super.channelWritabilityChanged(ctx);
-    }
-
     public Http7BackendHandler(Channel inboundChannel, BusinessHttp7 businessHttp7) {
         this.inboundChannel = inboundChannel;
         this.businessHttp7 = businessHttp7;

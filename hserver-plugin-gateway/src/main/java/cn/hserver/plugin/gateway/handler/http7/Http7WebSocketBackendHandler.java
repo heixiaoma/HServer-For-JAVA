@@ -20,13 +20,6 @@ public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter{
 
     private final BusinessHttp7 businessHttp7;
 
-    @Override
-    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
-        log.debug("限制操作，让两个通道实现同步读写 开关状态:{}",ctx.channel().isWritable());
-        inboundChannel.config().setAutoRead(ctx.channel().isWritable());
-        super.channelWritabilityChanged(ctx);
-    }
-
     public Http7WebSocketBackendHandler(WebSocketClientHandshaker handshaker, Channel inboundChannel, BusinessHttp7 businessHttp7) {
         this.handshakes = handshaker;
         this.inboundChannel = inboundChannel;

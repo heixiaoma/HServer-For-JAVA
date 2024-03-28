@@ -5,6 +5,8 @@ import cn.hserver.core.server.util.ReleaseUtil;
 import cn.hserver.plugin.gateway.business.Business;
 import cn.hserver.plugin.gateway.business.BusinessTcp;
 import cn.hserver.plugin.gateway.config.GateWayConfig;
+import cn.hserver.plugin.gateway.handler.ReadWriteLimitHandler;
+import cn.hserver.plugin.gateway.handler.http4.Http4BackendHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
@@ -36,13 +38,6 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    @Override
-    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
-        log.debug("限制操作，让两个通道实现同步读写 开关状态:{}", ctx.channel().isWritable());
-        outboundChannel.config().setAutoRead(ctx.channel().isWritable());
-        super.channelWritabilityChanged(ctx);
-    }
-
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws InterruptedException {
@@ -50,9 +45,14 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
             final Channel inboundChannel = ctx.channel();
             Bootstrap b = new Bootstrap();
             b.group(GateWayConfig.EVENT_EXECUTORS);
-            b
-                    .channel(NioSocketChannel.class)
-                    .handler(new BackendHandler(inboundChannel, businessTcp));
+            b.channel(NioSocketChannel.class)
+                    .handler(new ChannelInitializer<Channel>() {
+                        @Override
+                        protected void initChannel(Channel ch) throws Exception {
+                            ch.pipeline().addLast(new ReadWriteLimitHandler(inboundChannel, ch));
+                            ch.pipeline().addLast(new BackendHandler(inboundChannel, businessTcp));
+                        }
+                    });
             SocketAddress proxyHost = businessTcp.getProxyHost(ctx, null, ctx.channel().remoteAddress());
             final AtomicInteger count = new AtomicInteger(0);
             //重连等待

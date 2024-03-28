@@ -9,12 +9,14 @@ import cn.hserver.plugin.gateway.business.Business;
 import cn.hserver.plugin.gateway.business.BusinessHttp4;
 import cn.hserver.plugin.gateway.business.BusinessHttp7;
 import cn.hserver.plugin.gateway.config.GateWayConfig;
+import cn.hserver.plugin.gateway.handler.ReadWriteLimitHandler;
 import cn.hserver.plugin.gateway.handler.tcp.BackendHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,13 +47,6 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    @Override
-    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
-        if (outboundChannel != null) {
-            outboundChannel.config().setAutoRead(ctx.channel().isWritable());
-        }
-        super.channelWritabilityChanged(ctx);
-    }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -62,6 +57,7 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
                 .handler(new ChannelInitializer<Channel>() {
                     @Override
                     protected void initChannel(Channel ch) throws Exception {
+                        ch.pipeline().addLast(new ReadWriteLimitHandler(inboundChannel,ch));
                         ch.pipeline().addLast(new Http4BackendHandler(inboundChannel, businessHttp4));
                     }
                 });
