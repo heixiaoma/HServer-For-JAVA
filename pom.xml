@@ -30,6 +30,8 @@
         <module>hserver-plugin-cloud</module>
         <module>hserver-plugin-mybatis_flex</module>
         <module>hserver-net</module>
+        <module>hserver-plugin-build</module>
+        <module>hserver-plugin-runner</module>
     </modules>
 
     <properties>
@@ -116,6 +118,19 @@
                 <plugin>
                     <groupId>cn.hserver</groupId>
                     <artifactId>hserver-plugin-maven</artifactId>
+                    <version>3.5.M1</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>cn.hserver</groupId>
+                    <artifactId>hserver-plugin-build</artifactId>
                     <version>3.5.M1</version>
                     <executions>
                         <execution>
