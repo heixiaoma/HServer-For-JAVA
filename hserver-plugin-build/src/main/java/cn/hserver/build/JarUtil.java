@@ -1,18 +1,20 @@
 package cn.hserver.build;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.*;
+import cn.hserver.core.ioc.annotation.HServerBoot;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+
+import java.io.*;
+import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 
 public class JarUtil {
-
-
 
 
     public static void addFileToJar(String entryName, File file, JarOutputStream jarOutputStream) throws IOException {
@@ -27,43 +29,74 @@ public class JarUtil {
         while ((bytesRead = fileInputStream.read(buffer)) != -1) {
             jarOutputStream.write(buffer, 0, bytesRead);
         }
-
         // 关闭文件输入流
         fileInputStream.close();
-
         // 完成当前JarEntry
         jarOutputStream.closeEntry();
     }
 
 
-    public static void copyJarEntries(String sourceJarPath, String targetJarPath) throws IOException {
-        try (JarFile sourceJar = new JarFile(sourceJarPath);
-             JarOutputStream targetJarOutputStream = new JarOutputStream(new FileOutputStream(targetJarPath), sourceJar.getManifest())) {
+    public static void copyJarEntries(String sourceJarPath, JarOutputStream targetJar) throws IOException {
+        try (JarFile sourceJar = new JarFile(sourceJarPath)) {
             Enumeration<JarEntry> entries = sourceJar.entries();
-            while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
-                if (entry.getName().startsWith("META-INF/") || entry.isDirectory()){
+            while (entries.hasMoreElements()){
+                JarEntry jarEntry = entries.nextElement();
+                if (jarEntry.getName().contains("META-INF")){
                     continue;
                 }
-                // 创建新的JarEntry
-                JarEntry newEntry = new JarEntry(entry.getName());
-                targetJarOutputStream.putNextEntry(newEntry);
-
-                // 如果是文件，则使用NIO进行复制
-                if (!entry.isDirectory()) {
-                    try (FileSystem sourceFs = FileSystems.newFileSystem(Paths.get(sourceJarPath), null);
-                         FileSystem targetFs = FileSystems.newFileSystem(Paths.get(targetJarPath), null)) {
-
-                        Path sourcePath = sourceFs.getPath("/" + entry.getName());
-                        Path targetPath = targetFs.getPath("/" + entry.getName());
-
-                        Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-                    }
+                JarEntry newEntry = new JarEntry(jarEntry.getName());
+                targetJar.putNextEntry(newEntry);
+                // 将源 jar 文件中的内容写入目标 jar 文件
+                InputStream entryInputStream = sourceJar.getInputStream(jarEntry);
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = entryInputStream.read(buffer)) != -1) {
+                    targetJar.write(buffer, 0, bytesRead);
                 }
-
-                // 完成当前JarEntry
-                targetJarOutputStream.closeEntry();
+                // 关闭当前条目
+                targetJar.closeEntry();
+                entryInputStream.close();
             }
         }
+    }
+
+
+
+    public static String getMainClassName(String jarPath) throws IOException {
+        File f = new File(jarPath);
+        URL url1 = f.toURI().toURL();
+        URLClassLoader myClassLoader = new URLClassLoader(new URL[]{url1}, Thread.currentThread().getContextClassLoader());
+        JarFile jar = new JarFile(jarPath);
+        Enumeration<JarEntry> enumFiles = jar.entries();
+        ClassPool classPool= ClassPool.getDefault();
+        while (enumFiles.hasMoreElements()) {
+            JarEntry entry = enumFiles.nextElement();
+            String classFullName = entry.getName();
+
+            if (classFullName.endsWith(".class")) {
+                try {
+                    InputStream inputStream = jar.getInputStream(entry);
+                    CtClass ctClass = classPool.makeClass(inputStream);
+                    inputStream.close();
+                    CtMethod[] methods = ctClass.getDeclaredMethods();
+                    for (CtMethod method : methods) {
+                        if (method.getName().equals("main") && method.getParameterTypes().length == 1) {
+                            if (method.getParameterTypes()[0].getName().equals("java.lang.String[]") && Modifier.isStatic(method.getModifiers())) {
+                                if (method.getReturnType().getName().equals("void")) {
+                                    if (ctClass.hasAnnotation(HServerBoot.class)){
+                                        return ctClass.getName();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (Throwable ignored) {
+                    ignored.printStackTrace();
+                }
+            }
+        }
+        jar.close();
+        myClassLoader.close();
+        throw new IllegalStateException("找不到启动类,请使用@HServerBoot标记你的启动类");
     }
 }

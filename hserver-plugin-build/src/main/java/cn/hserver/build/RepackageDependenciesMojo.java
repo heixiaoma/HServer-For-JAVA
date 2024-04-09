@@ -22,8 +22,12 @@ public class RepackageDependenciesMojo extends AbstractMojo {
             ReBuilderJar reBuilderJar = new ReBuilderJar("test.jar");
             //构建jar包和依赖
             reBuilderJar.buildNewJar(project);
-            //copy源码中的依赖
+            //copy源码
             reBuilderJar.copySource(project);
+            //设置运行参数
+            reBuilderJar.addManifest(project);
+            reBuilderJar.addRunner();
+            reBuilderJar.close();
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(),e);

@@ -29,6 +29,17 @@
     <packaging>maven-plugin</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>cn.hserver</groupId>
+            <artifactId>hserver-plugin-runner</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.29.2-GA</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.maven/maven-archiver -->
         <dependency>
             <groupId>org.apache.maven</groupId>
