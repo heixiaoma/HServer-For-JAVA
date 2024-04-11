@@ -5,6 +5,7 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -32,15 +33,12 @@ public class StartRunner {
     // 获取lib文件夹下所有JAR文件的URL
     private static List<URL> getLibJarURLs(URL jarFileUrl) throws IOException {
         List<URL> libURLs = new ArrayList<>();
-        JarURLConnection jarConnection = (JarURLConnection) jarFileUrl.openConnection();
-        try (JarFile jarFile = jarConnection.getJarFile()) {
-            Enumeration<JarEntry> entries = jarFile.entries();
-            while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
-                if (entry.getName().startsWith("lib/") && entry.getName().endsWith(".jar")) {
-                    URL url = new URL("jar:" + jarFileUrl + "!/" + entry.getName());
-                    libURLs.add(url);
-                }
+        JarFile externalJarFile = new JarFile(jarFileUrl.getPath());
+        for (JarEntry entry : Collections.list(externalJarFile.entries())) {
+            // 如果entry是JAR文件，并且不是外部JAR文件本身
+            if (entry.getName().endsWith(".jar") ) {
+                String internalJarPath = entry.getName();
+                System.out.println(internalJarPath);
             }
         }
         return libURLs;

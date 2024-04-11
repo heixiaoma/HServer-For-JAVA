@@ -28,6 +28,8 @@ public class ReBuilderJar {
             File sourceFile = dependency.getFile();
             JarUtil.addFileToJar("lib/" + sourceFile.getName().trim(), sourceFile, jarOutputStream);
         }
+        String artifactPath = project.getBuild().getDirectory() + "/" + project.getBuild().getFinalName() + "." + project.getPackaging();
+        JarUtil.addFileToJar("lib/" + project.getBuild().getFinalName() + "." + project.getPackaging(), new File(artifactPath), jarOutputStream);
     }
 
     public void addManifest(MavenProject project) throws IOException {
