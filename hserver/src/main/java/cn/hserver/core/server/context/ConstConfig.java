@@ -99,7 +99,7 @@ public class ConstConfig {
     /**
      * 前置以协议大小
      */
-    public static Integer PRE_PROTOCOL_MAX_SIZE = 1024;
+    public static Integer PRE_PROTOCOL_MAX_SIZE = 4096;
 
 
     /**
