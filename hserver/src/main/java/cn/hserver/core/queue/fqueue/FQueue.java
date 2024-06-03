@@ -166,12 +166,16 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
                             }
                             QueueInfo queueInfo = queueHandleInfo.getQueueFactory().queueInfo();
                             int threadSize = queueHandleInfo.getThreadSize();
-                            if (queueInfo != null && (queueInfo.getBufferSize() - queueInfo.getRemainQueueSize() < threadSize)) {
-                                byte[] poll;
+                            if (queueInfo != null ) {
+                                byte[] poll = null;
                                 if (threadSize == 1) {
-                                    poll = peek();
+                                    if ((queueInfo.getBufferSize() - queueInfo.getRemainQueueSize() < threadSize)) {
+                                        poll = peek();
+                                    }
                                 } else {
-                                    poll = poll();
+                                    if (queueInfo.getRemainQueueSize()>0) {
+                                        poll = poll();
+                                    }
                                 }
                                 if (poll != null) {
                                     QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
