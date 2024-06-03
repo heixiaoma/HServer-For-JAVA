@@ -37,6 +37,11 @@ public class QueueDispatcher {
     private QueueDispatcher() {
     }
 
+
+   public static QueueHandleInfo getQueueHandleInfo(String queueName){
+        return handleMethodMap.get(queueName);
+    }
+
     public static void removeQueue(String queueName, boolean trueDelete) {
         QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
         if (queueHandleInfo != null && queueHandleInfo.getQueueFactory() != null) {
@@ -159,8 +164,9 @@ public class QueueDispatcher {
     }
 
     private static void initConfigQueue(QueueHandleInfo v) {
+        FQueue fQueue=null;
         try {
-            FQueue fQueue = new FQueue(PERSIST_PATH + File.separator + v.getQueueName());
+             fQueue = new FQueue(PERSIST_PATH + File.separator + v.getQueueName(),v.getQueueName());
             FQ.put(v.getQueueName(), fQueue);
         } catch (Exception ignored) {
         }
@@ -168,6 +174,7 @@ public class QueueDispatcher {
         queueFactory.createQueue(v.getQueueName(), v.getBufferSize(), v.getQueueHandlerType(), v.getQueueHandleMethods());
         v.setQueueFactory(queueFactory);
         v.getQueueFactory().start();
+        fQueue.start();
     }
 
     /**
@@ -194,45 +201,6 @@ public class QueueDispatcher {
         handleMethodMap.forEach((k, v) -> {
             initConfigQueue(v);
         });
-        Thread thread = new NamedThreadFactory("hserver_queue").newThread(() -> {
-            while (true) {
-                if (FQ.size() > 0) {
-                    FQ.forEach((k, v) -> {
-                        try {
-                            QueueInfo queueInfo = queueInfo(k);
-                            QueueHandleInfo queueHandleInfo = handleMethodMap.get(k);
-                            if (queueHandleInfo == null) {
-                                sleep();
-                                return;
-                            }
-                            int threadSize = queueHandleInfo.getThreadSize();
-                            if (queueInfo != null && (queueInfo.getBufferSize() - queueInfo.getRemainQueueSize() < threadSize)) {
-                                byte[] poll;
-                                if (threadSize == 1) {
-                                    poll = v.peek();
-                                } else {
-                                    poll = v.poll();
-                                }
-                                if (poll != null) {
-                                    QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
-                                    dispatcherQueue(deserialize, deserialize.getQueueName());
-                                } else {
-                                    sleep();
-                                }
-                            } else {
-                                sleep();
-                            }
-                        } catch (Exception e) {
-                            sleep();
-                            log.error(ExceptionUtil.getMessage(e));
-                        }
-                    });
-                } else {
-                    sleep();
-                }
-            }
-        });
-        thread.start();
     }
 
     /**
@@ -240,7 +208,7 @@ public class QueueDispatcher {
      *
      * @param queueName 事件URI
      */
-    private static boolean dispatcherQueue(QueueData queueData, String queueName) {
+    public static boolean dispatcherQueue(QueueData queueData, String queueName) {
         QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
         if (queueHandleInfo != null) {
             if (queueData != null) {
@@ -280,15 +248,6 @@ public class QueueDispatcher {
             return queueInfo;
         }
         return null;
-    }
-
-
-    private static void sleep(){
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-            log.error(ExceptionUtil.getMessage(e));
-        }
     }
 
 }
