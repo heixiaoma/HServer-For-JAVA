@@ -45,12 +45,7 @@ public class RouterManager {
 
 
     private static Map<String, RouterPermission> routerPermission(HttpMethod method) {
-        Map<String, RouterPermission> stringRouterPermissionMap = routerPermission.get(method);
-        if (stringRouterPermissionMap == null) {
-            stringRouterPermissionMap = new ConcurrentHashMap<>();
-            routerPermission.put(method, stringRouterPermissionMap);
-        }
-        return stringRouterPermissionMap;
+        return routerPermission.computeIfAbsent(method, k -> new ConcurrentHashMap<>());
     }
 
 
@@ -59,29 +54,21 @@ public class RouterManager {
             String url = routerInfo.getUrl();
             //对URL检查是否是正则的 如果是正则的就进行替换为正则的方便后期校验
             List<String> pattern = isPattern(url);
-            if (pattern.size() > 0) {
+            if (!pattern.isEmpty()) {
                 String s = url;
                 for (int i = 0; i < pattern.size(); i++) {
                     if (i == pattern.size() - 1) {
-                        s = s.replaceAll("\\{" + pattern.get(i) + "\\}", "(.+)");
+                        s = s.replaceAll("\\{" + pattern.get(i) + "}", "(.+)");
                     } else {
-                        s = s.replaceAll("\\{" + pattern.get(i) + "\\}", "(.+?)");
+                        s = s.replaceAll("\\{" + pattern.get(i) + "}", "(.+?)");
                     }
                 }
                 s = "^" + s;
-                Map<String, PatternUri> ispauri = ISPAURI.get(s);
-                if (ispauri == null) {
-                    ispauri = new ConcurrentHashMap<>();
-                    ISPAURI.put(s, ispauri);
-                }
+                Map<String, PatternUri> ispauri = ISPAURI.computeIfAbsent(s, k -> new ConcurrentHashMap<>());
                 ispauri.put(routerInfo.getReqMethodName().name(), new PatternUri(pattern, url, s, routerInfo.getReqMethodName().name()));
             }
 
-            Map<String, RouterInfo> httpMethodRouterInfoMap = router2.get(url);
-            if (httpMethodRouterInfoMap == null) {
-                httpMethodRouterInfoMap = new ConcurrentHashMap<>();
-                router2.put(url, httpMethodRouterInfoMap);
-            }
+            Map<String, RouterInfo> httpMethodRouterInfoMap = router2.computeIfAbsent(url, k -> new ConcurrentHashMap<>());
             if (httpMethodRouterInfoMap.containsKey(routerInfo.getReqMethodName().name())) {
                 log.warn("url< {} >映射路径已经存在，可能会影响程序使用，class:{},method:{}", url, routerInfo.getaClass().getName(), routerInfo.getMethod().getName());
             }
@@ -91,7 +78,7 @@ public class RouterManager {
 
 
     private static List<String> isPattern(String url) {
-        String regex = "(\\{.*?\\})";
+        String regex = "(\\{.*?})";
         Matcher matcher = Pattern.compile(regex).matcher(url);
         List<String> patterns = new ArrayList<>();
         while (matcher.find()) {

@@ -57,7 +57,7 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
             pipeline.addLast(WebConstConfig.BUSINESS_EVENT, new WebSocketServerHandler());
         }
         pipeline.addLast(WebConstConfig.BUSINESS_EVENT, new HServerContentHandler());
-        pipeline.addLast(WebConstConfig.BUSINESS_EVENT, new RouterHandler());
+        pipeline.addLast(WebConstConfig.BUSINESS_EVENT,RouterHandler.getInstance());
     }
 
 

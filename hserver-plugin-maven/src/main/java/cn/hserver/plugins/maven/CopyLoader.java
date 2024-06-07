@@ -74,12 +74,12 @@ public class CopyLoader {
         } finally {
             jarFile.close();
             if (!jarUpdated) {
-                tmpJarFile.delete();
+                FileUtils.delete(tmpJarFile);
             }
         }
 
         if (jarUpdated) {
-            srcJarFile.delete();
+            FileUtils.delete(srcJarFile);
             FileUtils.moveFile(tmpJarFile,srcJarFile);
         }
     }

@@ -3,6 +3,7 @@ package cn.hserver.core.server;
 import cn.hserver.core.interfaces.ProtocolDispatcherSuperAdapter;
 import cn.hserver.core.server.context.ConstConfig;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
@@ -10,7 +11,6 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import cn.hserver.core.interfaces.ProtocolDispatcherAdapter;
 import cn.hserver.core.ioc.IocUtil;
-import cn.hserver.core.server.util.ByteBufUtil;
 import io.netty.util.ReferenceCountUtil;
 
 import java.util.List;
@@ -20,13 +20,14 @@ import java.util.List;
  */
 public class ServerInitializer extends ChannelInitializer<Channel> {
 
-    private final static List<ProtocolDispatcherSuperAdapter> listBean = IocUtil.getListBean(ProtocolDispatcherSuperAdapter.class);
+    private final static List<ProtocolDispatcherSuperAdapter> listSuperBean = IocUtil.getListBean(ProtocolDispatcherSuperAdapter.class);
+    private final static List<ProtocolDispatcherAdapter> listBean = IocUtil.getListBean(ProtocolDispatcherAdapter.class);
 
     @Override
     protected void initChannel(Channel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-        if (listBean != null && !listBean.isEmpty()) {
-            for (ProtocolDispatcherSuperAdapter protocolDispatcherSuperAdapter : listBean) {
+        if (listSuperBean != null && !listSuperBean.isEmpty()) {
+            for (ProtocolDispatcherSuperAdapter protocolDispatcherSuperAdapter : listSuperBean) {
                 if (protocolDispatcherSuperAdapter.dispatcher(ch, pipeline)) {
                     return;
                 }
@@ -45,9 +46,8 @@ public class ServerInitializer extends ChannelInitializer<Channel> {
              * copy 最多512个字节作为消息头数据判断
              */
             ByteBuf slice = in.slice(0, Math.min(in.readableBytes(), ConstConfig.PRE_PROTOCOL_MAX_SIZE));
-            byte[] bytes = ByteBufUtil.byteBufToBytes(slice);
+            byte[] bytes = ByteBufUtil.getBytes(slice);
             ChannelPipeline pipeline = ctx.pipeline();
-            List<ProtocolDispatcherAdapter> listBean = IocUtil.getListBean(ProtocolDispatcherAdapter.class);
             if (listBean == null) {
                 return;
             }

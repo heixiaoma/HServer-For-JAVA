@@ -11,6 +11,8 @@ import java.io.*;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -29,7 +31,7 @@ public class StaticHandler {
     /**
      * 此处的静态文件缓存是非常有必要的，直接拉低了整体QPS.
      */
-    private final static CopyOnWriteArraySet<String> STATIC_FILE_URI = new CopyOnWriteArraySet<>();
+    private final static Set<String> STATIC_FILE_URI = new HashSet<>();
 
     static {
         /**
@@ -59,6 +61,12 @@ public class StaticHandler {
         }
         return null;
     }
+
+
+    public boolean hasEmptyStaticFile() {
+        return STATIC_FILE_URI.isEmpty();
+    }
+
 
     /**
      * 构建一个静态文件对象

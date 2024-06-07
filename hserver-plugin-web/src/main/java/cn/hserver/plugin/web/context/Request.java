@@ -32,7 +32,7 @@ public class Request implements HttpRequest {
     private Map<String, List<String>> requestParams = new ConcurrentHashMap<>();
     private Map<String, List<String>> urlParams = new ConcurrentHashMap<>();
     private HeadMap headers;
-    private final long createTime = System.currentTimeMillis();
+    private final long createTime = System.nanoTime();
     private HServerContentHandler handler;
 
     /**

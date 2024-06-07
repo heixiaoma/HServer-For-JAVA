@@ -26,10 +26,10 @@ public class HookProxyFactory {
         proxyFactory.setSuperclass(clazz);
         Object o = proxyFactory.createClass().newInstance();
         ((ProxyObject) o).setHandler((self, thismethod, proceed, args) -> {
+            List<HookAdapter> listBean = (List) IocUtil.getListBean(hookPageName);
             Method[] declaredMethods = clazz.getDeclaredMethods();
             for (Method declaredMethod : declaredMethods) {
                 if (declaredMethod.getName().equals(thismethod.getName())) {
-                    List<HookAdapter> listBean = (List) IocUtil.getListBean(hookPageName);
                     for (HookAdapter hookAdapter : listBean) {
                         if (check(hookAdapter, self.getClass(), thismethod)) {
                             hookAdapter.before(self.getClass(), thismethod, args);

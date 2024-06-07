@@ -2,6 +2,7 @@ package cn.hserver.core.log;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import ch.qos.logback.classic.pattern.CallerDataConverter;
 import ch.qos.logback.classic.pattern.ClassOfCallerConverter;
@@ -52,7 +53,7 @@ import ch.qos.logback.core.pattern.parser.Parser;
  */
 public class HServerPatternLayout extends PatternLayoutBase<ILoggingEvent> {
 
-    public static final Map<String, String> defaultConverterMap = new HashMap<String, String>();
+    public static final Map<String, String> defaultConverterMap = new ConcurrentHashMap<>();
     public static final String HEADER_PREFIX = "#logback.classic pattern: ";
 
     static {
