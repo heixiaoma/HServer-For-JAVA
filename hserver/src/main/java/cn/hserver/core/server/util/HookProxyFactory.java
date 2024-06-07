@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class HookProxyFactory {
 
-    public Object newProxyInstance(Class clazz, String hookPageName) throws InstantiationException, IllegalAccessException {
+    public Object newProxyInstance(Class<?> clazz, String hookPageName) throws InstantiationException, IllegalAccessException {
         // 代理工厂
         ProxyFactory proxyFactory = new ProxyFactory();
         // 设置需要创建子类的父类
@@ -45,18 +45,19 @@ public class HookProxyFactory {
                         }
                         return result;
                     } catch (Throwable e) {
+                        Throwable throwable = e;
                         for (HookAdapter hookAdapter : listBean) {
                             if (check(hookAdapter, self.getClass(), thismethod)) {
-                                if (e instanceof InvocationTargetException) {
-                                    e = ((InvocationTargetException) e).getTargetException();
+                                if (throwable instanceof InvocationTargetException) {
+                                    throwable = ((InvocationTargetException) throwable).getTargetException();
                                 }
-                                hookAdapter.throwable(self.getClass(), thismethod, e);
+                                hookAdapter.throwable(self.getClass(), thismethod, throwable);
                             }
                         }
-                        if (e instanceof InvocationTargetException) {
-                            throw ((InvocationTargetException) e).getTargetException();
+                        if (throwable instanceof InvocationTargetException) {
+                            throw ((InvocationTargetException) throwable).getTargetException();
                         }
-                        throw e;
+                        throw throwable;
                     }
                 }
             }
@@ -67,31 +68,26 @@ public class HookProxyFactory {
     }
 
 
-    private boolean check(HookAdapter hookAdapter, Class self, Method method) {
+    private boolean check(HookAdapter hookAdapter, Class<?> self, Method method) {
         Hook hook = hookAdapter.getClass().getAnnotation(Hook.class);
-        for (Class aClass : hook.value()) {
+        for (Class<?> aClass : hook.value()) {
 
             //Hoook 类
 
-            Class superclass = self.getSuperclass();
+            Class<?> superclass = self.getSuperclass();
             if (aClass == superclass) {
                 return true;
             }
 
 
-            //hook 注解
-            /**
-             * 检查是否是类级别的检查
-             */
+            //hook 注解 检查是否是类级别的检查
             Annotation[] annotations1 = self.getSuperclass().getAnnotations();
             for (Annotation annotation : annotations1) {
                 if (annotation.annotationType() == aClass) {
                     return true;
                 }
             }
-            /**
-             * 检查是否方法级别的
-             */
+            //检查是否方法级别的
             Annotation[] annotations2 = method.getAnnotations();
             for (Annotation annotation : annotations2) {
                 if (annotation.annotationType() == aClass) {
