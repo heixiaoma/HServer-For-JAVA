@@ -77,7 +77,7 @@ public class WebConstConfig {
     /**
      * 请求ID
      */
-    public final static String REQUEST_ID = "hRequestId";
+    public final static String REQUEST_ID = "HRequest-Id";
 
 
     /**
