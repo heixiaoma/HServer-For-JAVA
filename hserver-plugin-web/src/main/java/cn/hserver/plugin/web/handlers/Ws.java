@@ -2,6 +2,7 @@ package cn.hserver.plugin.web.handlers;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -64,20 +65,20 @@ public class Ws {
         this.type = type;
     }
 
-    public void send(String msg) {
-        this.ctx.writeAndFlush(new TextWebSocketFrame(msg));
+    public ChannelFuture send(String msg) {
+       return this.ctx.writeAndFlush(new TextWebSocketFrame(msg));
     }
 
-    public void send(byte[] msg) {
-        this.ctx.writeAndFlush(new TextWebSocketFrame(Unpooled.wrappedBuffer(msg)));
+    public ChannelFuture send(byte[] msg) {
+       return this.ctx.writeAndFlush(new TextWebSocketFrame(Unpooled.wrappedBuffer(msg)));
     }
 
-    public void sendBinary(byte[] msg) {
-        this.ctx.writeAndFlush(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(msg)));
+    public ChannelFuture sendBinary(byte[] msg) {
+       return this.ctx.writeAndFlush(new BinaryWebSocketFrame(Unpooled.wrappedBuffer(msg)));
     }
 
-    public void sendBinary(ByteBuf msg) {
-        this.ctx.writeAndFlush(new BinaryWebSocketFrame(msg));
+    public ChannelFuture sendBinary(ByteBuf msg) {
+       return this.ctx.writeAndFlush(new BinaryWebSocketFrame(msg));
     }
 
     public String query(String name) {
