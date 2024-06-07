@@ -7,6 +7,7 @@ import cn.hserver.core.interfaces.PluginAdapter;
 import cn.hserver.core.server.util.ExceptionUtil;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.ServiceLoader;
 import java.util.Set;
 
@@ -65,13 +66,15 @@ public class PlugsManager implements PluginAdapter {
     }
 
     @Override
-    public boolean iocInitBean(Class classz) {
+    public Set<Class<?>> iocInitBeanList() {
+        Set<Class<?>> listBean=new HashSet<>();
         for (PluginAdapter plugAdapter : obj) {
-            if (plugAdapter.iocInitBean(classz)){
-                return true;
+            Set<Class<?>> classes = plugAdapter.iocInitBeanList();
+            if (classes!=null){
+                listBean.addAll(classes);
             }
         }
-        return false;
+        return listBean;
     }
 
     @Override

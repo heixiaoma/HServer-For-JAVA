@@ -1,5 +1,6 @@
 package cn.hserver.plugin.mybatis;
 
+import cn.hserver.core.ioc.IocUtil;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.MybatisSqlSessionFactoryBuilder;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
@@ -34,7 +35,8 @@ public class MybatisInit {
 
     private static final Logger log = LoggerFactory.getLogger(MybatisInit.class);
 
-    public static Map<String, SqlSessionFactory> initMybatis(MybatisConfig mybatisConfig, Set<Class> classes) throws IllegalAccessException, InstantiationException {
+    public static Map<String, SqlSessionFactory> initMybatis(Set<Class<?>> classes) throws IllegalAccessException, InstantiationException {
+        MybatisConfig mybatisConfig = IocUtil.getBean(MybatisConfig.class);
         if (mybatisConfig == null) {
             log.error("MybatisConfig 未配置");
             return null;
@@ -94,7 +96,7 @@ public class MybatisInit {
         }
     }
 
-    private static void loadMapper(Configuration configuration, Set<Class> classes, String dataSourceName) {
+    private static void loadMapper(Configuration configuration, Set<Class<?>> classes, String dataSourceName) {
         /**
          * Mapper
          */

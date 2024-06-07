@@ -3,6 +3,9 @@ package cn.hserver.core.interfaces;
 
 import cn.hserver.core.ioc.ref.PackageScanner;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * 插件适配器
  *
@@ -18,7 +21,7 @@ public interface PluginAdapter {
     void startIocInit();
 
 
-    boolean iocInitBean(Class classz);
+    Set<Class<?>> iocInitBeanList();
 
 
     void iocInit(PackageScanner packageScanner);

@@ -6,6 +6,9 @@ import cn.hserver.core.ioc.ref.PackageScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 public class CloudPlugin implements PluginAdapter {
 
@@ -23,20 +26,14 @@ public class CloudPlugin implements PluginAdapter {
     }
 
     @Override
-    public boolean iocInitBean(Class classz) {
-        try {
-            //检测这个Bean是否是我们服务发现的类
-            if (DiscoveryService.class.isAssignableFrom(classz)) {
-                IocUtil.addBean(DiscoveryService.DISCOVERY_SERVICE, classz.newInstance());
-                StartDiscoveryServer.init();
-                log.info("cloud 启动完成");
-                return true;
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return false;
+    public Set<Class<?>> iocInitBeanList() {
+        Set<Class<?>> classes=new HashSet<>();
+        classes.add(DiscoveryService.class);
+        StartDiscoveryServer.init();
+        return classes;
     }
+
+
 
     @Override
     public void iocInit(PackageScanner packageScanner) {

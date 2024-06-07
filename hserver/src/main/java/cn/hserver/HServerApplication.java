@@ -1,5 +1,6 @@
 package cn.hserver;
 
+import cn.hserver.core.ioc.ref.InitIoc;
 import io.netty.channel.ChannelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +8,6 @@ import cn.hserver.core.plugs.PlugsManager;
 import cn.hserver.core.queue.QueueDispatcher;
 import cn.hserver.core.interfaces.InitRunner;
 import cn.hserver.core.ioc.IocUtil;
-import cn.hserver.core.ioc.ref.InitBean;
 import cn.hserver.core.ioc.ref.MemoryInitClass;
 import cn.hserver.core.log.HServerLogConfig;
 import cn.hserver.core.properties.PropertiesInit;
@@ -134,11 +134,11 @@ public class HServerApplication {
         log.info("HServer 启动中....");
         log.info("Package 扫描中");
         PlugsManager.getPlugin().startIocInit();
-        InitBean.init(PackageUtil.deduplication(scanPackage));
+        InitIoc.init(PackageUtil.deduplication(scanPackage));
         PlugsManager.getPlugin().iocInitEnd();
         log.info("IOC 装配中");
         PlugsManager.getPlugin().startInjection();
-        InitBean.injection();
+        InitIoc.injection();
         PlugsManager.getPlugin().injectionEnd();
         log.info("IOC 全部装配完成");
     }

@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 public class WebPlugin implements PluginAdapter {
@@ -67,46 +68,19 @@ public class WebPlugin implements PluginAdapter {
     }
 
     @Override
-    public boolean iocInitBean(Class aClass) {
-        try {
-            //检测这个Bean是否是全局异常处理的类
-            if (GlobalException.class.isAssignableFrom(aClass)) {
-                IocUtil.addListBean(GlobalException.class.getName(), aClass.newInstance());
-                return true;
-            }
-
-            //检测这个Bean是否是权限认证的
-            if (PermissionAdapter.class.isAssignableFrom(aClass)) {
-                IocUtil.addListBean(PermissionAdapter.class.getName(), aClass.newInstance());
-                return true;
-
-            }
-
-            //检测这个Bean是否是FilterAdapter的
-            if (FilterAdapter.class.isAssignableFrom(aClass)) {
-                IocUtil.addListBean(FilterAdapter.class.getName(), aClass.newInstance());
-                return true;
-
-            }
-
-            //检测这个Bean是否是LimitAdapter的
-            if (LimitAdapter.class.isAssignableFrom(aClass)) {
-                IocUtil.addListBean(LimitAdapter.class.getName(), aClass.newInstance());
-                return true;
-
-            }
-
-            //检测这个Bean是否是response的
-            if (ResponseAdapter.class.isAssignableFrom(aClass)) {
-                IocUtil.addListBean(ResponseAdapter.class.getName(), aClass.newInstance());
-                return true;
-
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return false;
-
+    public Set<Class<?>> iocInitBeanList() {
+        Set<Class<?>> classes = new HashSet<>();
+        //检测这个Bean是否是全局异常处理的类
+        classes.add(GlobalException.class);
+        //检测这个Bean是否是权限认证的
+        classes.add(PermissionAdapter.class);
+        //检测这个Bean是否是FilterAdapter的
+        classes.add(FilterAdapter.class);
+        //检测这个Bean是否是LimitAdapter的
+        classes.add(LimitAdapter.class);
+        //检测这个Bean是否是response的
+        classes.add(ResponseAdapter.class);
+        return classes;
     }
 
     @Override

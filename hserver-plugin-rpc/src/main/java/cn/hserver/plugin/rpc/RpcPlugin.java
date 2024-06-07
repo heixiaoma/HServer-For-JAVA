@@ -40,8 +40,8 @@ public class RpcPlugin implements PluginAdapter {
     }
 
     @Override
-    public boolean iocInitBean(Class classz) {
-        return false;
+    public Set<Class<?>> iocInitBeanList() {
+        return null;
     }
 
     @Override

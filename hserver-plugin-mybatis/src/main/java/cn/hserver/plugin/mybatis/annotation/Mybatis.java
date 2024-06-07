@@ -1,5 +1,7 @@
 package cn.hserver.plugin.mybatis.annotation;
 
+import cn.hserver.core.ioc.annotation.HServerType;
+
 import java.lang.annotation.*;
 
 /**
@@ -7,6 +9,7 @@ import java.lang.annotation.*;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+@HServerType
 @Documented
 public @interface Mybatis {
     String value() default "";

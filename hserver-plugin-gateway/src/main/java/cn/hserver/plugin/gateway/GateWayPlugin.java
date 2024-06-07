@@ -9,7 +9,9 @@ import cn.hserver.plugin.gateway.config.GateWayConfig;
 import cn.hserver.plugin.gateway.enums.GatewayMode;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class GateWayPlugin implements PluginAdapter {
     @Override
@@ -35,18 +37,12 @@ public class GateWayPlugin implements PluginAdapter {
     }
 
     @Override
-    public boolean iocInitBean(Class aClass) {
-        try {
-            //检测这个Bean是否是Business的子类类
-            if (Business.class.isAssignableFrom(aClass)) {
-                IocUtil.addListBean(Business.class.getName(), aClass.newInstance());
-                return true;
-            }
-        } catch (Exception e) {
-           throw new RuntimeException(e);
-        }
-        return false;
+    public Set<Class<?>> iocInitBeanList() {
+        Set<Class<?>> classes=new HashSet<>();
+        classes.add(Business.class);
+        return classes;
     }
+
 
     @Override
     public void iocInit(PackageScanner packageScanner) {

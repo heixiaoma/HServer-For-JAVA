@@ -3,6 +3,8 @@ package cn.hserver.plugin.druid;
 import cn.hserver.core.interfaces.PluginAdapter;
 import cn.hserver.core.ioc.ref.PackageScanner;
 
+import java.util.Set;
+
 public class DruidPlugin implements PluginAdapter {
     @Override
     public void startApp() {
@@ -15,8 +17,8 @@ public class DruidPlugin implements PluginAdapter {
     }
 
     @Override
-    public boolean iocInitBean(Class classz) {
-        return false;
+    public Set<Class<?>> iocInitBeanList() {
+        return null;
     }
 
     @Override

@@ -8,6 +8,9 @@ import cn.hserver.plugin.mqtt.interfaces.MqttAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class MqttPlugin implements PluginAdapter {
     private static final Logger log = LoggerFactory.getLogger(MqttPlugin.class);
 
@@ -21,17 +24,10 @@ public class MqttPlugin implements PluginAdapter {
     }
 
     @Override
-    public boolean iocInitBean(Class aClass) {
-        try {
-            //检测这个Bean是否是Mqtt的
-            if (MqttAdapter.class.isAssignableFrom(aClass)) {
-                IocUtil.addBean(MqttAdapter.class.getName(), aClass.newInstance());
-                return true;
-            }
-        }catch (Exception e){
-            log.error(ExceptionUtil.getMessage(e));
-        }
-        return false;
+    public Set<Class<?>> iocInitBeanList() {
+        Set<Class<?>> classes=new HashSet<>();
+        classes.add(MqttAdapter.class);
+        return classes;
     }
 
     @Override
