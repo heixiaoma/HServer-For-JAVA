@@ -66,16 +66,22 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 
     private void handleHttpRequest(ChannelHandlerContext ctx, HttpRequest req) {
         if (isWebSocketRequest(req)) {
-            WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(req.uri(), null, true, WebConstConfig.MAX_WEBSOCKET_FRAME_LENGTH);
+            String uri = getReqUri(req);
+            this.request = req;
+            this.uid = ctx.channel().id().asLongText();
+            this.webSocketHandler = (WebSocketHandler) IocUtil.getBean(WEB_SOCKET_ROUTER.get(uri));
+            if (webSocketHandler==null){
+                log.error("未找到对应的WebSocketHandler:{}",req.uri());
+                ReferenceCountUtil.retain(req);
+                ctx.fireChannelRead(req);
+                return;
+            }
+            WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(req.uri(), this.webSocketHandler.getSubProtocols(), true, WebConstConfig.MAX_WEBSOCKET_FRAME_LENGTH);
             this.handshake = wsFactory.newHandshaker(req);
             if (this.handshake == null) {
                 WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
             } else {
                 this.handshake.handshake(ctx.channel(), req);
-                String uri = getReqUri(req);
-                this.request = req;
-                this.uid = ctx.channel().id().asLongText();
-                this.webSocketHandler = (WebSocketHandler) IocUtil.getBean(WEB_SOCKET_ROUTER.get(uri));
                 this.webSocketHandler.onConnect(new Ws(ctx, uid, request, WsType.INIT));
             }
         } else {
