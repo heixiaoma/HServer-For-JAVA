@@ -4,6 +4,7 @@ import cn.hserver.core.server.context.ConstConfig;
 import cn.hserver.plugin.web.context.*;
 import cn.hserver.plugin.web.interfaces.HttpRequest;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.multipart.*;
@@ -13,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
-import cn.hserver.core.server.util.ByteBufUtil;
 import cn.hserver.core.server.util.HServerIpUtil;
 import cn.hserver.plugin.web.util.RequestIdGen;
 
@@ -29,18 +29,14 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
 
     private final static DefaultHttpDataFactory FACTORY = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
 
-    public Channel outboundChannel;
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpRequest req) throws Exception {
         HServerContext hServerContext = new HServerContext();
         Request request = new Request();
         hServerContext.setRequest(request);
-        request.setHandler(this);
         String id = RequestIdGen.getId();
         request.setRequestId(id);
-        request.setIp(HServerIpUtil.getClientIp(channelHandlerContext));
-        request.setPort(HServerIpUtil.getClientPort(channelHandlerContext));
         request.setCtx(channelHandlerContext);
         request.setNettyUri(req.uri());
         handlerUrl(request, req);
@@ -99,7 +95,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
             List<InterfaceHttpData> bodyHttpDates = decoder.getBodyHttpDatas();
             InterfaceHttpData interfaceHttpData = bodyHttpDates.stream().filter(k -> k.getHttpDataType() == InterfaceHttpData.HttpDataType.FileUpload).findFirst().orElse(null);
             if (interfaceHttpData == null) {
-                request.setBody(ByteBufUtil.byteBufToBytes(body));
+                request.setBody(ByteBufUtil.getBytes(body));
             }
             bodyHttpDates.forEach(request::writeHttpData);
             decoder.destroy();

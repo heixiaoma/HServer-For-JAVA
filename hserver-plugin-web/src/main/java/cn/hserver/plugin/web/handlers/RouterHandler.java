@@ -6,6 +6,7 @@ import com.alibaba.ttl.threadpool.TtlExecutors;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.EventExecutor;
 
@@ -20,9 +21,9 @@ import java.util.concurrent.Executor;
 public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
 
     private static final RouterHandler instance = new RouterHandler();
-    private static final AttributeKey<Executor> executorAttributeKey = AttributeKey.valueOf("ex");
+    private static final AttributeKey<Executor> EXECUTOR_KEY = AttributeKey.valueOf("EXECUTOR_KEY");
 
-    private RouterHandler(){
+    private RouterHandler() {
 
     }
 
@@ -30,17 +31,22 @@ public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
         return instance;
     }
 
-    private final DispatcherHandler limit=new Limit();
-    private final DispatcherHandler filter=new Filter();
-    private final DispatcherHandler permission=new Permission();
-    private final DispatcherHandler staticFile=new StaticFile();
-    private final DispatcherHandler findController=new FindController();
+    private final DispatcherHandler limit = new Limit();
+    private final DispatcherHandler filter = new Filter();
+    private final DispatcherHandler permission = new Permission();
+    private final DispatcherHandler staticFile = new StaticFile();
+    private final DispatcherHandler findController = new FindController();
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HServerContext hServerContext) throws Exception {
         CompletableFuture<HServerContext> future = CompletableFuture.completedFuture(hServerContext);
-        Executor executor = TtlExecutors.getTtlExecutor(ctx.executor());
-//        Executor executor =ctx.executor();
+        Attribute<Executor> attr = ctx.channel().attr(EXECUTOR_KEY);
+        Executor executor = attr.get();
+        if (executor == null) {
+            executor = TtlExecutors.getTtlExecutor(ctx.executor());
+            attr.set(executor);
+        }
+//        EventExecutor executor = ctx.executor();
         future.thenApplyAsync(req -> limit.dispatcher(hServerContext), executor)
                 .thenApplyAsync(filter::dispatcher, executor)
                 .thenApplyAsync(permission::dispatcher, executor)

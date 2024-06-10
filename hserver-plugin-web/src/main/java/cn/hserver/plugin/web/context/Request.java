@@ -1,5 +1,6 @@
 package cn.hserver.plugin.web.context;
 
+import cn.hserver.core.server.util.HServerIpUtil;
 import cn.hserver.plugin.web.handlers.HServerContentHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -26,14 +27,11 @@ public class Request implements HttpRequest {
     private String uri;
     private String nettyUri;
     private HttpMethod requestType;
-    private String ip;
-    private int port;
     private ChannelHandlerContext ctx;
     private Map<String, List<String>> requestParams = new ConcurrentHashMap<>();
     private Map<String, List<String>> urlParams = new ConcurrentHashMap<>();
     private HeadMap headers;
     private final long createTime = System.nanoTime();
-    private HServerContentHandler handler;
 
     /**
      * 文件处理
@@ -76,12 +74,12 @@ public class Request implements HttpRequest {
 
     @Override
     public String getIp() {
-        return ip;
+        return HServerIpUtil.getClientIp(ctx);
     }
 
     @Override
     public int getPort() {
-        return port;
+        return HServerIpUtil.getClientPort(ctx);
     }
 
     @Override
@@ -213,14 +211,6 @@ public class Request implements HttpRequest {
         this.requestType = requestType;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
     public void setCtx(ChannelHandlerContext ctx) {
         this.ctx = ctx;
     }
@@ -273,17 +263,4 @@ public class Request implements HttpRequest {
         this.requestId = requestId;
     }
 
-    public void setHandler(HServerContentHandler handler) {
-        this.handler = handler;
-    }
-
-    @Override
-    public Channel getOutboundChannel() {
-        return handler.outboundChannel;
-    }
-
-    @Override
-    public void setOutboundChannel(Channel channel) {
-        handler.outboundChannel = channel;
-    }
 }

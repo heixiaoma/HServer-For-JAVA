@@ -2,11 +2,14 @@ package cn.hserver.core.server;
 
 import cn.hserver.core.interfaces.ProtocolDispatcherAdapter;
 import cn.hserver.core.server.context.ConstConfig;
+import cn.hserver.core.server.context.IoMultiplexer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.epoll.EpollServerSocketChannel;
+import io.netty.channel.kqueue.KQueueServerSocketChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.netty.incubator.channel.uring.IOUringServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.hserver.core.interfaces.ServerCloseAdapter;
@@ -51,8 +54,7 @@ public class HServer {
 
     private EventLoopGroup humClientBossGroup = null;
     //TCP
-    private EventLoopGroup bossGroup = null;
-    private EventLoopGroup workerGroup = null;
+    private EventLoopGroup group = null;
 
     public HServer(Integer[] ports, String[] args) {
         this.ports=ports;
@@ -92,21 +94,29 @@ public class HServer {
             if (tcpChildOptions!=null){
                 tcpChildOptions.forEach(bootstrap::childOption);
             }
-            if (EpollUtil.check()) {
+            IoMultiplexer eventLoopType = EventLoopUtil.getEventLoopType();
+            if (eventLoopType!=IoMultiplexer.JDK) {
                 bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
                 bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
                 bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-                bossGroup = EventLoopUtil.getEventLoop(bossPool, "hserver_epoll_boss");
-                workerGroup = EventLoopUtil.getEventLoop(workerPool, "hserver_epoll_worker");
-                bootstrap.group(bossGroup, workerGroup).channel(EpollServerSocketChannel.class);
-                typeName = "Epoll";
+                group = EventLoopUtil.getEventLoop(workerPool, "hserver_grop");
+                bootstrap.group(group);
+                if (eventLoopType==IoMultiplexer.IO_URING){
+                    bootstrap.channel(IOUringServerSocketChannel.class);
+                }else if (eventLoopType==IoMultiplexer.EPOLL){
+                    bootstrap.channel(EpollServerSocketChannel.class);
+                }else if (eventLoopType==IoMultiplexer.KQUEUE){
+                    bootstrap.channel(KQueueServerSocketChannel.class);
+                }else {
+                    bootstrap.channel(NioServerSocketChannel.class);
+                }
+                typeName = eventLoopType.name();
             } else {
                 bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
                 bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-                bossGroup = EventLoopUtil.getEventLoop(bossPool, "hserver_boss");
-                workerGroup = EventLoopUtil.getEventLoop(workerPool, "hserver_worker");
-                bootstrap.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class);
-                typeName = "Nio";
+                group = EventLoopUtil.getEventLoop(workerPool, "hserver_grop");
+                bootstrap.group(group).channel(NioServerSocketChannel.class);
+                typeName = eventLoopType.name();
             }
             bootstrap.option(ChannelOption.SO_BACKLOG, backLog);
             bootstrap.childHandler(new ServerInitializer());
@@ -153,11 +163,8 @@ public class HServer {
             if (this.humServerBossGroup != null) {
                 this.humServerBossGroup.shutdownGracefully();
             }
-            if (this.bossGroup != null) {
-                this.bossGroup.shutdownGracefully();
-            }
-            if (this.workerGroup != null) {
-                this.workerGroup.shutdownGracefully();
+            if (this.group != null) {
+                this.group.shutdownGracefully();
             }
             log.info("服务关闭完成");
         });

@@ -11,13 +11,6 @@ import java.io.*;
  */
 public class ByteBufUtil {
 
-    public static byte[] byteBufToBytes(ByteBuf buf) {
-        int length =buf.readableBytes();
-        byte[] body =new byte[length];
-        buf.readBytes(body);
-        return body;
-    }
-
     public static ByteBuf fileToByteBuf(File file) {
         try {
             FileInputStream input = new FileInputStream(file);
@@ -30,23 +23,28 @@ public class ByteBufUtil {
     public static ByteBuf fileToByteBuf(InputStream input) {
         try {
             ByteArrayOutputStream babs = new ByteArrayOutputStream();
-            int size = 0;
-            ByteBuf byteBuf = Unpooled.buffer();
             byte[] buffer = new byte[1024];
             int len;
-            while ((len = input.read(buffer)) > -1) {
-                size += len;
+            while ((len = input.read(buffer)) != -1) {
                 babs.write(buffer, 0, len);
             }
             babs.flush();
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(babs.toByteArray());
-            byteBuf.writeBytes(inputStream, size);
+            byte[] byteArray = babs.toByteArray();
+            ByteBuf byteBuf = Unpooled.wrappedBuffer(byteArray);
             input.close();
-            inputStream.close();
             babs.close();
             return byteBuf;
-        } catch (Exception e) {
+        } catch (IOException e) {
+            e.printStackTrace();
             return null;
+        } finally {
+            try {
+                if (input != null) {
+                    input.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

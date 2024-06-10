@@ -16,10 +16,6 @@ public class PropertiesInit {
         if (taskPool != null) {
             ConstConfig.taskPool = taskPool;
         }
-        Integer bossPool = instance.getInt("bossPool");
-        if (bossPool != null) {
-            ConstConfig.bossPool = bossPool;
-        }
         Integer workerPool = instance.getInt("workerPool");
         if (workerPool != null) {
             ConstConfig.workerPool = workerPool;
@@ -74,9 +70,5 @@ public class PropertiesInit {
         if (instance.get("track").trim().length() > 0) {
             ConstConfig.TRACK = Boolean.valueOf(instance.get("track"));
         }
-        if (instance.get("epoll").trim().length() > 0) {
-            ConstConfig.EPOLL = Boolean.valueOf(instance.get("epoll"));
-        }
-
     }
 }

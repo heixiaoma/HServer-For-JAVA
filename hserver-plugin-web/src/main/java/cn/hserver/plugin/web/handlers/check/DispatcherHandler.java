@@ -31,7 +31,7 @@ public interface DispatcherHandler {
     static FullHttpResponse buildResponse(HServerContext hServerContext) {
         try {
             FullHttpResponse response = null;
-            if (hServerContext.getResponse().isProxy()) {
+            if (hServerContext.getResponse().isUseCtx()) {
                 return null;
             }
             /**
@@ -55,7 +55,7 @@ public interface DispatcherHandler {
                 response = BuildResponse.buildHttpResponseData(hServerContext.getResponse());
             } else {
                 //使用了代理模式，让用户自由控制ctx 不受框架操作
-                if (hServerContext.getResponse().isProxy()) {
+                if (hServerContext.getResponse().isUseCtx()) {
                     return null;
                 }
             }

@@ -154,17 +154,4 @@ public interface HttpRequest {
      */
     long getCreateTime();
 
-
-    /**
-     * 代理中会使用
-     * 出站outboundChannel
-     * @return
-     */
-    Channel getOutboundChannel();
-
-    /**
-     * 设置出站
-     * @param channel
-     */
-    void setOutboundChannel(Channel channel);
 }

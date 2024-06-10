@@ -2,6 +2,7 @@ package cn.hserver;
 
 import cn.hserver.core.ioc.ref.InitIoc;
 import io.netty.channel.ChannelOption;
+import io.netty.util.ResourceLeakDetector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.hserver.core.plugs.PlugsManager;
@@ -32,6 +33,7 @@ public class HServerApplication {
     private static final Map<ChannelOption<Object>, Object> TCP_CHILD_OPTIONS = new HashMap<>();
 
     public static Class<?> mainClass;
+    public static ResourceLeakDetector.Level level= ResourceLeakDetector.Level.DISABLED;
 
     /**
      * 添加一些netty options选项
@@ -98,6 +100,7 @@ public class HServerApplication {
         }
         PlugsManager.getPlugin().startApp();
         HServerLogConfig.init();
+        ResourceLeakDetector.setLevel(level);
         log.info("检查包文件");
         Set<String> scanPackage;
         if (mainClass == null) {

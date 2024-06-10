@@ -38,7 +38,7 @@ public class Response implements HttpResponse {
 
     private HttpResponseStatus httpResponseStatus;
 
-    private boolean isProxy = false;
+    private boolean useCtx = false;
 
 
     @Override
@@ -84,7 +84,7 @@ public class Response implements HttpResponse {
      */
     @Override
     public void setDownloadBigFile(File file, ProgressStatus progressStatus, HttpRequest request) throws Exception {
-        isProxy(true);
+        useCtx=true;
         ChannelHandlerContext ctx = request.getCtx();
         try {
             final RandomAccessFile raf = new RandomAccessFile(file, "r");
@@ -208,8 +208,8 @@ public class Response implements HttpResponse {
     }
 
     @Override
-    public void isProxy(boolean p) {
-        this.isProxy = p;
+    public void setUseCtx(boolean p) {
+        this.useCtx = p;
     }
 
     @Override
@@ -301,8 +301,8 @@ public class Response implements HttpResponse {
         return httpResponseStatus;
     }
 
-    public boolean isProxy() {
-        return isProxy;
+    public boolean isUseCtx() {
+        return useCtx;
     }
 
 }

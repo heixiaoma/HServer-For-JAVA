@@ -10,10 +10,19 @@ import java.lang.reflect.Method;
  */
 public class RouterInfo {
 
+    private Object controllerRef;
     private String url;
     private Method method;
     private HttpMethod reqMethodName;
     private Class<?> aClass;
+
+    public Object getControllerRef() {
+        return controllerRef;
+    }
+
+    public void setControllerRef(Object controllerRef) {
+        this.controllerRef = controllerRef;
+    }
 
     public String getUrl() {
         return url;

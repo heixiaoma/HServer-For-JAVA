@@ -26,11 +26,6 @@ public class ConstConfig {
 
 
     /**
-     * webServer  bossThreadCount
-     */
-    public static Integer bossPool = 0;
-
-    /**
      * webServer workerGroupThreadCount
      */
     public static Integer workerPool = 0;
@@ -84,7 +79,7 @@ public class ConstConfig {
     /**
      * 可以epoll时是否使用
      */
-    public static Boolean EPOLL = true;
+    public static IoMultiplexer IO_MOD = IoMultiplexer.DEFAULT;
 
     /**
      * 跟踪扩展包

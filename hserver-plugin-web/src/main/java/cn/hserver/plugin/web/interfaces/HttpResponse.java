@@ -128,6 +128,6 @@ public interface HttpResponse {
      *
      * @param p
      */
-    void isProxy(boolean p);
+    void setUseCtx(boolean p);
 
 }

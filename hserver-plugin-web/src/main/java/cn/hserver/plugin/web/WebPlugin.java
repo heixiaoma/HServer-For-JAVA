@@ -130,6 +130,9 @@ public class WebPlugin implements PluginAdapter {
          */
         Set<Class<?>> clasps = scan.getAnnotationList(Controller.class);
         for (Class aClass : clasps) {
+
+            Object controllerRef = aClass.newInstance();
+
             //检查注解里面是否有值
             Method[] methods = aClass.getDeclaredMethods();
             for (Method method : methods) {
@@ -157,6 +160,7 @@ public class WebPlugin implements PluginAdapter {
                         value.setAccessible(true);
                         String path = controllerPath + value.invoke(annotation).toString();
                         RouterInfo routerInfo = new RouterInfo();
+                        routerInfo.setControllerRef(controllerRef);
                         method.setAccessible(true);
                         routerInfo.setMethod(method);
                         routerInfo.setaClass(aClass);
@@ -198,6 +202,7 @@ public class WebPlugin implements PluginAdapter {
                     for (String s : requestMethod) {
                         String path = controllerPath + requestMapping.value();
                         RouterInfo routerInfo = new RouterInfo();
+                        routerInfo.setControllerRef(controllerRef);
                         method.setAccessible(true);
                         routerInfo.setMethod(method);
                         routerInfo.setUrl(path);
@@ -223,7 +228,7 @@ public class WebPlugin implements PluginAdapter {
                     }
                 }
             }
-            IocUtil.addBean(aClass.getName(), aClass.newInstance());
+            IocUtil.addBean(aClass.getName(),controllerRef);
         }
     }
 
