@@ -126,7 +126,7 @@ public class HServerApplication {
                 MemoryInitClass.init(s);
             }
             //扩展的
-            if (TRACK_EXT_PACKAGES != null && TRACK_EXT_PACKAGES.length > 0) {
+            if (TRACK_EXT_PACKAGES != null) {
                 for (String extPackage : TRACK_EXT_PACKAGES) {
                     MemoryInitClass.init(extPackage);
                 }

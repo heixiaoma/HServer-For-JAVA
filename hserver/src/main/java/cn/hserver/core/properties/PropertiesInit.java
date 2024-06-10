@@ -41,17 +41,17 @@ public class PropertiesInit {
         }
 
         String trackExtPackages = instance.get("trackExtPackages");
-        if (trackExtPackages.trim().length() > 0) {
+        if (!trackExtPackages.trim().isEmpty()) {
             ConstConfig.TRACK_EXT_PACKAGES=trackExtPackages.split(",");
         }
 
         String trackNoPackages = instance.get("trackNoPackages");
-        if (trackNoPackages.trim().length() > 0) {
+        if (!trackNoPackages.trim().isEmpty()) {
             ConstConfig.TRACK_NO_PACKAGES=trackNoPackages.split(",");
         }
         try {
             String portsStr = instance.get("ports");
-            if (portsStr.trim().length() > 0) {
+            if (!portsStr.trim().isEmpty()) {
                 String[] portStars = portsStr.split(",");
                 Integer[] ports = new Integer[portStars.length];
                 for (int i = 0; i < portStars.length; i++) {
@@ -61,13 +61,13 @@ public class PropertiesInit {
             }
         }catch (Throwable ignored){
         }
-        if (instance.get("appName").trim().length() > 0) {
+        if (!instance.get("appName").trim().isEmpty()) {
             ConstConfig.APP_NAME = instance.get("appName");
         }
-        if (instance.get("persistPath").trim().length() > 0) {
+        if (!instance.get("persistPath").trim().isEmpty()) {
             ConstConfig.PERSIST_PATH = instance.get("persistPath");
         }
-        if (instance.get("track").trim().length() > 0) {
+        if (!instance.get("track").trim().isEmpty()) {
             ConstConfig.TRACK = Boolean.valueOf(instance.get("track"));
         }
     }
