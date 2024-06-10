@@ -3,13 +3,13 @@ package cn.hserver.core.server.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.hserver.core.server.context.ConfigMap;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 
 import static cn.hserver.core.server.context.ConstConfig.profiles;
 
@@ -32,11 +32,12 @@ public class PropUtil {
         } else {
             propUtil = new PropUtil();
             initProp();
+            initYaml();
             return propUtil;
         }
     }
 
-    private static String getProFiles(String name) {
+    private static String getPropFiles(String name) {
         return name == null ? null : "/app-" + name + ".properties";
     }
 
@@ -60,7 +61,7 @@ public class PropUtil {
         }
         if (profiles != null) {
             try {
-                InputStreamReader is2 = getFileStream(getProFiles(profiles));
+                InputStreamReader is2 = getFileStream(getPropFiles(profiles));
                 p.clear();
                 if (is2 == null) {
                     return;
@@ -74,6 +75,72 @@ public class PropUtil {
             }
         }
     }
+
+
+    private static String getYamlFiles(String name) {
+        return name == null ? null : "/app-" + name + ".yml";
+    }
+
+
+    private static void initYaml() {
+        Yaml yaml = new Yaml();
+        try {
+            String name = "/app.yml";
+            InputStreamReader is = getFileStream(name);
+            if (is == null) {
+                return;
+            }
+            Map<String, Object> configData  = yaml.load(is);
+            Map<String,Object> configMap = new HashMap<>();
+            convertToProperties(configData,configMap,"");
+            configMap.forEach((k, v) -> data.put(k, v.toString()));
+            configMap.clear();
+            configData.clear();
+            is.close();
+        } catch (Exception e) {
+            log.error(ExceptionUtil.getMessage(e));
+        }
+        //优先级查代码的，再查配置的
+        if (profiles == null) {
+            profiles = data.get("env");
+        }
+        if (profiles != null) {
+            try {
+                InputStreamReader is2 = getFileStream(getYamlFiles(profiles));
+                if (is2 == null) {
+                    return;
+                }
+                Map<String, Object> configData  = yaml.load(is2);
+                Map<String,Object> configMap = new HashMap<>();
+                convertToProperties(configData,configMap,"");
+                configMap.forEach((k, v) -> data.put(k, v.toString()));
+                configMap.clear();
+                configData.clear();
+                is2.close();
+            } catch (Exception e) {
+                log.error(ExceptionUtil.getMessage(e));
+            }
+        }
+    }
+
+
+    private static void convertToProperties(Map<String, Object> data, Map<String,Object> properties, String prefix) {
+        for (Map.Entry<String, Object> entry : data.entrySet()) {
+            String key = prefix + entry.getKey().trim();
+            Object value = entry.getValue();
+
+            if (value instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> subMap = (Map<String, Object>) value;
+                convertToProperties(subMap, properties, key + ".");
+            } else {
+                properties.put(key, value.toString());
+            }
+        }
+    }
+
+
+
 
     public String get(String key) {
         String property = data.get(key);
