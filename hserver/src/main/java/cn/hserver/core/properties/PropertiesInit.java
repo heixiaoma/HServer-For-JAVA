@@ -1,8 +1,13 @@
 package cn.hserver.core.properties;
 
+import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.server.context.ConstConfig;
+import cn.hserver.core.server.context.ServerConfig;
+import cn.hserver.core.server.util.ObjConvertUtil;
 import cn.hserver.core.server.util.PropUtil;
 import cn.hserver.core.server.util.EventLoopUtil;
+
+import java.lang.reflect.Field;
 
 /**
  * @author hxm
@@ -11,47 +16,53 @@ import cn.hserver.core.server.util.EventLoopUtil;
 public class PropertiesInit {
 
     public static void configFile() {
-        PropUtil instance = PropUtil.getInstance();
-        Integer taskPool = instance.getInt("taskPool");
-        if (taskPool != null) {
-            ConstConfig.taskPool = taskPool;
+        ServerConfig serverConfig = new ServerConfig();
+        try {
+            for (Field field : ServerConfig.class.getDeclaredFields()) {
+                PropUtil instance = PropUtil.getInstance();
+                String s = instance.get(field.getName(), null);
+                Object convert = ObjConvertUtil.convert(field.getType(), s);
+                if (convert != null) {
+                    field.setAccessible(true);
+                    field.set(serverConfig, convert);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        Integer workerPool = instance.getInt("workerPool");
-        if (workerPool != null) {
-            ConstConfig.workerPool = workerPool;
+        IocUtil.addBean(serverConfig);
+        if (serverConfig.getTaskPool() != null) {
+            ConstConfig.taskPool = serverConfig.getTaskPool();
         }
-
-        Integer backLog = instance.getInt("backLog");
-        if (backLog != null) {
-            ConstConfig.backLog = backLog;
-        }
-
-        String humOpen = instance.get("humOpen");
-        if (humOpen != null) {
-            ConstConfig.HUM_OPEN = Boolean.valueOf(humOpen);
-        }
-        Integer humPort = instance.getInt("humPort");
-        if (humPort != null) {
-            ConstConfig.HUM_PORT = humPort;
+        if (serverConfig.getWorkerPool() != null) {
+            ConstConfig.workerPool = serverConfig.getWorkerPool();
         }
 
-        Integer PRE_PROTOCOL_MAX_SIZE = instance.getInt("preProtocolMaxSize");
-        if (PRE_PROTOCOL_MAX_SIZE != null) {
-            ConstConfig.PRE_PROTOCOL_MAX_SIZE = PRE_PROTOCOL_MAX_SIZE;
+        if (serverConfig.getBackLog() != null) {
+            ConstConfig.backLog = serverConfig.getBackLog();
         }
 
-        String trackExtPackages = instance.get("trackExtPackages");
-        if (!trackExtPackages.trim().isEmpty()) {
-            ConstConfig.TRACK_EXT_PACKAGES=trackExtPackages.split(",");
+        if (serverConfig.getHumOpen() != null) {
+            ConstConfig.HUM_OPEN = serverConfig.getHumOpen();
+        }
+        if (serverConfig.getHumPort() != null) {
+            ConstConfig.HUM_PORT = serverConfig.getHumPort();
         }
 
-        String trackNoPackages = instance.get("trackNoPackages");
-        if (!trackNoPackages.trim().isEmpty()) {
-            ConstConfig.TRACK_NO_PACKAGES=trackNoPackages.split(",");
+        if (serverConfig.getPreProtocolMaxSize() != null) {
+            ConstConfig.PRE_PROTOCOL_MAX_SIZE = serverConfig.getPreProtocolMaxSize();
+        }
+
+        if (serverConfig.getTrackExtPackages() != null && !serverConfig.getTrackExtPackages().trim().isEmpty()) {
+            ConstConfig.TRACK_EXT_PACKAGES = serverConfig.getTrackExtPackages().split(",");
+        }
+
+        if (serverConfig.getTrackNoPackages() != null && !serverConfig.getTrackNoPackages().trim().isEmpty()) {
+            ConstConfig.TRACK_NO_PACKAGES = serverConfig.getTrackNoPackages().split(",");
         }
         try {
-            String portsStr = instance.get("ports");
-            if (!portsStr.trim().isEmpty()) {
+            String portsStr = serverConfig.getPorts();
+            if (portsStr != null && !portsStr.trim().isEmpty()) {
                 String[] portStars = portsStr.split(",");
                 Integer[] ports = new Integer[portStars.length];
                 for (int i = 0; i < portStars.length; i++) {
@@ -59,16 +70,17 @@ public class PropertiesInit {
                 }
                 ConstConfig.PORTS = ports;
             }
-        }catch (Throwable ignored){
+        } catch (Throwable ignored) {
         }
-        if (!instance.get("appName").trim().isEmpty()) {
-            ConstConfig.APP_NAME = instance.get("appName");
+
+        if (serverConfig.getAppName() != null && !serverConfig.getAppName().trim().isEmpty()) {
+            ConstConfig.APP_NAME = serverConfig.getAppName();
         }
-        if (!instance.get("persistPath").trim().isEmpty()) {
-            ConstConfig.PERSIST_PATH = instance.get("persistPath");
+        if (serverConfig.getPersistPath() != null && !serverConfig.getPersistPath().trim().isEmpty()) {
+            ConstConfig.PERSIST_PATH = serverConfig.getPersistPath();
         }
-        if (!instance.get("track").trim().isEmpty()) {
-            ConstConfig.TRACK = Boolean.valueOf(instance.get("track"));
+        if (serverConfig.getTrack() != null) {
+            ConstConfig.TRACK = serverConfig.getTrack();
         }
     }
 }

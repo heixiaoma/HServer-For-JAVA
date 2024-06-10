@@ -91,6 +91,9 @@ public class HServerApplication {
 
     private synchronized static void iocInit(Class<?> clazz, Class<?> mainClass, String... packages) {
         HServerApplication.mainClass = mainClass;
+        log.info("初始化配置文件");
+        PropertiesInit.configFile();
+        log.info("初始化配置完成");
         //初始化哈日志配置
         try {
             EnvironmentUtil.init(clazz);
@@ -114,9 +117,6 @@ public class HServerApplication {
         }
         scanPackage.addAll(PlugsManager.getPlugin().getPlugPackages());
         scanPackage.add(HServerApplication.class.getPackage().getName());
-        log.info("初始化配置文件");
-        PropertiesInit.configFile();
-        log.info("初始化配置完成");
         log.info("Class动态修改开始...");
         //没开启追踪的不追踪
         if (ConstConfig.TRACK) {

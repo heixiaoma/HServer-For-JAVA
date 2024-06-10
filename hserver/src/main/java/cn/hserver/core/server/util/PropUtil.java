@@ -6,6 +6,8 @@ import cn.hserver.core.server.context.ConfigMap;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -89,9 +91,9 @@ public class PropUtil {
 
     public Integer getInt(String key) {
         String s = get(key);
-        if (s != null && s.trim().length() > 0) {
+        if (s != null && !s.trim().isEmpty()) {
             try {
-                return Integer.parseInt(s);
+                return (int) Calculator.calculate(s);
             } catch (Exception e) {
                 return null;
             }
@@ -101,7 +103,7 @@ public class PropUtil {
 
     public Boolean getBoolean(String key) {
         String s = get(key);
-        if (s != null && s.trim().length() > 0) {
+        if (s != null && !s.trim().isEmpty()) {
             try {
                 return Boolean.valueOf(s);
             } catch (Exception e) {
@@ -132,11 +134,11 @@ public class PropUtil {
         //先检查外部文件，在检查内部文件，外部优先级最高
         String rootPath = System.getProperty("user.dir");
         try {
-            return new InputStreamReader(new FileInputStream(rootPath + path), StandardCharsets.UTF_8);
+            return new InputStreamReader(Files.newInputStream(Paths.get(rootPath + path)), StandardCharsets.UTF_8);
         } catch (Exception e) {
             try {
                 return new InputStreamReader(Objects.requireNonNull(PropUtil.class.getResourceAsStream(path)), StandardCharsets.UTF_8);
-            }catch (Exception e1){
+            } catch (Exception e1) {
                 return null;
             }
         }

@@ -3,6 +3,8 @@ package cn.hserver.core.log;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import cn.hserver.core.ioc.IocUtil;
+import cn.hserver.core.server.context.ServerConfig;
 import cn.hserver.core.server.util.ExceptionUtil;
 import cn.hserver.core.server.util.PropUtil;
 import org.slf4j.LoggerFactory;
@@ -17,13 +19,14 @@ public class HServerLogConfig {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(HServerLogConfig.class);
     public static void init() {
         try {
-            if (PropUtil.getInstance().get("logbackName").trim().length() > 0) {
-                InputStream logbackName = HServerLogConfig.class.getResourceAsStream("/" + PropUtil.getInstance().get("logbackName").trim());
+            ServerConfig serverConfig = IocUtil.getBean(ServerConfig.class);
+            if (serverConfig.getLogbackName()!=null&&!serverConfig.getLogbackName().isEmpty()) {
+                InputStream logbackName = HServerLogConfig.class.getResourceAsStream("/" + serverConfig.getLogbackName().trim());
                 if (logbackName != null) {
                     loadConfiguration(logbackName);
                     return;
                 } else {
-                    System.err.println(PropUtil.getInstance().get("logbackName").trim() + "文件未读取到，请将文件放置在 resources目录下");
+                    System.err.println(serverConfig.getLogbackName().trim() + "文件未读取到，请将文件放置在 resources目录下");
                 }
             }
             loadConfiguration(HServerLogConfig.class.getResourceAsStream("/logback-hserver.xml"));
@@ -46,8 +49,9 @@ public class HServerLogConfig {
         in.close();
         Logger root = loggerContext.getLogger("ROOT");
         if (root != null) {
-            if (PropUtil.getInstance().get("log").trim().length() > 0) {
-                root.setLevel(Level.toLevel(PropUtil.getInstance().get("log").trim()));
+            ServerConfig serverConfig = IocUtil.getBean(ServerConfig.class);
+            if (serverConfig.getLog()!=null&&!serverConfig.getLog().isEmpty()) {
+                root.setLevel(Level.toLevel(serverConfig.getLog().trim()));
             }
         }
     }

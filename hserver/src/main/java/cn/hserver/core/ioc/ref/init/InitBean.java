@@ -53,7 +53,7 @@ public class InitBean extends Init{
             }
             //检查注解里面是否有值
             Bean annotation = aClass.getAnnotation(Bean.class);
-            if (annotation.value().trim().length() > 0) {
+            if (!annotation.value().trim().isEmpty()) {
                 IocUtil.addBean(annotation.value(), aClass.newInstance());
             } else {
                 IocUtil.addBean(aClass.getName(), aClass.newInstance());
@@ -67,7 +67,7 @@ public class InitBean extends Init{
                 if (task == null) {
                     continue;
                 }
-                if (annotation.value().trim().length() > 0) {
+                if (!annotation.value().trim().isEmpty()) {
                     TaskManager.initTask(task.name(), task.time(), annotation.value(), method);
                 } else {
                     TaskManager.initTask(task.name(), task.time(), aClass.getName(), method);

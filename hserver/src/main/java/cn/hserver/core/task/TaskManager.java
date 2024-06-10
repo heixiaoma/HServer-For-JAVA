@@ -1,5 +1,6 @@
 package cn.hserver.core.task;
 
+import cn.hserver.core.server.util.Calculator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.hserver.core.interfaces.TaskJob;
@@ -117,7 +118,7 @@ public class TaskManager {
         } catch (Exception e) {
             try {
                 //毫秒级定时器
-                int times = Integer.parseInt(time);
+                int times = (int) Calculator.calculate(time);
                 ScheduledFuture<?> submit = SCHEDULED_THREAD_POOL_EXECUTOR.submit(times, className, method, args);
                 CRON_TASK.put(name, submit);
             } catch (Exception e1) {

@@ -14,33 +14,33 @@ public class ObjConvertUtil {
                     if (res == null) {
                         object = 0;
                     } else {
-                        object = Integer.parseInt(res);
+                        object = (int)Calculator.calculate(res);
                     }
                     break;
                 case "java.lang.Integer":
-                    object = Integer.parseInt(res);
+                    object =  (int)Calculator.calculate(res);
                     break;
 
                 case "double":
                     if (res == null) {
                         object = 0.0;
                     } else {
-                        object = Double.parseDouble(res);
+                        object = Calculator.calculate(res);
                     }
                     break;
                 case "java.lang.Double":
-                    object = Double.parseDouble(res);
+                    object = Calculator.calculate(res);
                     break;
 
                 case "long":
                     if (res == null) {
                         object = 0L;
                     } else {
-                        object = Long.parseLong(res);
+                        object = (long)Calculator.calculate(res);
                     }
                     break;
                 case "java.lang.Long":
-                    object = Long.parseLong(res);
+                    object =  (long)Calculator.calculate(res);
                     break;
                 case "short":
                     if (res == null) {
@@ -50,17 +50,17 @@ public class ObjConvertUtil {
                     }
                     break;
                 case "java.lang.Short":
-                    object = Short.parseShort(res);
+                    object =  (short)Calculator.calculate(res);
                     break;
                 case "float":
                     if (res == null) {
                         object = 0;
                     } else {
-                        object = Float.parseFloat(res);
+                        object = (float)Calculator.calculate(res);
                     }
                     break;
                 case "java.lang.Float":
-                    object = Float.parseFloat(res);
+                    object = (float)Calculator.calculate(res);
                     break;
                 case "boolean":
                     if (res == null) {
@@ -84,11 +84,11 @@ public class ObjConvertUtil {
                     break;
 
                 case "java.lang.BigInteger":
-                    object = BigInteger.valueOf(Long.parseLong(res));
+                    object = BigInteger.valueOf((long) Calculator.calculate(res));
                     break;
 
                 case "java.lang.BigDecimal":
-                    object = BigDecimal.valueOf(Long.parseLong(res));
+                    object = BigDecimal.valueOf(Calculator.calculate(res));
                     break;
 
                 case "java.lang.String":

@@ -125,7 +125,7 @@ public class QueueDispatcher {
                 log.error("initialize " + clazz.getSimpleName() + " error", e);
                 continue;
             }
-            if (queueListener.queueName().trim().length() == 0) {
+            if (queueListener.queueName().trim().isEmpty()) {
                 IocUtil.addBean(obj);
                 continue;
             }
@@ -141,7 +141,7 @@ public class QueueDispatcher {
 
                     int size=queueHandler.size();
                     String s = queueHandler.sizePropValue();
-                    if (s.trim().length()!=0){
+                    if (!s.trim().isEmpty()){
                         Integer anInt = PropUtil.getInstance().getInt(s);
                         if (anInt!=null) {
                             size =anInt;
