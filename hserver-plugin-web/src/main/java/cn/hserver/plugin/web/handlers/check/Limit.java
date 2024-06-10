@@ -25,12 +25,6 @@ public class Limit implements DispatcherHandler{
             return hServerContext;
         }
         /**
-         * 检查限流操作是否设置了数据
-         */
-        if (hServerContext.getWebkit().httpResponse.hasData()) {
-            return hServerContext;
-        }
-        /**
          * 检查限流操作
          */
         if (listBean != null) {

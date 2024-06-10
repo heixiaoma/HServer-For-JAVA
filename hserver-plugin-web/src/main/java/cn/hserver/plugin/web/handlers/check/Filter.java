@@ -23,6 +23,11 @@ public class Filter implements DispatcherHandler{
         if (!hasFilter) {
             return hServerContext;
         }
+
+        if (hServerContext.isStaticFile()) {
+            return hServerContext;
+        }
+
         /**
          * 检查限流操作是否设置了数据
          */

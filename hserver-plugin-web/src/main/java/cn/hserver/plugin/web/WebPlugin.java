@@ -7,6 +7,7 @@ import cn.hserver.core.log.HServerPatternLayout;
 import cn.hserver.core.server.util.EventLoopUtil;
 import cn.hserver.core.server.util.ExceptionUtil;
 import cn.hserver.core.server.util.PropUtil;
+import cn.hserver.plugin.web.context.WebConfig;
 import cn.hserver.plugin.web.context.WebConstConfig;
 import cn.hserver.plugin.web.util.ParameterUtil;
 import cn.hserver.plugin.web.annotation.*;
@@ -40,31 +41,7 @@ public class WebPlugin implements PluginAdapter {
 
     @Override
     public void startIocInit() {
-        PropUtil instance = PropUtil.getInstance();
-        //配置文件初始化
-        if (instance.get("web.readLimit").trim().length() > 0) {
-            WebConstConfig.READ_LIMIT = Long.valueOf(instance.get("web.readLimit"));
-        }
-        if (instance.get("web.rootPath").trim().length() > 0) {
-            WebConstConfig.ROOT_PATH = instance.get("web.rootPath");
-        }
-        if (instance.get("web.writeLimit").trim().length() > 0) {
-            WebConstConfig.WRITE_LIMIT = Long.valueOf(instance.get("web.writeLimit"));
-        }
-        if (instance.get("web.httpContentSize").trim().length() > 0) {
-            WebConstConfig.HTTP_CONTENT_SIZE = instance.getInt("web.httpContentSize");
-        }
-        if (instance.get("web.maxWebsocketFrameLength").trim().length() > 0) {
-            WebConstConfig.MAX_WEBSOCKET_FRAME_LENGTH = instance.getInt("web.maxWebsocketFrameLength");
-        }
-        Integer businessPool = instance.getInt("web.businessPool");
-        if (businessPool != null && businessPool > 0) {
-            WebConstConfig.BUSINESS_EVENT = EventLoopUtil.getEventLoop(businessPool, "hserver_business");
-        } else if (businessPool != null && businessPool < 0) {
-            WebConstConfig.BUSINESS_EVENT = null;
-        } else {
-            WebConstConfig.BUSINESS_EVENT = EventLoopUtil.getEventLoop(50, "hserver_business");
-        }
+
     }
 
     @Override
@@ -108,6 +85,32 @@ public class WebPlugin implements PluginAdapter {
 
     @Override
     public void injectionEnd() {
+        WebConfig webConfig = IocUtil.getBean(WebConfig.class);
+        //配置文件初始化
+        if (webConfig.getReadLimit()!=null) {
+            WebConstConfig.READ_LIMIT =webConfig.getReadLimit();
+        }
+        if (webConfig.getWriteLimit()!=null) {
+            WebConstConfig.WRITE_LIMIT = webConfig.getWriteLimit();
+        }
+        if (webConfig.getRootPath()!=null&&webConfig.getRootPath().trim().length() > 0) {
+            WebConstConfig.ROOT_PATH = webConfig.getRootPath().trim();
+        }
+
+        if (webConfig.getHttpContentSize()!=null) {
+            WebConstConfig.HTTP_CONTENT_SIZE = webConfig.getHttpContentSize();
+        }
+        if (webConfig.getMaxWebsocketFrameLength()!=null) {
+            WebConstConfig.MAX_WEBSOCKET_FRAME_LENGTH = webConfig.getMaxWebsocketFrameLength();
+        }
+        Integer businessPool = webConfig.getBusinessPool();
+        if (businessPool != null && businessPool > 0) {
+            WebConstConfig.BUSINESS_EVENT = EventLoopUtil.getEventLoop(businessPool, "hserver_business");
+        } else if (businessPool != null && businessPool < 0) {
+            WebConstConfig.BUSINESS_EVENT = null;
+        } else {
+            WebConstConfig.BUSINESS_EVENT = EventLoopUtil.getEventLoop(50, "hserver_business");
+        }
         SslContextUtil.setSsl();
     }
 

@@ -1,7 +1,9 @@
 package cn.hserver.plugin.web.util;
 
+import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.server.util.ExceptionUtil;
 import cn.hserver.core.server.util.PropUtil;
+import cn.hserver.plugin.web.context.WebConfig;
 import cn.hserver.plugin.web.context.WebConstConfig;
 import io.netty.handler.ssl.*;
 import org.slf4j.Logger;
@@ -20,10 +22,10 @@ public class SslContextUtil {
     }
 
     public static void setSsl() {
-        PropUtil instance = PropUtil.getInstance();
-        String certFilePath = instance.get("web.certPath");
-        String privateKeyPath = instance.get("web.privateKeyPath");
-        String privateKeyPwd = instance.get("web.privateKeyPwd");
+        WebConfig webConfig = IocUtil.getBean(WebConfig.class);
+        String certFilePath = webConfig.getCertPath();
+        String privateKeyPath = webConfig.getPrivateKeyPath();
+        String privateKeyPwd = webConfig.getPrivateKeyPwd();
         if (privateKeyPath == null || certFilePath == null || privateKeyPath.trim().length() == 0 || certFilePath.trim().length() == 0) {
             return;
         }

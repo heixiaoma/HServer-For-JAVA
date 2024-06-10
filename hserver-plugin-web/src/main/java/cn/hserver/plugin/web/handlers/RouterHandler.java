@@ -1,6 +1,9 @@
 package cn.hserver.plugin.web.handlers;
 
+import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.plugin.web.context.HServerContext;
+import cn.hserver.plugin.web.context.WebConfig;
+import cn.hserver.plugin.web.context.WebConstConfig;
 import cn.hserver.plugin.web.handlers.check.*;
 import com.alibaba.ttl.threadpool.TtlExecutors;
 import io.netty.channel.ChannelHandler;
@@ -23,9 +26,10 @@ import java.util.concurrent.Executor;
 public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
 
     private static final RouterHandler instance = new RouterHandler();
-    private static final boolean useCtxExecutor = false;
+    private static final boolean useCtxExecutor = WebConstConfig.BUSINESS_EVENT == null;
 
-    private RouterHandler() {}
+    private RouterHandler() {
+    }
 
     public static RouterHandler getInstance() {
         return instance;
@@ -40,10 +44,8 @@ public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HServerContext hServerContext) throws Exception {
         CompletableFuture<HServerContext> future = CompletableFuture.completedFuture(hServerContext);
-        Executor executor;
-        if (useCtxExecutor) {
-            executor = ctx.executor();
-        } else {
+        Executor executor=ctx.executor();
+        if (!useCtxExecutor) {
             executor = TtlExecutors.getTtlExecutor(ctx.executor());
         }
         future.thenApplyAsync(req -> limit.dispatcher(hServerContext), executor)
