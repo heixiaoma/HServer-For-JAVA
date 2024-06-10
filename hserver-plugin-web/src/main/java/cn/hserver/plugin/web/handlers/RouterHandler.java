@@ -10,7 +10,9 @@ import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.EventExecutor;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
 
@@ -21,36 +23,33 @@ import java.util.concurrent.Executor;
 public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
 
     private static final RouterHandler instance = new RouterHandler();
-    private static final AttributeKey<Executor> EXECUTOR_KEY = AttributeKey.valueOf("EXECUTOR_KEY");
+    private static final boolean useCtxExecutor = false;
 
-    private RouterHandler() {
-
-    }
+    private RouterHandler() {}
 
     public static RouterHandler getInstance() {
         return instance;
     }
 
     private final DispatcherHandler limit = new Limit();
+    private final DispatcherHandler staticFile = new StaticFile();
     private final DispatcherHandler filter = new Filter();
     private final DispatcherHandler permission = new Permission();
-    private final DispatcherHandler staticFile = new StaticFile();
     private final DispatcherHandler findController = new FindController();
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HServerContext hServerContext) throws Exception {
         CompletableFuture<HServerContext> future = CompletableFuture.completedFuture(hServerContext);
-        Attribute<Executor> attr = ctx.channel().attr(EXECUTOR_KEY);
-        Executor executor = attr.get();
-        if (executor == null) {
+        Executor executor;
+        if (useCtxExecutor) {
+            executor = ctx.executor();
+        } else {
             executor = TtlExecutors.getTtlExecutor(ctx.executor());
-            attr.set(executor);
         }
-//        EventExecutor executor = ctx.executor();
         future.thenApplyAsync(req -> limit.dispatcher(hServerContext), executor)
+                .thenApplyAsync(staticFile::dispatcher, executor)
                 .thenApplyAsync(filter::dispatcher, executor)
                 .thenApplyAsync(permission::dispatcher, executor)
-                .thenApplyAsync(staticFile::dispatcher, executor)
                 .thenApplyAsync(findController::dispatcher, executor)
                 .thenApplyAsync(DispatcherHandler::buildResponse, executor)
                 .exceptionally(DispatcherHandler::handleException)

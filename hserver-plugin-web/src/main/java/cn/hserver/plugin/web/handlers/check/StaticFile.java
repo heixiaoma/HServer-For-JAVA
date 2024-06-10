@@ -11,6 +11,9 @@ public class StaticFile implements DispatcherHandler{
 
     @Override
     public HServerContext dispatcher(HServerContext context) {
+        if (context.getWebkit().httpResponse.hasData()) {
+            return context;
+        }
         if (staticHandler.hasEmptyStaticFile()){
             return context;
         }
