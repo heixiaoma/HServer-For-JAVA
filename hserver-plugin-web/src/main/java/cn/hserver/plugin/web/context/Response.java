@@ -4,6 +4,8 @@ import cn.hserver.plugin.web.interfaces.HttpRequest;
 import cn.hserver.plugin.web.util.FreemarkerUtil;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.cookie.Cookie;
+import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.hserver.plugin.web.interfaces.HttpResponse;
@@ -84,7 +86,7 @@ public class Response implements HttpResponse {
      */
     @Override
     public void setDownloadBigFile(File file, ProgressStatus progressStatus, HttpRequest request) throws Exception {
-        useCtx=true;
+        useCtx = true;
         ChannelHandlerContext ctx = request.getCtx();
         try {
             final RandomAccessFile raf = new RandomAccessFile(file, "r");
@@ -94,15 +96,15 @@ public class Response implements HttpResponse {
             headers.set(HttpHeaderNames.ACCEPT_RANGES, HttpHeaderValues.BYTES);
             headers.set(HttpHeaderNames.CONTENT_LENGTH, fileLength);
             headers.set(HttpHeaderNames.CONTENT_TYPE, MimeType.getFileType(file.getName()));
-            headers.add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("inline; filename=\"%s\"", URLEncoder.encode(file.getName(),"UTF-8")));
+            headers.add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("inline; filename=\"%s\"", URLEncoder.encode(file.getName(), "UTF-8")));
             String range = request.getHeaders().get(HttpHeaderNames.RANGE);
             long offset = 0L, length = raf.length();
-            if (range!=null&&range.trim().length()!=0) {// Range: bytes=1900544-  Range: bytes=1900544-6666666
+            if (range != null && range.trim().length() != 0) {// Range: bytes=1900544-  Range: bytes=1900544-6666666
                 range = range.substring(6);
                 String[] split = range.split("-");
                 try {
                     offset = Long.parseLong(split[0]);
-                    if (split.length > 1 && split[1]!=null&&split[1].trim().length()!=0) {
+                    if (split.length > 1 && split[1] != null && split[1].trim().length() != 0) {
                         long end = Long.parseLong(split[1]);
                         if (end <= length && offset >= end) {
                             long endIndex = end - offset;
@@ -120,7 +122,7 @@ public class Response implements HttpResponse {
                 }
             }
 
-            DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1,status);
+            DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1, status);
             response.headers().set(headers);
             ctx.write(response);
             ChannelFuture sendFileFuture = ctx.write(new DefaultFileRegion(raf.getChannel(), 0, fileLength), ctx.newProgressivePromise());
@@ -132,6 +134,7 @@ public class Response implements HttpResponse {
                     progressStatus.operationComplete(file.getAbsolutePath());
                     raf.close();
                 }
+
                 @Override
                 public void operationProgressed(ChannelProgressiveFuture future,
                                                 long progress, long total) throws Exception {
@@ -236,28 +239,8 @@ public class Response implements HttpResponse {
      */
     @Override
     public void addCookie(Cookie cookie) {
-        Iterator<String> iterator = cookie.keySet().iterator();
-        StringBuilder cookieStr = new StringBuilder();
-        while (iterator.hasNext()) {
-            String k = iterator.next();
-            String v = cookie.get(k);
-            try {
-                cookieStr.append(java.net.URLEncoder.encode(k, "UTF-8") + "=" + java.net.URLEncoder.encode(v, "UTF-8") + ";");
-            } catch (UnsupportedEncodingException e) {
-                log.error(ExceptionUtil.getMessage(e));
-            }
-        }
-        if (cookie.getMaxAge() != null) {
-            cookieStr.append("Max-Age=");
-            cookieStr.append(cookie.getMaxAge());
-            cookieStr.append(";");
-        }
-        if (cookie.getPath() != null) {
-            cookieStr.append("path=");
-            cookieStr.append(cookie.getPath());
-            cookieStr.append(";");
-        }
-        headers.put("Set-Cookie", cookieStr.toString());
+        String encode = ServerCookieEncoder.LAX.encode(cookie);
+        headers.put(String.valueOf(HttpHeaderNames.SET_COOKIE), encode);
     }
 
     @Override

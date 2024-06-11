@@ -6,14 +6,37 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.cookie.Cookie;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author hxm
  */
 public interface HttpRequest {
+
+    /**
+     * 最请求设计一个存储器,写
+     * @param key
+     * @param value
+     */
+    void setAttribute(String key, Object value);
+
+    /**
+     * 请求设计一个存储器 读
+     * @param key
+     * @return
+     */
+    Object getAttribute(String key);
+
+
+    /**
+     * 请求设计一个存储器 删
+     * @param key
+     */
+    void removeAttribute(String key);
 
     /**
      * 获取请求ID
@@ -154,4 +177,6 @@ public interface HttpRequest {
      */
     long getCreateTime();
 
+
+    Set<Cookie> getCookies();
 }

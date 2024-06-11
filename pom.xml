@@ -32,6 +32,7 @@
         <module>hserver-net</module>
         <module>hserver-plugin-build</module>
         <module>hserver-plugin-runner</module>
+        <module>hserver-plugin-satoken</module>
     </modules>
 
     <properties>
@@ -112,6 +113,11 @@
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-mybatis_flex</artifactId>
+                <version>3.5.M1</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hserver</groupId>
+                <artifactId>hserver-plugin-satoken</artifactId>
                 <version>3.5.M1</version>
             </dependency>
         </dependencies>

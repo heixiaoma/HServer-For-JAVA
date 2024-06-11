@@ -9,6 +9,8 @@ import cn.hserver.plugin.web.interfaces.HttpRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.cookie.Cookie;
+import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.handler.codec.http.multipart.*;
 import io.netty.util.CharsetUtil;
 import cn.hserver.plugin.web.util.IpUtil;
@@ -32,15 +34,33 @@ public class Request implements HttpRequest {
     private Map<String, List<String>> urlParams = new ConcurrentHashMap<>();
     private HeadMap headers;
     private final long createTime = System.nanoTime();
-
-    /**
-     * 文件处理
-     */
-    private static final ByteBuf EMPTY_BUF = Unpooled.copiedBuffer("", CharsetUtil.UTF_8);
     private byte[] body = null;
-    private Map<String, PartFile> multipartFile = new HashMap<>(8);
+    private Map<String, PartFile> multipartFile;
     private static final String TEMP_PATH = System.getProperty("java.io.tmpdir") + File.separator;
+    private Map<String, Object> attributes;
 
+    @Override
+    public void setAttribute(String key, Object value) {
+        if (attributes == null) {
+            attributes = new ConcurrentHashMap<>();
+        }
+        attributes.put(key, value);
+    }
+
+    @Override
+    public Object getAttribute(String key) {
+        if (attributes == null) {
+            return null;
+        }
+        return attributes.get(key);
+    }
+
+    @Override
+    public void removeAttribute(String key) {
+        if (attributes != null){
+            attributes.remove(key);
+        }
+    }
 
     @Override
     public String getRequestId() {
@@ -58,6 +78,15 @@ public class Request implements HttpRequest {
     }
 
     @Override
+    public Set<Cookie> getCookies() {
+        String cookieString = headers.get("Cookie");
+        if (cookieString != null) {
+            return ServerCookieDecoder.LAX.decode(cookieString);
+        }
+        return null;
+    }
+
+    @Override
     public String query(String name) {
         return requestParams.get(name) == null ? null : requestParams.get(name).get(0);
     }
@@ -69,6 +98,9 @@ public class Request implements HttpRequest {
 
     @Override
     public PartFile queryFile(String name) {
+        if (multipartFile == null) {
+            return null;
+        }
         return multipartFile.get(name);
     }
 
@@ -185,6 +217,9 @@ public class Request implements HttpRequest {
             partFile.setFilePath(file.getPath());
             partFile.setContentType(fileUpload.getContentType());
             partFile.setLength(fileUpload.length());
+            if (multipartFile == null) {
+                multipartFile = new ConcurrentHashMap<>();
+            }
             multipartFile.put(partFile.getFormName(), partFile);
         }
     }
@@ -242,18 +277,12 @@ public class Request implements HttpRequest {
         this.headers = headers;
     }
 
-    public static ByteBuf getEmptyBuf() {
-        return EMPTY_BUF;
-    }
 
     @Override
     public Map<String, PartFile> getMultipartFile() {
         return multipartFile;
     }
 
-    public void setMultipartFile(Map<String, PartFile> multipartFile) {
-        this.multipartFile = multipartFile;
-    }
 
     public static String getTempPath() {
         return TEMP_PATH;

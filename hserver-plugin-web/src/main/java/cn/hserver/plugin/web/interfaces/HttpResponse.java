@@ -1,8 +1,7 @@
 package cn.hserver.plugin.web.interfaces;
 
-import cn.hserver.plugin.web.context.Cookie;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.cookie.Cookie;
 
 import java.io.File;
 import java.io.InputStream;

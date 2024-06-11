@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>cn.hserver</groupId>
+        <artifactId>hserver-parent</artifactId>
+        <version>3.5.M1</version>
+    </parent>
+
+    <artifactId>hserver-plugin-satoken</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.hserver</groupId>
+            <artifactId>hserver</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.hserver</groupId>
+            <artifactId>hserver-plugin-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Sa-Token 权限认证（core核心包）, 在线文档：https://sa-token.cc -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-core</artifactId>
+            <version>1.38.0</version>
+        </dependency>
+    </dependencies>
+
+</project>
