@@ -11,7 +11,7 @@
 
 # 配置文件
 - sa-token.properties
-```java
+``` properties
 # token 名称 (同时也是 cookie 名称)
 tokenName=satoken
 # token 有效期（单位：秒） 默认30天，-1 代表永久有效
@@ -76,7 +76,7 @@ public class StpInterfaceImpl  implements StpInterface {
 
 ```
 
-# 支持注解如下
+# 使用注解如下，兼容所有注解
 
 ```java
 @Controller
@@ -94,4 +94,19 @@ public class TestController {
         return JsonResult.ok();
     }
 }
+```
+
+# 关于拦截示例
+```java
+
+@Bean
+public class SaFilter implements FilterAdapter {
+    @Override
+    public void doFilter(Webkit webkit) throws Exception {
+        SaRouter.match("/get1", r -> {
+            StpUtil.checkPermission("user");
+        });
+    }
+}
+
 ```
