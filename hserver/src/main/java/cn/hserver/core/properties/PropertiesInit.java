@@ -2,6 +2,7 @@ package cn.hserver.core.properties;
 
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.server.context.ConstConfig;
+import cn.hserver.core.server.context.IoMultiplexer;
 import cn.hserver.core.server.context.ServerConfig;
 import cn.hserver.core.server.util.ObjConvertUtil;
 import cn.hserver.core.server.util.PropUtil;
@@ -82,5 +83,9 @@ public class PropertiesInit {
         if (serverConfig.getTrack() != null) {
             ConstConfig.TRACK = serverConfig.getTrack();
         }
+        if (serverConfig.getIoMode()!=null){
+            ConstConfig.IO_MOD = IoMultiplexer.valueOf(serverConfig.getIoMode());
+        }
+
     }
 }

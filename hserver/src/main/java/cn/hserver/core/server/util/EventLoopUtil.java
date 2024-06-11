@@ -5,6 +5,7 @@ import cn.hserver.core.server.context.IoMultiplexer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.kqueue.KQueue;
+import io.netty.channel.kqueue.KQueueEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.incubator.channel.uring.IOUring;
 import io.netty.channel.epoll.Epoll;
@@ -32,7 +33,7 @@ public class EventLoopUtil {
         } else if (Epoll.isAvailable()&&(ConstConfig.IO_MOD== IoMultiplexer.EPOLL||ConstConfig.IO_MOD==IoMultiplexer.DEFAULT)) {
             return new EpollEventLoopGroup(size, new NamedThreadFactory(name));
         } else if (KQueue.isAvailable()&&(ConstConfig.IO_MOD== IoMultiplexer.KQUEUE||ConstConfig.IO_MOD==IoMultiplexer.DEFAULT)) {
-            return new EpollEventLoopGroup(size, new NamedThreadFactory(name));
+            return new KQueueEventLoopGroup(size, new NamedThreadFactory(name));
         } else {
             return new NioEventLoopGroup(size, new NamedThreadFactory(name));
         }

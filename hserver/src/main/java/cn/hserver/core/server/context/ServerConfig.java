@@ -16,6 +16,15 @@ public class ServerConfig {
     private Boolean track;
     private String logbackName;
     private String log;
+    private String ioMode;
+
+    public String getIoMode() {
+        return ioMode;
+    }
+
+    public void setIoMode(String ioMode) {
+        this.ioMode = ioMode;
+    }
 
     public String getLog() {
         return log;
