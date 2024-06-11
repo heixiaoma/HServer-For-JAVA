@@ -163,7 +163,6 @@ public class WebPlugin implements PluginAdapter {
                         value.setAccessible(true);
                         String path = controllerPath + value.invoke(annotation).toString();
                         RouterInfo routerInfo = new RouterInfo();
-                        routerInfo.setControllerRef(controllerRef);
                         method.setAccessible(true);
                         routerInfo.setMethod(method);
                         routerInfo.setaClass(aClass);
@@ -205,7 +204,6 @@ public class WebPlugin implements PluginAdapter {
                     for (String s : requestMethod) {
                         String path = controllerPath + requestMapping.value();
                         RouterInfo routerInfo = new RouterInfo();
-                        routerInfo.setControllerRef(controllerRef);
                         method.setAccessible(true);
                         routerInfo.setMethod(method);
                         routerInfo.setUrl(path);

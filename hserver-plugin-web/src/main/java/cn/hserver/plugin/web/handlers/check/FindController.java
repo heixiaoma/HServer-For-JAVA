@@ -1,5 +1,6 @@
 package cn.hserver.plugin.web.handlers.check;
 
+import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.plugin.web.context.HServerContext;
 import cn.hserver.plugin.web.exception.BusinessException;
 import cn.hserver.plugin.web.exception.MethodNotSupportException;
@@ -62,6 +63,10 @@ public class FindController implements DispatcherHandler{
         Method method = routerInfo.getMethod();
         Class<?> aClass = routerInfo.getaClass();
         Object bean = routerInfo.getControllerRef();
+        if (bean==null){
+             bean = IocUtil.getBean(routerInfo.getaClass());
+             routerInfo.setControllerRef(bean);
+        }
         //检查下方法参数
         Object res;
         //如果控制器有参数，那么就进行，模糊赋值，在检测是否有req 和resp
