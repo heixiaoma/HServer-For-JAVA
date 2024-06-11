@@ -110,3 +110,14 @@ public class SaFilter implements FilterAdapter {
 }
 
 ```
+
+# 实现了redisDao版本,其他版本请自行使用 SaTokenDao实现
+
+- redis版本依赖Redisson只需要集成然后在项目里添加这段代码即可
+
+```java
+@Bean
+public class RedisTokenDao extends SaTokenDaoRedis {
+
+}
+```
