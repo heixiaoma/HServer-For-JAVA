@@ -93,7 +93,7 @@ public class WebPlugin implements PluginAdapter {
         if (webConfig.getWriteLimit()!=null) {
             WebConstConfig.WRITE_LIMIT = webConfig.getWriteLimit();
         }
-        if (webConfig.getRootPath()!=null&&webConfig.getRootPath().trim().length() > 0) {
+        if (webConfig.getRootPath()!=null&& !webConfig.getRootPath().trim().isEmpty()) {
             WebConstConfig.ROOT_PATH = webConfig.getRootPath().trim();
         }
 
