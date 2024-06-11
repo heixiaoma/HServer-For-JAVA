@@ -50,7 +50,7 @@ public class PropUtil {
                 return;
             }
             p.load(is);
-            p.forEach((k, v) -> data.put(k.toString(), v.toString()));
+            p.forEach((k, v) -> data.put(toCamelCase(k.toString()), v.toString()));
             is.close();
         } catch (Exception e) {
             log.error(ExceptionUtil.getMessage(e));
@@ -67,7 +67,7 @@ public class PropUtil {
                     return;
                 }
                 p.load(is2);
-                p.forEach((k, v) -> data.put(k.toString(), v.toString()));
+                p.forEach((k, v) -> data.put(toCamelCase(k.toString()), v.toString()));
                 is2.close();
                 p.clear();
             } catch (Exception e) {
@@ -93,7 +93,7 @@ public class PropUtil {
             Map<String, Object> configData  = yaml.load(is);
             Map<String,Object> configMap = new HashMap<>();
             convertToProperties(configData,configMap,"");
-            configMap.forEach((k, v) -> data.put(k, v.toString()));
+            configMap.forEach((k, v) -> data.put(toCamelCase(k), v.toString()));
             configMap.clear();
             configData.clear();
             is.close();
@@ -113,7 +113,7 @@ public class PropUtil {
                 Map<String, Object> configData  = yaml.load(is2);
                 Map<String,Object> configMap = new HashMap<>();
                 convertToProperties(configData,configMap,"");
-                configMap.forEach((k, v) -> data.put(k, v.toString()));
+                configMap.forEach((k, v) -> data.put(toCamelCase(k), v.toString()));
                 configMap.clear();
                 configData.clear();
                 is2.close();
@@ -139,6 +139,25 @@ public class PropUtil {
         }
     }
 
+    private static String toCamelCase(String key) {
+        StringBuilder result = new StringBuilder();
+        boolean toUpperCase = false;
+
+        for (char ch : key.toCharArray()) {
+            if (ch == '-') {
+                toUpperCase = true;
+            } else {
+                if (toUpperCase) {
+                    result.append(Character.toUpperCase(ch));
+                    toUpperCase = false;
+                } else {
+                    result.append(ch);
+                }
+            }
+        }
+
+        return result.toString();
+    }
 
 
 
