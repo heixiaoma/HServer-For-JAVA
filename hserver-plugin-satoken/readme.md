@@ -121,3 +121,23 @@ public class RedisTokenDao extends SaTokenDaoRedis {
 
 }
 ```
+
+# 权限全局拦截 
+
+- 通过捕获异常实现拦截数据
+ 
+```java
+
+@Bean
+public class Ex implements GlobalException {
+    @Override
+    public void handler(Throwable throwable, int i, String s, Webkit webkit) {
+        if (throwable instanceof NotPermissionException) {
+            NotPermissionException throwable1 = (NotPermissionException) throwable;
+            throwable1.printStackTrace();
+        }
+        webkit.httpResponse.sendHtml("失败");
+    }
+}
+
+```
