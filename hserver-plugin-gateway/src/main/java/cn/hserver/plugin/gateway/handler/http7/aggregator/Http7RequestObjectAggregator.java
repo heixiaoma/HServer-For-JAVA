@@ -11,13 +11,13 @@ import java.util.List;
 /**
  * 更具URL规则是否忽略消息聚合
  */
-public class Http7UpObjectAggregator extends HttpObjectAggregator {
+public class Http7RequestObjectAggregator extends HttpObjectAggregator {
 
     private final static AttributeKey<String> URI = AttributeKey.valueOf("URI");
     private final String igUrlRules;
     private final Channel channel;
 
-    public Http7UpObjectAggregator(int maxContentLength, Channel channel, String igUrlRules) {
+    public Http7RequestObjectAggregator(int maxContentLength, Channel channel, String igUrlRules) {
         super(maxContentLength);
         this.igUrlRules = igUrlRules;
         this.channel = channel;
@@ -26,11 +26,11 @@ public class Http7UpObjectAggregator extends HttpObjectAggregator {
 
     @Override
     protected boolean isStartMessage(HttpObject msg) throws Exception {
-        if (msg instanceof HttpRequest && igUrlRules != null) {
+        if (msg instanceof HttpRequest) {
             HttpRequest request = (HttpRequest) msg;
             String uri = request.uri();
             channel.attr(URI).set(uri);
-            if (uri.matches(igUrlRules)) {
+            if (igUrlRules != null && uri.matches(igUrlRules)){
                 return false;
             }
         }

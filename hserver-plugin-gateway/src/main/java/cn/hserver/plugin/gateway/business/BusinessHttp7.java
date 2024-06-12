@@ -1,7 +1,6 @@
 package cn.hserver.plugin.gateway.business;
 
 
-import cn.hserver.core.ioc.annotation.Bean;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -14,11 +13,11 @@ public class BusinessHttp7 implements Business<Object, Object> {
      * 忽略的url进行消息聚合
      * @return
      */
-    public String upIgnoreUrls() {
+    public String requestIgnoreUrls() {
         return null;
     }
 
-    public String downIgnoreUrls() {
+    public String responseIgnoreUrls() {
         return null;
     }
 

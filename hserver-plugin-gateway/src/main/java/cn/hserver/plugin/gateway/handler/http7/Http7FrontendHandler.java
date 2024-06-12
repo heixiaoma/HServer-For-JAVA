@@ -9,7 +9,7 @@ import cn.hserver.plugin.gateway.business.BusinessTcp;
 import cn.hserver.plugin.gateway.config.GateWayConfig;
 import cn.hserver.plugin.gateway.handler.InBaseChannelInboundHandlerAdapter;
 import cn.hserver.plugin.gateway.handler.ReadWriteLimitHandler;
-import cn.hserver.plugin.gateway.handler.http7.aggregator.Http7DownObjectAggregator;
+import cn.hserver.plugin.gateway.handler.http7.aggregator.Http7ResponseObjectAggregator;
 import cn.hserver.plugin.gateway.ssl.HttpsMapperSslContextFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
@@ -30,9 +30,9 @@ public class Http7FrontendHandler extends InBaseChannelInboundHandlerAdapter {
     }
 
 
-    public String getUpIgnoreUrls(){
+    public String getRequestIgnoreUrls(){
         BusinessHttp7 business1 = (BusinessHttp7) business;
-        return business1.upIgnoreUrls();
+        return business1.requestIgnoreUrls();
     }
 
 
@@ -49,7 +49,7 @@ public class Http7FrontendHandler extends InBaseChannelInboundHandlerAdapter {
                     sslEngine.setUseClientMode(true);
                     ch.pipeline().addFirst(new SslHandler(sslEngine));
                 }
-                ch.pipeline().addLast(new HttpClientCodec(), new Http7DownObjectAggregator(Integer.MAX_VALUE, inboundChannel, business1.downIgnoreUrls()));
+                ch.pipeline().addLast(new HttpClientCodec(), new Http7ResponseObjectAggregator(Integer.MAX_VALUE, inboundChannel, business1.responseIgnoreUrls()));
                 ch.pipeline().addLast(new Http7BackendHandler(inboundChannel, business1));
             }
         };

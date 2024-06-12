@@ -11,13 +11,13 @@ import java.util.List;
 /**
  * 更具URL规则是否忽略消息聚合
  */
-public class Http7DownObjectAggregator extends HttpObjectAggregator {
+public class Http7ResponseObjectAggregator extends HttpObjectAggregator {
 
     private final static AttributeKey<String> URI = AttributeKey.valueOf("URI");
     private final String igUrlRules;
     private final Channel channel;
 
-    public Http7DownObjectAggregator(int maxContentLength, Channel channel, String igUrlRules) {
+    public Http7ResponseObjectAggregator(int maxContentLength, Channel channel, String igUrlRules) {
         super(maxContentLength);
         this.igUrlRules = igUrlRules;
         this.channel = channel;
@@ -26,11 +26,11 @@ public class Http7DownObjectAggregator extends HttpObjectAggregator {
 
     @Override
     protected boolean isStartMessage(HttpObject msg) throws Exception {
-        if (igUrlRules != null && msg instanceof HttpResponse) {
+        if (msg instanceof HttpResponse) {
             if (channel.hasAttr(URI)) {
-                String uri = channel.attr(URI).getAndSet(null);
+                String uri = channel.attr(URI).get();
                 // 根据具体的URL规则来判断是否不聚合消息
-                if (uri != null && uri.matches(igUrlRules)) {
+                if (uri != null && igUrlRules != null && uri.matches(igUrlRules)) {
                     return false;
                 }
             }

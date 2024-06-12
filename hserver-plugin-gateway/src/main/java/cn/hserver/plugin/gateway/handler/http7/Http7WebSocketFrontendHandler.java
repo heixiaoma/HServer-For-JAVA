@@ -32,12 +32,8 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
     private WebSocketServerHandshaker handshake;
 
 
-    public Http7WebSocketFrontendHandler() {
-        for (Business business : IocUtil.getListBean(Business.class)) {
-            if (business instanceof BusinessHttp7) {
-                businessHttp7 = (BusinessHttp7) business;
-            }
-        }
+    public Http7WebSocketFrontendHandler(Business business) {
+        this.businessHttp7= (BusinessHttp7) business;
     }
 
 
