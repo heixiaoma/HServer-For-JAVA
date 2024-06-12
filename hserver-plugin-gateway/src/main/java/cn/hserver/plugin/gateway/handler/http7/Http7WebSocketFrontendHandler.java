@@ -158,7 +158,8 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                 return;
             }
             req = (HttpRequest) in;
-            WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(req.uri(), null, true);
+            String subProtocols = req.headers().get("Sec-WebSocket-Protocol");
+            WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(req.uri(), subProtocols, true);
             this.handshake = wsFactory.newHandshaker(req);
             if (this.handshake == null) {
                 WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
