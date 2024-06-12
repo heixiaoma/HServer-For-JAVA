@@ -36,6 +36,11 @@ public class Http4FrontendHandler extends InBaseChannelInboundHandlerAdapter {
     }
 
     @Override
+    public Object getHost() {
+        return new Http4Data(host, null);
+    }
+
+    @Override
     public Object getMessage(Object msg) {
         return new Http4Data(host, msg);
     }

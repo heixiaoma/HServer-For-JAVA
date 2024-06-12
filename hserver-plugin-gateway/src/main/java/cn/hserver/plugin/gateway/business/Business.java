@@ -45,17 +45,6 @@ public interface Business<T, U> {
     void close(Channel channel);
 
     /**
-     *   失败是否重连，同时告知连接结果
-     *    返回真标识重新重连
-     * @param ctx
-     * @param connectResult 连接结果
-     * @param connectNum  连接次数
-     * @param error 连接错误
-     * @return
-     */
-    boolean connectController(ChannelHandlerContext ctx,boolean connectResult,int connectNum, Throwable error);
-
-    /**
      * 全局异常
      * @param ctx
      * @param cause

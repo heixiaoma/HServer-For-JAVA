@@ -38,7 +38,6 @@ public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        ctx.channel().read();
         handshakes.handshake(ctx.channel());
     }
 
@@ -63,13 +62,7 @@ public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter {
                 if (out == null) {
                     return;
                 }
-                inboundChannel.writeAndFlush(out).addListener(f->{
-                   if (f.isSuccess()){
-                       ctx.channel().read();
-                   }else {
-                       ctx.channel().close();
-                   }
-                });
+                inboundChannel.writeAndFlush(out);
             } catch (Throwable e) {
                 log.error(e.getMessage(), e);
             }

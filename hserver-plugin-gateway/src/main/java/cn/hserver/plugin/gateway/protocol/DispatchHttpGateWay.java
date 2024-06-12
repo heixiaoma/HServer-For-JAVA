@@ -8,6 +8,8 @@ import cn.hserver.core.ioc.annotation.Order;
 import cn.hserver.core.server.util.protocol.HostUtil;
 import cn.hserver.core.server.util.protocol.ProtocolUtil;
 import cn.hserver.plugin.gateway.business.Business;
+import cn.hserver.plugin.gateway.business.BusinessHttp4;
+import cn.hserver.plugin.gateway.business.BusinessHttp7;
 import cn.hserver.plugin.gateway.config.GateWayConfig;
 import cn.hserver.plugin.gateway.enums.GatewayMode;
 import cn.hserver.plugin.gateway.handler.http4.Http4FrontendHandler;
@@ -36,17 +38,13 @@ public class DispatchHttpGateWay implements ProtocolDispatcherAdapter {
         InetSocketAddress socketAddress = (InetSocketAddress) channel.localAddress();
         //TCP模式
         if (GateWayConfig.PORT.contains(socketAddress.getPort())) {
-            if (business == null) {
-                business = IocUtil.getSupperBean(Business.class);
-            }
-            if (GateWayConfig.GATEWAY_MODE == GatewayMode.HTTP_7) {
-                Http7FrontendHandler http7FrontendHandler = new Http7FrontendHandler(business);
-                pipeline.addLast(new HttpServerCodec(), new Http7RequestObjectAggregator(Integer.MAX_VALUE, channel, http7FrontendHandler.getRequestIgnoreUrls()));
-                pipeline.addLast(new Http7WebSocketFrontendHandler(business));
-                pipeline.addLast(http7FrontendHandler);
-                return true;
-            }
+
             if (GateWayConfig.GATEWAY_MODE == GatewayMode.HTTP_4) {
+
+                if (business == null) {
+                    business = IocUtil.getSupperBean(BusinessHttp4.class);
+                }
+
                 //解析入场host
                 String host = HostUtil.getHost(ByteBuffer.wrap(headers));
                 if (host != null) {

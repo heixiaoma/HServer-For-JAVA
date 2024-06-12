@@ -1,5 +1,6 @@
 package cn.hserver.plugin.gateway;
 
+import cn.hserver.HServerApplication;
 import cn.hserver.core.interfaces.PluginAdapter;
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.ioc.ref.PackageScanner;
@@ -7,6 +8,7 @@ import cn.hserver.core.server.util.PropUtil;
 import cn.hserver.plugin.gateway.business.Business;
 import cn.hserver.plugin.gateway.config.GateWayConfig;
 import cn.hserver.plugin.gateway.enums.GatewayMode;
+import io.netty.channel.ChannelOption;
 
 import java.util.ArrayList;
 import java.util.HashSet;

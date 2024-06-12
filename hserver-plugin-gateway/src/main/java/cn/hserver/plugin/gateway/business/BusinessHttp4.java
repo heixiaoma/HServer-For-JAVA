@@ -30,11 +30,6 @@ public class BusinessHttp4 implements Business<Http4Data,Object>{
     }
 
     @Override
-    public boolean connectController(ChannelHandlerContext ctx,boolean connectResult,int connectNum, Throwable error) {
-        return false;
-    }
-
-    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 
     }
