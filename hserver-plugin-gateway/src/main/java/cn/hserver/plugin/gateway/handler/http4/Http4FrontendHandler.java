@@ -53,7 +53,7 @@ public class Http4FrontendHandler extends ChannelInboundHandlerAdapter {
         final Channel inboundChannel = ctx.channel();
         Bootstrap b = new Bootstrap();
         b.group(GateWayConfig.EVENT_EXECUTORS)
-                .channel(NioSocketChannel.class)
+                .channel(EventLoopUtil.getEventLoopTypeClassClient())
                 .handler(new ChannelInitializer<Channel>() {
                     @Override
                     protected void initChannel(Channel ch) throws Exception {

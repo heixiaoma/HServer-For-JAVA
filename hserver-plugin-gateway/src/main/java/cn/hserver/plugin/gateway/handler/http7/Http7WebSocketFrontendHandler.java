@@ -1,6 +1,7 @@
 package cn.hserver.plugin.gateway.handler.http7;
 
 import cn.hserver.core.ioc.IocUtil;
+import cn.hserver.core.server.util.EventLoopUtil;
 import cn.hserver.plugin.gateway.business.Business;
 import cn.hserver.plugin.gateway.business.BusinessHttp7;
 import cn.hserver.plugin.gateway.config.GateWayConfig;
@@ -106,7 +107,7 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                         ctx.channel(),
                         businessHttp7
                 );
-                b.channel(NioSocketChannel.class).handler(new ChannelInitializer<Channel>() {
+                b.channel(EventLoopUtil.getEventLoopTypeClassClient()).handler(new ChannelInitializer<Channel>() {
                     @Override
                     protected void initChannel(Channel ch) {
                         ch.pipeline().addFirst(new ReadWriteLimitHandler(ctx.channel(), ch));

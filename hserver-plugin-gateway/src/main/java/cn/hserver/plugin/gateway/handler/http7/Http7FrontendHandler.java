@@ -1,6 +1,7 @@
 package cn.hserver.plugin.gateway.handler.http7;
 
 import cn.hserver.core.ioc.IocUtil;
+import cn.hserver.core.server.util.EventLoopUtil;
 import cn.hserver.core.server.util.ReleaseUtil;
 import cn.hserver.plugin.gateway.business.Business;
 import cn.hserver.plugin.gateway.business.BusinessHttp7;
@@ -59,7 +60,7 @@ public class Http7FrontendHandler extends ChannelInboundHandlerAdapter {
         Bootstrap b = new Bootstrap();
         b.group(GateWayConfig.EVENT_EXECUTORS);
         InetSocketAddress proxyHost = (InetSocketAddress) businessHttp7.getProxyHost(ctx, null, ctx.channel().localAddress());
-        b.channel(NioSocketChannel.class).handler(new ChannelInitializer<Channel>() {
+        b.channel(EventLoopUtil.getEventLoopTypeClassClient()).handler(new ChannelInitializer<Channel>() {
             @Override
             protected void initChannel(Channel ch) {
                 if (proxyHost.getPort() == 443) {

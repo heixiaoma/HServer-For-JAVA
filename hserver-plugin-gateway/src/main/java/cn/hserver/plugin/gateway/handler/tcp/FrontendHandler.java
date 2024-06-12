@@ -1,6 +1,7 @@
 package cn.hserver.plugin.gateway.handler.tcp;
 
 import cn.hserver.core.ioc.IocUtil;
+import cn.hserver.core.server.util.EventLoopUtil;
 import cn.hserver.core.server.util.ReleaseUtil;
 import cn.hserver.plugin.gateway.business.Business;
 import cn.hserver.plugin.gateway.business.BusinessTcp;
@@ -44,8 +45,8 @@ public class FrontendHandler extends ChannelInboundHandlerAdapter {
         try {
             final Channel inboundChannel = ctx.channel();
             Bootstrap b = new Bootstrap();
-            b.group(GateWayConfig.EVENT_EXECUTORS);
-            b.channel(NioSocketChannel.class)
+            b.group(ctx.channel().eventLoop());
+            b.channel(EventLoopUtil.getEventLoopTypeClassClient())
                     .handler(new ChannelInitializer<Channel>() {
                         @Override
                         protected void initChannel(Channel ch) throws Exception {

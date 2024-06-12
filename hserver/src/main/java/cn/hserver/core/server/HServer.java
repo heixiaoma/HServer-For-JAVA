@@ -97,27 +97,12 @@ public class HServer {
             IoMultiplexer eventLoopType = EventLoopUtil.getEventLoopType();
             if (eventLoopType!=IoMultiplexer.JDK) {
                 bootstrap.option(EpollChannelOption.SO_REUSEPORT, true);
-                bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-                bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-                group = EventLoopUtil.getEventLoop(workerPool, "hserver_grop");
-                bootstrap.group(group);
-                if (eventLoopType==IoMultiplexer.IO_URING){
-                    bootstrap.channel(IOUringServerSocketChannel.class);
-                }else if (eventLoopType==IoMultiplexer.EPOLL){
-                    bootstrap.channel(EpollServerSocketChannel.class);
-                }else if (eventLoopType==IoMultiplexer.KQUEUE){
-                    bootstrap.channel(KQueueServerSocketChannel.class);
-                }else {
-                    bootstrap.channel(NioServerSocketChannel.class);
-                }
-                typeName = eventLoopType.name();
-            } else {
-                bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-                bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-                group = EventLoopUtil.getEventLoop(workerPool, "hserver_grop");
-                bootstrap.group(group).channel(NioServerSocketChannel.class);
-                typeName = eventLoopType.name();
             }
+            bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+            bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
+            group = EventLoopUtil.getEventLoop(workerPool, "hserver_grop");
+            bootstrap.group(group).channel(EventLoopUtil.getEventLoopTypeClass());
+            typeName = eventLoopType.name();
             bootstrap.option(ChannelOption.SO_BACKLOG, backLog);
             bootstrap.childHandler(new ServerInitializer());
             StringBuilder portStr = new StringBuilder();
