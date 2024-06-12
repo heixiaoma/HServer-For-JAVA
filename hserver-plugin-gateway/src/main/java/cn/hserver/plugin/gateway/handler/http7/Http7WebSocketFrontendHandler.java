@@ -95,9 +95,10 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                 if (!request.headers().contains(HttpHeaderNames.ORIGIN)) {
                     request.headers().add(HttpHeaderNames.ORIGIN, proxyHost.toString() + request.uri());
                 }
+                String subProtocols = request.headers().get("Sec-WebSocket-Protocol");
 
                 WebSocketClientHandshaker webSocketClientHandshaker = WebSocketClientHandshakerFactory.newHandshaker(
-                        new URI(request.uri()), WebSocketVersion.V13, null, true, request.headers());
+                        new URI(request.uri()), WebSocketVersion.V13, subProtocols, true, request.headers());
                 Http7WebSocketBackendHandler handler = new Http7WebSocketBackendHandler(
                         webSocketClientHandshaker,
                         ctx.channel(),
@@ -151,7 +152,8 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                 return;
             }
             req = (HttpRequest) in;
-            WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(req.uri(), null, true);
+            String subProtocols = req.headers().get("Sec-WebSocket-Protocol");
+            WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(req.uri(), subProtocols, true);
             this.handshake = wsFactory.newHandshaker(req);
             if (this.handshake == null) {
                 WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
