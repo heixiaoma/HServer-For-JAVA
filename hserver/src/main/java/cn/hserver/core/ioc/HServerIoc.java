@@ -79,12 +79,34 @@ public class HServerIoc implements Ioc {
     @Override
     public <T> T getSupperBean(Class<T> type) {
         for (Object value : POOL.values()) {
-            if (type.isAssignableFrom(value.getClass())) {
-                return type.cast(value);
+            Class par = value.getClass();
+            while (!par.equals(Object.class)) {
+                //获取当前类的所有字段
+                if (type.isAssignableFrom(par)) {
+                    return type.cast(value);
+                }
+                par = par.getSuperclass();
             }
         }
         return null;
     }
+
+    @Override
+    public <T> List<T> getSupperBeanList(Class<T> type) {
+        List<T> data = new ArrayList<>();
+        for (Object value : POOL.values()) {
+            Class par = value.getClass();
+            while (!par.equals(Object.class)) {
+                //获取当前类的所有字段
+                if (type.isAssignableFrom(par)) {
+                    data.add(type.cast(value));
+                }
+                par = par.getSuperclass();
+            }
+        }
+        return data;
+    }
+
 
 
     @Override

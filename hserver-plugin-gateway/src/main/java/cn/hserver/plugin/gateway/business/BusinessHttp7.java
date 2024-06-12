@@ -7,7 +7,6 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.net.SocketAddress;
 
-@Bean
 public class BusinessHttp7 implements Business<Object, Object> {
 
 

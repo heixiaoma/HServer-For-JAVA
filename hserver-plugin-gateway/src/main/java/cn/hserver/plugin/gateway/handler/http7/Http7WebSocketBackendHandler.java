@@ -10,8 +10,9 @@ import io.netty.handler.codec.http.websocketx.WebSocketHandshakeException;
 import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 @ChannelHandler.Sharable
-public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter{
+public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter {
     private static final Logger log = LoggerFactory.getLogger(Http7WebSocketBackendHandler.class);
 
     private final WebSocketClientHandshaker handshakes;
@@ -37,6 +38,7 @@ public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter{
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
+        ctx.channel().read();
         handshakes.handshake(ctx.channel());
     }
 
@@ -61,9 +63,15 @@ public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter{
                 if (out == null) {
                     return;
                 }
-                inboundChannel.writeAndFlush(out);
-            }catch (Throwable e){
-                log.error(e.getMessage(),e);
+                inboundChannel.writeAndFlush(out).addListener(f->{
+                   if (f.isSuccess()){
+                       ctx.channel().read();
+                   }else {
+                       ctx.channel().close();
+                   }
+                });
+            } catch (Throwable e) {
+                log.error(e.getMessage(), e);
             }
         } else {
             ctx.channel().close();
@@ -73,7 +81,7 @@ public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter{
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        Http7FrontendHandler.closeOnFlush(inboundChannel);
+        inboundChannel.close();
     }
 
     @Override
@@ -81,7 +89,7 @@ public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter{
         if (!handshakeFuture.isDone()) {
             handshakeFuture.setFailure(cause);
         }
-        businessHttp7.exceptionCaught(ctx,cause);
-        Http7FrontendHandler.closeOnFlush(ctx.channel());
+        businessHttp7.exceptionCaught(ctx, cause);
+        ctx.channel().close();
     }
 }

@@ -2,8 +2,10 @@ package cn.hserver.plugin.gateway.protocol;
 
 import cn.hserver.core.interfaces.ProtocolDispatcherAdapter;
 import cn.hserver.core.interfaces.ProtocolDispatcherSuperAdapter;
+import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.ioc.annotation.Bean;
 import cn.hserver.core.ioc.annotation.Order;
+import cn.hserver.plugin.gateway.business.Business;
 import cn.hserver.plugin.gateway.config.GateWayConfig;
 import cn.hserver.plugin.gateway.enums.GatewayMode;
 import cn.hserver.plugin.gateway.handler.tcp.FrontendHandler;
@@ -19,12 +21,17 @@ import java.net.InetSocketAddress;
 @Bean
 @Order(1)
 public class DispatchTcpGateWay implements ProtocolDispatcherSuperAdapter {
+    private volatile static Business business;
+
     @Override
     public boolean dispatcher(Channel channel, ChannelPipeline pipeline) {
         InetSocketAddress socketAddress = (InetSocketAddress) channel.localAddress();
         //TCP模式
         if (GateWayConfig.GATEWAY_MODE == GatewayMode.TCP && GateWayConfig.PORT.contains(socketAddress.getPort())) {
-            pipeline.addLast(new FrontendHandler());
+            if (business == null) {
+                business = IocUtil.getSupperBean(Business.class);
+            }
+            pipeline.addLast(new FrontendHandler(business));
             return true;
         }
         return false;

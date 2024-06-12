@@ -38,9 +38,7 @@ public class GateWayPlugin implements PluginAdapter {
 
     @Override
     public Set<Class<?>> iocInitBeanList() {
-        Set<Class<?>> classes=new HashSet<>();
-        classes.add(Business.class);
-        return classes;
+        return null;
     }
 
 

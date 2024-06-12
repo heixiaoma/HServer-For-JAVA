@@ -1,6 +1,5 @@
 package cn.hserver.plugin.gateway.handler;
 
-import cn.hserver.plugin.gateway.protocol.DispatchHttp4GateWay;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;

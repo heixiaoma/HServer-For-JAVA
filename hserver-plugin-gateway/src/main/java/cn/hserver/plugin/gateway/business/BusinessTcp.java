@@ -7,7 +7,6 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.net.SocketAddress;
 
-@Bean
 public class BusinessTcp implements Business<Object,Object>{
 
     @Override

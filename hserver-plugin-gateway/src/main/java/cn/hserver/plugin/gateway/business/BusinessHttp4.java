@@ -8,7 +8,6 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.net.SocketAddress;
 
-@Bean
 public class BusinessHttp4 implements Business<Http4Data,Object>{
 
     @Override

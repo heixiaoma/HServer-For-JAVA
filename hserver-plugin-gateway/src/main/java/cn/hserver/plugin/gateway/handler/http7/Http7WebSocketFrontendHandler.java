@@ -9,7 +9,6 @@ import cn.hserver.plugin.gateway.handler.ReadWriteLimitHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketClientCompressionHandler;
@@ -41,11 +40,6 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
         }
     }
 
-    static void closeOnFlush(Channel ch) {
-        if (ch.isActive()) {
-            ch.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
-        }
-    }
 
     private void read(final ChannelHandlerContext ctx, Object msg) {
         if (msg instanceof HttpRequest || msg instanceof WebSocketFrame) {
@@ -53,10 +47,12 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                 if (!future.isSuccess()) {
                     future.channel().close();
                     ReferenceCountUtil.release(msg);
+                }else {
+                    ctx.channel().read();
                 }
             });
         } else {
-            closeOnFlush(ctx.channel());
+            ctx.channel().close();
             ReferenceCountUtil.release(msg);
         }
     }
@@ -90,7 +86,6 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
 
     private void writeWebSocket(ChannelHandlerContext ctx, HttpRequest request) throws URISyntaxException {
         try {
-
             if (outboundChannel == null || !outboundChannel.isActive()) {
                 Bootstrap b = new Bootstrap();
                 b.group(GateWayConfig.EVENT_EXECUTORS);
@@ -99,9 +94,9 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                 if (!request.headers().contains(HttpHeaderNames.ORIGIN)) {
                     request.headers().add(HttpHeaderNames.ORIGIN, proxyHost.toString() + request.uri());
                 }
-
+                String subProtocols = request.headers().get("Sec-WebSocket-Protocol");
                 WebSocketClientHandshaker webSocketClientHandshaker = WebSocketClientHandshakerFactory.newHandshaker(
-                        new URI(request.uri()), WebSocketVersion.V13, null, true, request.headers());
+                        new URI(request.uri()), WebSocketVersion.V13, subProtocols, true, request.headers());
                 Http7WebSocketBackendHandler handler = new Http7WebSocketBackendHandler(
                         webSocketClientHandshaker,
                         ctx.channel(),
@@ -110,38 +105,52 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
                 b.channel(EventLoopUtil.getEventLoopTypeClassClient()).handler(new ChannelInitializer<Channel>() {
                     @Override
                     protected void initChannel(Channel ch) {
-                        ch.pipeline().addFirst(new ReadWriteLimitHandler(ctx.channel(), ch));
+                        ch.pipeline().addLast(new ReadWriteLimitHandler(ctx.channel(), ch));
                         ch.pipeline().addLast(new HttpClientCodec(), new HttpObjectAggregator(Integer.MAX_VALUE), WebSocketClientCompressionHandler.INSTANCE, handler);
                     }
                 });
                 final AtomicInteger count = new AtomicInteger(0);
 
                 //数据代理服务选择器
-                ChannelFuture f = b.connect(proxyHost).addListener(new ChannelFutureListener() {
+                b.connect(proxyHost).addListener(new ChannelFutureListener() {
                     @Override
                     public void operationComplete(ChannelFuture future) throws Exception {
                         if (future.isSuccess()) {
+                            outboundChannel = future.channel();
+                            outboundChannel.closeFuture().addListener(f -> {
+                                ctx.channel().close();
+                            });
+                            ctx.channel().closeFuture().addListener(f -> {
+                                outboundChannel.close();
+                            });
                             try {
                                 handler.handshakeFuture().addListener((future1) -> {
                                     future1.sync();
-                                    future.channel().writeAndFlush(request);
+                                    future.channel().writeAndFlush(request).addListener(f->{
+                                       if (f.isSuccess()){
+                                           ctx.read();
+                                       }else {
+                                           ctx.close();
+                                       }
+                                    });
                                 });
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 ReferenceCountUtil.release(request);
                             }
+
+
                         } else {
                             future.channel().close();
                             if (businessHttp7.connectController(ctx, false, count.incrementAndGet(), future.cause())) {
                                 b.connect(proxyHost).addListener(this);
                             } else {
                                 ReferenceCountUtil.release(request);
-                                closeOnFlush(ctx.channel());
+                                ctx.channel().close();
                             }
                         }
                     }
                 });
-                outboundChannel = f.channel();
             } else {
                 read(ctx, request);
             }
@@ -178,7 +187,7 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
     public void channelInactive(ChannelHandlerContext ctx) {
         if (outboundChannel != null) {
             businessHttp7.close(ctx.channel());
-            closeOnFlush(outboundChannel);
+            outboundChannel.close();
         } else {
             ctx.fireChannelInactive();
         }
@@ -187,7 +196,7 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         businessHttp7.exceptionCaught(ctx, cause);
-        closeOnFlush(ctx.channel());
+        ctx.channel().close();
     }
 
     private boolean isWebSocketRequest(Object msg) {
@@ -195,5 +204,11 @@ public class Http7WebSocketFrontendHandler extends ChannelInboundHandlerAdapter 
         return req != null
                 && req.decoderResult().isSuccess()
                 && "websocket".equals(req.headers().get("Upgrade"));
+    }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        ctx.channel().read();
+        super.channelActive(ctx);
     }
 }
