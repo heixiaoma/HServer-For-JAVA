@@ -27,7 +27,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
 
     private static final Logger log = LoggerFactory.getLogger(HServerContentHandler.class);
 
-    private final static DefaultHttpDataFactory FACTORY = new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE);
+    private final static DefaultHttpDataFactory FACTORY = new DefaultHttpDataFactory(WebConstConfig.HTTP_CONTENT_SIZE);
 
 
     @Override
@@ -100,7 +100,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
             bodyHttpDates.forEach(request::writeHttpData);
             decoder.destroy();
         } catch (Exception e) {
-            log.warn(e.getMessage());
+            log.warn(e.getMessage(),e);
         }
     }
 
