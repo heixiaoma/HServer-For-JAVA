@@ -8,6 +8,7 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.multipart.*;
+import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +27,6 @@ import java.util.Map;
 public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     private static final Logger log = LoggerFactory.getLogger(HServerContentHandler.class);
-
-    private final static DefaultHttpDataFactory FACTORY = new DefaultHttpDataFactory(WebConstConfig.HTTP_CONTENT_SIZE);
-
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpRequest req) throws Exception {
@@ -91,7 +89,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
     private void handlerBody(Request request, FullHttpRequest req) {
         try {
             ByteBuf body = req.content().duplicate();
-            HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(FACTORY, req);
+            HttpPostRequestDecoder decoder = new HttpPostRequestDecoder( req, -1,-1);
             List<InterfaceHttpData> bodyHttpDates = decoder.getBodyHttpDatas();
             InterfaceHttpData interfaceHttpData = bodyHttpDates.stream().filter(k -> k.getHttpDataType() == InterfaceHttpData.HttpDataType.FileUpload).findFirst().orElse(null);
             if (interfaceHttpData == null) {

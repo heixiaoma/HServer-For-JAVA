@@ -21,7 +21,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skipTests>true</skipTests>
 
-        <netty.version>4.1.110.Final</netty.version>
+        <netty.version>4.1.111.Final</netty.version>
         <io_uring.version>0.0.25.Final</io_uring.version>
         <snakeyaml.version>2.2</snakeyaml.version>
         <transmittable.version>2.14.5</transmittable.version>
