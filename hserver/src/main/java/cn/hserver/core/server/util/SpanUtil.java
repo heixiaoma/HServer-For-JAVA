@@ -34,7 +34,8 @@ public class SpanUtil {
             }
             return integers.peek();
         } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
+            log.error(e.getMessage(),e);
+
             return -1;
         }
     }

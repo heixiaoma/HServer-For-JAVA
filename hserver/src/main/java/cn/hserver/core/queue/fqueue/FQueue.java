@@ -151,7 +151,7 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
         try {
             Thread.sleep(1);
         } catch (InterruptedException e) {
-            log.error(ExceptionUtil.getMessage(e));
+            log.error(e.getMessage(),e);
         }
     }
 
@@ -188,7 +188,7 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
                             }
                         } catch (Exception e) {
                             sleep();
-                            log.error(ExceptionUtil.getMessage(e));
+                            log.error(e.getMessage(),e);
                         }
                     }
                 }

@@ -134,7 +134,7 @@ public class RouterManager {
                             request.addReqParams(pattern.getKeys().get(i), URLDecoder.decode(matcher.group(i + 1), "UTF-8"));
                             request.addReqUrlParams(pattern.getKeys().get(i), URLDecoder.decode(matcher.group(i + 1), "UTF-8"));
                         } catch (UnsupportedEncodingException e) {
-                            log.error(ExceptionUtil.getMessage(e));
+                            log.error(e.getMessage(),e);
                         }
                     }
 

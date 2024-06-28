@@ -7,7 +7,7 @@
     <groupId>cn.hserver</groupId>
     <artifactId>hserver-parent</artifactId>
     <packaging>pom</packaging>
-    <version>3.5.M2</version>
+    <version>3.5.M3</version>
 
     <name>hserver-parent</name>
     <url>https://gitee.com/HServer/HServer</url>
@@ -50,75 +50,75 @@
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver</artifactId>
-                <version>3.5.M2</version>
+                <version>3.5.M3</version>
             </dependency>
 
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-beetlsql</artifactId>
-                <version>3.5.M2</version>
+                <version>3.5.M3</version>
             </dependency>
 
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-mybatis</artifactId>
-                <version>3.5.M2</version>
+                <version>3.5.M3</version>
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-gateway</artifactId>
-                <version>3.5.M2</version>
+                <version>3.5.M3</version>
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-rpc</artifactId>
-                <version>3.5.M2</version>
+                <version>3.5.M3</version>
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-druid</artifactId>
-                <version>3.5.M2</version>
+                <version>3.5.M3</version>
             </dependency>
 
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-web</artifactId>
-                <version>3.5.M2</version>
+                <version>3.5.M3</version>
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-loader</artifactId>
-                <version>3.5.M2</version>
+                <version>3.5.M3</version>
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-runner</artifactId>
-                <version>3.5.M2</version>
+                <version>3.5.M3</version>
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-mqtt</artifactId>
-                <version>3.5.M2</version>
+                <version>3.5.M3</version>
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-cloud</artifactId>
-                <version>3.5.M2</version>
+                <version>3.5.M3</version>
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-nacos</artifactId>
-                <version>3.5.M2</version>
+                <version>3.5.M3</version>
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-mybatis_flex</artifactId>
-                <version>3.5.M2</version>
+                <version>3.5.M3</version>
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-satoken</artifactId>
-                <version>3.5.M2</version>
+                <version>3.5.M3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -129,7 +129,7 @@
                 <plugin>
                     <groupId>cn.hserver</groupId>
                     <artifactId>hserver-plugin-maven</artifactId>
-                    <version>3.5.M2</version>
+                    <version>3.5.M3</version>
                     <executions>
                         <execution>
                             <phase>package</phase>
@@ -142,7 +142,7 @@
                 <plugin>
                     <groupId>cn.hserver</groupId>
                     <artifactId>hserver-plugin-build</artifactId>
-                    <version>3.5.M2</version>
+                    <version>3.5.M3</version>
                     <executions>
                         <execution>
                             <phase>package</phase>

@@ -53,7 +53,7 @@ public class PlugsManager implements PluginAdapter {
                 obj.add((PluginAdapter) aClass.newInstance());
                 plugPackages.add(aClass.getPackage().getName());
             } catch (Exception e) {
-                log.error(ExceptionUtil.getMessage(e));
+                log.error(e.getMessage(),e);
             }
         }
     }

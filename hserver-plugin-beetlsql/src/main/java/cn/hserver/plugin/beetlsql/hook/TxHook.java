@@ -43,7 +43,7 @@ public class TxHook implements HookAdapter {
                             try {
                                 DSTransactionManager.rollback();
                             } catch (SQLException ex) {
-                                logger.error(ex.getMessage());
+                                logger.error(ex.getMessage(),ex);
                             }
                         }
                     }
@@ -52,7 +52,7 @@ public class TxHook implements HookAdapter {
                     try {
                         DSTransactionManager.rollback();
                     } catch (SQLException ex) {
-                        logger.error(ex.getMessage());
+                        logger.error(ex.getMessage(),ex);
                     }
                 }
             }
@@ -82,7 +82,7 @@ public class TxHook implements HookAdapter {
                     }
                     DSTransactionManager.rollback();
                 } catch (SQLException e) {
-                    logger.error(e.getMessage());
+                    logger.error(e.getMessage(),e);
                 }
             }
         }finally {

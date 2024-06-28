@@ -24,7 +24,7 @@ public class HumClientHandler extends
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable
             cause) throws Exception {
-        log.error(ExceptionUtil.getMessage(cause));
+        log.error(cause.getMessage(),cause);
         ctx.close();
     }
 

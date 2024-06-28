@@ -50,7 +50,7 @@ public class JackSonJsonAdapter implements JsonAdapter {
         try {
             return WebConstConfig.OBJECT_MAPPER.writeValueAsString(data);
         } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
+            log.error(e.getMessage(),e);
             return null;
         }
     }

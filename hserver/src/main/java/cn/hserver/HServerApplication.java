@@ -80,7 +80,7 @@ public class HServerApplication {
         try {
             new HServer(ConstConfig.PORTS, args).run(TCP_OPTIONS,TCP_CHILD_OPTIONS);
         } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
+            log.error(e.getMessage(),e);
         }
     }
 
@@ -96,7 +96,7 @@ public class HServerApplication {
         try {
             EnvironmentUtil.init(clazz);
         } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
+            log.error(e.getMessage(),e);
             return;
         }
         PlugsManager.getPlugin().startApp();

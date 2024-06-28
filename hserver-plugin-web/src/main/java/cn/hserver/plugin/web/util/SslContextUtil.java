@@ -50,7 +50,7 @@ public class SslContextUtil {
                 pinput.close();
             }
         } catch (Exception s) {
-            log.error(ExceptionUtil.getMessage(s));
+            log.error(s.getMessage(),s);
         }
     }
 }

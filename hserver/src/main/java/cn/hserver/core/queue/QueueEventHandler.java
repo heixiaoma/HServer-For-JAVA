@@ -44,7 +44,7 @@ public class QueueEventHandler implements EventHandler<QueueData>, WorkHandler<Q
             if (e instanceof InvocationTargetException) {
                 log.error(ExceptionUtil.getMessage(((InvocationTargetException)e).getTargetException()));
             } else {
-                log.error(ExceptionUtil.getMessage(e));
+                log.error(e.getMessage(),e);
             }
         }finally {
             if (queueData.getThreadSize()==1){

@@ -53,7 +53,7 @@ public class PropUtil {
             p.forEach((k, v) -> data.put(toCamelCase(k.toString()), v.toString()));
             is.close();
         } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
+            log.error(e.getMessage(),e);
         }
         //优先级查代码的，再查配置的
         if (profiles == null) {
@@ -71,7 +71,7 @@ public class PropUtil {
                 is2.close();
                 p.clear();
             } catch (Exception e) {
-                log.error(ExceptionUtil.getMessage(e));
+                log.error(e.getMessage(),e);
             }
         }
     }
@@ -98,7 +98,7 @@ public class PropUtil {
             configData.clear();
             is.close();
         } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
+            log.error(e.getMessage(),e);
         }
         //优先级查代码的，再查配置的
         if (profiles == null) {
@@ -118,7 +118,7 @@ public class PropUtil {
                 configData.clear();
                 is2.close();
             } catch (Exception e) {
-                log.error(ExceptionUtil.getMessage(e));
+                log.error(e.getMessage(),e);
             }
         }
     }

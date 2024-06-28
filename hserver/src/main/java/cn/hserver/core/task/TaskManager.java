@@ -53,11 +53,11 @@ public class TaskManager {
                     ScheduledFuture<?> submit = SCHEDULED_THREAD_POOL_EXECUTOR.submit(times, taskJob1, args);
                     CRON_TASK.put(name, submit);
                 } catch (Exception e2) {
-                    log.error(ExceptionUtil.getMessage(e2));
+                    log.error(e2.getMessage(),e2);
                 }
             }
         } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
+            log.error(e.getMessage(),e);
         }
     }
 
@@ -122,7 +122,7 @@ public class TaskManager {
                 ScheduledFuture<?> submit = SCHEDULED_THREAD_POOL_EXECUTOR.submit(times, className, method, args);
                 CRON_TASK.put(name, submit);
             } catch (Exception e1) {
-                log.error(ExceptionUtil.getMessage(e1));
+                log.error(e1.getMessage(),e1);
             }
 
         }

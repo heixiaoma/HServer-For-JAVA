@@ -56,7 +56,7 @@ public class QueueDispatcher {
             try {
                 fQueue.close();
             } catch (IOException | FileFormatException e) {
-                log.error(ExceptionUtil.getMessage(e));
+                log.error(e.getMessage(),e);
             }
         }
         FQ.remove(queueName);
@@ -193,7 +193,7 @@ public class QueueDispatcher {
             try {
                 v.close();
             } catch (Exception e) {
-                log.error(ExceptionUtil.getMessage(e));
+                log.error(e.getMessage(),e);
             }
         });
         FQ.clear();

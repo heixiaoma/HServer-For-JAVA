@@ -123,7 +123,7 @@ public interface DispatcherHandler {
                     return BuildResponse.buildError(e1);
                 }
             } else {
-                log.error(ExceptionUtil.getMessage(e));
+                log.error(e.getMessage(),e);
                 return BuildResponse.buildError(e);
             }
         } catch (Exception e2) {

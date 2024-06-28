@@ -100,7 +100,7 @@ public class MemoryInitClass {
                 }
             }
         } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
+            log.error(e.getMessage(),e);
         }
     }
 

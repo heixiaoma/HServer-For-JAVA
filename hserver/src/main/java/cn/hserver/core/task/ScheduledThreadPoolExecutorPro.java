@@ -37,7 +37,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
                             method.setAccessible(true);
                             method.invoke(IocUtil.getBean(className), args);
                         } catch (Exception e) {
-                            log.error(ExceptionUtil.getMessage(e));
+                            log.error(e.getMessage(),e);
                         }
                     }
                 }
@@ -65,7 +65,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
                         try {
                             taskJob.exec(args);
                         } catch (Exception e) {
-                            log.error(ExceptionUtil.getMessage(e));
+                            log.error(e.getMessage(),e);
                         }
                     }
                 }
@@ -85,7 +85,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
                         method.setAccessible(true);
                         method.invoke(IocUtil.getBean(className), args);
                     } catch (Exception e) {
-                        log.error(ExceptionUtil.getMessage(e));
+                        log.error(e.getMessage(),e);
                     }
                 }
         };
@@ -99,7 +99,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
                 try {
                     taskJob.exec(args);
                 } catch (Exception e) {
-                    log.error(ExceptionUtil.getMessage(e));
+                    log.error(e.getMessage(),e);
                 }
             }
         };

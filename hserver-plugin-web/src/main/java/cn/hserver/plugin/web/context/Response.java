@@ -178,7 +178,7 @@ public class Response implements HttpResponse {
                 headers.put("content-type", "application/json;charset=UTF-8");
             }
         } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
+            log.error(e.getMessage(),e);
         }
     }
 
@@ -220,7 +220,7 @@ public class Response implements HttpResponse {
         try {
             this.result = FreemarkerUtil.getTemplate(htmlPath, obj);
         } catch (Exception e) {
-            log.error(ExceptionUtil.getMessage(e));
+            log.error(e.getMessage(),e);
         }
         if (!headers.containsKey("content-type")) {
             headers.put("content-type", "text/html;charset=UTF-8");

@@ -135,7 +135,7 @@ public class ParameterUtil {
             }
             return paramNames;
         } catch (NotFoundException e) {
-            log.error(ExceptionUtil.getMessage(e));
+            log.error(e.getMessage(),e);
             return new String[]{};
         }
     }

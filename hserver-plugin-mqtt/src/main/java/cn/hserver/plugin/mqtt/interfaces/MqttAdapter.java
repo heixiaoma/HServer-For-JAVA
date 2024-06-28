@@ -53,7 +53,7 @@ public abstract class MqttAdapter {
     }
 
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        log.error(ExceptionUtil.getMessage(cause));
+        log.error(cause.getMessage(),cause);
         ctx.close();
     }
 

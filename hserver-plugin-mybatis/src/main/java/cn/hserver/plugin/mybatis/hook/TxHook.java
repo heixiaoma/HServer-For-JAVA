@@ -2,11 +2,13 @@ package cn.hserver.plugin.mybatis.hook;
 
 import io.netty.util.concurrent.FastThreadLocal;
 import cn.hserver.plugin.mybatis.proxy.MybatisProxy;
+import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.hserver.core.interfaces.HookAdapter;
 import cn.hserver.core.ioc.annotation.Hook;
 import cn.hserver.plugin.mybatis.annotation.Tx;
+
 import java.lang.reflect.Method;
 
 /**
@@ -40,29 +42,28 @@ public class TxHook implements HookAdapter {
                         if (System.currentTimeMillis() - startTime > annotation.timeoutMillisecond()) {
                             //超时了进行回滚
                             try {
-                                MybatisProxy.get().rollback();
-                                logger.debug("rollback: 超时 {}",System.currentTimeMillis() - startTime > annotation.timeoutMillisecond());
+                                rollback();
+                                logger.debug("rollback: 超时 {}", System.currentTimeMillis() - startTime > annotation.timeoutMillisecond());
                             } catch (Exception ex) {
-                                logger.error(ex.getMessage());
+                                logger.error(ex.getMessage(), ex);
                             }
                         }
                     }
-                   MybatisProxy.get().commit();
+                    commit();
                 } catch (Exception e) {
                     try {
-                       MybatisProxy.get().rollback();
-                        logger.debug("rollback:{}",e.getMessage());
+                        rollback();
+                        logger.debug("rollback:{}", e.getMessage());
                     } catch (Exception ex) {
-                        logger.error(ex.getMessage());
+                        logger.error(ex.getMessage(), ex);
                     }
                 }
             }
             return o;
         } finally {
-            MybatisProxy.get().close();
+            close();
             TIMEOUT_MILLISECOND.remove();
             ISTX.remove();
-            MybatisProxy.removeSession();
         }
     }
 
@@ -77,24 +78,48 @@ public class TxHook implements HookAdapter {
                     if (classes.length != 0) {
                         for (Class<? extends Throwable> aClass1 : classes) {
                             if (throwable.getClass() == aClass1) {
-                                MybatisProxy.get().rollback();
+                                rollback();
                                 return;
                             }
                         }
-                        MybatisProxy.get().commit();
+                        commit();
                         return;
                     }
-                    MybatisProxy.get().rollback();
-                    logger.debug("rollback:{}",throwable.getMessage());
+                    rollback();
+                    logger.debug("rollback:{}", throwable.getMessage());
                 } catch (Exception e) {
-                    logger.error(e.getMessage());
+                    logger.error(e.getMessage(), e);
                 }
             }
         } finally {
-            MybatisProxy.get().close();
+            close();
             TIMEOUT_MILLISECOND.remove();
             ISTX.remove();
+        }
+    }
+
+
+    public void  rollback() {
+        SqlSession sqlSession = MybatisProxy.get();
+        if (sqlSession!=null){
+            sqlSession.rollback();
+        }
+    }
+
+    public void commit() {
+        SqlSession sqlSession = MybatisProxy.get();
+        if (sqlSession!=null){
+            sqlSession.commit();
+        }
+    }
+
+    public void close() {
+        SqlSession sqlSession = MybatisProxy.get();
+        if (sqlSession != null) {
+            sqlSession.close();
             MybatisProxy.removeSession();
         }
     }
+
+
 }

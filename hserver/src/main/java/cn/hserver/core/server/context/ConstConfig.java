@@ -59,7 +59,7 @@ public class ConstConfig {
      */
     public final static String SERVER_NAME = "HServer";
 
-    public final static String VERSION = "3.5.M2";
+    public final static String VERSION = "3.5.M3";
 
     /**
      * 用户自定义的服务名
