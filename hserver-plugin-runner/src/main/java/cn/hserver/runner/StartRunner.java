@@ -46,7 +46,7 @@ public class StartRunner {
 
 //
 //    public static void main(String[] args) throws Exception{
-//        URL url = new URL("jar:file:/Users/heixiaoma/Code/java/hserver_demo/hserver_demo/test.jar!/lib/hserver-3.5.M3.jar");
+//        URL url = new URL("jar:file:/Users/heixiaoma/Code/java/hserver_demo/hserver_demo/test.jar!/lib/hserver-3.5.M4.jar");
 //        // 将URL添加到URL数组中
 //        // 此处您可以根据需要将URL添加到列表中，然后将列表转换为URL数组
 //        // 这里为了简单起见，直接创建一个长度为1的数组
