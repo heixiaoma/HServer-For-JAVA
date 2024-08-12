@@ -1,6 +1,8 @@
 package cn.hserver.core.server;
 
+import cn.hserver.core.interfaces.LogAdapter;
 import cn.hserver.core.interfaces.ProtocolDispatcherAdapter;
+import cn.hserver.core.log.HServerLogAsyncAppender;
 import cn.hserver.core.server.context.ConstConfig;
 import cn.hserver.core.server.context.IoMultiplexer;
 import io.netty.bootstrap.Bootstrap;
@@ -45,8 +47,6 @@ public class HServer {
 
     private final Integer[] ports;
 
-    private final String[] args;
-
     private final Map<Channel, String> channels = new HashMap<>();
 
     //UDP
@@ -56,9 +56,8 @@ public class HServer {
     //TCP
     private EventLoopGroup group = null;
 
-    public HServer(Integer[] ports, String[] args) {
+    public HServer(Integer[] ports) {
         this.ports=ports;
-        this.args = args;
     }
 
     public void run(Map<ChannelOption<Object>, Object> tcpOptions,Map<ChannelOption<Object>, Object> tcpChildOptions) throws Exception {
@@ -117,7 +116,6 @@ public class HServer {
         }
         log.info("HServer 启动完成");
         shutdownHook();
-        initOk();
     }
 
     private void shutdownHook() {
@@ -156,17 +154,6 @@ public class HServer {
         Runtime.getRuntime().addShutdownHook(shutdown);
     }
 
-    private void initOk() {
-        //初始化完成可以放开任务了
-        TaskManager.IS_OK = true;
-        QueueDispatcher.startTaskThread();
-        List<InitRunner> listBean = IocUtil.getListBean(InitRunner.class);
-        if (listBean != null) {
-            for (InitRunner initRunner : listBean) {
-                initRunner.init(args);
-            }
-        }
-    }
 
     private String getHello(String typeName, String port) {
         InputStream banner = HServer.class.getResourceAsStream("/banner.txt");

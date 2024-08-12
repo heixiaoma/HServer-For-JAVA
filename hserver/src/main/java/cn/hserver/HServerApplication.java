@@ -1,6 +1,8 @@
 package cn.hserver;
 
+import cn.hserver.core.interfaces.LogAdapter;
 import cn.hserver.core.ioc.ref.InitIoc;
+import cn.hserver.core.log.HServerLogAsyncAppender;
 import io.netty.channel.ChannelOption;
 import io.netty.util.ResourceLeakDetector;
 import org.slf4j.Logger;
@@ -72,13 +74,14 @@ public class HServerApplication {
      */
     public static void runTest(String testPackageName, Class<?> clazz) {
         iocInit(clazz, null, testPackageName);
-        initTestOk();
+        initOk(null);
     }
 
 
     private static void startServer(String[] args) {
         try {
-            new HServer(ConstConfig.PORTS, args).run(TCP_OPTIONS,TCP_CHILD_OPTIONS);
+            initOk(args);
+            new HServer(ConstConfig.PORTS).run(TCP_OPTIONS,TCP_CHILD_OPTIONS);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         }
@@ -144,14 +147,16 @@ public class HServerApplication {
         log.info("IOC 全部装配完成");
     }
 
-    private static void initTestOk() {
+
+    private static void initOk(String[] args) {
+        HServerLogAsyncAppender.setHasLog(IocUtil.getListBean(LogAdapter.class));
         //初始化完成可以放开任务了
         TaskManager.IS_OK = true;
         QueueDispatcher.startTaskThread();
         List<InitRunner> listBean = IocUtil.getListBean(InitRunner.class);
         if (listBean != null) {
             for (InitRunner initRunner : listBean) {
-                initRunner.init(null);
+                initRunner.init(args);
             }
         }
     }
