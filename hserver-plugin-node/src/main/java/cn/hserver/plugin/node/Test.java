@@ -9,8 +9,8 @@ import java.io.File;
 
 public class Test {
     public static void main(String[] args) throws Exception {
-        Js js = new Js(ConstConfig.PATH + "v8\\js\\node_modules");
-        File main = new File(ConstConfig.PATH + "v8\\js\\main.js");
+        Js js = new Js(ConstConfig.PATH + "v8/js/node_modules");
+        File main = new File(ConstConfig.PATH + "v8/js/main.js");
         IV8Executor run = js.run(main);
         try {
             NodeRuntime nodeRuntime = js.getNodeRuntime();
