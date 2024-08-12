@@ -1,5 +1,6 @@
 package cn.hserver.core.server.util;
 
+import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyObject;
 import cn.hserver.core.interfaces.HookAdapter;
 import cn.hserver.core.ioc.IocUtil;
@@ -25,45 +26,7 @@ public class HookProxyFactory {
         }
         proxyFactory.setSuperclass(clazz);
         Object o = proxyFactory.createClass().newInstance();
-        ((ProxyObject) o).setHandler((self, thismethod, proceed, args) -> {
-            List<HookAdapter> listBean = (List) IocUtil.getListBean(hookPageName);
-            Method[] declaredMethods = clazz.getDeclaredMethods();
-            for (Method declaredMethod : declaredMethods) {
-                if (declaredMethod.getName().equals(thismethod.getName())) {
-                    for (HookAdapter hookAdapter : listBean) {
-                        if (check(hookAdapter, self.getClass(), thismethod)) {
-                            hookAdapter.before(self.getClass(), thismethod, args);
-                        }
-                    }
-                    try {
-                        proceed.setAccessible(true);
-                        Object result = proceed.invoke(self, args);
-                        for (HookAdapter hookAdapter : listBean) {
-                            if (check(hookAdapter, self.getClass(), thismethod)) {
-                                result = hookAdapter.after(self.getClass(), thismethod, result);
-                            }
-                        }
-                        return result;
-                    } catch (Throwable e) {
-                        Throwable throwable = e;
-                        for (HookAdapter hookAdapter : listBean) {
-                            if (check(hookAdapter, self.getClass(), thismethod)) {
-                                if (throwable instanceof InvocationTargetException) {
-                                    throwable = ((InvocationTargetException) throwable).getTargetException();
-                                }
-                                hookAdapter.throwable(self.getClass(), thismethod, throwable);
-                            }
-                        }
-                        if (throwable instanceof InvocationTargetException) {
-                            throw ((InvocationTargetException) throwable).getTargetException();
-                        }
-                        throw throwable;
-                    }
-                }
-            }
-            proceed.setAccessible(true);
-            return proceed.invoke(self, args);
-        });
+        ((ProxyObject) o).setHandler(new HserverMethodHandler(clazz, hookPageName));
         return o;
     }
 
@@ -96,6 +59,50 @@ public class HookProxyFactory {
             }
         }
         return false;
+    }
+
+
+    public class HserverMethodHandler implements MethodHandler {
+        private final Class<?> clazz;
+
+        private List<HookAdapter> listBean = null;
+        private String hookPageName;
+
+        public HserverMethodHandler(Class<?> clazz, String hookPageName) {
+            this.clazz = clazz;
+            this.hookPageName = hookPageName;
+        }
+
+        @Override
+        public Object invoke(Object self, Method thismethod, Method proceed, Object[] args) throws Throwable {
+            if (listBean == null) {
+                this.listBean = (List) IocUtil.getListBean(hookPageName);
+            }
+            Method[] declaredMethods = clazz.getDeclaredMethods();
+            for (Method declaredMethod : declaredMethods) {
+                if (declaredMethod.getName().equals(thismethod.getName())) {
+                    for (HookAdapter hookAdapter : listBean) {
+                        if (check(hookAdapter, self.getClass(), thismethod)) {
+                            try {
+                                hookAdapter.before(self.getClass(), thismethod, args);
+                                proceed.setAccessible(true);
+                                Object result = proceed.invoke(self, args);
+                                result = hookAdapter.after(self.getClass(), thismethod, result);
+                                return result;
+                            } catch (Throwable throwable) {
+                                if (throwable instanceof InvocationTargetException) {
+                                    throwable = ((InvocationTargetException) throwable).getTargetException();
+                                }
+                                hookAdapter.throwable(self.getClass(), thismethod, throwable);
+                                throw  throwable;
+                            }
+                        }
+                    }
+                }
+            }
+            proceed.setAccessible(true);
+            return proceed.invoke(self, args);
+        }
     }
 
 }
