@@ -28,7 +28,7 @@ public class PackageUtil {
         Iterator<String> iterator = stringSet.stream().iterator();
         while (iterator.hasNext()) {
             String next = iterator.next();
-            String s = stringSet.stream().filter(e -> next.startsWith(e)&&!e.equals(next)).findFirst().orElse(null);
+            String s = stringSet.stream().filter(e -> next.startsWith(e) && !e.equals(next)).findFirst().orElse(null);
             if (s != null) {
                 newPackage.add(s);
             } else {
@@ -53,6 +53,7 @@ public class PackageUtil {
                 Set<String> strings = developFile(ConstConfig.CLASSPATH);
                 Set<String> strings1 = developFile(ConstConfig.CLASSPATH.replaceAll("test-classes", "classes"));
                 strings.addAll(strings1);
+                ConstConfig.CLASSPATH = ConstConfig.CLASSPATH.replaceAll("test-classes", "classes");
                 return strings;
             } else {
                 return developFile(ConstConfig.CLASSPATH);
