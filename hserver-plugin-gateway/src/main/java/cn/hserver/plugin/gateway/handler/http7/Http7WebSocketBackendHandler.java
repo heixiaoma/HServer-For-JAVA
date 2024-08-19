@@ -47,10 +47,10 @@ public class Http7WebSocketBackendHandler extends ChannelInboundHandlerAdapter {
         if (!handshakes.isHandshakeComplete()) {
             try {
                 handshakes.finishHandshake(ch, (FullHttpResponse) msg);
-                log.info("websocket Handshake 完成!");
+                log.debug("websocket Handshake 完成!");
                 handshakeFuture.setSuccess();
             } catch (WebSocketHandshakeException e) {
-                log.info("websocket连接失败!");
+                log.error("websocket连接失败!",e);
                 handshakeFuture.setFailure(e);
             }
             ReleaseUtil.release(msg);

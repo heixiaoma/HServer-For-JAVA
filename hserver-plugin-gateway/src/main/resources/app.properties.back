@@ -1,8 +1,4 @@
 #网关匹配端口
 gateway.port=8888
-#网关类型
+#网关类型，http4，http7，tcp，
 gateway.mode=http7
-
-#高低水位，防止内存泄露 单位M
-gateway.high=10
-gateway.low=5
