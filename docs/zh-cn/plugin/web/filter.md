@@ -18,9 +18,9 @@ public class GlobalPermissionFilter implements FilterAdapter {
     @Override
     public void doFilter(Webkit webkit) throws Exception {
         webkit.httpResponse.setHeader("Access-Control-Allow-Origin", "*");
-        webkit.httpResponse.setHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS,DELETE");
-        webkit.httpResponse.setHeader("Access-Control-Allow-Credentials", " true");
-        webkit.httpResponse.setHeader("Access-Control-Allow-Headers", " Content-Type,Content-Length,Accept-Encoding,Accept,X-Requested-with, Origin,Access-Token,X-Access-Token,x-access-token,miniType,mini-type");
+        webkit.httpResponse.setHeader("Access-Control-Allow-Methods", "*");
+        webkit.httpResponse.setHeader("Access-Control-Allow-Credentials", "*");
+        webkit.httpResponse.setHeader("Access-Control-Allow-Headers", "*");
         if (webkit.httpRequest.getRequestType().equals(HttpMethod.OPTIONS)) {
             webkit.httpResponse.sendHtml("");
         }
