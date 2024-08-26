@@ -10,11 +10,8 @@
  * @author hxm
  */
 @Bean
-public class GlobalPermissionFilter implements FilterAdapter {
-
-    @Autowired
-    private TokenService tokenService;
-
+@Order(1)
+public class CorsFilter implements FilterAdapter {
     @Override
     public void doFilter(Webkit webkit) throws Exception {
         webkit.httpResponse.setHeader("Access-Control-Allow-Origin", "*");
