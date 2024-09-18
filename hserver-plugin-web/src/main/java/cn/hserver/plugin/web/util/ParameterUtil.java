@@ -128,10 +128,8 @@ public class ParameterUtil {
                     .getAttribute(LocalVariableAttribute.tag);
             int pos = Modifier.isStatic(cm.getModifiers()) ? 0 : 1;
             String[] paramNames = new String[cm.getParameterTypes().length];
-            for (int i = 0; i < attr.tableLength(); i++) {
-                if (attr.index(i) >= pos && attr.index(i) < paramNames.length + pos) {
-                    paramNames[attr.index(i) - pos] = attr.variableName(i);
-                }
+            for (int i = 0; i < cm.getParameterTypes().length; i++) {
+                paramNames[i]=attr.variableName(i+pos);
             }
             return paramNames;
         } catch (NotFoundException e) {
