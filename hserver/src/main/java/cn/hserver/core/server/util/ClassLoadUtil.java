@@ -3,6 +3,7 @@ package cn.hserver.core.server.util;
 
 import javassist.ClassPool;
 import javassist.Loader;
+import javassist.LoaderClassPath;
 
 import java.io.File;
 import java.net.URL;
@@ -34,7 +35,7 @@ public class ClassLoadUtil {
         try {
             if (isJavassist) {
                 ClassPool cp = ClassPool.getDefault();
-                Loader loader = new Loader(cp);
+                Loader loader = new Loader(Thread.currentThread().getContextClassLoader(), cp);
                 loader.delegateLoadingOf("jdk.internal.reflect.");
                 classLoader = loader;
             } else {
