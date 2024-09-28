@@ -23,8 +23,8 @@ public class Runner {
                     System.exit(-1);
                 }
             }
+            System.out.println("runer password: "+ password);
         }
-        System.out.println("runer password: "+ password);
     }
 
 
