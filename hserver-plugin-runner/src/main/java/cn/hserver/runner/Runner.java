@@ -17,13 +17,13 @@ public class Runner {
             if (password == null || password.trim().length() == 0) {
                 Console console = System.console();
                 // 读取密码
-                char[] passwordArray = console.readPassword("Please enter your password: ");
+                char[] passwordArray = console.readPassword("请输入运行密码: ");
                 password = new String(passwordArray);
                 if (password.trim().length() == 0) {
                     System.exit(-1);
                 }
             }
-            System.out.println("runer password: "+ password);
+            System.out.println("运行密码: "+ password);
         }
     }
 
