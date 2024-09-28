@@ -6,10 +6,6 @@
             <groupId>cn.hserver</groupId>
             <executions>
                 <execution>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>repackage</goal>
-                    </goals>
                     <configuration>
                         <fatJar>true</fatJar>
                     </configuration>
