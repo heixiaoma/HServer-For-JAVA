@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 
 /**
  * @author hxm
@@ -161,18 +162,22 @@ public class MybatisInit {
 
     private static void onlineFile(String path, String mapperPath, Map<String, InputStream> xmlInput) {
         try {
-            JarURLConnection jarURLConnection = (JarURLConnection) (new URL(path)).openConnection();
-            JarFile jarFile = jarURLConnection.getJarFile();
-            Enumeration entry = jarFile.entries();
-            while (entry.hasMoreElements()) {
-                JarEntry jar = (JarEntry) entry.nextElement();
-                String name = jar.getName();
-                if (name.startsWith(mapperPath) && name.endsWith(".xml")) {
-                    xmlInput.put(name, MybatisInit.class.getResourceAsStream("/" + name));
+            InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+            if (resourceAsStream != null) {
+                try (JarInputStream jarInputStream = new JarInputStream(resourceAsStream)) {
+                    JarEntry jarEntry;
+                    while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
+                        String name = jarEntry.getName();
+                        if (name.startsWith(mapperPath) && name.endsWith(".xml")) {
+                            xmlInput.put(name, MybatisInit.class.getResourceAsStream("/" + name));
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-            jarFile.close();
         } catch (Exception var6) {
+            var6.printStackTrace();
         }
     }
 }

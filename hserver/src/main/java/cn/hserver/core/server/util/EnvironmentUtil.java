@@ -51,17 +51,7 @@ public class EnvironmentUtil {
         String path = (location == null ? null : location.getSchemeSpecificPart());
         if (path != null && (path.endsWith(".jar") || path.endsWith(".jar!/"))) {
             ConstConfig.RUNJAR = true;
-            /**
-             * 解决中文目录下可能存在获取错误的问题
-             */
-            if (!path.startsWith("file")) {
-                path = "file:" + path;
-            }
-            if (!path.endsWith(".jar!/")) {
-                path = path + "!/";
-            }
-
-            ConstConfig.CLASSPATH = "jar:" + path;
+            ConstConfig.CLASSPATH =  path;
         } else {
             ConstConfig.CLASSPATH = new File(aClass.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()).getPath();
             ConstConfig.RUNJAR = false;

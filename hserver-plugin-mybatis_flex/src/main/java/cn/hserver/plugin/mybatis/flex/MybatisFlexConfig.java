@@ -19,8 +19,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.util.jar.*;
 
 public class MybatisFlexConfig {
 
@@ -74,22 +73,26 @@ public class MybatisFlexConfig {
 
     private static void onlineFile(String path, String mapperPath, Map<String, InputStream> xmlInput) {
         try {
-            JarURLConnection jarURLConnection = (JarURLConnection) (new URL(path)).openConnection();
-            JarFile jarFile = jarURLConnection.getJarFile();
-            Enumeration entry = jarFile.entries();
-            while (entry.hasMoreElements()) {
-                JarEntry jar = (JarEntry) entry.nextElement();
-                String name = jar.getName();
-                if (name.startsWith(mapperPath) && name.endsWith(".xml")) {
-                    xmlInput.put(name, MybatisFlexConfig.class.getResourceAsStream("/" + name));
+            InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+            if (resourceAsStream != null) {
+                try (JarInputStream jarInputStream = new JarInputStream(resourceAsStream)) {
+                    JarEntry jarEntry;
+                    while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
+                        String name = jarEntry.getName();
+                        if (name.startsWith(mapperPath) && name.endsWith(".xml")) {
+                            xmlInput.put(name, MybatisFlexConfig.class.getResourceAsStream("/" + name));
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-            jarFile.close();
         } catch (Exception var6) {
+            var6.printStackTrace();
         }
     }
 
-    public static MybatisFlexBootstrap init(Set<Class<?>> mappers){
+    public static MybatisFlexBootstrap init(Set<Class<?>> mappers) {
         MybatisConfig mybatisConfig = IocUtil.getBean(MybatisConfig.class);
         MybatisFlexBootstrap instance = MybatisFlexBootstrap.getInstance();
         //配置数据源
@@ -102,13 +105,13 @@ public class MybatisFlexConfig {
         Configuration configuration = start.getConfiguration();
         // 拦截器
         Interceptor[] plugins = mybatisConfig.getPlugins();
-        if (plugins!=null){
+        if (plugins != null) {
             for (Interceptor plugin : plugins) {
                 configuration.addInterceptor(plugin);
             }
         }
         //加载mapper
-        loadMapperXml(configuration,mybatisConfig.getMapperLocations());
+        loadMapperXml(configuration, mybatisConfig.getMapperLocations());
         return start;
     }
 
