@@ -5,10 +5,18 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -16,33 +24,57 @@ import java.util.jar.JarOutputStream;
 
 public class JarUtil {
 
+    public static void addFileToLibs(String entryName, File file, String password) throws Exception {
+        Path path = Paths.get(entryName);
+        Path parent = path.getParent();
+        if (!parent.toFile().isDirectory()) {
+            parent.toFile().mkdir();
+        }
+        if (password != null && password.trim().length() > 0) {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            CipherInputStream encrypt = AesUtil.encrypt(fileInputStream, password);
+            Files.copy(encrypt,path);
+            encrypt.close();
+            fileInputStream.close();
+        } else {
+            Files.copy(file.toPath(),path);
+        }
+    }
 
-    public static String addFileToJar(String entryName, File file, JarOutputStream jarOutputStream) throws IOException {
+    public static void addFileToJar(String entryName, File file, JarOutputStream jarOutputStream, String password) throws Exception {
         // 创建新的JarEntry，指定添加到JAR文件的目录和文件名
         JarEntry jarEntry = new JarEntry(entryName);
         jarOutputStream.putNextEntry(jarEntry);
-
         // 读取文件内容并写入到JAR文件
         FileInputStream fileInputStream = new FileInputStream(file);
-        byte[] buffer = new byte[1024];
-        int bytesRead;
-        while ((bytesRead = fileInputStream.read(buffer)) != -1) {
-            jarOutputStream.write(buffer, 0, bytesRead);
+        if (password != null && password.trim().length() > 0) {
+            CipherInputStream encrypt = AesUtil.encrypt(fileInputStream, password);
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = encrypt.read(buffer)) != -1) {
+                jarOutputStream.write(buffer, 0, bytesRead);
+            }
+            encrypt.close();
+        } else {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+                jarOutputStream.write(buffer, 0, bytesRead);
+            }
         }
         // 关闭文件输入流
         fileInputStream.close();
         // 完成当前JarEntry
         jarOutputStream.closeEntry();
-        return entryName;
     }
 
 
     public static void copyJarEntries(String sourceJarPath, JarOutputStream targetJar) throws IOException {
         try (JarFile sourceJar = new JarFile(sourceJarPath)) {
             Enumeration<JarEntry> entries = sourceJar.entries();
-            while (entries.hasMoreElements()){
+            while (entries.hasMoreElements()) {
                 JarEntry jarEntry = entries.nextElement();
-                if (jarEntry.getName().contains("META-INF")){
+                if (jarEntry.getName().contains("META-INF")) {
                     continue;
                 }
                 JarEntry newEntry = new JarEntry(jarEntry.getName());
@@ -62,14 +94,13 @@ public class JarUtil {
     }
 
 
-
     public static String getMainClassName(String jarPath) throws IOException {
         File f = new File(jarPath);
         URL url1 = f.toURI().toURL();
         URLClassLoader myClassLoader = new URLClassLoader(new URL[]{url1}, Thread.currentThread().getContextClassLoader());
         JarFile jar = new JarFile(jarPath);
         Enumeration<JarEntry> enumFiles = jar.entries();
-        ClassPool classPool= ClassPool.getDefault();
+        ClassPool classPool = ClassPool.getDefault();
         while (enumFiles.hasMoreElements()) {
             JarEntry entry = enumFiles.nextElement();
             String classFullName = entry.getName();
@@ -84,7 +115,7 @@ public class JarUtil {
                         if (method.getName().equals("main") && method.getParameterTypes().length == 1) {
                             if (method.getParameterTypes()[0].getName().equals("java.lang.String[]") && Modifier.isStatic(method.getModifiers())) {
                                 if (method.getReturnType().getName().equals("void")) {
-                                    if (ctClass.hasAnnotation(HServerBoot.class)){
+                                    if (ctClass.hasAnnotation(HServerBoot.class)) {
                                         return ctClass.getName();
                                     }
                                 }

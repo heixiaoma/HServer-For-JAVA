@@ -1,0 +1,24 @@
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <artifactId>hserver-plugin-build</artifactId>
+            <groupId>cn.hserver</groupId>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>repackage</goal>
+                    </goals>
+                    <configuration>
+                        <fatJar>true</fatJar>
+                    </configuration>
+                    <configuration>
+                        <password>123456</password>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+```

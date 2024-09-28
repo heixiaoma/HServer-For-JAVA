@@ -11,31 +11,42 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.jar.*;
 
 public class ReBuilderJar {
     private final JarOutputStream jarOutputStream;
+    private final String password;
+    private final Boolean fatJar;
 
-    public ReBuilderJar(String pathJar) throws IOException {
+    public ReBuilderJar(String pathJar, String password, String fatJar) throws IOException {
         this.jarOutputStream = new JarOutputStream(Files.newOutputStream(Paths.get(pathJar)));
+        this.password = password;
+        this.fatJar = Boolean.parseBoolean(fatJar);
     }
 
-    public Set<String> buildNewJar(MavenProject project) throws IOException {
+    public Set<String> addDependencies(MavenProject project) throws Exception {
         Set<String> dependencies = new LinkedHashSet<>();
-//        dependencies.add("./");
-//        dependencies.add("./lib");
         Set<Artifact> artifacts = project.getArtifacts();
         for (Artifact dependency : artifacts) {
             File sourceFile = dependency.getFile();
-            String s = JarUtil.addFileToJar("lib/" + sourceFile.getName().trim(), sourceFile, jarOutputStream);
-            dependencies.add(s);
+            String lib = "libs/" + sourceFile.getName().trim();
+            if (fatJar) {
+                JarUtil.addFileToJar(lib, sourceFile, jarOutputStream, password);
+            } else {
+                JarUtil.addFileToLibs(lib,sourceFile,password);
+            }
+            dependencies.add(lib);
         }
         String artifactPath = project.getBuild().getDirectory() + "/" + project.getBuild().getFinalName() + "." + project.getPackaging();
-        String s = JarUtil.addFileToJar("lib/" + project.getBuild().getFinalName() + "." + project.getPackaging(), new File(artifactPath), jarOutputStream);
-        dependencies.add(s);
+        String lib = "libs/" + project.getBuild().getFinalName() + "." + project.getPackaging();
+        if (fatJar) {
+            JarUtil.addFileToJar(lib, new File(artifactPath), jarOutputStream, password);
+        }else {
+            JarUtil.addFileToLibs(lib,new File(artifactPath),password);
+        }
+        dependencies.add(lib);
         return dependencies;
     }
 
@@ -47,8 +58,17 @@ public class ReBuilderJar {
         manifest.getMainAttributes().putValue("Manifest-Version", "1.0");
         manifest.getMainAttributes().putValue("Created-By", "HServer");
         manifest.getMainAttributes().putValue("App-Main-Class", mainClassName);
-        manifest.getMainAttributes().putValue("Type", "true");
-        manifest.getMainAttributes().putValue("Libs",String.join(",", dependencies));
+        if (fatJar) {
+            manifest.getMainAttributes().putValue("Type", "true");
+        } else {
+            manifest.getMainAttributes().putValue("Type", "false");
+        }
+        if (password != null && password.trim().length() > 0) {
+            manifest.getMainAttributes().putValue("Encrypt", "true");
+        } else {
+            manifest.getMainAttributes().putValue("Encrypt", "false");
+        }
+        manifest.getMainAttributes().putValue("Libs", String.join(",", dependencies));
         manifest.getMainAttributes().putValue("Main-Class", "cn.hserver.runner.Runner");
         manifest.getMainAttributes().putValue("Class-Path", ".");
         // 写入 Manifest 内容
@@ -58,6 +78,7 @@ public class ReBuilderJar {
 
     public void copySource(MavenProject project) throws IOException {
         String artifactPath = project.getBuild().getDirectory() + "/" + project.getBuild().getFinalName() + "." + project.getPackaging();
+        System.out.println(artifactPath);
         JarUtil.copyJarEntries(artifactPath, jarOutputStream);
     }
 
