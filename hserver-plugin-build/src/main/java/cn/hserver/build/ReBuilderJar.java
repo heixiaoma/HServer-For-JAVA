@@ -1,6 +1,7 @@
 package cn.hserver.build;
 
 import cn.hserver.runner.Runner;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 
@@ -8,20 +9,27 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.jar.*;
 
 public class ReBuilderJar {
     private final JarOutputStream jarOutputStream;
     private final String password;
     private final Boolean fatJar;
+    private final String targetPath;
+    private final String tempJar;
 
-    public ReBuilderJar(String pathJar, String password, String fatJar) throws IOException {
-        this.jarOutputStream = new JarOutputStream(Files.newOutputStream(Paths.get(pathJar)));
+    public ReBuilderJar(String targetPath, String password, String fatJar) throws IOException {
+        this.tempJar = UUID.randomUUID() + ".jar";
+        this.targetPath = targetPath;
+        this.jarOutputStream = new JarOutputStream(Files.newOutputStream(Paths.get(targetPath + File.separator + tempJar)));
         this.password = password;
         this.fatJar = Boolean.parseBoolean(fatJar);
     }
@@ -35,7 +43,7 @@ public class ReBuilderJar {
             if (fatJar) {
                 JarUtil.addFileToJar(lib, sourceFile, jarOutputStream, password);
             } else {
-                JarUtil.addFileToLibs(lib,sourceFile,password);
+                JarUtil.addFileToLibs(targetPath + File.separator + lib, sourceFile, password);
             }
             dependencies.add(lib);
         }
@@ -43,8 +51,8 @@ public class ReBuilderJar {
         String lib = "libs/" + project.getBuild().getFinalName() + "." + project.getPackaging();
         if (fatJar) {
             JarUtil.addFileToJar(lib, new File(artifactPath), jarOutputStream, password);
-        }else {
-            JarUtil.addFileToLibs(lib,new File(artifactPath),password);
+        } else {
+            JarUtil.addFileToLibs(targetPath + File.separator + lib, new File(artifactPath), password);
         }
         dependencies.add(lib);
         return dependencies;
@@ -63,7 +71,7 @@ public class ReBuilderJar {
         } else {
             manifest.getMainAttributes().putValue("Type", "false");
         }
-        if (password != null && password.trim().length() > 0) {
+        if (StringUtils.isNotEmpty(password)) {
             manifest.getMainAttributes().putValue("Encrypt", "true");
         } else {
             manifest.getMainAttributes().putValue("Encrypt", "false");
@@ -97,4 +105,21 @@ public class ReBuilderJar {
     public void close() throws IOException {
         jarOutputStream.close();
     }
+
+
+    public void rename(MavenProject project) {
+        try {
+            File file = project.getArtifact().getFile();
+            Path path = Paths.get(targetPath + File.separator + file.getName() + ".original");
+            if (Files.exists(path)) {
+                Files.delete(path);
+            }
+            Files.move(file.toPath(), path);
+            Files.move(Paths.get(targetPath + File.separator + tempJar), file.toPath());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }

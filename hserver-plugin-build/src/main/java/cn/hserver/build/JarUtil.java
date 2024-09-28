@@ -4,6 +4,7 @@ import cn.hserver.core.ioc.annotation.HServerBoot;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -18,11 +19,25 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.jar.JarOutputStream;
+import java.util.jar.*;
 
 public class JarUtil {
+    public static boolean alreadyPackage(File file) {
+        try {
+            JarFile jarFile=new JarFile(file);
+            Manifest manifest = jarFile.getManifest();
+            Attributes mainAttribs = manifest.getMainAttributes();
+            String value = mainAttribs.getValue("Created-By");
+            if (StringUtils.isNotEmpty(value) && value.equals("HServer")) {
+                return true;
+            }
+            jarFile.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
 
     public static void addFileToLibs(String entryName, File file, String password) throws Exception {
         Path path = Paths.get(entryName);
@@ -30,14 +45,20 @@ public class JarUtil {
         if (!parent.toFile().isDirectory()) {
             parent.toFile().mkdir();
         }
-        if (password != null && password.trim().length() > 0) {
+        if (StringUtils.isNotEmpty(password)) {
+            if (Files.exists(path)) {
+                Files.delete(path);
+            }
             FileInputStream fileInputStream = new FileInputStream(file);
             CipherInputStream encrypt = AesUtil.encrypt(fileInputStream, password);
-            Files.copy(encrypt,path);
+            Files.copy(encrypt, path);
             encrypt.close();
             fileInputStream.close();
         } else {
-            Files.copy(file.toPath(),path);
+            if (Files.exists(path)) {
+                Files.delete(path);
+            }
+            Files.copy(file.toPath(), path);
         }
     }
 
@@ -47,7 +68,7 @@ public class JarUtil {
         jarOutputStream.putNextEntry(jarEntry);
         // 读取文件内容并写入到JAR文件
         FileInputStream fileInputStream = new FileInputStream(file);
-        if (password != null && password.trim().length() > 0) {
+        if (StringUtils.isNotEmpty(password)) {
             CipherInputStream encrypt = AesUtil.encrypt(fileInputStream, password);
             byte[] buffer = new byte[1024];
             int bytesRead;
