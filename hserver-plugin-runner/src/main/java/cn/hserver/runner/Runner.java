@@ -8,8 +8,10 @@ public class Runner {
 
     public static void main(String[] args) throws Exception{
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        URL.setURLStreamHandlerFactory(new JarURLStreamHandlerFactory(contextClassLoader));
+        JarURLStreamHandlerFactory jarURLStreamHandlerFactory = new JarURLStreamHandlerFactory(contextClassLoader);
+        URL.setURLStreamHandlerFactory(jarURLStreamHandlerFactory);
         JarInfo manifestInfo = JarInfo.getManifestInfo();
+        jarURLStreamHandlerFactory.setEncrypt(manifestInfo.isEncrypt());
         ClassLoader jceClassLoader = new URLClassLoader(manifestInfo.getLibs(), null);
         Thread.currentThread().setContextClassLoader(jceClassLoader);
         Class<?> c = Class.forName(manifestInfo.getMainClass(), true, jceClassLoader);
