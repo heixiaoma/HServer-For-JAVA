@@ -70,6 +70,7 @@ public class JarInfo {
             jarFile.close();
             return jarInfo;
         } catch (Exception exception) {
+            exception. printStackTrace();
             System.exit(-1);
         }
         return null;

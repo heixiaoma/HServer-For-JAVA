@@ -30,13 +30,12 @@ public class Runner {
 
     public static void main(String[] args) throws Exception {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        JarURLStreamHandlerFactory jarURLStreamHandlerFactory = new JarURLStreamHandlerFactory(contextClassLoader);
-        URL.setURLStreamHandlerFactory(jarURLStreamHandlerFactory);
+        URL.setURLStreamHandlerFactory(new JarURLStreamHandlerFactory(contextClassLoader));
         JarInfo manifestInfo = JarInfo.getManifestInfo();
         checkPassword(manifestInfo);
-        ClassLoader jceClassLoader = new URLClassLoader(manifestInfo.getLibs(), Thread.currentThread().getContextClassLoader());
-        Thread.currentThread().setContextClassLoader(jceClassLoader);
-        Class<?> c = Class.forName(manifestInfo.getMainClass(), true, jceClassLoader);
+        ClassLoader classLoader = new URLClassLoader(manifestInfo.getLibs(), contextClassLoader);
+        Thread.currentThread().setContextClassLoader(classLoader);
+        Class<?> c = Class.forName(manifestInfo.getMainClass(), true, classLoader);
         Method main = c.getMethod("main", args.getClass());
         main.invoke(null, new Object[]{args});
     }

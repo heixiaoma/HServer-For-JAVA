@@ -86,7 +86,6 @@ public class ReBuilderJar {
 
     public void copySource(MavenProject project) throws IOException {
         String artifactPath = project.getBuild().getDirectory() + "/" + project.getBuild().getFinalName() + "." + project.getPackaging();
-        System.out.println(artifactPath);
         JarUtil.copyJarEntries(artifactPath, jarOutputStream);
     }
 

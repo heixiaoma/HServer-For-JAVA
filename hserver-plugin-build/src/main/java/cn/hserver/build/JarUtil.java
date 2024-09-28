@@ -99,7 +99,11 @@ public class JarUtil {
                     continue;
                 }
                 JarEntry newEntry = new JarEntry(jarEntry.getName());
-                targetJar.putNextEntry(newEntry);
+                try {
+                    targetJar.putNextEntry(newEntry);
+                }catch (Exception e){
+                    continue;
+                }
                 // 将源 jar 文件中的内容写入目标 jar 文件
                 InputStream entryInputStream = sourceJar.getInputStream(jarEntry);
                 byte[] buffer = new byte[1024];
