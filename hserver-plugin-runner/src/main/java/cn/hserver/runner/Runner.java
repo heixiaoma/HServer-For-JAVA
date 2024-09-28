@@ -17,7 +17,6 @@ public class Runner {
         Class<?> c = Class.forName(manifestInfo.getMainClass(), true, jceClassLoader);
         Method main = c.getMethod("main", args.getClass());
         main.invoke(null, new Object[]{args});
-
     }
 
 }
