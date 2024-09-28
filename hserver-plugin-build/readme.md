@@ -14,7 +14,7 @@
                         <fatJar>true</fatJar>
                     </configuration>
                     <configuration>
-                        <password>123456</password>
+                        <password>dm_pro_token_key</password>
                     </configuration>
                 </execution>
             </executions>
