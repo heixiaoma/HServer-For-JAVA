@@ -30,7 +30,7 @@ public class JarURLConnection extends URLConnection {
             if (result == null) {
                 throw new MalformedURLException("Could not open InputStream for URL '" + url + "'");
             }
-            if (Runner.password != null && Runner.password.trim().length() > 0) {
+            if (Runner.password != null && !Runner.password.trim().isEmpty()) {
                 try {
                     return AesUtil.decrypt(result, Runner.password);
                 } catch (Exception e) {
@@ -40,7 +40,7 @@ public class JarURLConnection extends URLConnection {
             return result;
         } else {
             if (Files.exists(Paths.get(url.getFile()))) {
-                if (Runner.password != null && Runner.password.trim().length() > 0) {
+                if (Runner.password != null && !Runner.password.trim().isEmpty()) {
                     try {
                         return AesUtil.decrypt(Files.newInputStream(Paths.get(url.getFile())),Runner.password);
                     } catch (Exception e) {
