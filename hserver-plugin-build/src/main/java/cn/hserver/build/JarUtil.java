@@ -29,11 +29,11 @@ public class JarUtil {
             Attributes mainAttribs = manifest.getMainAttributes();
             String value = mainAttribs.getValue("Created-By");
             if (StringUtils.isNotEmpty(value) && value.equals("HServer")) {
+                jarFile.close();
                 return true;
             }
             jarFile.close();
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
         return false;
@@ -137,6 +137,7 @@ public class JarUtil {
                             if (method.getParameterTypes()[0].getName().equals("java.lang.String[]") && Modifier.isStatic(method.getModifiers())) {
                                 if (method.getReturnType().getName().equals("void")) {
                                     if (ctClass.hasAnnotation(HServerBoot.class)) {
+                                        jar.close();
                                         return ctClass.getName();
                                     }
                                 }

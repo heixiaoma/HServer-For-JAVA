@@ -14,12 +14,12 @@ public class Runner {
         if (manifestInfo.isEncrypt()) {
             //jar 参数读取
             password = System.getProperty("password");
-            if (password == null || password.trim().length() == 0) {
+            if (password == null || password.trim().isEmpty()) {
                 Console console = System.console();
                 // 读取密码
                 char[] passwordArray = console.readPassword("请输入运行密码: ");
                 password = new String(passwordArray);
-                if (password.trim().length() == 0) {
+                if (password.trim().isEmpty()) {
                     System.exit(-1);
                 }
             }
@@ -34,7 +34,7 @@ public class Runner {
         URL.setURLStreamHandlerFactory(jarURLStreamHandlerFactory);
         JarInfo manifestInfo = JarInfo.getManifestInfo();
         checkPassword(manifestInfo);
-        ClassLoader jceClassLoader = new URLClassLoader(manifestInfo.getLibs(), null);
+        ClassLoader jceClassLoader = new URLClassLoader(manifestInfo.getLibs(), Thread.currentThread().getContextClassLoader());
         Thread.currentThread().setContextClassLoader(jceClassLoader);
         Class<?> c = Class.forName(manifestInfo.getMainClass(), true, jceClassLoader);
         Method main = c.getMethod("main", args.getClass());

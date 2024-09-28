@@ -112,6 +112,7 @@ public class ParameterUtil {
         try {
             Class<?> clazz = method.getDeclaringClass();
             ClassPool pool = ClassPool.getDefault();
+            pool.appendClassPath(new LoaderClassPath(Thread.currentThread().getContextClassLoader()));
             CtClass clz = pool.get(clazz.getName());
             clz.freeze();
             clz.defrost();
