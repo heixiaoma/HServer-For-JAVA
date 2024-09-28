@@ -17,7 +17,7 @@ import java.util.jar.JarOutputStream;
 public class JarUtil {
 
 
-    public static void addFileToJar(String entryName, File file, JarOutputStream jarOutputStream) throws IOException {
+    public static String addFileToJar(String entryName, File file, JarOutputStream jarOutputStream) throws IOException {
         // 创建新的JarEntry，指定添加到JAR文件的目录和文件名
         JarEntry jarEntry = new JarEntry(entryName);
         jarOutputStream.putNextEntry(jarEntry);
@@ -33,6 +33,7 @@ public class JarUtil {
         fileInputStream.close();
         // 完成当前JarEntry
         jarOutputStream.closeEntry();
+        return entryName;
     }
 
 

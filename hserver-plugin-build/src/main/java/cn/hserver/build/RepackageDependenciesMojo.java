@@ -9,6 +9,7 @@ import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
 
 import java.io.File;
+import java.util.Set;
 
 @Mojo(name = "repackage", defaultPhase = LifecyclePhase.PACKAGE, requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class RepackageDependenciesMojo extends AbstractMojo {
@@ -21,11 +22,11 @@ public class RepackageDependenciesMojo extends AbstractMojo {
         try {
             ReBuilderJar reBuilderJar = new ReBuilderJar("test.jar");
             //构建jar包和依赖
-            reBuilderJar.buildNewJar(project);
+            Set<String> dependencies = reBuilderJar.buildNewJar(project);
             //copy源码
-//            reBuilderJar.copySource(project);
+            reBuilderJar.copySource(project);
             //设置运行参数
-            reBuilderJar.addManifest(project);
+            reBuilderJar.addManifest(project,dependencies);
             reBuilderJar.addRunner();
             reBuilderJar.close();
         } catch (Exception e) {
