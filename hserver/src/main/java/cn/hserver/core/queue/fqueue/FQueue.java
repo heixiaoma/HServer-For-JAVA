@@ -149,7 +149,7 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
 
     private void sleep() {
         try {
-            Thread.sleep(10);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             log.error(e.getMessage(),e);
         }
