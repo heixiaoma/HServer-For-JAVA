@@ -1,6 +1,5 @@
 package cn.hserver.plugins.maven;
 
-import cn.hserver.core.ioc.annotation.HServerBoot;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
@@ -11,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -139,9 +139,12 @@ public class JarUtil {
                         if (method.getName().equals("main") && method.getParameterTypes().length == 1) {
                             if (method.getParameterTypes()[0].getName().equals("java.lang.String[]") && Modifier.isStatic(method.getModifiers())) {
                                 if (method.getReturnType().getName().equals("void")) {
-                                    if (ctClass.hasAnnotation(HServerBoot.class)) {
-                                        jar.close();
-                                        return ctClass.getName();
+                                    Object[] annotations = ctClass.getAnnotations();
+                                    for (Object annotation : annotations) {
+                                       if (annotation.toString().endsWith("annotation.HServerBoot")){
+                                           jar.close();
+                                           return ctClass.getName();
+                                       }
                                     }
                                 }
                             }
