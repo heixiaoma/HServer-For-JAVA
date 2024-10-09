@@ -139,12 +139,9 @@ public class JarUtil {
                         if (method.getName().equals("main") && method.getParameterTypes().length == 1) {
                             if (method.getParameterTypes()[0].getName().equals("java.lang.String[]") && Modifier.isStatic(method.getModifiers())) {
                                 if (method.getReturnType().getName().equals("void")) {
-                                    Object[] annotations = ctClass.getAnnotations();
-                                    for (Object annotation : annotations) {
-                                       if (annotation.toString().endsWith("annotation.HServerBoot")){
-                                           jar.close();
-                                           return ctClass.getName();
-                                       }
+                                    if (ctClass.hasAnnotation("cn.hserver.core.ioc.annotation.HServerBoot")){
+                                        jar.close();
+                                        return ctClass.getName();
                                     }
                                 }
                             }
