@@ -21,6 +21,8 @@ public class Runner {
                 password = new String(passwordArray);
                 if (password.trim().isEmpty()) {
                     System.exit(-1);
+                }else {
+                    System.setProperty("password",password);
                 }
             }
             System.out.println("运行密码: "+ password);

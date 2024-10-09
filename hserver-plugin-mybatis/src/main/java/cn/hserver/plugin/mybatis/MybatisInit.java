@@ -1,6 +1,7 @@
 package cn.hserver.plugin.mybatis;
 
 import cn.hserver.core.ioc.IocUtil;
+import cn.hserver.core.server.util.JarInputStreamUtil;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.MybatisSqlSessionFactoryBuilder;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
@@ -164,7 +165,7 @@ public class MybatisInit {
         try {
             InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
             if (resourceAsStream != null) {
-                try (JarInputStream jarInputStream = new JarInputStream(resourceAsStream)) {
+                try (JarInputStream jarInputStream = new JarInputStream(JarInputStreamUtil.decrypt(resourceAsStream))) {
                     JarEntry jarEntry;
                     while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
                         String name = jarEntry.getName();

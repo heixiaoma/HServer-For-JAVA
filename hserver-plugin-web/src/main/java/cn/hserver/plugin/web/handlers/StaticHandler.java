@@ -2,20 +2,17 @@ package cn.hserver.plugin.web.handlers;
 
 
 import cn.hserver.core.server.context.ConstConfig;
+import cn.hserver.core.server.util.JarInputStreamUtil;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import cn.hserver.plugin.web.context.StaticFile;
 import cn.hserver.plugin.web.context.HServerContext;
 import cn.hserver.plugin.web.exception.BusinessException;
 
 import java.io.*;
-import java.net.JarURLConnection;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
 /**
@@ -126,7 +123,7 @@ public class StaticHandler {
         try {
             InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
             if (resourceAsStream != null) {
-                try (JarInputStream jarInputStream = new JarInputStream(resourceAsStream)) {
+                try (JarInputStream jarInputStream = new JarInputStream(JarInputStreamUtil.decrypt(resourceAsStream))) {
                     JarEntry jarEntry;
                     while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
                         String name = jarEntry.getName();

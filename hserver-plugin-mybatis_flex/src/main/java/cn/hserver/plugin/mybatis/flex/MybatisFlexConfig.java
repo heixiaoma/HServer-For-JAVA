@@ -2,6 +2,7 @@ package cn.hserver.plugin.mybatis.flex;
 
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.server.context.ConstConfig;
+import cn.hserver.core.server.util.JarInputStreamUtil;
 import cn.hserver.plugin.mybatis.flex.bean.MybatisConfig;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import org.apache.ibatis.builder.xml.XMLMapperBuilder;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,7 +63,7 @@ public class MybatisFlexConfig {
                     } else {
                         try {
                             if (file2.getAbsolutePath().endsWith(".xml")) {
-                                xmlInput.put(file2.getAbsolutePath(), new FileInputStream(file2.getAbsolutePath()));
+                                xmlInput.put(file2.getAbsolutePath(), Files.newInputStream(Paths.get(file2.getAbsolutePath())));
                             }
                         } catch (Exception var9) {
                         }
@@ -75,7 +78,7 @@ public class MybatisFlexConfig {
         try {
             InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
             if (resourceAsStream != null) {
-                try (JarInputStream jarInputStream = new JarInputStream(resourceAsStream)) {
+                try (JarInputStream jarInputStream = new JarInputStream(JarInputStreamUtil.decrypt(resourceAsStream))) {
                     JarEntry jarEntry;
                     while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
                         String name = jarEntry.getName();
