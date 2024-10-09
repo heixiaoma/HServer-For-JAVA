@@ -33,7 +33,7 @@
     <dependencies>
         <dependency>
             <groupId>cn.hserver</groupId>
-            <artifactId>hserver-plugin-loader</artifactId>
+            <artifactId>hserver-plugin-runner</artifactId>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.maven/maven-archiver -->
         <dependency>

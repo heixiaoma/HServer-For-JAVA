@@ -24,13 +24,11 @@
         <module>hserver-plugin-mqtt</module>
         <module>hserver-plugin-druid</module>
         <module>hserver-plugin-gateway</module>
-        <module>hserver-plugin-loader</module>
         <module>hserver-plugin-node</module>
         <module>hserver-plugin-nacos</module>
         <module>hserver-plugin-cloud</module>
         <module>hserver-plugin-mybatis_flex</module>
         <module>hserver-net</module>
-        <module>hserver-plugin-build</module>
         <module>hserver-plugin-runner</module>
         <module>hserver-plugin-satoken</module>
     </modules>
@@ -87,11 +85,6 @@
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
-                <artifactId>hserver-plugin-loader</artifactId>
-                <version>3.5.M7</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-runner</artifactId>
                 <version>3.5.M7</version>
             </dependency>
@@ -129,19 +122,6 @@
                 <plugin>
                     <groupId>cn.hserver</groupId>
                     <artifactId>hserver-plugin-maven</artifactId>
-                    <version>3.5.M7</version>
-                    <executions>
-                        <execution>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>repackage</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>cn.hserver</groupId>
-                    <artifactId>hserver-plugin-build</artifactId>
                     <version>3.5.M7</version>
                     <executions>
                         <execution>

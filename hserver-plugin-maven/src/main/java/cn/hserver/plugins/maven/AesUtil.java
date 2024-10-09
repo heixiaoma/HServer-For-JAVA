@@ -1,4 +1,4 @@
-package cn.hserver.build;
+package cn.hserver.plugins.maven;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;

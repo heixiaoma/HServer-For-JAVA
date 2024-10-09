@@ -1,4 +1,4 @@
-package cn.hserver.build;
+package cn.hserver.plugins.maven;
 
 import cn.hserver.core.ioc.annotation.HServerBoot;
 import javassist.ClassPool;
@@ -6,15 +6,14 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
