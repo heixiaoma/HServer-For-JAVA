@@ -1,10 +1,16 @@
+
+### 打包模块
+- 加密模式情况
+- - 参数设置密码启动：java -Dpassword=123 -jar xxx.jar
+- - 命令行提示输入密码 
+
 ```xml
 <build>
     <!--  默认项目名  -->
-    <finalName>aaa.jar</finalName>
+    <finalName>aaa</finalName>
     <plugins>
         <plugin>
-            <artifactId>hserver-plugin-build</artifactId>
+            <artifactId>hserver-plugin-maven</artifactId>
             <groupId>cn.hserver</groupId>
             <executions>
                 <execution>
