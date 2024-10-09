@@ -1,7 +1,7 @@
 
 ### 打包模块
 - 加密模式情况
-- - 参数设置密码启动：java -Dpassword=123 -jar xxx.jar
+- - 参数设置密码启动：java -Dpassword=dm_pro_token_key -jar xxx.jar
 - - 命令行提示输入密码 
 
 ```xml
