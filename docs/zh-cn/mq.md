@@ -17,18 +17,8 @@
 
     @GET("/eventInfo")
     public JsonResult eventInfo() {
-        //队列信息
-        //内存剩余队列数
-        // long remainQueueSize;
-        
-        //最大数量
-        // long bufferSize;
-        
-        //游标，执行次数
-        // long cursor;
-        
-        // 持久化剩下的数量
-        // long fqueueSize;
+        //剩余队列数
+        // long size;
         
         QueueInfo queueInfo = HServerQueue.queueInfo("Queue");
         return JsonResult.ok().put("data", queueInfo);
@@ -49,13 +39,6 @@ public @interface QueueListener {
      * @return
      */
     String queueName() default "";
-
-    /**
-     * 消费者类型
-     *
-     * @return
-     */
-    QueueHandlerType type() default QueueHandlerType.NO_REPEAT;
 }
 ```
 
@@ -66,9 +49,6 @@ public @interface QueueListener {
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface QueueHandler {
-    //消费者优先级 级别重小到大排序，小的有限，同一样的就并行操作
-    int level() default 1;
-
     //消费者数量
     int size() default 1;
 
@@ -79,9 +59,7 @@ public @interface QueueHandler {
 
 消费方法定义，消费者数量默认是1，我们可以定义多个，通过size参数处理
 
-level级别,当里面出现两个 我们指定级别实现 顺序消费.
-
-我们可以通过消费类型和消费级别可以自由组合，多种方案
+一个类中只能有一个消费者，也就是一个@QueueHandler 注解
 
 
 
@@ -103,21 +81,16 @@ public class EventTest {
 
     LongAdder atomicLong = new LongAdder();
 
-    @QueueHandler(level = 1, size = 2)
+    @QueueHandler( size = 2)
     public void aa(String name) {
         atomicLong.increment();
         System.out.println(atomicLong + "---------" + Thread.currentThread().getName());
     }
 
-
-    @QueueHandler(level = 2, size = 2)
-    public void cc(String name) {
-        atomicLong.increment();
-        System.out.println(atomicLong + "---------" + Thread.currentThread().getName());
-    }
-
-    //优先配置文件，如果配置文件不存在apm.size 则使用size 8
-    @QueueHandler(level = 2,sizePropValue = "apm.size",size = 8)
+    //一个类中只能有一个消费者，也就是一个@QueueHandler 注解
+    
+    //优先配置文件，如果配置文件不存在apm.size 则使用size 8 
+    @QueueHandler(sizePropValue = "apm.size",size = 8)
     public void cc(String name) {
         atomicLong.increment();
         System.out.println(atomicLong + "---------" + Thread.currentThread().getName());
