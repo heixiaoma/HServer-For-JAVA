@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.AbstractQueue;
 import java.util.Iterator;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -35,7 +36,6 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
     private FSQueue fsQueue = null;
     private String queueName = null;
     private Lock lock = new ReentrantReadWriteLock().writeLock();
-
     public FQueue(String path, String queueName) throws IOException, FileFormatException {
         this.queueName = queueName;
         fsQueue = new FSQueue(path);
@@ -83,6 +83,9 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
         try {
             lock.lock();
             fsQueue.add(e);
+            synchronized (this) {
+                this.notify();
+            }
             return true;
         } catch (IOException ex) {
             throw new RuntimeException(ex);
@@ -147,48 +150,46 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
         fsQueue = null;
     }
 
-    private void sleep() {
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            log.error(e.getMessage(),e);
-        }
-    }
+
 
     public void start() {
-        new NamedThreadFactory("hserver_queue:"+queueName).newThread(() -> {
+        QueueHandleInfo queueHandleInfo = QueueDispatcher.getQueueHandleInfo(queueName);
+        if (queueHandleInfo == null) {
+            return;
+        }
+        int threadSize = queueHandleInfo.getThreadSize();
+        new NamedThreadFactory("hserver_queue:" + queueName).newThread(() -> {
                     while (fsQueue != null) {
                         try {
-                            QueueHandleInfo queueHandleInfo = QueueDispatcher.getQueueHandleInfo(queueName);
-                            if (queueHandleInfo == null) {
-                                sleep();
+                            QueueInfo queueInfo = queueHandleInfo.getQueueFactory().queueInfo();
+                            if (queueInfo == null) {
                                 return;
                             }
-                            QueueInfo queueInfo = queueHandleInfo.getQueueFactory().queueInfo();
-                            int threadSize = queueHandleInfo.getThreadSize();
-                            if (queueInfo != null ) {
-                                byte[] poll = null;
-                                if (threadSize == 1) {
-                                    if ((queueInfo.getBufferSize() - queueInfo.getRemainQueueSize() < threadSize)) {
-                                        poll = peek();
-                                    }
-                                } else {
-                                    if (queueInfo.getRemainQueueSize()>0) {
-                                        poll = poll();
-                                    }
-                                }
-                                if (poll != null) {
-                                    QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
-                                    QueueDispatcher.dispatcherQueue(deserialize, deserialize.getQueueName());
-                                } else {
-                                    sleep();
+                            byte[] poll;
+                            if (threadSize == 1) {
+                                if ((queueInfo.getBufferSize() - queueInfo.getRemainQueueSize() < threadSize)) {
+                                    poll = peek();
+                                }else {
+                                    continue;
                                 }
                             } else {
-                                sleep();
+                                if (queueInfo.getRemainQueueSize() > 0) {
+                                    poll = poll();
+                                }else {
+                                    continue;
+                                }
+                            }
+                            if (poll != null) {
+                                QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
+                                QueueDispatcher.dispatcherQueue(deserialize, deserialize.getQueueName());
+                            } else {
+                                synchronized (FQueue.this) {
+                                    FQueue.this.wait();
+                                }
                             }
                         } catch (Exception e) {
-                            sleep();
-                            log.error(e.getMessage(),e);
+                            log.error(e.getMessage(), e);
+                            return;
                         }
                     }
                 }
