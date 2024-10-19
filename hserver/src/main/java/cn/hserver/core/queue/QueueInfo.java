@@ -1,58 +1,26 @@
 package cn.hserver.core.queue;
 
 public class QueueInfo {
+    //剩余数
+    private final long size;
+    private final int threadSize;
+    private final String queueName;
 
-    //内存剩余队列数
-    private long remainQueueSize;
-
-    //最大数量
-    private long bufferSize;
-
-    //游标，执行次数
-    private long cursor;
-
-    // 持久化的数量
-    private long fqueueSize;
-
-    public long getBufferSize() {
-        return bufferSize;
+    public QueueInfo(long size,int threadSize,String queueName) {
+        this.size = size;
+        this.threadSize = threadSize;
+        this.queueName = queueName;
     }
 
-    public void setBufferSize(long bufferSize) {
-        this.bufferSize = bufferSize;
+    public long getSize() {
+        return size;
     }
 
-    public long getRemainQueueSize() {
-        return remainQueueSize;
+    public String getQueueName() {
+        return queueName;
     }
 
-    public void setRemainQueueSize(long remainQueueSize) {
-        this.remainQueueSize = remainQueueSize;
-    }
-
-    public long getCursor() {
-        return cursor;
-    }
-
-    public void setCursor(long cursor) {
-        this.cursor = cursor;
-    }
-
-    public long getFqueueSize() {
-        return fqueueSize;
-    }
-
-    public void setFqueueSize(long fqueueSize) {
-        this.fqueueSize = fqueueSize;
-    }
-
-    @Override
-    public String toString() {
-        return "QueueInfo{" +
-                "remainQueueSize=" + remainQueueSize +
-                ", bufferSize=" + bufferSize +
-                ", cursor=" + cursor +
-                ", fqueueSize=" + fqueueSize +
-                '}';
+    public int getThreadSize() {
+        return threadSize;
     }
 }

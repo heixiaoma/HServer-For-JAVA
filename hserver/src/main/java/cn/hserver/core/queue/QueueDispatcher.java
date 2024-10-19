@@ -13,6 +13,7 @@ import cn.hserver.core.queue.fqueue.FQueue;
 import cn.hserver.core.queue.fqueue.exception.FileFormatException;
 import cn.hserver.core.server.util.NamedThreadFactory;
 
+import java.beans.EventHandler;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -32,21 +33,15 @@ public class QueueDispatcher {
     private static final Logger log = LoggerFactory.getLogger(QueueDispatcher.class);
     private static final Map<String, QueueHandleInfo> handleMethodMap = new ConcurrentHashMap<>();
     private static final Map<String, FQueue> FQ = new ConcurrentHashMap<>();
-    private static final int buffSize = 1024;
 
     private QueueDispatcher() {
     }
 
-
-   public static QueueHandleInfo getQueueHandleInfo(String queueName){
+    public static QueueHandleInfo getQueueHandleInfo(String queueName) {
         return handleMethodMap.get(queueName);
     }
 
     public static void removeQueue(String queueName, boolean trueDelete) {
-        QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
-        if (queueHandleInfo != null && queueHandleInfo.getQueueFactory() != null) {
-            queueHandleInfo.getQueueFactory().stop();
-        }
         handleMethodMap.remove(queueName);
         FQueue fQueue = FQ.get(queueName);
         if (fQueue != null) {
@@ -56,7 +51,7 @@ public class QueueDispatcher {
             try {
                 fQueue.close();
             } catch (IOException | FileFormatException e) {
-                log.error(e.getMessage(),e);
+                log.error(e.getMessage(), e);
             }
         }
         FQ.remove(queueName);
@@ -78,28 +73,29 @@ public class QueueDispatcher {
             return;
         }
         IocUtil.addBean(queueName, obj);
-        QueueHandleInfo eventHandleInfo = new QueueHandleInfo();
-        eventHandleInfo.setQueueHandlerType(queueListener.type());
-        eventHandleInfo.setQueueName(queueName);
-        eventHandleInfo.setBufferSize(buffSize);
+        QueueHandleInfo eventHandleInfo = new QueueHandleInfo(queueName);
         Method[] methods = clazz.getDeclaredMethods();
         for (Method method : methods) {
             QueueHandler queueHandler = method.getAnnotation(QueueHandler.class);
             if (queueHandler != null) {
-                int size=queueHandler.size();
+                int size = queueHandler.size();
                 String s = queueHandler.sizePropValue();
-                if (s.trim().length()!=0){
+                if (!s.trim().isEmpty()) {
                     Integer anInt = PropUtil.getInstance().getInt(s);
-                    if (anInt!=null) {
-                        size =anInt;
+                    if (anInt != null) {
+                        size = anInt;
                     }
                 }
                 if (size > eventHandleInfo.getThreadSize()) {
                     eventHandleInfo.setThreadSize(size);
                 }
-                eventHandleInfo.add(new QueueHandleMethod(method, queueHandler.level(), size));
+                eventHandleInfo.setQueueEventHandler(
+                        new QueueEventHandler(queueListener.queueName(),method)
+                );
+                eventHandleInfo.setThreadSize(size);
                 log.debug("寻找队列 [{}] 的方法 [{}.{}]", queueName, clazz.getSimpleName(),
                         method.getName());
+                break;
             }
         }
         handleMethodMap.put(queueName, eventHandleInfo);
@@ -130,33 +126,30 @@ public class QueueDispatcher {
                 continue;
             }
             IocUtil.addBean(queueListener.queueName(), obj);
-            QueueHandleInfo eventHandleInfo = new QueueHandleInfo();
-            eventHandleInfo.setQueueHandlerType(queueListener.type());
-            eventHandleInfo.setQueueName(queueListener.queueName());
-            eventHandleInfo.setBufferSize(buffSize);
+            QueueHandleInfo eventHandleInfo = new QueueHandleInfo(queueListener.queueName());
             Method[] methods = clazz.getDeclaredMethods();
             for (Method method : methods) {
                 QueueHandler queueHandler = method.getAnnotation(QueueHandler.class);
                 if (queueHandler != null) {
 
-                    int size=queueHandler.size();
+                    int size = queueHandler.size();
                     String s = queueHandler.sizePropValue();
-                    if (!s.trim().isEmpty()){
+                    if (!s.trim().isEmpty()) {
                         Integer anInt = PropUtil.getInstance().getInt(s);
-                        if (anInt!=null) {
-                            size =anInt;
+                        if (anInt != null) {
+                            size = anInt;
                         }
                     }
                     if (size > eventHandleInfo.getThreadSize()) {
                         eventHandleInfo.setThreadSize(size);
                     }
-
-                    if (size > eventHandleInfo.getThreadSize()) {
-                        eventHandleInfo.setThreadSize(size);
-                    }
-                    eventHandleInfo.add(new QueueHandleMethod(method, queueHandler.level(), size));
+                    eventHandleInfo.setQueueEventHandler(
+                            new QueueEventHandler(queueListener.queueName(),method)
+                    );
+                    eventHandleInfo.setThreadSize(size);
                     log.debug("寻找队列 [{}] 的方法 [{}.{}]", queueListener.queueName(), clazz.getSimpleName(),
                             method.getName());
+                    break;
                 }
             }
             handleMethodMap.put(queueListener.queueName(), eventHandleInfo);
@@ -164,16 +157,12 @@ public class QueueDispatcher {
     }
 
     private static void initConfigQueue(QueueHandleInfo v) {
-        FQueue fQueue=null;
+        FQueue fQueue = null;
         try {
-             fQueue = new FQueue(PERSIST_PATH + File.separator + v.getQueueName(),v.getQueueName());
+            fQueue = new FQueue(PERSIST_PATH + File.separator + v.getQueueName(), v.getQueueName());
             FQ.put(v.getQueueName(), fQueue);
         } catch (Exception ignored) {
         }
-        QueueFactory queueFactory = new QueueFactoryImpl();
-        queueFactory.createQueue(v.getQueueName(), v.getBufferSize(), v.getQueueHandlerType(), v.getQueueHandleMethods());
-        v.setQueueFactory(queueFactory);
-        v.getQueueFactory().start();
         fQueue.start();
     }
 
@@ -184,16 +173,11 @@ public class QueueDispatcher {
         /**
          * 检查历史是否有，有的话先关闭掉
          */
-        handleMethodMap.forEach((k, v) -> {
-            if (v.getQueueFactory() != null) {
-                v.getQueueFactory().stop();
-            }
-        });
         FQ.forEach((k, v) -> {
             try {
                 v.close();
             } catch (Exception e) {
-                log.error(e.getMessage(),e);
+                log.error(e.getMessage(), e);
             }
         });
         FQ.clear();
@@ -201,26 +185,6 @@ public class QueueDispatcher {
         handleMethodMap.forEach((k, v) -> {
             initConfigQueue(v);
         });
-    }
-
-    /**
-     * 分发队列
-     *
-     * @param queueName 事件URI
-     */
-    public static boolean dispatcherQueue(QueueData queueData, String queueName) {
-        QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
-        if (queueHandleInfo != null) {
-            if (queueData != null) {
-                queueData.setfQueue(FQ.get(queueName));
-                queueData.setThreadSize(queueHandleInfo.getThreadSize());
-                queueHandleInfo.getQueueFactory().producer(queueData);
-            }
-            return true;
-        } else {
-            log.error("不存在:{} 队列", queueName);
-            return false;
-        }
     }
 
     /**
@@ -235,18 +199,14 @@ public class QueueDispatcher {
             log.error("不存在:{} 队列", queueName);
             return false;
         }
-        fQueue.offer(SerializationUtil.serialize(new QueueData(queueName, args, null)));
+        fQueue.offer(SerializationUtil.serialize(new QueueData(queueName, args)));
         return true;
     }
 
     public static QueueInfo queueInfo(String queueName) {
         QueueHandleInfo queueHandleInfo = handleMethodMap.get(queueName);
-        if (queueHandleInfo != null && queueHandleInfo.getQueueFactory() != null) {
-            QueueInfo queueInfo = queueHandleInfo.getQueueFactory().queueInfo();
-            queueInfo.setFqueueSize(FQ.get(queueName).size());
-            return queueInfo;
-        }
-        return null;
+        FQueue fQueue = FQ.get(queueName);
+        return new QueueInfo(fQueue.size(), queueHandleInfo.getThreadSize(), queueName);
     }
 
 }

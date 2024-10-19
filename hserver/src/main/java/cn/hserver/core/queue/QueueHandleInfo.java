@@ -1,75 +1,42 @@
 package cn.hserver.core.queue;
 
-import cn.hserver.core.ioc.annotation.queue.QueueHandlerType;
+import cn.hserver.core.server.util.NamedThreadFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.*;
 
 /**
- * 队列信息
+ * 处理器信息
  *
  * @author hxm
  */
 public class QueueHandleInfo {
-
-    private QueueFactory queueFactory;
-
-    private String queueName;
-
-    private int bufferSize;
-
-    private QueueHandlerType queueHandlerType;
-
+    private final String queueName;
     private int threadSize;
+    private QueueEventHandler queueEventHandler;
 
-    private List<QueueHandleMethod> queueHandleMethods = new ArrayList<>();
-
-    public void add(QueueHandleMethod eventHandleMethod) {
-        this.queueHandleMethods.add(eventHandleMethod);
-    }
-
-    public QueueFactory getQueueFactory() {
-        return queueFactory;
-    }
-
-    public void setQueueFactory(QueueFactory queueFactory) {
-        this.queueFactory = queueFactory;
+    public QueueHandleInfo(String queueName) {
+        this.queueName = queueName;
     }
 
     public String getQueueName() {
         return queueName;
     }
 
-    public void setQueueName(String queueName) {
-        this.queueName = queueName;
-    }
-
-    public int getBufferSize() {
-        return bufferSize;
-    }
-
-    public void setBufferSize(int bufferSize) {
-        this.bufferSize = bufferSize;
-    }
-
     public int getThreadSize() {
         return threadSize;
+    }
+
+    public QueueEventHandler getQueueEventHandler() {
+        return queueEventHandler;
     }
 
     public void setThreadSize(int threadSize) {
         this.threadSize = threadSize;
     }
 
-    public QueueHandlerType getQueueHandlerType() {
-        return queueHandlerType;
+    public void setQueueEventHandler(QueueEventHandler queueEventHandler) {
+        this.queueEventHandler = queueEventHandler;
     }
 
-    public void setQueueHandlerType(QueueHandlerType queueHandlerType) {
-        this.queueHandlerType = queueHandlerType;
-    }
-
-    public List<QueueHandleMethod> getQueueHandleMethods() {
-        return queueHandleMethods;
-    }
 
 }

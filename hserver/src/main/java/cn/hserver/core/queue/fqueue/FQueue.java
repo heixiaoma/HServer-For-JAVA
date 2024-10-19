@@ -1,13 +1,10 @@
 package cn.hserver.core.queue.fqueue;
 
 
-import cn.hserver.HServerApplication;
 import cn.hserver.core.queue.QueueData;
 import cn.hserver.core.queue.QueueDispatcher;
 import cn.hserver.core.queue.QueueHandleInfo;
-import cn.hserver.core.queue.QueueInfo;
 import cn.hserver.core.queue.fqueue.exception.FileFormatException;
-import cn.hserver.core.server.util.ExceptionUtil;
 import cn.hserver.core.server.util.NamedThreadFactory;
 import cn.hserver.core.server.util.SerializationUtil;
 import org.slf4j.Logger;
@@ -18,7 +15,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.AbstractQueue;
 import java.util.Iterator;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -36,6 +34,9 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
     private FSQueue fsQueue = null;
     private String queueName = null;
     private Lock lock = new ReentrantReadWriteLock().writeLock();
+
+    private ExecutorService executorService;
+
     public FQueue(String path, String queueName) throws IOException, FileFormatException {
         this.queueName = queueName;
         fsQueue = new FSQueue(path);
@@ -84,7 +85,7 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
             lock.lock();
             fsQueue.add(e);
             synchronized (this) {
-                this.notify();
+                this.notifyAll();
             }
             return true;
         } catch (IOException ex) {
@@ -147,9 +148,9 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
         if (fsQueue != null) {
             fsQueue.close();
         }
+        executorService.shutdown();
         fsQueue = null;
     }
-
 
 
     public void start() {
@@ -158,41 +159,39 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
             return;
         }
         int threadSize = queueHandleInfo.getThreadSize();
-        new NamedThreadFactory("hserver_queue:" + queueName).newThread(() -> {
-                    while (fsQueue != null) {
-                        try {
-                            QueueInfo queueInfo = queueHandleInfo.getQueueFactory().queueInfo();
-                            if (queueInfo == null) {
-                                return;
-                            }
-                            byte[] poll;
-                            if (threadSize == 1) {
-                                if ((queueInfo.getBufferSize() - queueInfo.getRemainQueueSize() < threadSize)) {
-                                    poll = peek();
-                                }else {
-                                    continue;
-                                }
-                            } else {
-                                if (queueInfo.getRemainQueueSize() > 0) {
-                                    poll = poll();
-                                }else {
-                                    continue;
-                                }
-                            }
-                            if (poll != null) {
-                                QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
-                                QueueDispatcher.dispatcherQueue(deserialize, deserialize.getQueueName());
+        executorService = Executors.newFixedThreadPool(threadSize, new NamedThreadFactory(queueName + "-queue-handler"));
+        for (int i = 0; i < threadSize; i++) {
+            executorService.submit(() -> {
+                while (fsQueue != null && !executorService.isShutdown()) {
+                    try {
+                        if (threadSize == 1) {
+                            byte[] peek = peek();
+                            if (peek != null) {
+                                QueueData deserialize = SerializationUtil.deserialize(peek, QueueData.class);
+                                queueHandleInfo.getQueueEventHandler().invoke(deserialize);
+                                poll();
                             } else {
                                 synchronized (FQueue.this) {
                                     FQueue.this.wait();
                                 }
                             }
-                        } catch (Exception e) {
-                            log.error(e.getMessage(), e);
-                            return;
+                        } else {
+                            byte[] poll = poll();
+                            if (poll != null) {
+                                QueueData deserialize = SerializationUtil.deserialize(poll, QueueData.class);
+                                queueHandleInfo.getQueueEventHandler().invoke(deserialize);
+                            } else {
+                                synchronized (FQueue.this) {
+                                    FQueue.this.wait();
+                                }
+                            }
                         }
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
+                        return;
                     }
                 }
-        ).start();
+            });
+        }
     }
 }

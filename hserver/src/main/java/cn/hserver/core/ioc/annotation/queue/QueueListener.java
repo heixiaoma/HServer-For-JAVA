@@ -21,11 +21,4 @@ public @interface QueueListener {
      * @return
      */
     String queueName() default "";
-
-    /**
-     * 消费者类型
-     *
-     * @return
-     */
-    QueueHandlerType type() default QueueHandlerType.NO_REPEAT;
 }
