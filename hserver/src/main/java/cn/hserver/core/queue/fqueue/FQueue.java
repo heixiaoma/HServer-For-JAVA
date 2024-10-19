@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.AbstractQueue;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
@@ -147,11 +148,24 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
     public void close() throws IOException, FileFormatException {
         if (fsQueue != null) {
             fsQueue.close();
+            fsQueue = null;
         }
-        executorService.shutdown();
-        fsQueue = null;
+        stopHandler();
     }
 
+    public void stopHandler() {
+        if (executorService != null&&!executorService.isShutdown()) {
+            List<Runnable> runnables = executorService.shutdownNow();
+            runnables.forEach(Runnable::run);
+            executorService = null;
+        }
+    }
+
+    public void restartHandler() {
+        if (executorService == null || executorService.isShutdown()) {
+            start();
+        }
+    }
 
     public void start() {
         QueueHandleInfo queueHandleInfo = QueueDispatcher.getQueueHandleInfo(queueName);
@@ -162,7 +176,7 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
         executorService = Executors.newFixedThreadPool(threadSize, new NamedThreadFactory(queueName + "-queue-handler"));
         for (int i = 0; i < threadSize; i++) {
             executorService.submit(() -> {
-                while (fsQueue != null && !executorService.isShutdown()) {
+                while (fsQueue != null && executorService != null && !executorService.isShutdown()) {
                     try {
                         if (threadSize == 1) {
                             byte[] peek = peek();
@@ -187,6 +201,9 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
                             }
                         }
                     } catch (Exception e) {
+                        if (e instanceof InterruptedException) {
+                            return;
+                        }
                         log.error(e.getMessage(), e);
                         return;
                     }

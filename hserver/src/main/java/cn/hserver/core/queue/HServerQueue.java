@@ -33,9 +33,27 @@ public class HServerQueue {
         QueueDispatcher.removeQueue(queueName,true);
     }
 
+
     public static void removeQueue(String queueName,boolean trueDeleteData) {
         QueueDispatcher.removeQueue(queueName,trueDeleteData);
     }
+
+    /**
+     * 停止队列得数据处理
+     * @param queueName
+     */
+    public static void stopHandler(String queueName) {
+        QueueDispatcher.stopHandler(queueName);
+    }
+
+    /**
+     * 启用队列得数据处理
+     * @param queueName
+     */
+    public static void restartHandler(String queueName) {
+        QueueDispatcher.restartHandler(queueName);
+    }
+
     /**
      * 发送队列
      *

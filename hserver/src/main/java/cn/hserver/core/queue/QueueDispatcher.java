@@ -57,6 +57,22 @@ public class QueueDispatcher {
         FQ.remove(queueName);
     }
 
+    public static void stopHandler(String queueName) {
+        FQueue fQueue = FQ.get(queueName);
+        if (fQueue != null) {
+            fQueue.stopHandler();
+        }
+    }
+
+    public static void restartHandler(String queueName) {
+        FQueue fQueue = FQ.get(queueName);
+        if (fQueue != null) {
+            fQueue.restartHandler();
+        }
+    }
+
+
+
     public static List<String> getAllQueueName() {
         return new ArrayList<>(FQ.keySet());
     }
@@ -90,7 +106,7 @@ public class QueueDispatcher {
                     eventHandleInfo.setThreadSize(size);
                 }
                 eventHandleInfo.setQueueEventHandler(
-                        new QueueEventHandler(queueListener.queueName(),method)
+                        new QueueEventHandler(queueName,method)
                 );
                 eventHandleInfo.setThreadSize(size);
                 log.debug("寻找队列 [{}] 的方法 [{}.{}]", queueName, clazz.getSimpleName(),
