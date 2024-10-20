@@ -24,5 +24,5 @@ public class Log implements LogAdapter {
 通过配置文件也可以来控制日志级别
 ```properties
 #日志级别 debug info error ...
-level=debug
+log=debug
 ```

@@ -1,21 +1,24 @@
 ## 打包jar
 
 Main函数类上添加@HServerBoot 注解用于标记是启动类。
-只需要在pom.xml 添加打包命令即可，打包之前记得 *clean*
-
 ```xml
-
 <build>
+    <!--  默认项目名  -->
+    <finalName>aaa</finalName>
     <plugins>
         <plugin>
-            <groupId>cn.hserver</groupId>
             <artifactId>hserver-plugin-maven</artifactId>
+            <groupId>cn.hserver</groupId>
             <executions>
                 <execution>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>repackage</goal>
-                    </goals>
+                    <configuration>
+                        <!--         默认胖包               -->
+                        <fatJar>true</fatJar>
+                    </configuration>
+                    <configuration>
+                        <!--          默认没有密码              -->
+                        <password>dm_pro_token_key</password>
+                    </configuration>
                 </execution>
             </executions>
         </plugin>

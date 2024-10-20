@@ -12,9 +12,9 @@
 
 ```properties
   #jar路径，证书文件应该放在\src\main\resources\ssl\ 目录里，打包会一起打包
-  certPath=hserver.pem
-  privateKeyPath=hserver.pk8
-  privateKeyPwd=123
+web.certPath=hserver.pem
+web.privateKeyPath=hserver.pk8
+web.privateKeyPwd=123
 ```
 
 
@@ -23,9 +23,9 @@
 
 ```properties
   #外置路径，指定一个绝对路径即可
-  certPath=/home/ssl/hserver.pem
-  privateKeyPath=/home/ssl/hserver.pk8
-  privateKeyPwd=123
+web.certPath=/home/ssl/hserver.pem
+web.privateKeyPath=/home/ssl/hserver.pk8
+web.privateKeyPwd=123
 ```
 
 
@@ -34,7 +34,7 @@
 ### 消息体大小，可以用于文件上传限制大小
 ```properties
 #消息体最大值 默认int.maxValue
-httpContentSize=999999
+web.httpContentSize=999999
 ```
 
 ```properties

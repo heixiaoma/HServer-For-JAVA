@@ -78,7 +78,16 @@ public class HookTest2 implements HookAdapter {
 
     }
 }
-
 ```
+
+```java
+@Target({ElementType.TYPE,ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface Log {
+    String value() default "";
+}
+```
+
 
 上面测试例子都是HServer Test包里的Test1文件中，有兴趣的可以去运行体验哈

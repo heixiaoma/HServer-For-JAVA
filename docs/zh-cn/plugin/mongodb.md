@@ -14,16 +14,10 @@
 </repositories>
 
 <dependencies>
-
-<dependency>
-    <groupId>cn.hserver</groupId>
-    <artifactId>HServer</artifactId>
-</dependency>
-
 <dependency>
     <groupId>dev.morphia.morphia</groupId>
     <artifactId>morphia-core</artifactId>
-    <version>2.2.7</version>
+    <version>2.4.14</version>
 </dependency>
 </dependencies>
 ```
@@ -48,14 +42,18 @@ public class MongoConfig {
 
     @Bean
     public Datastore datastore() {
-        MongoClient mongoClient = MongoClients.create(connect);
-        Datastore datastore = Morphia.createDatastore(mongoClient, "morphia_example");
-        datastore.getMapper().mapPackage("com.test.bean");
-        datastore.ensureIndexes();
-        return datastore;
+        ConnectionString connectionString = new ConnectionString(connect);
+        CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
+        CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
+        MongoClientSettings clientSettings = MongoClientSettings.builder()
+                .applyConnectionString(connectionString)
+                .codecRegistry(codecRegistry)
+                .build();
+        return Morphia.createDatastore(MongoClients.create(clientSettings),"test");
     }
 
 }
+
 ```
 
 
