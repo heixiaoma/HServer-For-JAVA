@@ -7,9 +7,12 @@ import cn.hserver.plugin.web.exception.BusinessException;
 import cn.hserver.plugin.web.handlers.BuildResponse;
 import cn.hserver.plugin.web.interfaces.GlobalException;
 import cn.hserver.plugin.web.interfaces.ResponseAdapter;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +23,7 @@ public interface DispatcherHandler {
     Logger log = LoggerFactory.getLogger(DispatcherHandler.class);
     List<ResponseAdapter> responseAdapters = IocUtil.getListBean(ResponseAdapter.class);
     List<GlobalException> listBean = IocUtil.getListBean(GlobalException.class);
+
     HServerContext dispatcher(HServerContext context);
 
     /**
@@ -123,7 +127,7 @@ public interface DispatcherHandler {
                     return BuildResponse.buildError(e1);
                 }
             } else {
-                log.error(e.getMessage(),e);
+                log.error(e.getMessage(), e);
                 return BuildResponse.buildError(e);
             }
         } catch (Exception e2) {
@@ -135,10 +139,10 @@ public interface DispatcherHandler {
      * 终极输出
      *
      * @param ctx
-     * @param future
+     * @param hServerContext
      * @param msg
      */
-    static void writeResponse(ChannelHandlerContext ctx, CompletableFuture<HServerContext> future, FullHttpResponse msg) {
+    static void writeResponse(ChannelHandlerContext ctx, HServerContext hServerContext, FullHttpResponse msg) {
         //等于null 是让用户自己调度
         if (msg != null) {
             if (responseAdapters != null) {
@@ -147,15 +151,11 @@ public interface DispatcherHandler {
                 }
             }
             if (log.isDebugEnabled()) {
-                try {
-                    Request request = future.get().getRequest();
-                    log.debug("地址：{} 方法：{} 耗时：{}/ns 来源:{}", request.getNettyUri(), request.getRequestType().name(), ((System.nanoTime() - request.getCreateTime())),request.getIpAddress());
-                } catch (Exception e) {
-                }
+                Request request = hServerContext.getRequest();
+                log.debug("地址：{} 方法：{} 耗时：{}/ns 来源:{}", request.getNettyUri(), request.getRequestType().name(), ((System.nanoTime() - request.getCreateTime())), request.getIpAddress());
             }
             ctx.writeAndFlush(msg);
             HServerContextHolder.remove();
-            future.complete(null);
         }
     }
 

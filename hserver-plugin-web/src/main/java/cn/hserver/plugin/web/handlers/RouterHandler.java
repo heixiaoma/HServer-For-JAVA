@@ -55,7 +55,7 @@ public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
                 .thenApplyAsync(findController::dispatcher, executor)
                 .thenApplyAsync(DispatcherHandler::buildResponse, executor)
                 .exceptionally(DispatcherHandler::handleException)
-                .thenAcceptAsync(msg -> DispatcherHandler.writeResponse(ctx, future, msg), executor);
+                .thenAcceptAsync(msg -> DispatcherHandler.writeResponse(ctx, hServerContext, msg), executor);
     }
 
     @Override
