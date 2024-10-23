@@ -191,8 +191,8 @@ public class BuildResponse {
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain;charset=UTF-8");
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-        HServerContextHolder.remove();
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+        HServerContextHolder.remove();
     }
 
 }

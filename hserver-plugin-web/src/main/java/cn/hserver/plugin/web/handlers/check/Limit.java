@@ -2,6 +2,7 @@ package cn.hserver.plugin.web.handlers.check;
 
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.plugin.web.context.HServerContext;
+import cn.hserver.plugin.web.context.HServerContextHolder;
 import cn.hserver.plugin.web.exception.BusinessException;
 import cn.hserver.plugin.web.interfaces.FilterAdapter;
 import cn.hserver.plugin.web.interfaces.LimitAdapter;
@@ -18,6 +19,7 @@ public class Limit implements DispatcherHandler{
 
     @Override
     public HServerContext dispatcher(HServerContext hServerContext) {
+        HServerContextHolder.setWebKit(hServerContext.getWebkit());
         /**
          * 否则就去执行控制器的方法
          */

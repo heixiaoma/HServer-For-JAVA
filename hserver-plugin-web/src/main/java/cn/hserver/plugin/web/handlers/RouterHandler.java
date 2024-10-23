@@ -1,6 +1,7 @@
 package cn.hserver.plugin.web.handlers;
 
 import cn.hserver.plugin.web.context.HServerContext;
+import cn.hserver.plugin.web.context.HServerContextHolder;
 import cn.hserver.plugin.web.handlers.check.*;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;

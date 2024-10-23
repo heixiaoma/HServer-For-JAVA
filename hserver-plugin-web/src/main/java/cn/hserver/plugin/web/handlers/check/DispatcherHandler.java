@@ -155,8 +155,8 @@ public interface DispatcherHandler {
                 log.debug("地址：{} 方法：{} 耗时：{}/ns 来源:{}", request.getNettyUri(), request.getRequestType().name(), ((System.nanoTime() - request.getCreateTime())), request.getIpAddress());
             }
             ctx.writeAndFlush(msg);
-            HServerContextHolder.remove();
         }
+        HServerContextHolder.remove();
     }
 
 }

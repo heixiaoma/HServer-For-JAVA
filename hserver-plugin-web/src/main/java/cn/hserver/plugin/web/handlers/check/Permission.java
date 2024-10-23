@@ -2,6 +2,7 @@ package cn.hserver.plugin.web.handlers.check;
 
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.plugin.web.context.HServerContext;
+import cn.hserver.plugin.web.context.HServerContextHolder;
 import cn.hserver.plugin.web.exception.BusinessException;
 import cn.hserver.plugin.web.interfaces.PermissionAdapter;
 import cn.hserver.plugin.web.router.RouterManager;
@@ -36,7 +37,7 @@ public class Permission implements DispatcherHandler{
         if (hServerContext.getWebkit().httpResponse.hasData()) {
             return hServerContext;
         }
-
+        HServerContextHolder.setWebKit(hServerContext.getWebkit());
         if (listBean != null) {
             RouterPermission routerPermission = RouterManager.getRouterPermission(hServerContext.getRequest().getUri(), hServerContext.getRequest().getRequestType());
             if (routerPermission != null) {
