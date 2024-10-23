@@ -49,6 +49,13 @@
             <version>${jackson.version}</version>
         </dependency>
 
+        <!--   线程之间数据共享     -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
+            <version>${transmittable.version}</version>
+        </dependency>
+
     </dependencies>
 
     <properties>
@@ -57,9 +64,9 @@
         <java.version>1.8</java.version>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
+        <transmittable.version>2.14.5</transmittable.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skipTests>true</skipTests>
-
         <jackson.version>2.14.2</jackson.version>
         <freemarker.version>2.3.31</freemarker.version>
     </properties>

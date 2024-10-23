@@ -18,7 +18,6 @@ public class StaticFile implements DispatcherHandler{
         if (staticHandler.hasEmptyStaticFile()){
             return context;
         }
-        HServerContextHolder.setWebKit(context.getWebkit());
         cn.hserver.plugin.web.context.StaticFile handler = staticHandler.handler(context.getRequest().getUri(), context);
         if (handler != null) {
             context.setStaticFile(true);

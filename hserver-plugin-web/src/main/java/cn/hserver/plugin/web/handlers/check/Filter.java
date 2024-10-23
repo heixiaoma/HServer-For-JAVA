@@ -2,7 +2,6 @@ package cn.hserver.plugin.web.handlers.check;
 
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.plugin.web.context.HServerContext;
-import cn.hserver.plugin.web.context.HServerContextHolder;
 import cn.hserver.plugin.web.exception.BusinessException;
 import cn.hserver.plugin.web.interfaces.FilterAdapter;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -35,7 +34,7 @@ public class Filter implements DispatcherHandler{
         if (hServerContext.getWebkit().httpResponse.hasData()) {
             return hServerContext;
         }
-        HServerContextHolder.setWebKit(hServerContext.getWebkit());
+
         /**
          * 检测下Filter的过滤哈哈
          */

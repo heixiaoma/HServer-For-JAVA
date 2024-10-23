@@ -37,7 +37,6 @@ public class Permission implements DispatcherHandler{
         if (hServerContext.getWebkit().httpResponse.hasData()) {
             return hServerContext;
         }
-        HServerContextHolder.setWebKit(hServerContext.getWebkit());
         if (listBean != null) {
             RouterPermission routerPermission = RouterManager.getRouterPermission(hServerContext.getRequest().getUri(), hServerContext.getRequest().getRequestType());
             if (routerPermission != null) {

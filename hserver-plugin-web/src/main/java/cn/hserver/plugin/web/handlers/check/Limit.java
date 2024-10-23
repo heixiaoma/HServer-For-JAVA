@@ -19,7 +19,6 @@ public class Limit implements DispatcherHandler{
 
     @Override
     public HServerContext dispatcher(HServerContext hServerContext) {
-        HServerContextHolder.setWebKit(hServerContext.getWebkit());
         /**
          * 否则就去执行控制器的方法
          */

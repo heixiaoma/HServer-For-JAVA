@@ -2,7 +2,9 @@ package cn.hserver.plugin.web.handlers;
 
 import cn.hserver.plugin.web.context.HServerContext;
 import cn.hserver.plugin.web.context.HServerContextHolder;
+import cn.hserver.plugin.web.context.WebConstConfig;
 import cn.hserver.plugin.web.handlers.check.*;
+import com.alibaba.ttl.threadpool.TtlExecutors;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -35,7 +37,7 @@ public class RouterHandler extends SimpleChannelInboundHandler<HServerContext> {
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HServerContext hServerContext) throws Exception {
         CompletableFuture<HServerContext> future = CompletableFuture.completedFuture(hServerContext);
-        Executor executor=ctx.executor();
+        Executor executor=TtlExecutors.getTtlExecutor(ctx.executor());
         future.thenApplyAsync(req -> limit.dispatcher(hServerContext), executor)
                 .thenApplyAsync(staticFile::dispatcher, executor)
                 .thenApplyAsync(filter::dispatcher, executor)
