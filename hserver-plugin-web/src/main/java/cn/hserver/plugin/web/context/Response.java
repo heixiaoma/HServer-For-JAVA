@@ -1,6 +1,5 @@
 package cn.hserver.plugin.web.context;
 
-import cn.hserver.plugin.web.interfaces.HttpRequest;
 import cn.hserver.plugin.web.util.FreemarkerUtil;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
@@ -10,12 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.hserver.plugin.web.interfaces.HttpResponse;
 import cn.hserver.plugin.web.interfaces.ProgressStatus;
-import cn.hserver.core.server.util.ExceptionUtil;
 
 import java.io.*;
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -85,11 +82,10 @@ public class Response implements HttpResponse {
      * @param file
      */
     @Override
-    public void setDownloadBigFile(File file, ProgressStatus progressStatus, HttpRequest request) throws Exception {
+    public void setDownloadBigFile(File file, ProgressStatus progressStatus) throws Exception {
         useCtx = true;
-        ChannelHandlerContext ctx = request.getCtx();
-        try {
-            final RandomAccessFile raf = new RandomAccessFile(file, "r");
+        try (RandomAccessFile raf = new RandomAccessFile(file, "r")){
+            Webkit webKit = HServerContextHolder.getWebKit();
             long fileLength = raf.length();
             HttpResponseStatus status = HttpResponseStatus.OK;
             DefaultHttpHeaders headers = new DefaultHttpHeaders();
@@ -97,9 +93,9 @@ public class Response implements HttpResponse {
             headers.set(HttpHeaderNames.CONTENT_LENGTH, fileLength);
             headers.set(HttpHeaderNames.CONTENT_TYPE, MimeType.getFileType(file.getName()));
             headers.add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("inline; filename=\"%s\"", URLEncoder.encode(file.getName(), "UTF-8")));
-            String range = request.getHeaders().get(HttpHeaderNames.RANGE);
-            long offset = 0L, length = raf.length();
-            if (range != null && range.trim().length() != 0) {// Range: bytes=1900544-  Range: bytes=1900544-6666666
+            String range = webKit.httpRequest.getHeaders().get(HttpHeaderNames.RANGE.toString());
+            long offset, length = raf.length();
+            if (range != null && range.trim().length() != 0) {
                 range = range.substring(6);
                 String[] split = range.split("-");
                 try {
@@ -124,13 +120,13 @@ public class Response implements HttpResponse {
 
             DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1, status);
             response.headers().set(headers);
-            ctx.write(response);
-            ChannelFuture sendFileFuture = ctx.write(new DefaultFileRegion(raf.getChannel(), 0, fileLength), ctx.newProgressivePromise());
+            webKit.httpRequest.getCtx().write(response);
+            ChannelFuture sendFileFuture = webKit.httpRequest.getCtx().write(new DefaultFileRegion(raf.getChannel(), 0, fileLength), webKit.httpRequest.getCtx().newProgressivePromise());
             sendFileFuture.addListener(new ChannelProgressiveFutureListener() {
                 @Override
                 public void operationComplete(ChannelProgressiveFuture future)
                         throws Exception {
-                    log.debug("file {} transfer complete.", file.getName());
+                    log.debug("文件 {} 下载完成.", file.getName());
                     progressStatus.operationComplete(file.getAbsolutePath());
                     raf.close();
                 }
@@ -141,7 +137,7 @@ public class Response implements HttpResponse {
                     progressStatus.downloading(progress, total);
                 }
             });
-            ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+            webKit.httpRequest.getCtx().writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
         } catch (FileNotFoundException e) {
             throw new Exception(String.format("文件 %s 找不到", file.getPath()));
         } catch (IOException e) {

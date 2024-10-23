@@ -1,13 +1,13 @@
 package cn.hserver.plugin.web.context;
 
-import com.alibaba.ttl.TransmittableThreadLocal;
+import io.netty.util.concurrent.FastThreadLocal;
 
 /**
  * @author hxm
  */
 public class HServerContextHolder {
 
-    private static  final TransmittableThreadLocal<Webkit> WEBKIT_INHERITABLE_THREAD_LOCAL = new TransmittableThreadLocal<>();
+    private static  final FastThreadLocal<Webkit> WEBKIT_INHERITABLE_THREAD_LOCAL = new FastThreadLocal<>();
 
     public static void setWebKit(Webkit webKit) {
         WEBKIT_INHERITABLE_THREAD_LOCAL.set(webKit);
