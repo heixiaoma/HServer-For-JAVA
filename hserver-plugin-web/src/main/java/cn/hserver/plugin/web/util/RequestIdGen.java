@@ -14,18 +14,17 @@ public class RequestIdGen {
     private static final String PROCESSON = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
 
 
-    public static long getRequestCount(){
+    public static long getRequestCount() {
         return lastId.get();
     }
 
     public static String getId() {
         long currentTime = System.currentTimeMillis();
-        long sequence = lastId.incrementAndGet() % 1000; // 这里假设你的序列号在 0 到 999 之间
+        long sequence = lastId.incrementAndGet();
         // 规则： hexIp(ip)-base36(timestamp)-process-seq
         return HEXIP + "-" +
                 Long.toString(currentTime, Character.MAX_RADIX) + "-" +
-                PROCESSON + "-" +
-                Long.toString(sequence, Character.MAX_RADIX);
+                PROCESSON + "-" + sequence;
     }
 
     // 将ip转换为定长8个字符的16进制表示形式：255.255.255.255 -> FFFFFFFF
