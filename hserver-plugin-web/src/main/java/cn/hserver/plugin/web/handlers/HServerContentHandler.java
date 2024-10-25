@@ -105,6 +105,11 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         BuildResponse.writeException(ctx, cause);
     }
 
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        ctx.flush();
+    }
+
     private void handlerUrl(Request request, FullHttpRequest req) {
         try {
             Map<String, List<String>> requestParams = request.getRequestParams();
