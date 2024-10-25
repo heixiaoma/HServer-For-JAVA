@@ -2,11 +2,14 @@ package cn.hserver.plugin.web.handlers;
 
 import cn.hserver.core.server.context.ConstConfig;
 import cn.hserver.plugin.web.context.*;
+import cn.hserver.plugin.web.handlers.check.*;
+import cn.hserver.plugin.web.handlers.check.StaticFile;
 import cn.hserver.plugin.web.interfaces.HttpRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.http.multipart.*;
 import io.netty.util.CharsetUtil;
 import io.netty.util.ReferenceCountUtil;
@@ -24,18 +27,37 @@ import java.util.Map;
 /**
  * @author hxm
  */
+@ChannelHandler.Sharable
 public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+
+    private static final HServerContentHandler instance = new HServerContentHandler();
+
+    private HServerContentHandler() {
+    }
+
+    public static HServerContentHandler getInstance() {
+        return instance;
+    }
+
 
     private static final Logger log = LoggerFactory.getLogger(HServerContentHandler.class);
 
+
+    private final DispatcherHandler limit = new Limit();
+    private final DispatcherHandler staticFile = new StaticFile();
+    private final DispatcherHandler filter = new Filter();
+    private final DispatcherHandler permission = new Permission();
+    private final DispatcherHandler findController = new FindController();
+
+
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpRequest req) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest req) throws Exception {
         HServerContext hServerContext = new HServerContext();
         Request request = new Request();
         hServerContext.setRequest(request);
         String id = RequestIdGen.getId();
         request.setRequestId(id);
-        request.setCtx(channelHandlerContext);
+        request.setCtx(ctx);
         request.setNettyUri(req.uri());
         handlerUrl(request, req);
         handlerBody(request, req);
@@ -62,7 +84,20 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         webkit.httpResponse.setHeader("Server", WebConstConfig.SERVER_NAME);
         hServerContext.setWebkit(webkit);
         HServerContextHolder.setWebKit(webkit);
-        channelHandlerContext.fireChannelRead(hServerContext);
+        try {
+            limit.dispatcher(hServerContext);
+            staticFile.dispatcher(hServerContext);
+            filter.dispatcher(hServerContext);
+            permission.dispatcher(hServerContext);
+            findController.dispatcher(hServerContext);
+            FullHttpResponse fullHttpResponse = DispatcherHandler.buildResponse(hServerContext);
+            DispatcherHandler.writeResponse(ctx, hServerContext, fullHttpResponse);
+        } catch (Throwable e) {
+            FullHttpResponse fullHttpResponse = DispatcherHandler.handleException(e);
+            DispatcherHandler.writeResponse(ctx, hServerContext, fullHttpResponse);
+        }finally {
+            HServerContextHolder.remove();
+        }
     }
 
     @Override
@@ -89,7 +124,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
     private void handlerBody(Request request, FullHttpRequest req) {
         try {
             ByteBuf body = req.content().duplicate();
-            HttpPostRequestDecoder decoder = new HttpPostRequestDecoder( req, -1,-1);
+            HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(req, -1, -1);
             List<InterfaceHttpData> bodyHttpDates = decoder.getBodyHttpDatas();
             InterfaceHttpData interfaceHttpData = bodyHttpDates.stream().filter(k -> k.getHttpDataType() == InterfaceHttpData.HttpDataType.FileUpload).findFirst().orElse(null);
             if (interfaceHttpData == null) {
@@ -98,7 +133,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
             bodyHttpDates.forEach(request::writeHttpData);
             decoder.destroy();
         } catch (Exception e) {
-            log.warn(e.getMessage(),e);
+            log.warn(e.getMessage(), e);
         }
     }
 

@@ -156,7 +156,6 @@ public interface DispatcherHandler {
             }
             ctx.writeAndFlush(msg);
         }
-        HServerContextHolder.remove();
     }
 
 }

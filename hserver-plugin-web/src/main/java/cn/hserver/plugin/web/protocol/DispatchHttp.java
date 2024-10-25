@@ -4,9 +4,8 @@ import cn.hserver.core.interfaces.ProtocolDispatcherAdapter;
 import cn.hserver.core.ioc.annotation.Bean;
 import cn.hserver.core.ioc.annotation.Order;
 import cn.hserver.plugin.web.context.WebConstConfig;
-import cn.hserver.plugin.web.handlers.HServerContentHandler;
-import cn.hserver.plugin.web.handlers.RouterHandler;
-import cn.hserver.plugin.web.handlers.WebSocketServerHandler;
+import cn.hserver.plugin.web.handlers.*;
+import cn.hserver.plugin.web.handlers.check.Filter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -56,8 +55,7 @@ public class DispatchHttp implements ProtocolDispatcherAdapter {
         if (!WebSocketServerHandler.WEB_SOCKET_ROUTER.isEmpty()) {
             pipeline.addLast(WebConstConfig.BUSINESS_EVENT, new WebSocketServerHandler());
         }
-        pipeline.addLast(WebConstConfig.BUSINESS_EVENT, new HServerContentHandler());
-        pipeline.addLast(WebConstConfig.BUSINESS_EVENT,RouterHandler.getInstance());
+        pipeline.addLast(WebConstConfig.BUSINESS_EVENT, HServerContentHandler.getInstance());
     }
 
 
