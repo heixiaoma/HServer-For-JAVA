@@ -108,8 +108,8 @@ public interface DispatcherHandler {
     static FullHttpResponse handleException(Throwable e) {
         try {
             //一般是走自己的异常
-            if (e.getCause() instanceof BusinessException) {
-                BusinessException e1 = (BusinessException) e.getCause();
+            if (e instanceof BusinessException) {
+                BusinessException e1 = (BusinessException) e;
                 if (listBean != null) {
                     for (GlobalException globalException : listBean) {
                         globalException.handler(e1.getThrowable(), e1.getHttpCode(), e1.getErrorDescription(), e1.getWebkit());
@@ -122,7 +122,7 @@ public interface DispatcherHandler {
                     if (e1.getHttpCode() == HttpResponseStatus.NOT_FOUND.code()) {
                         log.error(e1.getErrorDescription());
                     } else {
-                        log.error(ExceptionUtil.getMessage(e1.getThrowable()));
+                        log.error(e1.getThrowable().getMessage(), e1.getThrowable());
                     }
                     return BuildResponse.buildError(e1);
                 }
