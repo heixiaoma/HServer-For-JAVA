@@ -19,10 +19,3 @@
     * [nsfw离线鉴黄](https://gitee.com/HServer/hserver-nsfw)
     * [webdav同步工具](https://gitee.com/HServer/cloud-sync)
     * [WebRtc聊天发文件](https://gitee.com/HServer/hfile)
-
-
-* HServer插件
-    * [Maven打包插件](https://gitee.com/HServer/hserver-maven-plugin)
-    * [Mybatis/MybatisPlus 插件](https://gitee.com/HServer/hserver-plugin-mybatis)
-    * [BeetlSql插件](https://gitee.com/HServer/hserver-plugs-beetlsql)
-    * [RPC插件](https://gitee.com/HServer/hserver-rpc-plugin)
