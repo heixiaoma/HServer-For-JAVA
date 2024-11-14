@@ -1,5 +1,7 @@
 package cn.hserver.plugin.mqtt.protocol;
 
+import cn.hserver.core.ioc.annotation.Value;
+import cn.hserver.core.server.util.PropUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.HttpContentCompressor;
@@ -20,6 +22,7 @@ import cn.hserver.plugin.mqtt.handlers.MqttHeartBeatBrokerHandler;
 @Order(4)
 @Bean
 public class DispatchMqtt implements ProtocolDispatcherAdapter {
+    private final String path= PropUtil.getInstance().get("mqtt.path","/mqtt");
 
     @Override
     public boolean dispatcher(ChannelHandlerContext ctx, ChannelPipeline pipeline, byte[] headers) {
@@ -27,7 +30,7 @@ public class DispatchMqtt implements ProtocolDispatcherAdapter {
             pipeline.addLast(new HttpServerCodec());
             pipeline.addLast(new HttpObjectAggregator(Integer.MAX_VALUE));
             pipeline.addLast(new HttpContentCompressor());
-            pipeline.addLast(new WebSocketServerProtocolHandler("/mqtt", "mqtt,mqttv3.1,mqttv3.1.1", true, 65536));
+            pipeline.addLast(new WebSocketServerProtocolHandler(path, "mqtt,mqttv3.1,mqttv3.1.1", true, 65536));
             pipeline.addLast(new WebSocketMqttCodec());
             pipeline.addLast(new MqttDecoder());
             pipeline.addLast(MqttEncoder.INSTANCE);

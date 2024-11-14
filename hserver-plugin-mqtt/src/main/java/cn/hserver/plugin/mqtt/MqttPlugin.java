@@ -25,9 +25,7 @@ public class MqttPlugin implements PluginAdapter {
 
     @Override
     public Set<Class<?>> iocInitBeanList() {
-        Set<Class<?>> classes=new HashSet<>();
-        classes.add(MqttAdapter.class);
-        return classes;
+        return null;
     }
 
     @Override
