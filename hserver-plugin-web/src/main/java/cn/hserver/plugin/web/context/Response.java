@@ -14,6 +14,7 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.RandomAccess;
 
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
@@ -76,6 +77,11 @@ public class Response implements HttpResponse {
         this.fileName = file.getName();
     }
 
+    @Override
+    public void setDownloadBigFile(File file) throws Exception {
+        this.setDownloadBigFile(file,null);
+    }
+
     /**
      * 下载大文件
      *
@@ -84,7 +90,8 @@ public class Response implements HttpResponse {
     @Override
     public void setDownloadBigFile(File file, ProgressStatus progressStatus) throws Exception {
         useCtx = true;
-        try (RandomAccessFile raf = new RandomAccessFile(file, "r")){
+        try {
+            RandomAccessFile raf = new RandomAccessFile(file, "r");
             Webkit webKit = HServerContextHolder.getWebKit();
             long fileLength = raf.length();
             HttpResponseStatus status = HttpResponseStatus.OK;
@@ -117,7 +124,6 @@ public class Response implements HttpResponse {
                     log.warn("断点续传解析错误", e);
                 }
             }
-
             DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1, status);
             response.headers().set(headers);
             webKit.httpRequest.getCtx().write(response);
@@ -127,14 +133,18 @@ public class Response implements HttpResponse {
                 public void operationComplete(ChannelProgressiveFuture future)
                         throws Exception {
                     log.debug("文件 {} 下载完成.", file.getName());
-                    progressStatus.operationComplete(file.getAbsolutePath());
                     raf.close();
+                    if (progressStatus!=null) {
+                        progressStatus.operationComplete(file.getAbsolutePath());
+                    }
                 }
 
                 @Override
                 public void operationProgressed(ChannelProgressiveFuture future,
                                                 long progress, long total) throws Exception {
-                    progressStatus.downloading(progress, total);
+                    if (progressStatus!=null) {
+                        progressStatus.downloading(progress, total);
+                    }
                 }
             });
             webKit.httpRequest.getCtx().writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
