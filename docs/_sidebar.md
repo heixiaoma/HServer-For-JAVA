@@ -49,3 +49,5 @@
   * [mybatis-flex](zh-cn/plugin/mybatis-flex.md)
 * 十一、Sa-Token
   * [satoken](zh-cn/plugin/satoken.md)
+* 十二、Forest远程调用
+  * [forest](zh-cn/plugin/forest.md) 
