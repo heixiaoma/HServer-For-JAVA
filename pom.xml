@@ -31,6 +31,7 @@
         <module>hserver-net</module>
         <module>hserver-plugin-runner</module>
         <module>hserver-plugin-satoken</module>
+        <module>hserver-plugin-forest</module>
     </modules>
 
     <properties>
@@ -111,6 +112,11 @@
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-satoken</artifactId>
+                <version>3.6.M2</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hserver</groupId>
+                <artifactId>hserver-plugin-forest</artifactId>
                 <version>3.6.M2</version>
             </dependency>
         </dependencies>

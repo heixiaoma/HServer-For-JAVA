@@ -25,10 +25,11 @@ public class ClasspathPackageScanner implements PackageScanner {
            a: for (Class<?> aClass : classes) {
                 Annotation[] annotations = aClass.getAnnotations();
                 for (Annotation annotation : annotations) {
-                    if (annotation.annotationType().getAnnotation(HServerType.class)!=null) {
-                        add(aClass,annotation.annotationType());
-                        continue a;
-                    }
+                    //不再处理HServerType类型，这里有可能时外部定义的注解，我们只好兼容对方
+//                    if (annotation.annotationType().getAnnotation(HServerType.class)!=null) {
+//                    }
+                    add(aClass,annotation.annotationType());
+                    continue a;
                 }
                 //单元测试模式。存在就加载
                 try {
