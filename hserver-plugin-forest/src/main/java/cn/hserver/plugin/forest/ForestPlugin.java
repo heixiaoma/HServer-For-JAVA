@@ -34,7 +34,6 @@ public class ForestPlugin implements PluginAdapter {
         try {
             Set<Class<?>> annotationList = packageScanner.getAnnotationList(ForestClient.class);
             for (Class<?> aClass : annotationList) {
-                System.out.println(aClass);
                 Object data = Forest.client(aClass);
                 if (data != null) {
                     IocUtil.addBean(data);
