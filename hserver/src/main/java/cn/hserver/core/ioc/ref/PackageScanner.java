@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * @author hxm
  */
-public interface PackageScanner {
+public interface PackageScanner extends AutoCloseable {
 
     /**
      * 获取列表

@@ -62,8 +62,7 @@ public class InitIoc {
         if (packageNames == null) {
             return;
         }
-        PackageScanner scan = new ClasspathPackageScanner(packageNames);
-        try {
+        try(PackageScanner scan = new ClasspathPackageScanner(packageNames)) {
             //读取配置文件
             new InitConfigurationProperties(packageNames).init(scan);
             //测试类
