@@ -12,9 +12,12 @@ import cn.hserver.plugin.web.exception.BusinessBean;
 import cn.hserver.plugin.web.exception.BusinessException;
 import cn.hserver.core.server.util.ByteBufUtil;
 import cn.hserver.core.server.util.ExceptionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +33,8 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  * @author hxm
  */
 public class BuildResponse {
+
+    private static final Logger log = LoggerFactory.getLogger(BuildResponse.class);
 
     /**
      * 静态文件
@@ -80,7 +85,13 @@ public class BuildResponse {
 
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, MimeType.getFileType(response1.getFileName()) + ";charset=UTF-8");
         //attachment下载模式，inline预览模式
-        response.headers().add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("inline; filename=\"%s\"", response1.getFileName()));
+        String fileName = response1.getFile().getName();
+        try {
+            fileName = URLEncoder.encode(response1.getFileName(), "UTF-8");
+        } catch (Exception e) {
+            log.warn("URL:{} 编码失败:{}", fileName, e.getMessage());
+        }
+        response.headers().add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("inline; filename=\"%s\"", fileName));
         return response;
     }
 
@@ -182,7 +193,7 @@ public class BuildResponse {
 
     private static void writeException(ChannelHandlerContext ctx, Throwable cause, HttpResponseStatus status) {
         String message = ExceptionUtil.getMessage(cause);
-        message = WebConstConfig.SERVER_NAME+":" + ConstConfig.VERSION + "服务器异常:\n" + message;
+        message = WebConstConfig.SERVER_NAME + ":" + ConstConfig.VERSION + "服务器异常:\n" + message;
 
         FullHttpResponse response = new DefaultFullHttpResponse(
                 HttpVersion.HTTP_1_1,
