@@ -38,6 +38,13 @@ public interface HttpResponse {
     void setDownloadBigFile(File file, ProgressStatus progressStatus) throws Exception;
 
     /**
+     * 下载大文件
+     * @param file
+     * @throws Exception
+     */
+    void setDownloadBigFile(File file) throws Exception;
+
+    /**
      * 流的下载文件
      *
      * @param inputStream

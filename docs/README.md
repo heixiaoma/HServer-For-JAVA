@@ -10,25 +10,71 @@
 </parent>
 
 <dependencies>
-<!--    核心依赖-->
-<dependency>
-    <artifactId>hserver</artifactId>
-    <groupId>cn.hserver</groupId>
-</dependency>
-<!--    web框架 -->
-<dependency>
-    <artifactId>hserver-plugin-web</artifactId>
-    <groupId>cn.hserver</groupId>
-</dependency>
+    <!--    核心依赖-->
+    <dependency>
+        <artifactId>hserver</artifactId>
+        <groupId>cn.hserver</groupId>
+    </dependency>
+    <!--    web框架 -->
+    <dependency>
+        <artifactId>hserver-plugin-web</artifactId>
+        <groupId>cn.hserver</groupId>
+    </dependency>
 </dependencies>
         <!--    打包jar -->
 <build>
-<plugins>
-    <plugin>
-        <artifactId>hserver-plugin-maven</artifactId>
+    <plugins>
+        <plugin>
+            <artifactId>hserver-plugin-maven</artifactId>
+            <groupId>cn.hserver</groupId>
+        </plugin>
+    </plugins>
+</build>
+
+```
+
+**已经有parent时可以用dependencyManagement进行处理**
+
+```xml
+<parent>
+    <groupId>com.example.demo</groupId>
+    <artifactId>demo-parent</artifactId>
+    <version>demo</version>
+</parent>
+
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <artifactId>hserver-parent</artifactId>
+            <groupId>cn.hserver</groupId>
+            <version>最新版本</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+
+
+<dependencies>
+<!--    核心依赖-->
+    <dependency>
+        <artifactId>hserver</artifactId>
         <groupId>cn.hserver</groupId>
-    </plugin>
-</plugins>
+    </dependency>
+<!--    web框架 -->
+    <dependency>
+        <artifactId>hserver-plugin-web</artifactId>
+        <groupId>cn.hserver</groupId>
+    </dependency>
+</dependencies>
+        <!--    打包jar -->
+<build>
+    <plugins>
+        <plugin>
+            <artifactId>hserver-plugin-maven</artifactId>
+            <groupId>cn.hserver</groupId>
+        </plugin>
+    </plugins>
 </build>
 
 ```

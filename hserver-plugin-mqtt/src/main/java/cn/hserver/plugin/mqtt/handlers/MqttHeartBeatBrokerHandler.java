@@ -1,19 +1,24 @@
 package cn.hserver.plugin.mqtt.handlers;
 
+import cn.hserver.HServerApplication;
 import cn.hserver.plugin.mqtt.interfaces.MqttAdapter;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.mqtt.*;
 import cn.hserver.core.ioc.IocUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hxm
  */
 @Sharable
 public final class MqttHeartBeatBrokerHandler extends SimpleChannelInboundHandler<MqttMessage> {
+    private static final Logger log = LoggerFactory.getLogger(MqttHeartBeatBrokerHandler.class);
 
     public static final MqttHeartBeatBrokerHandler INSTANCE = new MqttHeartBeatBrokerHandler();
+    private final MqttAdapter mqttAdapter = IocUtil.getSupperBean(MqttAdapter.class);
 
     private MqttHeartBeatBrokerHandler() {
     }
@@ -21,44 +26,41 @@ public final class MqttHeartBeatBrokerHandler extends SimpleChannelInboundHandle
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
-        MqttAdapter bean = IocUtil.getBean(MqttAdapter.class);
-        if (bean == null) {
-            System.out.println("请继承MqttAdapter类 并用@Bean 标记");
+        if (mqttAdapter == null) {
+            log.error("请继承MqttAdapter类 并用@Bean 标记");
         } else {
-            bean.channelActive( ctx);
+            mqttAdapter.channelActive( ctx);
         }
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
-        MqttAdapter bean = IocUtil.getBean(MqttAdapter.class);
-        if (bean == null) {
-            System.out.println("请继承MqttAdapter类 并用@Bean 标记");
+        if (mqttAdapter == null) {
+            log.error("请继承MqttAdapter类 并用@Bean 标记");
         } else {
-            bean.channelInactive( ctx);
+            mqttAdapter.channelInactive( ctx);
         }
     }
 
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, MqttMessage mqttMessage) throws Exception {
-        MqttAdapter bean = IocUtil.getBean(MqttAdapter.class);
-        if (bean == null) {
-            System.out.println("请继承MqttAdapter类 并用@Bean 标记");
+        if (mqttAdapter == null) {
+            log.error("请继承MqttAdapter类 并用@Bean 标记");
         } else {
             switch (mqttMessage.fixedHeader().messageType()) {
                 case CONNECT:
-                    bean.connect(mqttMessage, ctx);
+                    mqttAdapter.connect(mqttMessage, ctx);
                     break;
                 case PINGREQ:
-                    bean.pingReq(mqttMessage, ctx);
+                    mqttAdapter.pingReq(mqttMessage, ctx);
                     break;
                 case DISCONNECT:
-                    bean.disconnect(mqttMessage, ctx);
+                    mqttAdapter.disconnect(mqttMessage, ctx);
                     break;
                 default:
-                    bean.message(mqttMessage.fixedHeader().messageType(), mqttMessage, ctx);
+                    mqttAdapter.message(mqttMessage.fixedHeader().messageType(), mqttMessage, ctx);
             }
         }
 
@@ -66,21 +68,19 @@ public final class MqttHeartBeatBrokerHandler extends SimpleChannelInboundHandle
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        MqttAdapter bean = IocUtil.getBean(MqttAdapter.class);
-        if (bean == null) {
-            System.out.println("请继承MqttAdapter类 并用@Bean 标记");
+        if (mqttAdapter == null) {
+            log.error("请继承MqttAdapter类 并用@Bean 标记");
         } else {
-            bean.userEventTriggered(ctx, evt);
+            mqttAdapter.userEventTriggered(ctx, evt);
         }
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        MqttAdapter bean = IocUtil.getBean(MqttAdapter.class);
-        if (bean == null) {
-            System.out.println("请继承MqttAdapter类 并用@Bean 标记");
+        if (mqttAdapter == null) {
+            log.error("请继承MqttAdapter类 并用@Bean 标记");
         } else {
-            bean.exceptionCaught(ctx, cause);
+            mqttAdapter.exceptionCaught(ctx, cause);
         }
     }
 }

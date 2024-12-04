@@ -4,6 +4,7 @@ import cn.hserver.core.ioc.annotation.*;
 import cn.hserver.core.ioc.annotation.queue.QueueListener;
 import cn.hserver.core.server.util.ClassLoadUtil;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -11,8 +12,8 @@ import java.util.*;
 /**
  * @author hxm
  */
-public class ClasspathPackageScanner implements PackageScanner {
-    private final Map<Class, Set<Class<?>>> annotationClass = new HashMap<>();
+public class ClasspathPackageScanner implements PackageScanner{
+    private final Map<Class<?>, Set<Class<?>>> annotationClass = new HashMap<>();
 
     /**
      * 初始化
@@ -22,13 +23,10 @@ public class ClasspathPackageScanner implements PackageScanner {
     public ClasspathPackageScanner(Set<String> packageNames) {
         packageNames.forEach(basePackage -> {
             List<Class<?>> classes = ClassLoadUtil.LoadClasses(basePackage, false);
-           a: for (Class<?> aClass : classes) {
+            for (Class<?> aClass : classes) {
                 Annotation[] annotations = aClass.getAnnotations();
                 for (Annotation annotation : annotations) {
-                    if (annotation.annotationType().getAnnotation(HServerType.class)!=null) {
-                        add(aClass,annotation.annotationType());
-                        continue a;
-                    }
+                    add(aClass, annotation.annotationType());
                 }
                 //单元测试模式。存在就加载
                 try {
@@ -61,5 +59,13 @@ public class ClasspathPackageScanner implements PackageScanner {
             return new HashSet<>();
         }
         return classes;
+    }
+
+    @Override
+    public void close() throws IOException {
+        annotationClass.forEach((k, v) -> {
+            v.clear();
+        });
+        annotationClass.clear();
     }
 }

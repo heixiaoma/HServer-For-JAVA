@@ -7,7 +7,6 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.hserver.core.server.util.ExceptionUtil;
 
 /**
  * Aop

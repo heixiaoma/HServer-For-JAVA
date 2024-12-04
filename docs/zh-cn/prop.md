@@ -46,8 +46,8 @@ workerPool=2
 #backlog 的值即为未连接队列和已连接队列的和。
 backLog=8192
 
-#可以开启Epoll时是否开启epoll 默认true
-epoll=true
+#io模型默认 IO_URING >EPOLL>KQUEUE>JDK
+ioMode=DEFAULT
 
 #前置协议的最大大小，用于自定义拦截协议时的分析，如果1024字节都不能判断你的大小，可以将其调整大点
 preProtocolMaxSize=1024
