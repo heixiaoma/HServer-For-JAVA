@@ -12,9 +12,7 @@ import cn.hserver.plugin.web.interfaces.ProgressStatus;
 
 import java.io.*;
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.RandomAccess;
+import java.util.*;
 
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
@@ -25,6 +23,8 @@ public class Response implements HttpResponse {
     private static final Logger log = LoggerFactory.getLogger(Response.class);
 
     private final HeadMap headers = new HeadMap();
+
+    private  Set<Cookie> cookies;
 
     private File file;
 
@@ -245,8 +245,14 @@ public class Response implements HttpResponse {
      */
     @Override
     public void addCookie(Cookie cookie) {
-        String encode = ServerCookieEncoder.LAX.encode(cookie);
-        headers.put(String.valueOf(HttpHeaderNames.SET_COOKIE), encode);
+        if (cookies==null){
+            cookies=new HashSet<>();
+        }
+        cookies.add(cookie);
+    }
+
+    public Set<Cookie> getCookies() {
+        return cookies;
     }
 
     @Override

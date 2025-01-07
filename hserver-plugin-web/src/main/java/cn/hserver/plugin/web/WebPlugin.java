@@ -7,6 +7,7 @@ import cn.hserver.core.log.HServerPatternLayout;
 import cn.hserver.core.server.util.EventLoopUtil;
 import cn.hserver.core.server.util.ExceptionUtil;
 import cn.hserver.core.server.util.PropUtil;
+import cn.hserver.plugin.web.context.SessionManager;
 import cn.hserver.plugin.web.context.WebConfig;
 import cn.hserver.plugin.web.context.WebConstConfig;
 import cn.hserver.plugin.web.util.ParameterUtil;
@@ -111,6 +112,11 @@ public class WebPlugin implements PluginAdapter {
         } else {
             WebConstConfig.BUSINESS_EVENT = EventLoopUtil.getEventLoop(50, "hserver_business");
         }
+        Boolean openSession = webConfig.getOpenSession();
+        if (openSession != null && openSession) {
+            WebConstConfig.SESSION_MANAGER=new SessionManager();
+        }
+
         SslContextUtil.setSsl();
     }
 

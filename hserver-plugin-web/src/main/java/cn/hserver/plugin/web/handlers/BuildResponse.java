@@ -12,6 +12,9 @@ import cn.hserver.plugin.web.exception.BusinessBean;
 import cn.hserver.plugin.web.exception.BusinessException;
 import cn.hserver.core.server.util.ByteBufUtil;
 import cn.hserver.core.server.util.ExceptionUtil;
+import io.netty.handler.codec.http.cookie.Cookie;
+import io.netty.handler.codec.http.cookie.DefaultCookie;
+import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,9 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.FOUND;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -123,6 +124,19 @@ public class BuildResponse {
         }
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+
+        if (request.getHttpSession() != null) {
+            Cookie cookie = new DefaultCookie(WebConstConfig.SESSION_KEY,request.getHttpSession().id());
+            cookie.setHttpOnly(true);
+            response1.addCookie(cookie);
+        }
+        Set<Cookie> cookies = response1.getCookies();
+        if (cookies != null) {
+            List<String> encode = ServerCookieEncoder.LAX.encode(cookies);
+            for (String s : encode) {
+                response.headers().add(HttpHeaderNames.SET_COOKIE,s);
+            }
+        }
         //用户自定义头头
         Map<String, String> headers = response1.getHeaders();
         headers.forEach((a, b) -> {
@@ -131,6 +145,7 @@ public class BuildResponse {
                 response.setStatus(FOUND);
             }
         });
+
         return response;
     }
 

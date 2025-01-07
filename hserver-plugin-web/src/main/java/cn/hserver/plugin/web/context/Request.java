@@ -14,6 +14,8 @@ import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 import io.netty.handler.codec.http.multipart.*;
 import io.netty.util.CharsetUtil;
 import cn.hserver.plugin.web.util.IpUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,9 +27,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author hxm
  */
 public class Request implements HttpRequest {
+    private static final Logger log = LoggerFactory.getLogger(Request.class);
     private String requestId;
     private String uri;
     private String nettyUri;
+    private HttpSession httpSession;
     private HttpMethod requestType;
     private ChannelHandlerContext ctx;
     private Map<String, List<String>> requestParams = new ConcurrentHashMap<>();
@@ -60,6 +64,18 @@ public class Request implements HttpRequest {
         if (attributes != null){
             attributes.remove(key);
         }
+    }
+
+    @Override
+    public HttpSession getHttpSession() {
+        if (httpSession == null) {
+            log.warn("如果需要使用httpSession 请在配置中打开该功能");
+        }
+        return httpSession;
+    }
+
+    public void setHttpSession(HttpSession httpSession) {
+        this.httpSession = httpSession;
     }
 
     @Override

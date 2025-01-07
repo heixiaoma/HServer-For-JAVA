@@ -16,6 +16,8 @@ public class WebConfig {
     private String privateKeyPath;
     private String privateKeyPwd;
 
+    private Boolean openSession;
+
 
     public Long getReadLimit() {
         return readLimit;
@@ -87,5 +89,13 @@ public class WebConfig {
 
     public void setPrivateKeyPwd(String privateKeyPwd) {
         this.privateKeyPwd = privateKeyPwd;
+    }
+
+    public Boolean getOpenSession() {
+        return openSession;
+    }
+
+    public void setOpenSession(Boolean openSession) {
+        this.openSession = openSession;
     }
 }

@@ -9,6 +9,9 @@ web.writeLimit=100
 #消息体大小 默认int.maxValue
 web.httpContentSize=999999
 
+#开启 http session功能
+web.openSession=true
+
 #URL 全局更目录定义
 web.rootPath=
 # websocket最大帧大小

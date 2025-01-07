@@ -1,6 +1,7 @@
 package cn.hserver.plugin.web.interfaces;
 
 
+import cn.hserver.plugin.web.context.HttpSession;
 import cn.hserver.plugin.web.context.PartFile;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -177,6 +178,11 @@ public interface HttpRequest {
      */
     long getCreateTime();
 
+    /**
+     * 获取http session
+     * @return
+     */
+    HttpSession getHttpSession();
 
     Set<Cookie> getCookies();
 }

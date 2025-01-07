@@ -74,6 +74,10 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         HeadMap headers = new HeadMap();
         req.headers().names().forEach(a -> headers.put(a, req.headers().get(a)));
         request.setHeaders(headers);
+        //处理session
+        if (WebConstConfig.SESSION_MANAGER != null) {
+            request.setHttpSession(WebConstConfig.SESSION_MANAGER.createSession(request));
+        }
         hServerContext.setRequest(request);
         hServerContext.setResponse(new Response());
         Webkit webkit = new Webkit();

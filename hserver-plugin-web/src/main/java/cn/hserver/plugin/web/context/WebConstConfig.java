@@ -18,7 +18,7 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.*;
  */
 public class WebConstConfig {
     /**
-    /**
+     * /**
      * SSL 配置
      */
     public static SslContext sslContext = null;
@@ -79,7 +79,6 @@ public class WebConstConfig {
      */
     public final static String REQUEST_ID = "HRequest-Id";
 
-
     /**
      * 内部自用名字
      */
@@ -89,6 +88,21 @@ public class WebConstConfig {
      * 程序URL基础地址
      */
     public static String ROOT_PATH = "";
+
+    /**
+     * session-key
+     */
+    public final static String SESSION_KEY = "session_id";
+
+    /**
+     * session过期 2小时
+     */
+    public static Integer SESSION_TIME_OUT = 7200;
+
+    /**
+     * session对象
+     */
+    public static SessionManager SESSION_MANAGER = null;
 
 
 }
