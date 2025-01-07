@@ -4,21 +4,21 @@ resources文件夹里存放一个banner.txt 里面放入你图标就可以了.
 
 ```properties
 #外置配置大于jar中包配置文件，配置文件大于代码默认设置
-#动态配置文件
-#环境切换
-#在app.properties文件中添加,env=dev
-#配置文件app-dev.properties也会加载在里面
-#或者java -jar -Denv=dev xxx.jar 启动参数指定env
-env=dev
 
 #应用名字，默认HServer
 appName=HServer
+
+#开启hum
+humOpen=true
 
 #hum消息端口，默认9527
 humPort=9527
 
 #端口动态指定，多个用英文逗号隔开 配置文件大于代码写死，
 ports=9090
+
+#动态配置文件
+env=dev
 
 #链路跟踪 默认不跟踪
 track=true
@@ -33,9 +33,6 @@ trackNoPackages=com.mysql,org.freemarker
 
 #taskPool定时任务线程池子配置，默认大小是cpu核心数+1
 taskPool=5
-
-#bossPool Netty boss线程组大小 默认cpu 核心数两倍
-bossPool=2
 
 #workerPool Netty worker线程组大小 默认核心数两倍
 workerPool=2
@@ -53,11 +50,12 @@ ioMode=DEFAULT
 preProtocolMaxSize=1024
 
 #日志级别 debug info error ...
-level=debug
+log=debug
 #自定义日志名字
 logbackName=logback-dev.xml
 
 #队列数据缓存位置 默认当前项目下
 persistPath=/user/mcl/data
+
 
 ```

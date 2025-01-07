@@ -1,3 +1,9 @@
+### HTTP Session
+```properties
+#开启 http session功能 默认关闭
+web.openSession=true
+```
+
 ### SSL支持
 
 在app.properties配置文件添加
