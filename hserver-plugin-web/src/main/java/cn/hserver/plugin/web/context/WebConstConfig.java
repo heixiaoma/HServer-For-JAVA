@@ -1,5 +1,7 @@
 package cn.hserver.plugin.web.context;
 
+import cn.hserver.plugin.web.interfaces.Template;
+import cn.hserver.plugin.web.util.FreemarkerUtil;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -104,5 +106,9 @@ public class WebConstConfig {
      */
     public static SessionManager SESSION_MANAGER = null;
 
+    /**
+     * 模版对象-可以自定义
+     */
+    public static Template template=new FreemarkerUtil();
 
 }

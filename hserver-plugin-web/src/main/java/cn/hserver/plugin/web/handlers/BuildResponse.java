@@ -34,7 +34,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  * @author hxm
  */
 public class BuildResponse {
-
+    private final static FreemarkerUtil freemarkerUtil=new FreemarkerUtil();
     private static final Logger log = LoggerFactory.getLogger(BuildResponse.class);
 
     /**
@@ -178,7 +178,7 @@ public class BuildResponse {
         data.put("business", build);
         String html = "模板输出错误";
         try {
-            html = FreemarkerUtil.getTemplate("hserver_error.ftl", data);
+            html = freemarkerUtil.getTemplate("hserver_error.ftl", data);
         } catch (Exception ignored) {
         }
         HttpResponseStatus httpResponseStatus = HttpResponseStatus.valueOf(e.getHttpCode());

@@ -25,12 +25,16 @@ public class SessionManager {
     }
 
     public HttpSession createSession(Request request) {
+       return createSession(request, UUID.randomUUID().toString().replace("-", ""));
+    }
+
+    public HttpSession createSession(Request request,String sessionId) {
         HttpSession session = getSession(request);
         long now = Instant.now().getEpochSecond();
         if (null == session) {
             long expired = now + WebConstConfig.SESSION_TIME_OUT;
             session = new HttpSession();
-            session.id(UUID.randomUUID().toString().replace("-", ""));
+            session.id(sessionId);
             session.created(now);
             session.expired(expired);
             createSession(session);
@@ -46,7 +50,7 @@ public class SessionManager {
         return session;
     }
 
-    private HttpSession getSession(String id) {
+    public HttpSession getSession(String id) {
         return sessionMap.get(id);
     }
 
@@ -54,10 +58,10 @@ public class SessionManager {
         sessionMap.put(session.id(), session);
     }
 
-    private void destroySession(HttpSession session) {
+    public boolean destroySession(HttpSession session) {
         session.attributes().clear();
         log.debug("session销毁: {}", session.id());
-        sessionMap.remove(session.id());
+        return sessionMap.remove(session.id()) != null;
     }
 
     private void clearExpiredSessions() {
@@ -65,12 +69,12 @@ public class SessionManager {
         sessions.parallelStream().filter(this::expires).forEach(this::destroySession);
     }
 
-    private boolean expires(HttpSession session) {
+    public boolean expires(HttpSession session) {
         long now = Instant.now().getEpochSecond();
         return session.expired() < now;
     }
 
-    private HttpSession getSession(Request request) {
+    public HttpSession getSession(Request request) {
         Set<Cookie> cookies = request.getCookies();
         if (null == cookies) {
             return null;

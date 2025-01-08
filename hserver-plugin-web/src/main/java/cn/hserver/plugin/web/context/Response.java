@@ -224,7 +224,7 @@ public class Response implements HttpResponse {
     @Override
     public void sendTemplate(String htmlPath, Map<String, Object> obj) {
         try {
-            this.result = FreemarkerUtil.getTemplate(htmlPath, obj);
+            this.result = WebConstConfig.template.getTemplate(htmlPath, obj);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         }

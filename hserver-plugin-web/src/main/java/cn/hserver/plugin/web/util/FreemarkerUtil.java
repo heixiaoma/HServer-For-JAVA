@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * @author hxm
  */
-public class FreemarkerUtil {
+public class FreemarkerUtil implements cn.hserver.plugin.web.interfaces.Template{
 
     private static final Configuration CFG = new Configuration(Configuration.VERSION_2_3_27);
 
@@ -33,9 +33,7 @@ public class FreemarkerUtil {
      * @return 渲染后的模板内容
      * @throws Exception Exception
      */
-    public static String getTemplate(String template, Map map) throws Exception {
-
-
+    public String getTemplate(String template, Map map) throws Exception {
         Template temp = CFG.getTemplate(template);
         StringWriter stringWriter = new StringWriter();
         temp.process(map, stringWriter);
