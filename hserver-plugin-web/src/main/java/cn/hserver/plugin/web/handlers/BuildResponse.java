@@ -125,8 +125,8 @@ public class BuildResponse {
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
 
-        if (request.getHttpSession() != null) {
-            Cookie cookie = new DefaultCookie(WebConstConfig.SESSION_KEY,request.getHttpSession().id());
+        if (request.getInnerHttpSession() != null) {
+            Cookie cookie = new DefaultCookie(WebConstConfig.SESSION_KEY,request.getInnerHttpSession().id());
             cookie.setHttpOnly(true);
             response1.addCookie(cookie);
         }

@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -69,8 +70,12 @@ public class Request implements HttpRequest {
     @Override
     public HttpSession getHttpSession() {
         if (httpSession == null) {
-            log.warn("如果需要使用httpSession 请在配置中打开该功能");
+            log.warn("如果需要使用httpSession 请在配置中打开该功能: web.openSession=true");
         }
+        return httpSession;
+    }
+
+    public HttpSession getInnerHttpSession() {
         return httpSession;
     }
 
@@ -104,12 +109,30 @@ public class Request implements HttpRequest {
 
     @Override
     public String query(String name) {
-        return requestParams.get(name) == null ? null : requestParams.get(name).get(0);
+        List<String> strings = requestParams.get(name);
+        if (strings != null&&!strings.isEmpty()) {
+            String s = strings.get(0);
+            try {
+                return URLDecoder.decode(s, StandardCharsets.UTF_8.name());
+            }catch (Exception e){
+                return s;
+            }
+        }
+        return null;
     }
 
     @Override
     public String queryUrl(String name) {
-        return urlParams.get(name) == null ? null : urlParams.get(name).get(0);
+        List<String> strings = urlParams.get(name);
+        if (strings != null&&!strings.isEmpty()) {
+            String s = strings.get(0);
+            try {
+                return URLDecoder.decode(s, StandardCharsets.UTF_8.name());
+            }catch (Exception e){
+                return s;
+            }
+        }
+        return null;
     }
 
     @Override

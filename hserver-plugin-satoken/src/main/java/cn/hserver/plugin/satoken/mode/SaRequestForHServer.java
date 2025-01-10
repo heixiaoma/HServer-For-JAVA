@@ -84,6 +84,11 @@ public class SaRequestForHServer implements SaRequest {
      */
     @Override
     public String getCookieValue(String name) {
+        return getCookieLastValue(name);
+    }
+
+    @Override
+    public String getCookieFirstValue(String name) {
         Set<Cookie> cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -93,6 +98,20 @@ public class SaRequestForHServer implements SaRequest {
             }
         }
         return null;
+    }
+
+    @Override
+    public String getCookieLastValue(String name) {
+        String cookieValue = null;
+        Set<Cookie> cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie != null && name.equals(cookie.name())) {
+                    cookieValue = cookie.value();
+                }
+            }
+        }
+        return cookieValue;
     }
 
     /**
