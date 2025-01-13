@@ -13,6 +13,9 @@ import java.util.Set;
  */
 public interface PluginAdapter {
 
+    /**
+     * app 启动调用
+     */
     void startApp();
 
     /**
@@ -21,13 +24,19 @@ public interface PluginAdapter {
     void startIocInit();
 
 
+    /**
+     * 初始化beanList情况，有的bean有多个实现
+     */
     Set<Class<?>> iocInitBeanList();
 
 
+    /**
+     * ioc初始化开始
+     */
     void iocInit(PackageScanner packageScanner);
 
     /**
-     * 初始化完成
+     * ioc初始化完成
      */
     void iocInitEnd();
 

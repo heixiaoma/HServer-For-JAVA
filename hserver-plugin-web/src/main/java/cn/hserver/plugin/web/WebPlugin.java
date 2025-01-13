@@ -64,6 +64,10 @@ public class WebPlugin implements PluginAdapter {
     @Override
     public void iocInit(PackageScanner scan) {
         try {
+            WebConfig webConfig = IocUtil.getBean(WebConfig.class);
+            if (webConfig.getRootPath()!=null&& !webConfig.getRootPath().trim().isEmpty()) {
+                WebConstConfig.ROOT_PATH = webConfig.getRootPath().trim();
+            }
             //初始化Websocket
             initWebSocket(scan);
             //初始化控制器
@@ -93,9 +97,6 @@ public class WebPlugin implements PluginAdapter {
         }
         if (webConfig.getWriteLimit()!=null) {
             WebConstConfig.WRITE_LIMIT = webConfig.getWriteLimit();
-        }
-        if (webConfig.getRootPath()!=null&& !webConfig.getRootPath().trim().isEmpty()) {
-            WebConstConfig.ROOT_PATH = webConfig.getRootPath().trim();
         }
 
         if (webConfig.getHttpContentSize()!=null) {
