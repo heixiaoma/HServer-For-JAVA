@@ -78,6 +78,13 @@ public class Response implements HttpResponse {
     }
 
     @Override
+    public void setDownloadFile(File file, String name) {
+        this.file = file;
+        this.isDownload = true;
+        this.fileName = name;
+    }
+
+    @Override
     public void setDownloadBigFile(File file) throws Exception {
         this.setDownloadBigFile(file,null);
     }

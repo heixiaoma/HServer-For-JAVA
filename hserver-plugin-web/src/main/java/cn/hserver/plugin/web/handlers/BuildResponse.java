@@ -86,7 +86,7 @@ public class BuildResponse {
 
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, MimeType.getFileType(response1.getFileName()) + ";charset=UTF-8");
         //attachment下载模式，inline预览模式
-        String fileName = response1.getFile().getName();
+        String fileName = response1.getFileName();
         try {
             fileName = URLEncoder.encode(response1.getFileName(), "UTF-8");
         } catch (Exception e) {

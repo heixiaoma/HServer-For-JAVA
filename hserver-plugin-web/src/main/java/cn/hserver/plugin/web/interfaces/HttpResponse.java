@@ -27,6 +27,13 @@ public interface HttpResponse {
      */
     void setDownloadFile(File file);
 
+    /**
+     * 下载文件名
+     * @param file
+     * @param name
+     */
+    void setDownloadFile(File file,String name);
+
 
     /**
      * 下载大文件
