@@ -11,5 +11,5 @@ import java.lang.annotation.*;
 @Documented
 @Request
 public @interface CONNECT {
-    String value();
+    String value() default "";
 }

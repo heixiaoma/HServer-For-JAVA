@@ -11,5 +11,6 @@ import java.lang.annotation.*;
 @Documented
 @Request
 public @interface OPTIONS {
-    String value();
+    String value() default "";
+
 }

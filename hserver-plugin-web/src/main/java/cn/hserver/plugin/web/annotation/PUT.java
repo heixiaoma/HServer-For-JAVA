@@ -11,5 +11,6 @@ import java.lang.annotation.*;
 @Documented
 @Request
 public @interface PUT {
-    String value();
+    String value() default "";
+
 }
