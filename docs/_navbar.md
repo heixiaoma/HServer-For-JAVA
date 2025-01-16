@@ -19,3 +19,4 @@
     * [nsfw离线鉴黄](https://gitee.com/HServer/hserver-nsfw)
     * [webdav同步工具](https://gitee.com/HServer/cloud-sync)
     * [WebRtc聊天发文件](https://gitee.com/HServer/hfile)
+    * [OAuth/OpenId(OIDC)演示](https://gitee.com/HServer/hserver-oauth-demo)
