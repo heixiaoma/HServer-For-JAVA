@@ -6,13 +6,10 @@ import cn.hserver.core.ioc.ref.PackageScanner;
 import cn.hserver.plugin.forest.config.ForestClientConfig;
 import com.dtflys.forest.Forest;
 import com.dtflys.forest.annotation.ForestClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
 public class ForestPlugin implements PluginAdapter {
-    private static final Logger log = LoggerFactory.getLogger(ForestPlugin.class);
 
     @Override
     public void startApp() {
@@ -59,6 +56,5 @@ public class ForestPlugin implements PluginAdapter {
         if (supperBean != null) {
             supperBean.config(Forest.config());
         }
-        log.info("Forest插件执行完成");
     }
 }
