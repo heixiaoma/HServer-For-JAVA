@@ -3,33 +3,45 @@ package cn.hserver.plugin.web.handlers.check;
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.plugin.web.context.HServerContext;
 import cn.hserver.plugin.web.exception.BusinessException;
-import cn.hserver.plugin.web.interfaces.LimitAdapter;
+import cn.hserver.plugin.web.interfaces.StaticFilterAdapter;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class Limit implements DispatcherHandler{
-    private static final Logger log = LoggerFactory.getLogger(Limit.class);
-    private boolean hasLimit = true;
-    List<LimitAdapter> listBean = IocUtil.getListBean(LimitAdapter.class);
+public class StaticFilter implements DispatcherHandler{
+    private static final Logger log = LoggerFactory.getLogger(StaticFilter.class);
+    private boolean hasFilter = true;
+    List<StaticFilterAdapter> listBean = IocUtil.getListBean(StaticFilterAdapter.class);
 
     @Override
     public HServerContext dispatcher(HServerContext hServerContext) {
         /**
-         * 否则就去执行控制器的方法
+         * 如果静态文件就跳过当前的处理，否则就去执行控制器的方法
          */
-        if (!hasLimit) {
+        if (!hasFilter) {
             return hServerContext;
         }
+
+        if (hServerContext.isStaticFile()) {
+            return hServerContext;
+        }
+
         /**
-         * 检查限流操作
+         * 检查限流操作是否设置了数据
+         */
+        if (hServerContext.getWebkit().httpResponse.hasData()) {
+            return hServerContext;
+        }
+
+        /**
+         * 检测下Filter的过滤哈哈
          */
         if (listBean != null) {
             try {
-                for (LimitAdapter limitAdapter : listBean) {
-                    limitAdapter.doLimit(hServerContext.getWebkit());
+                for (StaticFilterAdapter filterAdapter : listBean) {
+                    filterAdapter.doFilter(hServerContext.getWebkit());
                     if (hServerContext.getWebkit().httpResponse.hasData()) {
                         break;
                     }
@@ -38,7 +50,7 @@ public class Limit implements DispatcherHandler{
                 throw new BusinessException(HttpResponseStatus.INTERNAL_SERVER_ERROR.code(), "拦截器异常", e, hServerContext.getWebkit());
             }
         }else {
-            hasLimit=false;
+            hasFilter=false;
         }
         return hServerContext;
     }

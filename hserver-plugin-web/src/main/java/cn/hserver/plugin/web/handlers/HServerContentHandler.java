@@ -46,6 +46,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
     private final DispatcherHandler limit = new Limit();
     private final DispatcherHandler staticFile = new StaticFile();
     private final DispatcherHandler filter = new Filter();
+    private final DispatcherHandler staticFilter = new StaticFilter();
     private final DispatcherHandler permission = new Permission();
     private final DispatcherHandler findController = new FindController();
 
@@ -90,6 +91,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         HServerContextHolder.setWebKit(webkit);
         try {
             limit.dispatcher(hServerContext);
+            staticFilter.dispatcher(hServerContext);
             staticFile.dispatcher(hServerContext);
             filter.dispatcher(hServerContext);
             permission.dispatcher(hServerContext);

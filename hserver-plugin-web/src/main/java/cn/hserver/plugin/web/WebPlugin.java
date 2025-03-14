@@ -54,6 +54,7 @@ public class WebPlugin implements PluginAdapter {
         classes.add(PermissionAdapter.class);
         //检测这个Bean是否是FilterAdapter的
         classes.add(FilterAdapter.class);
+        classes.add(StaticFilterAdapter.class);
         //检测这个Bean是否是LimitAdapter的
         classes.add(LimitAdapter.class);
         //检测这个Bean是否是response的
