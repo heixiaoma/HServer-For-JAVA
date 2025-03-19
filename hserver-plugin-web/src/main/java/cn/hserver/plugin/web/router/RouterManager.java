@@ -119,7 +119,6 @@ public class RouterManager {
 
 
     public static RouterInfo getRouterInfo(String url, HttpMethod requestType, HServerContext hServerContext) throws MethodNotSupportException {
-        Request request = hServerContext.getRequest();
         Map<String, RouterInfo> router = router2.get(url);
         if (router == null) {
             //二次检查匹配规则的URL;
@@ -128,6 +127,7 @@ public class RouterManager {
                 //用初始的规则匹配现在的key 值，
                 Matcher matcher = Pattern.compile(pattern.getPatternUrl()).matcher(url);
                 if (matcher.find()) {
+                    Request request = hServerContext.getRequest();
                     //对控制器的参数进行拼装。这个里的这个拼装类似指针调用，这里put webContent也put了。
                     for (int i = 0; i < pattern.getKeys().size(); i++) {
                         try {
@@ -147,8 +147,6 @@ public class RouterManager {
             }
             return null;
         }
-
-
         RouterInfo routerInfo = router.get(requestType.name());
         //默认检查一次正常URl
         if (routerInfo != null) {

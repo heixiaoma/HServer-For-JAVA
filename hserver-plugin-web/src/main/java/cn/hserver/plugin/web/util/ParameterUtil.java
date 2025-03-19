@@ -74,7 +74,7 @@ public class ParameterUtil {
                             if (rawData != null) {
                                 objects[i] = WebConstConfig.JSONADAPTER.convertObject(rawData, parameterType);
                             }
-                        } else if (requestParams.size() > 0) {
+                        } else if (!requestParams.isEmpty()) {
                             //正常的表单
                             objects[i] = WebConstConfig.JSONADAPTER.convertMapToObject(invokeData(requestParams), parameterType.getType());
                         }
@@ -97,7 +97,7 @@ public class ParameterUtil {
     private static Map<String, String> invokeData(Map<String, List<String>> requestParams) {
         Map<String, String> data = new ConcurrentHashMap<>();
         requestParams.forEach((k, v) -> {
-            if (k != null && v.size() > 0) {
+            if (k != null && !v.isEmpty()) {
                 data.put(k, v.get(0));
             }
         });
