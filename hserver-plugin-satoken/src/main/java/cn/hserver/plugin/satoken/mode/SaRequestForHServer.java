@@ -143,6 +143,12 @@ public class SaRequestForHServer implements SaRequest {
         return request.getRequestType().name();
     }
 
+
+    @Override
+    public String getHost() {
+        return request.getHeader("host");
+    }
+
     /**
      * 转发请求
      */

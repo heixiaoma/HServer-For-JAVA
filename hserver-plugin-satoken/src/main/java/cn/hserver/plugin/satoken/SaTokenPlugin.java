@@ -107,7 +107,7 @@ public class SaTokenPlugin implements PluginAdapter {
 
         List<SaAnnotationHandlerInterface> saAnnotationHandlerInterfaces = IocUtil.getSupperBeanList(SaAnnotationHandlerInterface.class);
         if (saAnnotationHandlerInterfaces != null) {
-            for (SaAnnotationHandlerInterface saAnnotationHandlerInterface : saAnnotationHandlerInterfaces) {
+            for (SaAnnotationHandlerInterface<?> saAnnotationHandlerInterface : saAnnotationHandlerInterfaces) {
                 SaAnnotationStrategy.instance.registerAnnotationHandler(saAnnotationHandlerInterface);
             }
         }
@@ -160,7 +160,7 @@ public class SaTokenPlugin implements PluginAdapter {
             }
         }
 
-        //註冊Oauth注解
+        //注册Oauth注解
         SaAnnotationStrategy.instance.registerAnnotationHandler(new SaCheckAccessTokenHandler());
         SaAnnotationStrategy.instance.registerAnnotationHandler(new SaCheckClientIdSecretHandler());
         SaAnnotationStrategy.instance.registerAnnotationHandler(new SaCheckClientTokenHandler());

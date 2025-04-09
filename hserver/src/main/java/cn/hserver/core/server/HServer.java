@@ -1,33 +1,22 @@
 package cn.hserver.core.server;
 
-import cn.hserver.core.interfaces.LogAdapter;
 import cn.hserver.core.interfaces.ProtocolDispatcherAdapter;
-import cn.hserver.core.log.HServerLogAsyncAppender;
 import cn.hserver.core.server.context.ConstConfig;
 import cn.hserver.core.server.context.IoMultiplexer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.epoll.EpollServerSocketChannel;
-import io.netty.channel.kqueue.KQueueServerSocketChannel;
-import io.netty.channel.socket.nio.NioDatagramChannel;
-import io.netty.incubator.channel.uring.IOUringServerSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.hserver.core.interfaces.ServerCloseAdapter;
-import cn.hserver.core.queue.QueueDispatcher;
-import cn.hserver.core.interfaces.InitRunner;
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.server.context.HumMessage;
 import cn.hserver.core.server.handlers.HumClientHandler;
 import cn.hserver.core.server.handlers.HumServerHandler;
 import cn.hserver.core.server.util.*;
-import cn.hserver.core.task.TaskManager;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollChannelOption;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 import java.io.*;
 import java.util.HashMap;
@@ -63,20 +52,20 @@ public class HServer {
     public void run(Map<ChannelOption<Object>, Object> tcpOptions,Map<ChannelOption<Object>, Object> tcpChildOptions) throws Exception {
         if (ConstConfig.HUM_OPEN) {
             //UDP Server
-            humServerBossGroup = new NioEventLoopGroup();
+            humServerBossGroup = EventLoopUtil.getEventLoop(0, "hum_grop");
             Bootstrap humServer = new Bootstrap();
             humServer.group(humServerBossGroup)
-                    .channel(NioDatagramChannel.class)
+                    .channel(EventLoopUtil.getEventLoopTypeClassUdp())
                     .option(ChannelOption.SO_BROADCAST, true)
                     .option(ChannelOption.SO_REUSEADDR, true)
                     .handler(new HumServerHandler());
             Channel humChannel = humServer.bind(HUM_PORT).sync().channel();
             channels.put(humChannel, "UDP Server Port:" + HUM_PORT);
             //UDP Client
-            humClientBossGroup = new NioEventLoopGroup();
+            humClientBossGroup =  EventLoopUtil.getEventLoop(0, "hum_grop");
             Bootstrap humClient = new Bootstrap();
             humClient.group(humClientBossGroup)
-                    .channel(NioDatagramChannel.class)
+                    .channel(EventLoopUtil.getEventLoopTypeClassUdp())
                     .option(ChannelOption.SO_BROADCAST, true)
                     .handler(new HumClientHandler());
             HumClient.channel = humClient.bind(0).sync().channel();

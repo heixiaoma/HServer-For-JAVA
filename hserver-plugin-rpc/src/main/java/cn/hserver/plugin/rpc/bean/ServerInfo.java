@@ -8,7 +8,7 @@ public class ServerInfo {
     }
 
     public ServerInfo(String serverName, String groupName) {
-        if (groupName == null||groupName.trim().length()==0) {
+        if (groupName == null|| groupName.trim().isEmpty()) {
             groupName = "DEFAULT_GROUP";
         }
         this.serverName = serverName;
