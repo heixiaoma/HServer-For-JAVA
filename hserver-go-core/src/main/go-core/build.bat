@@ -1,0 +1,1 @@
+ go build -o hserver_go_core.dll -buildmode=c-shared main.go

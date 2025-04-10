@@ -32,6 +32,7 @@
         <module>hserver-plugin-runner</module>
         <module>hserver-plugin-satoken</module>
         <module>hserver-plugin-forest</module>
+        <module>hserver-go-core</module>
     </modules>
 
     <properties>
