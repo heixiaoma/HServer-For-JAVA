@@ -1,10 +1,9 @@
 package cn.hserver.plugin.web.context;
 
-import cn.hserver.plugin.web.util.FreemarkerUtil;
+import cn.hserver.plugin.web.context.sse.SSeStream;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.cookie.Cookie;
-import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import cn.hserver.plugin.web.interfaces.HttpResponse;
@@ -89,6 +88,17 @@ public class Response implements HttpResponse {
         this.setDownloadBigFile(file,null);
     }
 
+    @Override
+    public SSeStream getSSeStream() {
+        return getSSeStream(null);
+    }
+
+    @Override
+    public SSeStream getSSeStream(Integer retryMilliseconds) {
+        useCtx=true;
+        return new SSeStream(retryMilliseconds,headers);
+    }
+
     /**
      * 下载大文件
      *
@@ -103,6 +113,9 @@ public class Response implements HttpResponse {
             long fileLength = raf.length();
             HttpResponseStatus status = HttpResponseStatus.OK;
             DefaultHttpHeaders headers = new DefaultHttpHeaders();
+
+            this.headers.forEach(headers::add);
+
             headers.set(HttpHeaderNames.ACCEPT_RANGES, HttpHeaderValues.BYTES);
             headers.set(HttpHeaderNames.CONTENT_LENGTH, fileLength);
             headers.set(HttpHeaderNames.CONTENT_TYPE, MimeType.getFileType(file.getName()));

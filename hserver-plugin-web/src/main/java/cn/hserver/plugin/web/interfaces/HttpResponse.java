@@ -1,5 +1,6 @@
 package cn.hserver.plugin.web.interfaces;
 
+import cn.hserver.plugin.web.context.sse.SSeStream;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.cookie.Cookie;
 
@@ -127,6 +128,19 @@ public interface HttpResponse {
      */
     void sendStatusCode(HttpResponseStatus httpResponseStatus);
 
+    /**
+     * 使用SSE
+     * 默认超时
+     */
+
+    SSeStream getSSeStream();
+
+    /**
+     * 设置超时
+     * @param retryMilliseconds
+     * @return
+     */
+    SSeStream getSSeStream(Integer retryMilliseconds);
 
     /**
      * Response 是否组装得有数据？

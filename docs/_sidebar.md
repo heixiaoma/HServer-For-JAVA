@@ -21,6 +21,7 @@
     * [文件上传下载](zh-cn/plugin/web/file.md)
     * [全局request,response获取](zh-cn/plugin/web/reqresp.md)
     * [拦截器](zh-cn/plugin/web/filter.md)
+    * [SSE](zh-cn/plugin/web/sse.md)
     * [全局异常处理](zh-cn/plugin/web/exception.md)
     * [websocket](zh-cn/plugin/web/websocket.md)
     * [鉴权认证相关操作](zh-cn/plugin/web/authentication.md)
