@@ -33,6 +33,7 @@
         <module>hserver-plugin-satoken</module>
         <module>hserver-plugin-forest</module>
         <module>hserver-go-core</module>
+        <module>hserver-plugin-mcp</module>
     </modules>
 
     <properties>
