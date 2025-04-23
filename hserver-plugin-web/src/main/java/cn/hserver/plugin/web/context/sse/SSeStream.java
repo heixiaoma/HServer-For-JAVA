@@ -2,34 +2,42 @@ package cn.hserver.plugin.web.context.sse;
 
 import cn.hserver.plugin.web.context.HServerContextHolder;
 import cn.hserver.plugin.web.context.HeadMap;
-import cn.hserver.plugin.web.interfaces.HttpRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.Channel;
 import io.netty.handler.codec.http.*;
 import io.netty.util.internal.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 
 public class SSeStream {
-
-    private final HttpRequest request;
+    private static final Logger log = LoggerFactory.getLogger(SSeStream.class);
+    private final Channel channel;
     private final HeadMap headMap;
+
     public SSeStream(Integer retryMilliseconds, HeadMap headMap) {
-        this.request= HServerContextHolder.getWebKit().httpRequest;
+        this.channel = HServerContextHolder.getWebKit().httpRequest.getCtx().channel();
         this.headMap = headMap;
         sendStartHeader();
-        if (retryMilliseconds != null&&retryMilliseconds > 0) {
+        if (retryMilliseconds != null && retryMilliseconds > 0) {
             sendRetryEvent(retryMilliseconds);
         }
     }
 
-    public SSeStream sendSseEvent(SSeEvent sSeEvent){
-        ChannelHandlerContext ctx = request.getCtx();
+    public SSeStream addStopListener(Runnable runnable) {
+        channel.closeFuture().addListener(future -> {
+            runnable.run();
+        });
+        return this;
+    }
+
+    public SSeStream sendSseEvent(SSeEvent sSeEvent) {
         String message;
         if (StringUtil.isNullOrEmpty(sSeEvent.getEvent())) {
             message = "data: " + sSeEvent.getData() + "\n\n";
-        } else if (sSeEvent.getId()==null) {
+        } else if (sSeEvent.getId() == null) {
             message = "event: " + sSeEvent.getEvent() + "\n" +
                     "data: " + sSeEvent.getData() + "\n\n";
         } else {
@@ -37,25 +45,34 @@ public class SSeStream {
                     "event: " + sSeEvent.getEvent() + "\n" +
                     "data: " + sSeEvent.getData() + "\n\n";
         }
-        ctx.writeAndFlush(new DefaultHttpContent(Unpooled.wrappedBuffer(message.getBytes(StandardCharsets.UTF_8))));
+        channel.writeAndFlush(new DefaultHttpContent(Unpooled.wrappedBuffer(message.getBytes(StandardCharsets.UTF_8)))).addListener(future -> {
+            if (!future.isSuccess()) {
+                log.error("sendSseEvent error", future.cause());
+            }
+        });
         return this;
     }
 
-    private void sendStartHeader(){
+    private void sendStartHeader() {
         HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
-        headMap.forEach((k,v)-> response.headers().add(k,v));
+        headMap.forEach((k, v) -> response.headers().add(k, v));
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/event-stream");
         response.headers().set(HttpHeaderNames.CACHE_CONTROL, "no-cache");
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-        ChannelHandlerContext ctx = request.getCtx();
-        ctx.write(response);
+        channel.writeAndFlush(response).addListener(future -> {
+            if (!future.isSuccess()) {
+                log.error("sendSseEvent error", future.cause());
+            }
+        });
     }
 
     private void sendRetryEvent(Integer retryMilliseconds) {
-        ChannelHandlerContext ctx = request.getCtx();
         ByteBuf byteBuf = Unpooled.wrappedBuffer(("retry: " + retryMilliseconds + "\n\n").getBytes(StandardCharsets.UTF_8));
-        ctx.writeAndFlush(new DefaultHttpContent(byteBuf));
+        channel.writeAndFlush(new DefaultHttpContent(byteBuf)).addListener(future -> {
+            if (!future.isSuccess()) {
+                log.error("sendSseEvent error", future.cause());
+            }
+        });
     }
-
 
 }
