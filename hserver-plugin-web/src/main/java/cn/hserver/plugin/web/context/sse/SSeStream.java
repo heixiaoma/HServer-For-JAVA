@@ -26,7 +26,7 @@ public class SSeStream {
         }
     }
 
-    public SSeStream addStopListener(Runnable runnable) {
+    public SSeStream addCloseListener(Runnable runnable) {
         channel.closeFuture().addListener(future -> {
             runnable.run();
         });
