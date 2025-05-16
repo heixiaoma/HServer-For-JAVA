@@ -1,6 +1,7 @@
 package proxy
 
 import (
+	"go-core/context"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -30,7 +31,10 @@ func NewProxy(ip, port, host string) *httputil.ReverseProxy {
 
 func Handler(w http.ResponseWriter, r *http.Request, req func(req string)) {
 	host := r.Host
-	req(host + r.URL.Path)
+	json, err := context.RequestToJSON(r)
+	if err == nil {
+		req(string(json))
+	}
 	proxy := NewProxy("127.0.0.1", "8888", host)
 	if proxy == nil {
 		http.Error(w, "错误URL地址", http.StatusInternalServerError)

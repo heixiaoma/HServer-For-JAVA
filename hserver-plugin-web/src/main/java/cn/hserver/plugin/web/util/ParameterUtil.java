@@ -110,7 +110,7 @@ public class ParameterUtil {
      * @param method
      * @return
      */
-    private static String[] getParamNames(Method method) {
+    public static String[] getParamNames(Method method) {
         try {
             Class<?> clazz = method.getDeclaringClass();
             ClassPool pool = ClassPool.getDefault();

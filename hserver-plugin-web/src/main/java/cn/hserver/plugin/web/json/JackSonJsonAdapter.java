@@ -46,6 +46,12 @@ public class JackSonJsonAdapter implements JsonAdapter {
     }
 
     @Override
+    public Object convertObjToObject(Object data, Class type) {
+        return WebConstConfig.OBJECT_MAPPER.convertValue(data, type);
+    }
+
+
+    @Override
     public String convertString(Object data) {
         try {
             return WebConstConfig.OBJECT_MAPPER.writeValueAsString(data);

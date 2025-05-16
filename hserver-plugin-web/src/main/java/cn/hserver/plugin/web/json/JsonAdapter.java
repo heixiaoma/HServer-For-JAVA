@@ -37,6 +37,14 @@ public interface JsonAdapter {
     Object convertMapToObject(Map data, Class type);
 
     /**
+     * obj转换
+     * @param data
+     * @param type
+     * @return
+     */
+    Object convertObjToObject(Object data, Class type);
+
+    /**
      * 对象转String
      *
      * @param data

@@ -31,7 +31,6 @@ public class HServerSseServerTransportProvider  implements McpServerTransportPro
 	private static final Logger logger = LoggerFactory.getLogger(HServerSseServerTransportProvider.class);
 
 	/** Default endpoint path for SSE connections */
-	public static final String DEFAULT_SSE_ENDPOINT = "/sse";
 
 	/** Event type for regular messages */
 	public static final String MESSAGE_EVENT_TYPE = "message";
@@ -43,10 +42,10 @@ public class HServerSseServerTransportProvider  implements McpServerTransportPro
 	private final ObjectMapper objectMapper= WebConstConfig.JSON;
 
 	/** The endpoint path for handling client messages */
-	private final String messageEndpoint=DEFAULT_SSE_ENDPOINT+"/message";
+	private final String messageEndpoint;
 
 	/** The endpoint path for handling SSE connections */
-	private final String sseEndpoint=DEFAULT_SSE_ENDPOINT;
+	private final String sseEndpoint;
 
 	/** Map of active client sessions, keyed by session ID */
 	private final Map<String, McpServerSession> sessions = new ConcurrentHashMap<>();
@@ -54,9 +53,12 @@ public class HServerSseServerTransportProvider  implements McpServerTransportPro
 	/** Session factory for creating new sessions */
 	private McpServerSession.Factory sessionFactory;
 
-	public void p(){
-		System.out.println(sessions.size());
+
+	public HServerSseServerTransportProvider(String sseEndpoint){
+		this.sseEndpoint=sseEndpoint;
+		this.messageEndpoint=sseEndpoint+"/message";
 	}
+
 
 	/**
 	 * Sets the session factory for creating new sessions.
@@ -115,8 +117,9 @@ public class HServerSseServerTransportProvider  implements McpServerTransportPro
 		McpServerSession session = sessionFactory.create(sessionTransport);
 		this.sessions.put(sessionId, session);
 
+		System.out.println(this.messageEndpoint + "?sessionId=" + sessionId);
 		// Send initial endpoint event
-		this.sendEvent(sSeStream, ENDPOINT_EVENT_TYPE, messageEndpoint + "?sessionId=" + sessionId);
+		this.sendEvent(sSeStream, ENDPOINT_EVENT_TYPE, this.messageEndpoint + "?sessionId=" + sessionId);
 	}
 
 	public void doPost(HttpRequest request, HttpResponse response){

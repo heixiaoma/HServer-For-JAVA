@@ -1,11 +1,7 @@
 package main
 
 /*
-typedef void (*EventCb)(char* event);
-static void bridge_event_cb(EventCb cb,char* event)
-{
-	cb(event);
-}
+#include "./c/start_proxy.c"
 */
 import "C"
 import (

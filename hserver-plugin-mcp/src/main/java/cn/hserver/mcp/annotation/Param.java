@@ -16,21 +16,29 @@
 package cn.hserver.mcp.annotation;
 
 
+import cn.hserver.mcp.McpType;
+
 import java.lang.annotation.*;
 
 
-@Target({ElementType.METHOD})
+@Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface ToolMapping {
+public @interface Param {
     /**
-     * 名字（没有时类名即为名）
+     * 类型
      */
-    String name();
-
+    McpType type() default McpType.string;
     /**
      * 描述
      */
-    String description ();
+    String description() default "";
 
+    /**
+     * 默认值
+     */
+    String defaultValue() default "";
+
+
+    String[] enums() default {};
 }
