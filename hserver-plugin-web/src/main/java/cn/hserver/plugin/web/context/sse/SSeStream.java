@@ -48,6 +48,8 @@ public class SSeStream {
         channel.writeAndFlush(new DefaultHttpContent(Unpooled.wrappedBuffer(message.getBytes(StandardCharsets.UTF_8)))).addListener(future -> {
             if (!future.isSuccess()) {
                 log.error("sendSseEvent error", future.cause());
+            }else {
+                log.debug(message);
             }
         });
         return this;

@@ -50,6 +50,10 @@ public class Response implements HttpResponse {
         if (isDownload) {
             return true;
         }
+        //stream使用
+        if(useCtx){
+            return true;
+        }
         return false;
     }
 

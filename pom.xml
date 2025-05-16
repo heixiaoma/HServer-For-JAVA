@@ -121,6 +121,11 @@
                 <artifactId>hserver-plugin-forest</artifactId>
                 <version>3.7.0</version>
             </dependency>
+            <dependency>
+                <groupId>cn.hserver</groupId>
+                <artifactId>hserver-plugin-mcp</artifactId>
+                <version>3.7.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
