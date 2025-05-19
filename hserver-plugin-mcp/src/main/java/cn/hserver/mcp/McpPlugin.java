@@ -4,18 +4,17 @@ import cn.hserver.core.interfaces.PluginAdapter;
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.ioc.ref.PackageScanner;
 import cn.hserver.mcp.annotation.McpServerEndpoint;
+import cn.hserver.mcp.annotation.PromptMapping;
 import cn.hserver.mcp.annotation.ResourcesMapping;
 import cn.hserver.mcp.annotation.ToolMapping;
+import cn.hserver.mcp.function.FunctionPrompt;
+import cn.hserver.mcp.function.FunctionResources;
+import cn.hserver.mcp.function.FunctionTool;
 import cn.hserver.modelcontextprotocol.server.McpServer;
 import cn.hserver.modelcontextprotocol.server.McpServerFeatures;
 import cn.hserver.modelcontextprotocol.server.McpSyncServer;
 import cn.hserver.modelcontextprotocol.server.transport.HServerSseServerTransportProvider;
 import cn.hserver.modelcontextprotocol.spec.McpSchema;
-import cn.hserver.modelcontextprotocol.spec.McpServerTransportProvider;
-import cn.hserver.plugin.web.context.WebConstConfig;
-import cn.hserver.plugin.web.interfaces.GlobalException;
-import cn.hserver.plugin.web.util.ParameterUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
@@ -24,9 +23,7 @@ import java.util.*;
 @Slf4j
 public class McpPlugin implements PluginAdapter {
 
-    private HServerSseServerTransportProvider hServerSseServerTransportProvider;
-
-    private List<McpSyncServer> mcpSyncServers=new ArrayList<>();
+    private final List<McpSyncServer> mcpSyncServers=new ArrayList<>();
 
     @Override
     public void startApp() {
@@ -54,7 +51,7 @@ public class McpPlugin implements PluginAdapter {
                         .prompts(true)
                         .logging()
                         .build();
-                hServerSseServerTransportProvider=new HServerSseServerTransportProvider(annotation.sseEndpoint());
+                HServerSseServerTransportProvider hServerSseServerTransportProvider = new HServerSseServerTransportProvider(annotation.sseEndpoint());
                 IocUtil.addBean(hServerSseServerTransportProvider);
                 McpSyncServer mcpSyncServer = McpServer.sync(hServerSseServerTransportProvider)
                         .capabilities(serverCapabilities)
@@ -75,27 +72,15 @@ public class McpPlugin implements PluginAdapter {
                     }
                     ResourcesMapping resourcesMapping = declaredMethod.getAnnotation(ResourcesMapping.class);
                     if (resourcesMapping != null) {
-
+                        FunctionResources functionResources = new FunctionResources(aClass, declaredMethod);
                         if (resourcesMapping.uri().contains("}")) {
                             McpServerFeatures.SyncResourceTemplateSpecification syncResourceSpecification = new McpServerFeatures.SyncResourceTemplateSpecification();
                             McpSchema.ResourceTemplate resource = new McpSchema.ResourceTemplate();
                             resource.setUriTemplate(resourcesMapping.uri());
                             resource.setName(resourcesMapping.name());
                             resource.setDescription(resourcesMapping.description());
-
-
                             syncResourceSpecification.setResource(resource);
-                            syncResourceSpecification.setReadHandler((a, b) -> {
-                                McpSchema.ReadResourceResult readResourceResult = new McpSchema.ReadResourceResult();
-                                List<McpSchema.ResourceContents> resourceContentsList = new ArrayList<>();
-                                McpSchema.TextResourceContents textResourceContents = new McpSchema.TextResourceContents();
-                                textResourceContents.setUri(b.getUri());
-                                textResourceContents.setMimeType("text/plain");
-                                textResourceContents.setText("data");
-                                resourceContentsList.add(textResourceContents);
-                                readResourceResult.setContents(resourceContentsList);
-                                return readResourceResult;
-                            });
+                            syncResourceSpecification.setReadHandler((a, b) -> functionResources.invoke(b,resourcesMapping));
                             mcpSyncServer.addResourceTemplate(syncResourceSpecification);
                         }else {
                             McpServerFeatures.SyncResourceSpecification syncResourceSpecification = new McpServerFeatures.SyncResourceSpecification();
@@ -104,19 +89,23 @@ public class McpPlugin implements PluginAdapter {
                             resource.setName(resourcesMapping.name());
                             resource.setDescription(resourcesMapping.description());
                             syncResourceSpecification.setResource(resource);
-                            syncResourceSpecification.setReadHandler((a, b) -> {
-                                McpSchema.ReadResourceResult readResourceResult = new McpSchema.ReadResourceResult();
-                                List<McpSchema.ResourceContents> resourceContentsList = new ArrayList<>();
-                                McpSchema.TextResourceContents textResourceContents = new McpSchema.TextResourceContents();
-                                textResourceContents.setUri(b.getUri());
-                                textResourceContents.setMimeType("text/plain");
-                                textResourceContents.setText("data");
-                                resourceContentsList.add(textResourceContents);
-                                readResourceResult.setContents(resourceContentsList);
-                                return readResourceResult;
-                            });
+                            syncResourceSpecification.setReadHandler((a, b) -> functionResources.invoke(b,resourcesMapping));
                             mcpSyncServer.addResource(syncResourceSpecification);
                         }
+                    }
+
+
+                    PromptMapping promptMapping = declaredMethod.getAnnotation(PromptMapping.class);
+                    if (promptMapping != null) {
+                        FunctionPrompt functionPrompt = new FunctionPrompt(aClass, declaredMethod);
+                        McpServerFeatures.SyncPromptSpecification syncPromptSpecification = new McpServerFeatures.SyncPromptSpecification();
+                        McpSchema.Prompt prompt = new McpSchema.Prompt();
+                        prompt.setName(promptMapping.name());
+                        prompt.setDescription(promptMapping.description());
+                        prompt.setArguments(functionPrompt.getPromptArguments());
+                        syncPromptSpecification.setPrompt(prompt);
+                        syncPromptSpecification.setPromptHandler((a, b) -> functionPrompt.invoke(b,prompt));
+                        mcpSyncServer.addPrompt(syncPromptSpecification);
                     }
                 }
                 mcpSyncServers.add(mcpSyncServer);

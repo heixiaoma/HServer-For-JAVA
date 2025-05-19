@@ -1,13 +1,15 @@
-package cn.hserver.mcp;
+package cn.hserver.mcp.function;
 
 import cn.hserver.core.ioc.IocUtil;
+import cn.hserver.mcp.ObjConvertUtil;
 import cn.hserver.mcp.annotation.Param;
+import cn.hserver.mcp.type.McpType;
 import cn.hserver.modelcontextprotocol.spec.McpSchema;
-import cn.hserver.plugin.web.context.WebConstConfig;
 import cn.hserver.plugin.web.util.ParameterUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -15,6 +17,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 
+@Slf4j
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -56,7 +59,7 @@ public class FunctionTool {
             this.returnType = returnType1;
         }
         if (this.returnType == null) {
-            throw new RuntimeException("参数类型错误");
+            throw new RuntimeException("参数类型错误,必须是 McpSchema.Content 类型");
         }
     }
 
@@ -64,19 +67,24 @@ public class FunctionTool {
         McpSchema.JsonSchema jsonSchema = new McpSchema.JsonSchema();
         jsonSchema.setType("object");
         if (argumentNames != null) {
-            jsonSchema.setRequired(Arrays.asList(argumentNames));
+            List<String> names = new ArrayList<>();
             Parameter[] parameters = this.method.getParameters();
             Map<String, Object> p = new HashMap<>();
             for (int i = 0; i < parameters.length; i++) {
                 Param annotation = parameters[i].getAnnotation(Param.class);
                 Map<String, Object> data;
                 if (annotation == null) {
+                    names.add(argumentNames[i]);
                     data = data(McpType.string.name(), null, null, null);
                 } else {
+                    if (annotation.required()){
+                        names.add(argumentNames[i]);
+                    }
                     data = data(annotation.type().name(), annotation.description(), annotation.defaultValue(), annotation.enums());
                 }
                 p.put(this.argumentNames[i], data);
             }
+            jsonSchema.setRequired(names);
             jsonSchema.setProperties(p);
         }
         return jsonSchema;
@@ -98,24 +106,26 @@ public class FunctionTool {
 
     public McpSchema.CallToolResult invoke(Map<String, Object> args) {
         McpSchema.CallToolResult res = new McpSchema.CallToolResult();
+        List<McpSchema.Content> data = new ArrayList<>();
         try {
             if (this.object == null) {
                 this.object = IocUtil.getBean(aClass);
             }
             Object invoke = method.invoke(object, genArgs(args));
             if (invoke instanceof McpSchema.Content) {
-                List<McpSchema.Content> data = new ArrayList<>();
                 data.add((McpSchema.Content) invoke);
                 res.setContent(data);
             } else if (invoke instanceof List) {
-                res.setContent((List<McpSchema.Content>) invoke);
+                data.addAll((List<McpSchema.Content>) invoke);
+                res.setContent(data);
             } else {
                 res.setIsError(true);
-                res.setContent(new ArrayList<>());
+                res.setContent(data);
             }
         } catch (Exception e1) {
+            log.error(e1.getMessage(), e1);
             res.setIsError(true);
-            res.setContent(new ArrayList<>());
+            res.setContent(data);
         }
         return res;
     }

@@ -16,7 +16,7 @@
 package cn.hserver.mcp.annotation;
 
 
-import cn.hserver.mcp.McpType;
+import cn.hserver.mcp.type.McpType;
 
 import java.lang.annotation.*;
 
@@ -41,4 +41,6 @@ public @interface Param {
 
 
     String[] enums() default {};
+
+    boolean required() default true;
 }

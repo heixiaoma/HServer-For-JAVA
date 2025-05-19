@@ -49,7 +49,7 @@ public class SSeStream {
             if (!future.isSuccess()) {
                 log.error("sendSseEvent error", future.cause());
             }else {
-                log.debug(message);
+                log.debug(message.trim());
             }
         });
         return this;
