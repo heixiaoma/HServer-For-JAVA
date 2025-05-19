@@ -18,7 +18,7 @@ import java.util.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FunctionData {
+public class FunctionTool {
 
 
     private Object object;
@@ -31,13 +31,12 @@ public class FunctionData {
 
     private String[] argumentNames;
 
-    public FunctionData(Class<?> aClass, Method method) {
+    public FunctionTool(Class<?> aClass, Method method) {
         this.aClass = aClass;
         this.method = method;
         this.argumentNames = ParameterUtil.getParamNames(method);
         Class<?> returnType1 = method.getReturnType();
         if (Collection.class.isAssignableFrom(returnType1)) {
-
             try {
                 Type returnType = method.getGenericReturnType();
                 // 判断返回类型是否为 List
@@ -70,11 +69,13 @@ public class FunctionData {
             Map<String, Object> p = new HashMap<>();
             for (int i = 0; i < parameters.length; i++) {
                 Param annotation = parameters[i].getAnnotation(Param.class);
-                if (annotation==null){
-                    throw new RuntimeException("缺少Param注解描述");
+                Map<String, Object> data;
+                if (annotation == null) {
+                    data = data(McpType.string.name(), null, null, null);
+                } else {
+                    data = data(annotation.type().name(), annotation.description(), annotation.defaultValue(), annotation.enums());
                 }
-                Map<String, Object> data = data(annotation.type().name(), annotation.description(), annotation.defaultValue(), annotation.enums());
-                p.put(this.argumentNames[i],data);
+                p.put(this.argumentNames[i], data);
             }
             jsonSchema.setProperties(p);
         }
@@ -89,7 +90,7 @@ public class FunctionData {
         }
         Object[] data = new Object[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
-            data[i] = WebConstConfig.JSONADAPTER.convertObjToObject(args.get(this.argumentNames[i]), parameters[i].getType());
+            data[i] = ObjConvertUtil.convert(parameters[i].getType(),args.get(this.argumentNames[i]));
         }
         return data;
     }
@@ -120,16 +121,16 @@ public class FunctionData {
     }
 
 
-    public Map<String,Object> data(String type,String description,String defaultStr,String[] enums){
-        Map<String,Object> data=new HashMap<>();
-        data.put("type",type);
-        if (description!=null&&!description.isEmpty()) {
+    public Map<String, Object> data(String type, String description, String defaultStr, String[] enums) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("type", type);
+        if (description != null && !description.isEmpty()) {
             data.put("description", description);
         }
-        if (defaultStr!=null&& !defaultStr.trim().isEmpty()) {
+        if (defaultStr != null && !defaultStr.trim().isEmpty()) {
             data.put("default", defaultStr);
         }
-        if(enums!=null&& enums.length>0) {
+        if (enums != null && enums.length > 0) {
             data.put("enum", enums);
         }
         return data;

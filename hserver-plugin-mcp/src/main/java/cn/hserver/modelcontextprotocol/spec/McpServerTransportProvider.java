@@ -1,6 +1,5 @@
 package cn.hserver.modelcontextprotocol.spec;
 
-import cn.hserver.modelcontextprotocol.server.McpServer;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -13,8 +12,8 @@ import java.util.Map;
  * <p>
  * The lifecycle of the provider dictates that it be created first, upon application
  * startup, and then passed into either
- * {@link McpServer#sync(McpServerTransportProvider)} or
- * {@link McpServer#async(McpServerTransportProvider)}. As
+ * {@link io.modelcontextprotocol.server.McpServer#sync(McpServerTransportProvider)} or
+ * {@link io.modelcontextprotocol.server.McpServer#async(McpServerTransportProvider)}. As
  * a result of the MCP server creation, the provider will be notified of a
  * {@link McpServerSession.Factory} which will be used to handle a 1:1 communication
  * between a newly connected client and the server. The provider's responsibility is to

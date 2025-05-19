@@ -5,7 +5,6 @@
 package cn.hserver.modelcontextprotocol.spec;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import cn.hserver.modelcontextprotocol.spec.McpSchema.JSONRPCMessage;
 import reactor.core.publisher.Mono;
 
 import java.util.function.Function;
@@ -50,7 +49,7 @@ public interface McpTransport {
 	 * from this interface in 0.9.0.
 	 */
 	@Deprecated
-	default Mono<Void> connect(Function<Mono<JSONRPCMessage>, Mono<JSONRPCMessage>> handler) {
+	default Mono<Void> connect(Function<Mono<McpSchema.JSONRPCMessage>, Mono<McpSchema.JSONRPCMessage>> handler) {
 		return Mono.empty();
 	}
 
@@ -80,10 +79,10 @@ public interface McpTransport {
 	 * This method handles the transmission of messages to the server in an asynchronous
 	 * manner. Messages are sent in JSON-RPC format as specified by the MCP protocol.
 	 * </p>
-	 * @param message the {@link JSONRPCMessage} to be sent to the server
+	 * @param message the {@link McpSchema.JSONRPCMessage} to be sent to the server
 	 * @return a {@link Mono<Void>} that completes when the message has been sent
 	 */
-	Mono<Void> sendMessage(JSONRPCMessage message);
+	Mono<Void> sendMessage(McpSchema.JSONRPCMessage message);
 
 	/**
 	 * Unmarshals the given data into an object of the specified type.

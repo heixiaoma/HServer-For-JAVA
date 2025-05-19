@@ -8,7 +8,10 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -805,12 +808,13 @@ public final class McpSchema {
 	public static class Tool {
 		@JsonProperty("name") String name;
 		@JsonProperty("description") String description;
+		@JsonProperty("returnDirect") Boolean returnDirect;
 		@JsonProperty("inputSchema") JsonSchema inputSchema;
-	
-		public Tool(String name, String description, String schema) {
-			this(name, description, parseSchema(schema));
+
+		public Tool(String name, String description, Boolean returnDirect, String schema) {
+			this(name, description, returnDirect, parseSchema(schema));
 		}
-			
+
 	} // @formatter:on
 
 	private static JsonSchema parseSchema(String schema) {

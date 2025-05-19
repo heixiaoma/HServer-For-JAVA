@@ -4,6 +4,7 @@ import cn.hserver.core.interfaces.PluginAdapter;
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.ioc.ref.PackageScanner;
 import cn.hserver.mcp.annotation.McpServerEndpoint;
+import cn.hserver.mcp.annotation.ResourcesMapping;
 import cn.hserver.mcp.annotation.ToolMapping;
 import cn.hserver.modelcontextprotocol.server.McpServer;
 import cn.hserver.modelcontextprotocol.server.McpServerFeatures;
@@ -66,11 +67,56 @@ public class McpPlugin implements PluginAdapter {
                         McpSchema.Tool tool = new McpSchema.Tool();
                         tool.setName(toolMapping.name());
                         tool.setName(toolMapping.description());
-                        FunctionData functionData = new FunctionData(aClass,declaredMethod);
+                        FunctionTool functionData = new FunctionTool(aClass,declaredMethod);
                         tool.setInputSchema(functionData.getInputSchema());
                         syncToolSpecification.setTool(tool);
                         syncToolSpecification.setCall((e,a)-> functionData.invoke(a));
                         mcpSyncServer.addTool(syncToolSpecification);
+                    }
+                    ResourcesMapping resourcesMapping = declaredMethod.getAnnotation(ResourcesMapping.class);
+                    if (resourcesMapping != null) {
+
+                        if (resourcesMapping.uri().contains("}")) {
+                            McpServerFeatures.SyncResourceTemplateSpecification syncResourceSpecification = new McpServerFeatures.SyncResourceTemplateSpecification();
+                            McpSchema.ResourceTemplate resource = new McpSchema.ResourceTemplate();
+                            resource.setUriTemplate(resourcesMapping.uri());
+                            resource.setName(resourcesMapping.name());
+                            resource.setDescription(resourcesMapping.description());
+
+
+                            syncResourceSpecification.setResource(resource);
+                            syncResourceSpecification.setReadHandler((a, b) -> {
+                                McpSchema.ReadResourceResult readResourceResult = new McpSchema.ReadResourceResult();
+                                List<McpSchema.ResourceContents> resourceContentsList = new ArrayList<>();
+                                McpSchema.TextResourceContents textResourceContents = new McpSchema.TextResourceContents();
+                                textResourceContents.setUri(b.getUri());
+                                textResourceContents.setMimeType("text/plain");
+                                textResourceContents.setText("data");
+                                resourceContentsList.add(textResourceContents);
+                                readResourceResult.setContents(resourceContentsList);
+                                return readResourceResult;
+                            });
+                            mcpSyncServer.addResourceTemplate(syncResourceSpecification);
+                        }else {
+                            McpServerFeatures.SyncResourceSpecification syncResourceSpecification = new McpServerFeatures.SyncResourceSpecification();
+                            McpSchema.Resource resource = new McpSchema.Resource();
+                            resource.setUri(resourcesMapping.uri());
+                            resource.setName(resourcesMapping.name());
+                            resource.setDescription(resourcesMapping.description());
+                            syncResourceSpecification.setResource(resource);
+                            syncResourceSpecification.setReadHandler((a, b) -> {
+                                McpSchema.ReadResourceResult readResourceResult = new McpSchema.ReadResourceResult();
+                                List<McpSchema.ResourceContents> resourceContentsList = new ArrayList<>();
+                                McpSchema.TextResourceContents textResourceContents = new McpSchema.TextResourceContents();
+                                textResourceContents.setUri(b.getUri());
+                                textResourceContents.setMimeType("text/plain");
+                                textResourceContents.setText("data");
+                                resourceContentsList.add(textResourceContents);
+                                readResourceResult.setContents(resourceContentsList);
+                                return readResourceResult;
+                            });
+                            mcpSyncServer.addResource(syncResourceSpecification);
+                        }
                     }
                 }
                 mcpSyncServers.add(mcpSyncServer);
@@ -79,7 +125,7 @@ public class McpPlugin implements PluginAdapter {
                 log.info("MCP Start {}",aClass.getName());
             }
         }catch (Exception e){
-            log.error(e.getMessage());
+            log.error(e.getMessage(),e);
         }
     }
 

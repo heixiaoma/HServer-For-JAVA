@@ -1,9 +1,7 @@
 package cn.hserver.modelcontextprotocol.spec;
 
-import cn.hserver.modelcontextprotocol.server.McpAsyncServer;
-import cn.hserver.modelcontextprotocol.server.McpSyncServer;
-import com.fasterxml.jackson.core.type.TypeReference;
 import cn.hserver.modelcontextprotocol.server.McpAsyncServerExchange;
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -83,6 +81,10 @@ public class McpServerSession implements McpSession {
 		this.notificationHandlers = notificationHandlers;
 	}
 
+	public McpServerTransport getTransport() {
+		return transport;
+	}
+
 	/**
 	 * Retrieve the session id.
 	 * @return session id
@@ -149,8 +151,8 @@ public class McpServerSession implements McpSession {
 	 * Called by the {@link McpServerTransportProvider} once the session is determined.
 	 * The purpose of this method is to dispatch the message to an appropriate handler as
 	 * specified by the MCP server implementation
-	 * ({@link McpAsyncServer} or
-	 * {@link McpSyncServer}) via
+	 * ({@link io.modelcontextprotocol.server.McpAsyncServer} or
+	 * {@link io.modelcontextprotocol.server.McpSyncServer}) via
 	 * {@link Factory} that the server creates.
 	 * @param message the incoming JSON-RPC message
 	 * @return a Mono that completes when the message is processed
