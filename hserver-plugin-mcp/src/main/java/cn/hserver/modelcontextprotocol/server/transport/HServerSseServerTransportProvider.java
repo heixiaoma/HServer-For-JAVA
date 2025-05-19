@@ -24,6 +24,9 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class HServerSseServerTransportProvider  implements McpServerTransportProvider {
 
@@ -110,14 +113,10 @@ public class HServerSseServerTransportProvider  implements McpServerTransportPro
 		// Create a new session transport
 		HServerMcpSessionTransport sessionTransport = new HServerMcpSessionTransport(sessionId,
 				sSeStream);
-		sSeStream.addCloseListener(()->{
-			sessionTransport.close();
-		});
+		sSeStream.addCloseListener(sessionTransport::close);
 		// Create a new session using the session factory
 		McpServerSession session = sessionFactory.create(sessionTransport);
 		this.sessions.put(sessionId, session);
-
-		System.out.println(this.messageEndpoint + "?sessionId=" + sessionId);
 		// Send initial endpoint event
 		this.sendEvent(sSeStream, ENDPOINT_EVENT_TYPE, this.messageEndpoint + "?sessionId=" + sessionId);
 	}
@@ -145,10 +144,11 @@ public class HServerSseServerTransportProvider  implements McpServerTransportPro
 			return;
 		}
 		try {
+			logger.info("收到消息:"+request.getRawData());
 			McpSchema.JSONRPCMessage message = McpSchema.deserializeJsonRpcMessage(objectMapper,request.getRawData());
 			session.handle(message).block(); // Block for Servlet compatibility
-			response.setUseCtx(true);
 			response.sendStatusCode(HttpResponseStatus.OK);
+			response.sendText("");
 		}
 		catch (Exception e) {
 			logger.error("Error processing message: {}", e.getMessage());
@@ -178,12 +178,12 @@ public class HServerSseServerTransportProvider  implements McpServerTransportPro
 	}
 
 
+
 	private class HServerMcpSessionTransport implements McpServerTransport {
 
 		private final String sessionId;
 
 		private final SSeStream writer;
-
 
 		HServerMcpSessionTransport(String sessionId, SSeStream writer) {
 			this.sessionId = sessionId;
