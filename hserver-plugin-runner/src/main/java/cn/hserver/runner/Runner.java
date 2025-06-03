@@ -25,7 +25,6 @@ public class Runner {
                     System.setProperty("password",password);
                 }
             }
-            System.out.println("运行密码: "+ password);
         }
     }
 
