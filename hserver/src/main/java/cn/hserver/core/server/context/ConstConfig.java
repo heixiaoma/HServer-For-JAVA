@@ -18,6 +18,10 @@ public class ConstConfig {
      * classpat路径
      */
     public static String CLASSPATH;
+    /**
+     * 加密密码
+     */
+    public static String PASSWORD;
 
     /**
      * 定时任务线程数配置

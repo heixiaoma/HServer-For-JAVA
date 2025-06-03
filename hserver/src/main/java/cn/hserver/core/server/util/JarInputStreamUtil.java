@@ -1,5 +1,7 @@
 package cn.hserver.core.server.util;
 
+import cn.hserver.core.server.context.ConstConfig;
+
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.SecretKey;
@@ -15,7 +17,7 @@ public class JarInputStreamUtil {
     }
 
     public static InputStream decrypt(InputStream encryptedInputStream) throws Exception {
-        String password = System.getProperty("password");
+        String password = ConstConfig.PASSWORD;
         if (password != null && !password.trim().isEmpty()) {
             Cipher cipher = Cipher.getInstance(ALGORITHM);
             cipher.init(Cipher.DECRYPT_MODE, getKey(password.getBytes(StandardCharsets.UTF_8)));
