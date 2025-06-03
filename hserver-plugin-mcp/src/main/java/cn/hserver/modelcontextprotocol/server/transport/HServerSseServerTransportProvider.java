@@ -144,7 +144,6 @@ public class HServerSseServerTransportProvider  implements McpServerTransportPro
 			return;
 		}
 		try {
-			logger.info("收到消息:"+request.getRawData());
 			McpSchema.JSONRPCMessage message = McpSchema.deserializeJsonRpcMessage(objectMapper,request.getRawData());
 			session.handle(message).block(); // Block for Servlet compatibility
 			response.sendStatusCode(HttpResponseStatus.OK);
