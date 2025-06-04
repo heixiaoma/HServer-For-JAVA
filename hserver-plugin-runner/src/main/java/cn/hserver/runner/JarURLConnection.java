@@ -32,9 +32,9 @@ public class JarURLConnection extends URLConnection {
             }
             if (Runner.password != null && !Runner.password.trim().isEmpty()) {
                 try {
-                    return AesUtil.decrypt(result, Runner.password);
+                    return DataSafeUtil.decrypt(result, Runner.password);
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    System.exit(-1);
                 }
             }
             return result;
@@ -42,9 +42,9 @@ public class JarURLConnection extends URLConnection {
             if (Files.exists(Paths.get(url.getFile()))) {
                 if (Runner.password != null && !Runner.password.trim().isEmpty()) {
                     try {
-                        return AesUtil.decrypt(Files.newInputStream(Paths.get(url.getFile())),Runner.password);
+                        return DataSafeUtil.decrypt(Files.newInputStream(Paths.get(url.getFile())),Runner.password);
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
+                        System.exit(-1);
                     }
                 }else {
                     return Files.newInputStream(Paths.get(url.getFile()));

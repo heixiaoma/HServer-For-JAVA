@@ -7,7 +7,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-public class AesUtil {
+public class DataSafeUtil {
     private static final String ALGORITHM = "AES";
 
     private static SecretKey getKey(byte[] key) {
