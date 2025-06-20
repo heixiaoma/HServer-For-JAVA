@@ -4,7 +4,6 @@ import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.annotation.handler.SaAnnotationHandlerInterface;
 import cn.dev33.satoken.config.SaTokenConfig;
 import cn.dev33.satoken.context.SaTokenContext;
-import cn.dev33.satoken.context.second.SaTokenSecondContextCreator;
 import cn.dev33.satoken.dao.SaTokenDao;
 import cn.dev33.satoken.httpauth.basic.SaHttpBasicTemplate;
 import cn.dev33.satoken.httpauth.basic.SaHttpBasicUtil;
@@ -21,7 +20,8 @@ import cn.dev33.satoken.oauth2.scope.handler.SaOAuth2ScopeHandlerInterface;
 import cn.dev33.satoken.oauth2.strategy.SaOAuth2Strategy;
 import cn.dev33.satoken.oauth2.template.SaOAuth2Template;
 import cn.dev33.satoken.same.SaSameTemplate;
-import cn.dev33.satoken.sign.SaSignTemplate;
+import cn.dev33.satoken.sign.SaSignManager;
+import cn.dev33.satoken.sign.template.SaSignTemplate;
 import cn.dev33.satoken.sso.SaSsoManager;
 import cn.dev33.satoken.sso.config.SaSsoClientConfig;
 import cn.dev33.satoken.sso.config.SaSsoServerConfig;
@@ -31,7 +31,7 @@ import cn.dev33.satoken.sso.template.SaSsoClientTemplate;
 import cn.dev33.satoken.sso.template.SaSsoServerTemplate;
 import cn.dev33.satoken.stp.StpInterface;
 import cn.dev33.satoken.strategy.SaAnnotationStrategy;
-import cn.dev33.satoken.temp.SaTempInterface;
+import cn.dev33.satoken.temp.SaTempTemplate;
 import cn.hserver.core.interfaces.PluginAdapter;
 import cn.hserver.core.ioc.IocUtil;
 import cn.hserver.core.ioc.ref.PackageScanner;
@@ -90,13 +90,9 @@ public class SaTokenPlugin implements PluginAdapter {
 
         SaSignTemplate saSignTemplate = IocUtil.getSupperBean(SaSignTemplate.class);
         if (saSignTemplate != null) {
-            SaManager.setSaSignTemplate(saSignTemplate);
+            SaSignManager.setSaSignTemplate(saSignTemplate);
         }
 
-        SaTokenSecondContextCreator saTokenSecondContextCreator = IocUtil.getSupperBean(SaTokenSecondContextCreator.class);
-        if (saTokenSecondContextCreator != null) {
-            SaManager.setSaTokenSecondContext(saTokenSecondContextCreator.create());
-        }
 
         List<SaTokenListener> saTokenListenerList = IocUtil.getSupperBeanList(SaTokenListener.class);
         if (saTokenListenerList != null) {
@@ -113,9 +109,9 @@ public class SaTokenPlugin implements PluginAdapter {
         }
 
 
-        SaTempInterface saTempInterface = IocUtil.getSupperBean(SaTempInterface.class);
+        SaTempTemplate saTempInterface = IocUtil.getSupperBean(SaTempTemplate.class);
         if (saTempInterface != null) {
-            SaManager.setSaTemp(saTempInterface);
+            SaManager.setSaTempTemplate(saTempInterface);
         }
         SaJsonTemplate saJsonTemplate = IocUtil.getSupperBean(SaJsonTemplate.class);
         if (saJsonTemplate != null) {

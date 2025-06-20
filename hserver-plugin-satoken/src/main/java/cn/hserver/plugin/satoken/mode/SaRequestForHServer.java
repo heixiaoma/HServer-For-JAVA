@@ -5,6 +5,7 @@ import cn.dev33.satoken.application.ApplicationInfo;
 import cn.dev33.satoken.context.model.SaRequest;
 import cn.dev33.satoken.exception.SaTokenException;
 import cn.dev33.satoken.util.SaFoxUtil;
+import cn.hserver.plugin.web.context.HServerContextHolder;
 import cn.hserver.plugin.web.interfaces.HttpRequest;
 import cn.hserver.plugin.web.interfaces.HttpResponse;
 import io.netty.handler.codec.http.cookie.Cookie;
@@ -155,7 +156,7 @@ public class SaRequestForHServer implements SaRequest {
     @Override
     public Object forward(String path) {
         try {
-            HttpResponse response = (HttpResponse) SaManager.getSaTokenContextOrSecond().getResponse().getSource();
+            HttpResponse response = HServerContextHolder.getWebKit().httpResponse;
             response.redirect(path);
             return null;
         } catch (Exception e) {
