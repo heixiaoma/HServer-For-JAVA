@@ -17,6 +17,10 @@ public class RepackageDependenciesMojo extends AbstractMojo {
     private String fatJar;
     @Parameter(property = "password", defaultValue = "")
     private String password;
+    @Parameter(property = "console",defaultValue = "")
+    private String console;
+
+
     private final Log logger = getLog();
 
     @Override
@@ -32,8 +36,19 @@ public class RepackageDependenciesMojo extends AbstractMojo {
             if (StringUtils.isNotEmpty(password)) {
                 logger.info("加密密钥 :" + password);
             }
+
+            boolean con=false;
+
+            if (StringUtils.isNotEmpty(console)) {
+                if (console.equalsIgnoreCase("true")) {
+                    con=true;
+                    logger.info("秘钥输入时不显示，同时需要控制台需要支持终端支持，安全性高");
+                }else {
+                    logger.info("秘钥输入时会显示，可能会把秘钥存留在系统日志，安全性低");
+                }
+            }
             String targetPath = project.getArtifact().getFile().getParent();
-            ReBuilderJar reBuilderJar = new ReBuilderJar(targetPath, password, fatJar);
+            ReBuilderJar reBuilderJar = new ReBuilderJar(targetPath, password, fatJar,con);
             //构建依赖
             Set<String> dependencies = reBuilderJar.addDependencies(project);
             //copy源码

@@ -28,12 +28,13 @@ public class ReBuilderJar {
     private final Boolean fatJar;
     private final String targetPath;
     private final String tempJar;
-
-    public ReBuilderJar(String targetPath, String password, String fatJar) throws IOException {
+    private final boolean console;
+    public ReBuilderJar(String targetPath, String password, String fatJar,boolean console) throws IOException {
         this.tempJar = UUID.randomUUID() + ".jar";
         this.targetPath = targetPath;
         this.jarOutputStream = new JarOutputStream(Files.newOutputStream(Paths.get(targetPath + File.separator + tempJar)));
         this.password = password;
+        this.console = console;
         this.fatJar = Boolean.parseBoolean(fatJar);
     }
 
@@ -78,6 +79,11 @@ public class ReBuilderJar {
             manifest.getMainAttributes().putValue("Encrypt", "true");
         } else {
             manifest.getMainAttributes().putValue("Encrypt", "false");
+        }
+        if (console) {
+            manifest.getMainAttributes().putValue("Console", "true");
+        }else {
+            manifest.getMainAttributes().putValue("Console", "false");
         }
         manifest.getMainAttributes().putValue("Libs", String.join(",", dependencies));
         manifest.getMainAttributes().putValue("Main-Class", "cn.hserver.runner.Runner");

@@ -17,6 +17,8 @@ public class JarInfo {
     private boolean type;
     //jar 包是否加密
     private boolean encrypt;
+    //是否console读取密码
+    private  boolean console;
     //jar包路径
     private URL[] libs;
 
@@ -40,6 +42,10 @@ public class JarInfo {
         return mainClass;
     }
 
+    public boolean getConsole(){
+        return console;
+    }
+
     public static JarInfo getManifestInfo() {
         try {
 
@@ -53,6 +59,7 @@ public class JarInfo {
             JarInfo jarInfo = new JarInfo();
             Attributes mainAttribs = manifest.getMainAttributes();
             jarInfo.mainClass = mainAttribs.getValue(RunnerConfig.APP_MAIN_CLASS);
+            jarInfo.console= Boolean.parseBoolean(mainAttribs.getValue(RunnerConfig.CONSOLE));
             jarInfo.encrypt = Boolean.parseBoolean(mainAttribs.getValue(RunnerConfig.ENCRYPT));
             jarInfo.type = Boolean.parseBoolean(mainAttribs.getValue(RunnerConfig.TYPE));
             String[] libs = mainAttribs.getValue(RunnerConfig.LIBS).split(",");

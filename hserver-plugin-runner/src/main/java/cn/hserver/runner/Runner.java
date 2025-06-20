@@ -15,8 +15,14 @@ public class Runner {
     private static void checkPassword(JarInfo manifestInfo) {
         if (manifestInfo.isEncrypt()) {
             if (password == null || password.trim().isEmpty()) {
-                Scanner scanner = new Scanner(System.in);
-                password= scanner.nextLine();
+                if (manifestInfo.getConsole()){
+                    Console console = System.console();
+                    char[] passwordArray = console.readPassword();
+                    password = new String(passwordArray);
+                }else {
+                    Scanner scanner = new Scanner(System.in);
+                    password= scanner.nextLine();
+                }
                 if (password.trim().isEmpty()) {
                     System.exit(-1);
                 }

@@ -21,6 +21,9 @@
                     <configuration>
                         <!--          默认没有密码              -->
                         <password>dm_pro_token_key</password>
+                        <!--         输入密码不会有记录，长用于手动输入，日志不会记录，不方便第三方接入，至少需要伪终端模拟               -->
+                        <!--         如果设置false，通常可用于第三方程序输入，方便process stream 连接调用               -->
+                        <console>true</console>
                     </configuration>
                 </execution>
             </executions>
