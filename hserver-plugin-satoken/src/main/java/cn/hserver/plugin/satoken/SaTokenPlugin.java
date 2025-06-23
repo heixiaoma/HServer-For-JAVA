@@ -2,6 +2,10 @@ package cn.hserver.plugin.satoken;
 
 import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.annotation.handler.SaAnnotationHandlerInterface;
+import cn.dev33.satoken.apikey.SaApiKeyManager;
+import cn.dev33.satoken.apikey.config.SaApiKeyConfig;
+import cn.dev33.satoken.apikey.loader.SaApiKeyDataLoader;
+import cn.dev33.satoken.apikey.template.SaApiKeyTemplate;
 import cn.dev33.satoken.config.SaTokenConfig;
 import cn.dev33.satoken.context.SaTokenContext;
 import cn.dev33.satoken.dao.SaTokenDao;
@@ -107,7 +111,20 @@ public class SaTokenPlugin implements PluginAdapter {
                 SaAnnotationStrategy.instance.registerAnnotationHandler(saAnnotationHandlerInterface);
             }
         }
+        SaApiKeyTemplate apiKeyTemplate=IocUtil.getSupperBean(SaApiKeyTemplate.class);
+        if (apiKeyTemplate != null) {
+            SaApiKeyManager.setSaApiKeyTemplate(apiKeyTemplate);
+        }
 
+        SaApiKeyConfig saApiKeyConfig=IocUtil.getSupperBean(SaApiKeyConfig.class);
+        if (saApiKeyConfig != null) {
+            SaApiKeyManager.setConfig(saApiKeyConfig);
+        }
+
+        SaApiKeyDataLoader apiKeyDataLoader=IocUtil.getSupperBean(SaApiKeyDataLoader .class);
+        if (apiKeyDataLoader != null) {
+            SaApiKeyManager.setSaApiKeyDataLoader(apiKeyDataLoader);
+        }
 
         SaTempTemplate saTempInterface = IocUtil.getSupperBean(SaTempTemplate.class);
         if (saTempInterface != null) {

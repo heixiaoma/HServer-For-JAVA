@@ -1,9 +1,11 @@
 package cn.hserver.plugin.satoken.config;
 
 import cn.dev33.satoken.annotation.*;
+import cn.dev33.satoken.apikey.annotation.SaCheckApiKey;
 import cn.dev33.satoken.oauth2.annotation.SaCheckAccessToken;
 import cn.dev33.satoken.oauth2.annotation.SaCheckClientIdSecret;
 import cn.dev33.satoken.oauth2.annotation.SaCheckClientToken;
+import cn.dev33.satoken.sign.annotation.SaCheckSign;
 import cn.dev33.satoken.strategy.SaAnnotationStrategy;
 import cn.hserver.core.interfaces.HookAdapter;
 import cn.hserver.core.ioc.annotation.Hook;
@@ -22,6 +24,8 @@ import java.lang.reflect.Method;
         SaCheckAccessToken.class,
         SaCheckClientIdSecret.class,
         SaCheckClientToken.class,
+        SaCheckApiKey.class,
+        SaCheckSign.class,
 })
 public class SaAnnotationInterceptor implements HookAdapter {
 

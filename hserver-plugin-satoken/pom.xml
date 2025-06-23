@@ -39,7 +39,12 @@
         <dependency>
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-oauth2</artifactId>
-            <version>1.41.0</version>
+            <version>${sa.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-apikey</artifactId>
+            <version>${sa.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.dev33</groupId>
