@@ -10,33 +10,6 @@
 ```
 
 
-# 可注入类，如下
-
-- SaSameTemplate
-- SaJsonTemplate
-- SaSignTemplate
-- SaTempInterface
-- SaTokenDao
-- StpInterface
-- SaTokenSecondContextCreator
-- SaTokenListener
-- SaAnnotationHandlerInterface
-- SaTempInterface
-- SaJsonTemplate
-- SaSameTemplate
-- SaSameTemplate
-- SaTokenConfig
-- SaHttpBasicTemplate
-- SaHttpBasicTemplate
-- SaOAuth2Template
-- SaOAuth2ServerConfig
-- SaOAuth2DataLoader
-- SaOAuth2ScopeHandlerInterface
-- SaSsoServerTemplate
-- SaSsoClientTemplate
-- SaSsoServerConfig
-- SaSsoClientConfig
-
 
 ```java
 

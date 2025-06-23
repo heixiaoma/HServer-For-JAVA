@@ -52,3 +52,5 @@
   * [satoken](zh-cn/plugin/satoken.md)
 * 十二、Forest远程调用
   * [forest](zh-cn/plugin/forest.md) 
+* 十三、MCP开发
+  * [mcp](zh-cn/plugin/mcp.md) 

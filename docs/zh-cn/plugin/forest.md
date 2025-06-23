@@ -1,4 +1,13 @@
 ## 远程调用
+
+
+```xml
+        <dependency>
+            <groupId>cn.hserver</groupId>
+            <artifactId>hserver-plugin-forest</artifactId>
+        </dependency>
+```
+
 - 配置
 ```java
 
