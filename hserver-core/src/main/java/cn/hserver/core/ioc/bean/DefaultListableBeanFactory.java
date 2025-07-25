@@ -3,9 +3,10 @@ package cn.hserver.core.ioc.bean;
 import cn.hserver.core.ioc.annotation.Autowired;
 import cn.hserver.core.ioc.annotation.Qualifier;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -121,13 +122,12 @@ public class DefaultListableBeanFactory implements BeanFactory {
     }
 
     private void injectFields(Object beanInstance) throws Exception {
-        Class<?> clazz = beanInstance.getClass();
-        Field[] fields = clazz.getDeclaredFields();
+        Class<?> beanClass = beanInstance.getClass();
+        Field[] fields = beanClass.getDeclaredFields();
 
         for (Field field : fields) {
             if (field.isAnnotationPresent(Autowired.class)) {
-                field.setAccessible(true);
-                Class<?> fieldType = field.getType();
+                Object fieldValue = null;
                 String beanName = null;
 
                 // 检查字段上是否有@Qualifier注解
@@ -136,14 +136,43 @@ public class DefaultListableBeanFactory implements BeanFactory {
                     beanName = qualifier.value();
                 }
 
-                Object fieldValue;
+                // 1. 优先尝试通过setter方法注入
+                try {
+                    // 使用Introspector获取BeanInfo
+                    BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
+                    PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+                    // 查找与字段匹配的属性描述符
+                    for (PropertyDescriptor pd : propertyDescriptors) {
+                        if (pd.getName().equals(field.getName()) && pd.getWriteMethod() != null) {
+                            Method setterMethod = pd.getWriteMethod();
+                            // 确保setter方法是public的
+                            if (Modifier.isPublic(setterMethod.getModifiers())) {
+                                // 获取要注入的bean实例
+                                if (beanName != null) {
+                                    fieldValue = getBean(beanName);
+                                } else {
+                                    fieldValue = getBean(field.getType());
+                                }
+
+                                // 调用setter方法
+                                setterMethod.invoke(beanInstance, fieldValue);
+                                continue; // 成功通过setter注入，跳过字段反射
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    // 忽略异常，继续尝试字段反射注入
+                }
+
+                // 2. 使用字段反射注入
+                field.setAccessible(true);
                 if (beanName != null) {
                     fieldValue = getBean(beanName);
                 } else {
-                    fieldValue = getBean(fieldType);
+                    fieldValue = getBean(field.getType());
                 }
-
                 field.set(beanInstance, fieldValue);
+
             }
         }
     }
