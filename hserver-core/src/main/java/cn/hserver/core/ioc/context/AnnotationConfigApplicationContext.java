@@ -19,6 +19,8 @@ public class AnnotationConfigApplicationContext {
     private final Map<String, BeanDefinition> beanDefinitions = new HashMap<>();
 
     public AnnotationConfigApplicationContext(String basePackage) {
+        // 注册后处理器
+
         scan(basePackage);
         refresh();
     }
@@ -79,6 +81,7 @@ public class AnnotationConfigApplicationContext {
             throw new RuntimeException("Error loading class: " + className, e);
         }
     }
+
 
     private void refresh() {
         // 注册所有Bean定义

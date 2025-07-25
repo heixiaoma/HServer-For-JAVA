@@ -7,7 +7,6 @@ public class BeanDefinition {
     private String beanName;
     private Class<?> beanClass;
     private String scope = "singleton";
-    private boolean isSingleton = true;
     private Constructor<?> constructor;
     private List<PropertyValue> propertyValues;
 
@@ -34,11 +33,14 @@ public class BeanDefinition {
 
     public void setScope(String scope) {
         this.scope = scope;
-        this.isSingleton = "singleton".equals(scope);
     }
 
     public boolean isSingleton() {
-        return isSingleton;
+        return "singleton".equals(scope);
+    }
+
+    public boolean isPrototype() {
+        return "prototype".equals(scope);
     }
 
     public Constructor<?> getConstructor() {
