@@ -2,6 +2,7 @@ package cn.hserver.core.ioc.bean;
 
 import cn.hserver.core.ioc.annotation.Autowired;
 import cn.hserver.core.ioc.annotation.Qualifier;
+import cn.hserver.core.ioc.annotation.PostConstruct;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -47,6 +48,7 @@ public class DefaultListableBeanFactory implements BeanFactory {
     }
 
     private <T> T doGetBean(String name, Class<T> requiredType) throws Exception {
+
         // 从一级缓存获取（完全初始化的Bean）
         Object sharedInstance = singletonObjects.get(name);
 
@@ -79,42 +81,35 @@ public class DefaultListableBeanFactory implements BeanFactory {
         }
 
         if (beanDefinition.isSingleton()) {
-            // 单例模式下，使用同步块确保线程安全
             synchronized (singletonObjects) {
                 sharedInstance = singletonObjects.get(name);
                 if (sharedInstance == null) {
-                    // 标记为正在创建
                     singletonsCurrentlyInCreation.add(name);
 
                     try {
-                        // 创建Bean实例（但不填充属性）
                         final Object beanInstance = createBeanInstance(beanDefinition);
-
-                        // 提前曝光：将Bean放入三级缓存
                         singletonFactories.put(name, () -> beanInstance);
-
-                        // 填充属性（可能触发循环依赖）
                         populateBean(beanInstance, beanDefinition);
 
-                        // 初始化完成：放入一级缓存
-                        singletonObjects.put(name, beanInstance);
+                        // 新增：执行@PostConstruct注解方法
+                        initializeBean(beanInstance);
 
-                        // 从二级、三级缓存和创建中集合移除
+                        singletonObjects.put(name, beanInstance);
                         earlySingletonObjects.remove(name);
                         singletonFactories.remove(name);
                         singletonsCurrentlyInCreation.remove(name);
 
                         return (T) beanInstance;
                     } catch (Exception ex) {
-                        // 创建失败，清理状态
                         singletonsCurrentlyInCreation.remove(name);
                         throw ex;
                     }
                 }
             }
         } else if (beanDefinition.isPrototype()) {
-            // 原型模式：直接创建新实例（不支持循环依赖）
             Object prototypeInstance = createBean(beanDefinition);
+            // 新增：执行@PostConstruct注解方法
+            initializeBean(prototypeInstance);
             return (T) prototypeInstance;
         } else {
             throw new IllegalArgumentException("Unsupported scope: " + beanDefinition.getScope());
@@ -133,6 +128,14 @@ public class DefaultListableBeanFactory implements BeanFactory {
     }
 
     private Object createBean(BeanDefinition beanDefinition) throws Exception {
+        // 新增：支持工厂方法创建Bean
+        if (beanDefinition.getFactoryMethod() != null) {
+            Object factoryBean = getBean(beanDefinition.getFactoryBeanName());
+            Method factoryMethod = beanDefinition.getFactoryMethod();
+            Object[] args = resolveMethodArguments(factoryMethod);
+            return factoryMethod.invoke(factoryBean, args);
+        }
+
         Class<?> beanClass = beanDefinition.getBeanClass();
         Constructor<?> constructorToUse = beanDefinition.getConstructor();
 
@@ -252,5 +255,55 @@ public class DefaultListableBeanFactory implements BeanFactory {
         }
 
         return args;
+    }
+
+    // 新增：解析方法参数依赖注入
+    private Object[] resolveMethodArguments(Method method) throws Exception {
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        Object[] args = new Object[parameterTypes.length];
+
+        for (int i = 0; i < parameterTypes.length; i++) {
+            Class<?> parameterType = parameterTypes[i];
+            String beanName = null;
+    
+            // 处理@Qualifier注解
+            java.lang.reflect.Parameter parameter = method.getParameters()[i];
+            Qualifier qualifier = parameter.getAnnotation(Qualifier.class);
+            if (qualifier != null) {
+                beanName = qualifier.value();
+            }
+    
+            if (beanName != null) {
+                args[i] = getBean(beanName);
+            } else {
+                args[i] = getBean(parameterType);
+            }
+        }
+        return args;
+    }
+
+    // 新增：初始化Bean，执行@PostConstruct方法
+    private void initializeBean(Object beanInstance) throws Exception {
+        Class<?> beanClass = beanInstance.getClass();
+        Method postConstructMethod = null;
+
+        // 查找@PostConstruct注解的方法
+        for (Method method : beanClass.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(PostConstruct.class)) {
+                if (postConstructMethod != null) {
+                    throw new IllegalStateException("Multiple @PostConstruct methods found in " + beanClass.getName());
+                }
+                if (method.getParameterCount() != 0) {
+                    throw new IllegalArgumentException("@PostConstruct method " + method.getName() + " must have no parameters");
+                }
+                postConstructMethod = method;
+            }
+        }
+
+        // 执行@PostConstruct方法
+        if (postConstructMethod != null) {
+            postConstructMethod.setAccessible(true);
+            postConstructMethod.invoke(beanInstance);
+        }
     }
 }

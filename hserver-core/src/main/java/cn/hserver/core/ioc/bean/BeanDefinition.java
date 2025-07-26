@@ -1,6 +1,7 @@
 package cn.hserver.core.ioc.bean;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.List;
 
 public class BeanDefinition {
@@ -9,6 +10,8 @@ public class BeanDefinition {
     private String scope = "singleton";
     private Constructor<?> constructor;
     private List<PropertyValue> propertyValues;
+    private String factoryBeanName;
+    private Method factoryMethod;
 
     // getters and setters
     public String getBeanName() {
@@ -58,4 +61,20 @@ public class BeanDefinition {
     public void setPropertyValues(List<PropertyValue> propertyValues) {
         this.propertyValues = propertyValues;
     }
-}    
+
+    public String getFactoryBeanName() {
+        return factoryBeanName;
+    }
+
+    public void setFactoryBeanName(String factoryBeanName) {
+        this.factoryBeanName = factoryBeanName;
+    }
+
+    public Method getFactoryMethod() {
+        return factoryMethod;
+    }
+
+    public void setFactoryMethod(Method factoryMethod) {
+        this.factoryMethod = factoryMethod;
+    }
+}

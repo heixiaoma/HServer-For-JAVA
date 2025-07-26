@@ -13,4 +13,4 @@ public class Main {
         // 使用 Bean
         System.out.println(serviceA.doSomething());
     }
-}    
+}

@@ -19,6 +19,6 @@ public class ServiceA {
 
     @PostConstruct
     public void  a(){
-        System.out.println("init");
+        System.out.println("ServiceA======"+serviceB);
     }
 }    
