@@ -5,22 +5,11 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 public class BeanDefinition {
-    private String beanName;
     private Class<?> beanClass;
     private String scope = "singleton";
     private Constructor<?> constructor;
-    private List<PropertyValue> propertyValues;
     private String factoryBeanName;
     private Method factoryMethod;
-
-    // getters and setters
-    public String getBeanName() {
-        return beanName;
-    }
-
-    public void setBeanName(String beanName) {
-        this.beanName = beanName;
-    }
 
     public Class<?> getBeanClass() {
         return beanClass;
@@ -52,14 +41,6 @@ public class BeanDefinition {
 
     public void setConstructor(Constructor<?> constructor) {
         this.constructor = constructor;
-    }
-
-    public List<PropertyValue> getPropertyValues() {
-        return propertyValues;
-    }
-
-    public void setPropertyValues(List<PropertyValue> propertyValues) {
-        this.propertyValues = propertyValues;
     }
 
     public String getFactoryBeanName() {

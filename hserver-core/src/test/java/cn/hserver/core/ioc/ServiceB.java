@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 public class ServiceB {
 
     @Autowired
-    private  ServiceA serviceA;
+    private  ServiceAI serviceA;
 
     @Autowired
     private UserService userService;
@@ -19,15 +19,20 @@ public class ServiceB {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private ServiceC serviceC;
+
     public String doSomething() {
         System.out.println(serviceA);
         System.out.println(dataSource);
-        System.out.println(userService.getDataSource());
+        if (userService!=null) {
+            System.out.println(userService.getDataSource());
+        }
         return "ServiceB is working";
     }
 
     @PostConstruct
     public void  a(){
-        System.out.println("ServiceB======"+serviceA);
+        System.out.println("PostConstruct+++++ServiceB======"+serviceA);
     }
 }    

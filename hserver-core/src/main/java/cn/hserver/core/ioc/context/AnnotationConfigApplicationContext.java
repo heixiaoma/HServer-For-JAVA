@@ -1,5 +1,6 @@
 package cn.hserver.core.ioc.context;
 
+import cn.hserver.core.aop.annotation.Hook;
 import cn.hserver.core.ioc.annotation.Bean;
 import cn.hserver.core.ioc.annotation.Component;
 import cn.hserver.core.ioc.annotation.Configuration;
@@ -68,17 +69,13 @@ public class AnnotationConfigApplicationContext {
                     beanName = className.substring(className.lastIndexOf('.') + 1);
                     beanName = Character.toLowerCase(beanName.charAt(0)) + beanName.substring(1);
                 }
-
                 BeanDefinition beanDefinition = new BeanDefinition();
-                beanDefinition.setBeanName(beanName);
                 beanDefinition.setBeanClass(clazz);
-
                 // 处理作用域
                 if (clazz.isAnnotationPresent(Scope.class)) {
                     Scope scope = clazz.getAnnotation(Scope.class);
                     beanDefinition.setScope(scope.value());
                 }
-
                 beanDefinitions.put(beanName, beanDefinition);
             }
             // 新增：处理@Configuration注解
@@ -89,13 +86,10 @@ public class AnnotationConfigApplicationContext {
                     configBeanName = className.substring(className.lastIndexOf('.') + 1);
                     configBeanName = Character.toLowerCase(configBeanName.charAt(0)) + configBeanName.substring(1);
                 }
-
                 // 注册配置类本身作为Bean
                 BeanDefinition configBeanDef = new BeanDefinition();
-                configBeanDef.setBeanName(configBeanName);
                 configBeanDef.setBeanClass(clazz);
                 beanDefinitions.put(configBeanName, configBeanDef);
-
                 // 处理@Bean注解的方法
                 for (Method method : clazz.getDeclaredMethods()) {
                     if (method.isAnnotationPresent(Bean.class)) {
@@ -106,7 +100,6 @@ public class AnnotationConfigApplicationContext {
                         }
 
                         BeanDefinition beanDef = new BeanDefinition();
-                        beanDef.setBeanName(beanName);
                         beanDef.setBeanClass(method.getReturnType());
                         beanDef.setFactoryBeanName(configBeanName);
                         beanDef.setFactoryMethod(method);
@@ -120,6 +113,13 @@ public class AnnotationConfigApplicationContext {
                         beanDefinitions.put(beanName, beanDef);
                     }
                 }
+            } else if (clazz.isAnnotationPresent(Hook.class)) {
+                // 注册配置类本身作为Bean
+                BeanDefinition configBeanDef = new BeanDefinition();
+                configBeanDef.setBeanClass(clazz);
+                String configBeanName = className.substring(className.lastIndexOf('.') + 1);
+                configBeanName = Character.toLowerCase(configBeanName.charAt(0)) + configBeanName.substring(1);
+                beanDefinitions.put(configBeanName, configBeanDef);
             }
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Error loading class: " + className, e);
@@ -133,6 +133,7 @@ public class AnnotationConfigApplicationContext {
             beanFactory.registerBeanDefinition(entry.getKey(), entry.getValue());
         }
     }
+
 
     public Object getBean(String name) throws Exception {
         return beanFactory.getBean(name);
