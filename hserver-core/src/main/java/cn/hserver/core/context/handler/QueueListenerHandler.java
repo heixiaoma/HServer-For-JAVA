@@ -2,10 +2,10 @@ package cn.hserver.core.context.handler;
 
 import cn.hserver.core.ioc.bean.BeanDefinition;
 import cn.hserver.core.queue.QueueEventHandler;
+import cn.hserver.core.queue.QueueManager;
 import cn.hserver.core.queue.annotation.QueueHandler;
 import cn.hserver.core.queue.annotation.QueueListener;
 import cn.hserver.core.queue.bean.QueueHandleInfo;
-import cn.hserver.core.queue.QueueDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class QueueListenerHandler implements AnnotationHandler{
                     QueueHandleInfo eventHandleInfo = new QueueHandleInfo(queueListener.queueName());
                     eventHandleInfo.setThreadSize(queueListener.threadSize());
                     eventHandleInfo.setQueueEventHandler(new QueueEventHandler(configBeanName, declaredMethod));
-                    QueueDispatcher.addQueueListener(eventHandleInfo);
+                    QueueManager.addQueueListener(eventHandleInfo);
                     beanDefinitions.put(configBeanName, configBeanDef);
                     log.debug("寻找队列 [{}] 的方法 [{}.{}]", queueListener.queueName(), clazz.getSimpleName(),
                             declaredMethod.getName());

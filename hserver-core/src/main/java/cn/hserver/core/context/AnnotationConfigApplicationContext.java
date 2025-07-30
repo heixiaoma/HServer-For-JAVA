@@ -91,10 +91,18 @@ public class AnnotationConfigApplicationContext {
 
 
     public static Object getBean(String name) throws Exception {
-        return beanFactory.getBean(name);
+        try {
+            return beanFactory.getBean(name);
+        }catch (Exception e){
+            return null;
+        }
     }
 
     public static  <T> T getBean(Class<T> requiredType) throws Exception {
-        return beanFactory.getBean(requiredType);
+        try {
+            return beanFactory.getBean(requiredType);
+        }catch (Exception e){
+            return null;
+        }
     }
 }

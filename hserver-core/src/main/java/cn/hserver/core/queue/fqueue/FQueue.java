@@ -1,8 +1,8 @@
 package cn.hserver.core.queue.fqueue;
 
 
+import cn.hserver.core.queue.QueueManager;
 import cn.hserver.core.queue.bean.QueueData;
-import cn.hserver.core.queue.QueueDispatcher;
 import cn.hserver.core.queue.bean.QueueHandleInfo;
 import cn.hserver.core.queue.fqueue.exception.FileFormatException;
 import cn.hserver.core.util.NamedThreadFactory;
@@ -164,7 +164,7 @@ public class FQueue extends AbstractQueue<byte[]> implements Serializable {
     }
 
     public void start() {
-        QueueHandleInfo queueHandleInfo = QueueDispatcher.getQueueHandleInfo(queueName);
+        QueueHandleInfo queueHandleInfo = QueueManager.getQueueHandleInfo(queueName);
         if (queueHandleInfo == null) {
             return;
         }

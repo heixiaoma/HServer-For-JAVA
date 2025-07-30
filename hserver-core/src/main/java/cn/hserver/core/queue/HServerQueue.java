@@ -16,7 +16,7 @@ public class HServerQueue {
      * 获取所有队列名
      */
     public static List<String> getAllQueueName() {
-       return QueueDispatcher.getAllQueueName();
+       return QueueManager.getAllQueueName();
     }
     /**
      * 删除Queue
@@ -24,12 +24,12 @@ public class HServerQueue {
      * @param queueName
      */
     public static void removeQueue(String queueName) {
-        QueueDispatcher.removeQueue(queueName,true);
+        QueueManager.removeQueue(queueName,true);
     }
 
 
     public static void removeQueue(String queueName,boolean trueDeleteData) {
-        QueueDispatcher.removeQueue(queueName,trueDeleteData);
+        QueueManager.removeQueue(queueName,trueDeleteData);
     }
 
     /**
@@ -37,7 +37,7 @@ public class HServerQueue {
      * @param queueName
      */
     public static void stopHandler(String queueName) {
-        QueueDispatcher.stopHandler(queueName);
+        QueueManager.stopHandler(queueName);
     }
 
     /**
@@ -45,7 +45,7 @@ public class HServerQueue {
      * @param queueName
      */
     public static void restartHandler(String queueName) {
-        QueueDispatcher.restartHandler(queueName);
+        QueueManager.restartHandler(queueName);
     }
 
     /**
@@ -55,7 +55,7 @@ public class HServerQueue {
      * @param args      参数
      */
     public static boolean sendQueue(String queueName, Object... args) {
-        return QueueDispatcher.dispatcherSerializationQueue(queueName, args);
+        return QueueManager.dispatcherSerializationQueue(queueName, args);
     }
 
     /**
@@ -65,7 +65,7 @@ public class HServerQueue {
      * @return
      */
     public static QueueInfo queueInfo(String queueName) {
-        return QueueDispatcher.queueInfo(queueName);
+        return QueueManager.queueInfo(queueName);
     }
 
 }
