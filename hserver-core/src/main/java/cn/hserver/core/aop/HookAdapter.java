@@ -12,14 +12,16 @@ public interface HookAdapter {
      * 之前
      * @param args
      */
-    void before(Class clazz, Method method, Object[] args) throws Throwable;
+    void before(Class<?> clazz, Method method, Object[] args) throws Throwable;
 
     /**
      * 之后
      * @param object
      * @return
      */
-    Object after(Class clazz, Method method, Object object);
+    default Object after(Class<?> clazz, Method method, Object object){
+        return object;
+    }
 
 
     /**
@@ -28,5 +30,5 @@ public interface HookAdapter {
      * @param method
      * @param throwable
      */
-    void throwable(Class clazz, Method method, Throwable throwable);
+    void throwable(Class<?> clazz, Method method, Throwable throwable);
 }

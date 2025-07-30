@@ -2,23 +2,21 @@ package cn.hserver.core.ioc;
 
 import cn.hserver.core.ioc.annotation.Autowired;
 import cn.hserver.core.ioc.annotation.Component;
-import cn.hserver.core.ioc.annotation.PostConstruct;
+import cn.hserver.core.ioc.annotation.Qualifier;
 
 @Component
-public class ServiceA implements ServiceAI{
-    private final    ServiceB serviceB;
+public class ServiceA {
+    private final Service serviceB;
 
-    public ServiceA(ServiceB serviceB) {
+    private final Service serviceC;
+
+    public ServiceA( Service serviceB,@Qualifier("serviceB") Service serviceC) {
         this.serviceB = serviceB;
+        this.serviceC = serviceC;
     }
 
-    @Override
-    public String doSomething() {
-        return "ServiceA: " + serviceB.doSomething();
+    public void doSomething() {
+        serviceB.sayHello();
+        serviceC.sayHello();
     }
-
-    @PostConstruct
-    public void  a(){
-        System.out.println("PostConstruct+++++ServiceA======"+serviceB);
-    }
-}    
+}

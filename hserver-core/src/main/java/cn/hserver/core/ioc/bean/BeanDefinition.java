@@ -1,15 +1,18 @@
 package cn.hserver.core.ioc.bean;
 
+import cn.hserver.core.aop.bean.HookBeanDefinition;
+import cn.hserver.core.ioc.annotation.ScopeType;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.List;
 
 public class BeanDefinition {
     private Class<?> beanClass;
-    private String scope = "singleton";
+    private ScopeType scope = ScopeType.SINGLETON;
     private Constructor<?> constructor;
     private String factoryBeanName;
     private Method factoryMethod;
+    private HookBeanDefinition hookBeanDefinition;
 
     public Class<?> getBeanClass() {
         return beanClass;
@@ -19,20 +22,20 @@ public class BeanDefinition {
         this.beanClass = beanClass;
     }
 
-    public String getScope() {
+    public ScopeType getScope() {
         return scope;
     }
 
-    public void setScope(String scope) {
+    public void setScope(ScopeType scope) {
         this.scope = scope;
     }
 
     public boolean isSingleton() {
-        return "singleton".equals(scope);
+        return ScopeType.SINGLETON == scope;
     }
 
     public boolean isPrototype() {
-        return "prototype".equals(scope);
+        return ScopeType.PROTOTYPE == scope;
     }
 
     public Constructor<?> getConstructor() {
@@ -57,5 +60,17 @@ public class BeanDefinition {
 
     public void setFactoryMethod(Method factoryMethod) {
         this.factoryMethod = factoryMethod;
+    }
+
+    public HookBeanDefinition getHookBeanDefinition() {
+        return hookBeanDefinition;
+    }
+
+    public void setHookBeanDefinition(HookBeanDefinition hookBeanDefinition) {
+        this.hookBeanDefinition = hookBeanDefinition;
+    }
+
+    public boolean isHook() {
+        return hookBeanDefinition != null;
     }
 }

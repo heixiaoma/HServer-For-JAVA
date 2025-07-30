@@ -13,5 +13,5 @@ import java.lang.annotation.*;
 @Component
 @Documented
 public @interface Hook {
-    Class[] value();
+    Class<?>[] value();
 }
