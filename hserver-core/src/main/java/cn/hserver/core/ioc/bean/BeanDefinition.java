@@ -2,6 +2,7 @@ package cn.hserver.core.ioc.bean;
 
 import cn.hserver.core.aop.bean.HookBeanDefinition;
 import cn.hserver.core.ioc.annotation.ScopeType;
+import cn.hserver.core.scheduling.bean.TaskDefinition;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

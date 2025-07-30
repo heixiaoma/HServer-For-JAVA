@@ -3,6 +3,7 @@ package cn.hserver.core.ioc;
 import cn.hserver.core.ioc.annotation.Autowired;
 import cn.hserver.core.ioc.annotation.Component;
 import cn.hserver.core.ioc.annotation.Qualifier;
+import cn.hserver.core.scheduling.annotation.Task;
 
 @Component
 public class ServiceA {
@@ -19,4 +20,11 @@ public class ServiceA {
         serviceB.sayHello();
         serviceC.sayHello();
     }
+
+    @Task(name = "AA", time ="*/5 * * * * ?")
+    private void a(String a){
+        System.out.println(a);
+        doSomething();
+    }
+
 }
