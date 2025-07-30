@@ -100,7 +100,7 @@ public class TaskManager {
     /**
      * 系统自己用的
      */
-    public static void startTask() {
+    public synchronized static void startTask() {
         if (TASK_DEFINITIONS.isEmpty()) {
             return;
         }

@@ -22,12 +22,12 @@ import static cn.hserver.core.config.ConstConfig.PERSIST_PATH;
 /**
  * @author hxm
  */
-public class QueueDispatcher {
-    private static final Logger log = LoggerFactory.getLogger(QueueDispatcher.class);
+public class QueueManager {
+    private static final Logger log = LoggerFactory.getLogger(QueueManager.class);
     private static final Map<String, QueueHandleInfo> handleMethodMap = new ConcurrentHashMap<>();
     private static final Map<String, FQueue> FQ = new ConcurrentHashMap<>();
 
-    private QueueDispatcher() {
+    private QueueManager() {
     }
 
     public static QueueHandleInfo getQueueHandleInfo(String queueName) {
@@ -65,7 +65,6 @@ public class QueueDispatcher {
     }
 
 
-
     public static List<String> getAllQueueName() {
         return new ArrayList<>(FQ.keySet());
     }
@@ -74,7 +73,6 @@ public class QueueDispatcher {
     public static void addQueueListener(QueueHandleInfo eventHandleInfo) {
         handleMethodMap.put(eventHandleInfo.getQueueName(), eventHandleInfo);
     }
-
 
 
     /**
@@ -100,17 +98,17 @@ public class QueueDispatcher {
         return new QueueInfo(fQueue.size(), queueHandleInfo.getThreadSize(), queueName);
     }
 
-    public static void startQueueServer(){
+    public synchronized static void startQueueServer() {
         handleMethodMap.forEach((queueName, v) -> {
-            FQueue fQueue = null;
-            try {
-                fQueue = new FQueue(PERSIST_PATH + File.separator + v.getQueueName(), v.getQueueName());
-                FQ.put(queueName, fQueue);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-                return;
+            if (!FQ.containsKey(queueName)) {
+                try {
+                    FQueue fQueue = new FQueue(PERSIST_PATH + File.separator + v.getQueueName(), v.getQueueName());
+                    FQ.put(queueName, fQueue);
+                    fQueue.start();
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                }
             }
-            fQueue.start();
         });
     }
 
