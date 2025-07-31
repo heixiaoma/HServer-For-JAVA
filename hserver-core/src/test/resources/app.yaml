@@ -5,3 +5,5 @@ test:
   name: hserver
   height: 1.88
   age: 18
+
+log: info

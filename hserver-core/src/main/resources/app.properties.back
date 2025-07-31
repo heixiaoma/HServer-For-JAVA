@@ -1,0 +1,14 @@
+#外置配置大于jar中包配置文件，配置文件大于代码默认设置
+#应用名字，默认HServer
+appName=HServer
+#动态环境配置文件
+env=dev
+#taskPool定时任务线程池子配置，默认大小是cpu核心数+1
+taskPool=5
+#日志级别 debug info error ...
+log=debug
+#自定义日志名字
+logbackName=logback-dev.xml
+#队列数据缓存位置 默认当前项目下
+persistPath=/user/mcl/data
+

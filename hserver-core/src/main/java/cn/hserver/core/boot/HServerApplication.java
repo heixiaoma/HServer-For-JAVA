@@ -43,10 +43,10 @@ public class HServerApplication {
         if (!running) {
             running = true;
             HServerApplication.mainClass = mainClass;
-            //初始化环境
-            EnvironmentUtil.init(mainClass);
             //初始化配置
             ConfigData.getInstance();
+            //初始化环境
+            EnvironmentUtil.init(null);
             //启动log配置
             HServerLogConfig.init();
             //启动IOC容器

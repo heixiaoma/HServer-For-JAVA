@@ -7,6 +7,14 @@ import java.io.File;
  */
 public class ConstConfig {
     /**
+     * 内部自用名字
+     */
+    public final static String SERVER_NAME = "HServer";
+    /**
+     * 版本
+     */
+    public final static String VERSION = "3.7.M1";
+    /**
      * 当前项目路径
      */
     public static final String PATH = System.getProperty("user.dir") + File.separator;
@@ -40,11 +48,14 @@ public class ConstConfig {
      */
     public static String PERSIST_PATH = PATH + "queue";
 
-    /**
-     * 内部自用名字
-     */
-    public final static String SERVER_NAME = "HServer";
 
-    public final static String VERSION = "3.7.M1";
+    /**
+     * 应用名字
+     */
+    public  static String APP_NAME = "HServer";
+
+    public static String LOGBACK_NAME = "logback-hserver.xml";
+
+    public static String LOG_LEVEL = "debug";
 
 }

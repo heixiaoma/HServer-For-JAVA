@@ -1,6 +1,7 @@
 package cn.hserver.core.util;
 
 
+import cn.hserver.core.config.ConfigData;
 import cn.hserver.core.config.ConstConfig;
 
 import java.io.File;
@@ -13,19 +14,40 @@ import java.security.ProtectionDomain;
  */
 public class EnvironmentUtil {
 
-    public static void init(Class<?> clazz)  {
+    private static void initCoreData(){
+        String string = ConfigData.getInstance().getString("appName", null);
+        if (string != null) {
+            ConstConfig.APP_NAME = string;
+        }
+        string = ConfigData.getInstance().getString("persistPath", null);
+        if (string != null) {
+            ConstConfig.PERSIST_PATH = string;
+        }
+
+        string = ConfigData.getInstance().getString("logbackName", null);
+        if (string != null) {
+            ConstConfig.LOGBACK_NAME = string;
+        }
+
+        string = ConfigData.getInstance().getString("log", null);
+        if (string != null) {
+            ConstConfig.LOG_LEVEL = string;
+        }
+    }
+
+    private static void initRunEnv(Class<?> clazz){
         try {
         /*
           测试模式
          */
             if (clazz != null) {
-                    File f = new File(clazz.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-                    ConstConfig.RUN_JAR = false;
+                File f = new File(clazz.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+                ConstConfig.RUN_JAR = false;
             /*
               静态路径
              */
-                    ConstConfig.CLASSPATH = f.getPath();
-                    return;
+                ConstConfig.CLASSPATH = f.getPath();
+                return;
             }
         /*
           运行方式
@@ -59,8 +81,13 @@ public class EnvironmentUtil {
                 ConstConfig.RUN_JAR = false;
             }
         } catch (Exception e) {
-                throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
+    }
+
+    public static void init(Class<?> testClass)  {
+        initCoreData();
+        initRunEnv(testClass);
     }
 
 }
