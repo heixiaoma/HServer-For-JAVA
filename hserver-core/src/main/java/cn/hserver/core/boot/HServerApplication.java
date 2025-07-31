@@ -39,18 +39,28 @@ public class HServerApplication {
 
     private static Class<?> mainClass;
 
-    public static synchronized void run(Class<?> mainClass, String... args) {
+
+    public static synchronized void run(Class<?> mainClass, String... args){
+        runCore(mainClass,null,null, args);
+    }
+
+    public static synchronized void runTest(Class<?> testClass,String testPackageName){
+        runCore(null,testClass, testPackageName);
+    }
+
+
+    private static synchronized void runCore(Class<?> mainClass,Class<?> testClass,String testPackageName, String... args) {
         if (!running) {
             running = true;
             HServerApplication.mainClass = mainClass;
             //初始化配置
             ConfigData.getInstance();
             //初始化环境
-            EnvironmentUtil.init(null);
+            EnvironmentUtil.init(testClass);
             //启动log配置
             HServerLogConfig.init();
             //启动IOC容器
-            new IocApplicationContext(packages());
+            new IocApplicationContext(packages(testPackageName));
             //启动队列
             QueueManager.startQueueServer();
             //启动定时任务
@@ -58,7 +68,9 @@ public class HServerApplication {
             //启动完成
             success(args);
             try {
-                shutdownLatch.await();
+                if (testClass == null) {
+                    shutdownLatch.await();
+                }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -73,8 +85,11 @@ public class HServerApplication {
         }
     }
 
-    private static Set<String> packages(){
+    private static Set<String> packages(String testPackageName){
         Set<String>   scanPackage = new HashSet<>();
+        if (testPackageName != null) {
+            scanPackage.add(testPackageName);
+        }
         if (mainClass != null) {
             scanPackage.add(mainClass.getPackage().getName());
         }

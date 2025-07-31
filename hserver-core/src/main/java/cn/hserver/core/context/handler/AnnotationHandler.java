@@ -13,6 +13,7 @@ public interface AnnotationHandler {
             add(new ConfigurationHandler());
             add(new HookHandler());
             add(new QueueListenerHandler());
+            add(new TestRunWithHandler());
         }
     };
 
