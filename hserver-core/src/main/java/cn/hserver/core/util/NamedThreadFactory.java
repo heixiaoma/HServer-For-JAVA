@@ -18,6 +18,9 @@ public class NamedThreadFactory implements ThreadFactory {
     @Override
     public Thread newThread(Runnable runnable) {
         threadNumber.add(1);
-        return new Thread(runnable, prefix + "@" + threadNumber.intValue());
+        Thread thread = new Thread(runnable, prefix + "@" + threadNumber.intValue());
+        //不要卡线程
+        thread.setDaemon(true);
+        return thread;
     }
 }

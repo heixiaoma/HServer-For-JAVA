@@ -8,7 +8,7 @@ public class HServerDataDefinerConsole extends PropertyDefinerBase {
 
     @Override
     public String getPropertyValue() {
-        Boolean runjar = ConstConfig.RUNJAR;
+        Boolean runjar = ConstConfig.RUN_JAR;
         boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
         //web框架会提供这个请求ID
         String requestId = HServerPatternLayout.defaultConverterMap.get("requestId");

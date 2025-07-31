@@ -1,5 +1,6 @@
 package cn.hserver.core.ioc;
 
+import cn.hserver.core.boot.HServerApplication;
 import cn.hserver.core.context.handler.QueueListenerHandler;
 import cn.hserver.core.ioc.annotation.Autowired;
 import cn.hserver.core.ioc.annotation.Component;
@@ -31,6 +32,7 @@ public class ServiceA {
         log.info("aaa"+System.currentTimeMillis());
         System.out.println(a);
         doSomething();
+        HServerApplication.stop();
     }
 
 }

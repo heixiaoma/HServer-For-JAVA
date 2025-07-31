@@ -7,10 +7,7 @@ import cn.hserver.core.aop.HookFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class AnnotationConfigApplicationContext {
 
@@ -20,9 +17,9 @@ public class AnnotationConfigApplicationContext {
 
     private final Map<String, BeanDefinition> beanDefinitions = new HashMap<>();
 
-    public AnnotationConfigApplicationContext(String basePackage) {
+    public AnnotationConfigApplicationContext(Set<String> basePackages) {
         // 扫描
-        scan(basePackage);
+        basePackages.forEach(this::scan);
         //处理aop、hook关系
         hookFactory.handlerHookData(beanDefinitions);
         refresh();
