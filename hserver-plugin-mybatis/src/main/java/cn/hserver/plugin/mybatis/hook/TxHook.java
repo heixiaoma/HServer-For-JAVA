@@ -1,12 +1,11 @@
 package cn.hserver.plugin.mybatis.hook;
 
-import io.netty.util.concurrent.FastThreadLocal;
+import cn.hserver.core.aop.HookAdapter;
+import cn.hserver.core.aop.annotation.Hook;
 import cn.hserver.plugin.mybatis.proxy.MybatisProxy;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.hserver.core.interfaces.HookAdapter;
-import cn.hserver.core.ioc.annotation.Hook;
 import cn.hserver.plugin.mybatis.annotation.Tx;
 
 import java.lang.reflect.Method;
@@ -17,8 +16,8 @@ import java.lang.reflect.Method;
 @Hook(Tx.class)
 public class TxHook implements HookAdapter {
     private static final Logger logger = LoggerFactory.getLogger(TxHook.class);
-    private static final FastThreadLocal<Long> TIMEOUT_MILLISECOND = new FastThreadLocal<>();
-    public static final FastThreadLocal<Boolean> ISTX = new FastThreadLocal<>();
+    private static final ThreadLocal<Long> TIMEOUT_MILLISECOND = new ThreadLocal<>();
+    public static final ThreadLocal<Boolean> ISTX = new ThreadLocal<>();
 
     @Override
     public void before(Class aClass, Method method, Object[] objects) {

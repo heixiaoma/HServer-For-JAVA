@@ -19,14 +19,13 @@ public class IocApplicationContext {
     private final Map<String, BeanDefinition> beanDefinitions = new HashMap<>();
 
     public IocApplicationContext(Set<String> basePackages) {
-        PluginManager.getPlugin().iocStartScan();
         // 扫描
         basePackages.forEach(this::scan);
         //处理aop、hook关系
         HookFactory.handlerHookData(beanDefinitions);
-        PluginManager.getPlugin().iocStartRegister(beanDefinitions);
+        PluginManager.getPlugin().iocStartRegister();
         registerBeanDefinition();
-        PluginManager.getPlugin().iocStartPopulate(beanDefinitions);
+        PluginManager.getPlugin().iocStartPopulate();
         refresh();
     }
 
@@ -34,8 +33,8 @@ public class IocApplicationContext {
         beanFactory.addBean(obj);
     }
 
-    public static void addBean(BeanDefinition beanDefinition,Object obj) {
-        beanFactory.addBean(beanDefinition,obj);
+    public static void addBean(String beanName,Object obj) {
+        beanFactory.addBean(beanName,obj);
     }
 
     private void scan(String basePackage) {
@@ -46,6 +45,7 @@ public class IocApplicationContext {
         AnnotationHandler.ANNOTATION_HANDLERS.forEach(handler -> {
             handler.handle(clazz, beanDefinitions);
         });
+        PluginManager.getPlugin().iocStartScan(clazz);
     }
 
     private void registerBeanDefinition(){
@@ -70,7 +70,6 @@ public class IocApplicationContext {
                 }
             }
         }
-        System.out.println("<UNK>Bean<UNK>");
     }
 
 

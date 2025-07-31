@@ -25,13 +25,16 @@ public class BeetLSqlPlugin extends PluginAdapter {
 
     private static final List<Class<?>> beetlsql=new ArrayList<>();
 
+
     @Override
-    public void startApp() {
-        AnnotationHandler.addHandler(new BeetlSQLHandler(beetlsql));
+    public void iocStartScan(Class<?> clazz) {
+        if (clazz.isAnnotationPresent(BeetlSQL.class)) {
+            beetlsql.add(clazz);
+        }
     }
 
     @Override
-    public void iocStartPopulate(Map<String, BeanDefinition> beanDefinitions){
+    public void iocStartPopulate(){
         for (Class<?> aClass : beetlsql) {
             BeetlSQL beetlSQL =aClass.getAnnotation(BeetlSQL.class);
             if (beetlSQL!=null) {
@@ -47,7 +50,7 @@ public class BeetLSqlPlugin extends PluginAdapter {
                 }
             }
         }
-
+        beetlsql.clear();
     }
 
     @Override

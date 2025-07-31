@@ -45,23 +45,23 @@ public class PluginManager extends PluginAdapter {
     }
 
     @Override
-    public void iocStartScan() {
+    public void iocStartScan(Class<?> clazz) {
         for (PluginAdapter plugAdapter : obj) {
-            plugAdapter.iocStartScan();
+            plugAdapter.iocStartScan(clazz);
         }
     }
 
     @Override
-    public void iocStartRegister(Map<String, BeanDefinition> beanDefinitions) {
+    public void iocStartRegister() {
         for (PluginAdapter plugAdapter : obj) {
-            plugAdapter.iocStartRegister(beanDefinitions);
+            plugAdapter.iocStartRegister();
         }
     }
 
     @Override
-    public void iocStartPopulate(Map<String, BeanDefinition> beanDefinitions) {
+    public void iocStartPopulate() {
         for (PluginAdapter plugAdapter : obj) {
-            plugAdapter.iocStartPopulate(beanDefinitions);
+            plugAdapter.iocStartPopulate();
         }
     }
 

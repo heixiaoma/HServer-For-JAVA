@@ -24,12 +24,8 @@ public interface AnnotationHandler {
     void handle(Class<?> clazz, Map<String, BeanDefinition> beanDefinitions);
 
     default void defaultHandler(Class<?> clazz, Map<String, BeanDefinition> beanDefinitions){
-        // 注册配置类本身作为Bean
-        String className = clazz.getName();
         BeanDefinition configBeanDef = new BeanDefinition();
         configBeanDef.setBeanClass(clazz);
-        String configBeanName = className.substring(className.lastIndexOf('.') + 1);
-        configBeanName = Character.toLowerCase(configBeanName.charAt(0)) + configBeanName.substring(1);
-        beanDefinitions.put(configBeanName, configBeanDef);
+        beanDefinitions.put(configBeanDef.getDefaultBeanName(), configBeanDef);
     }
 }

@@ -1,24 +1,19 @@
 package cn.hserver.plugin.mybatis.flex;
 
-import cn.hserver.core.ioc.IocUtil;
-import cn.hserver.core.server.context.ConstConfig;
-import cn.hserver.core.server.util.JarInputStreamUtil;
+import cn.hserver.core.config.ConstConfig;
+import cn.hserver.core.context.IocApplicationContext;
+import cn.hserver.core.util.JarInputStreamUtil;
 import cn.hserver.plugin.mybatis.flex.bean.MybatisConfig;
 import com.mybatisflex.core.MybatisFlexBootstrap;
 import org.apache.ibatis.builder.xml.XMLMapperBuilder;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.SqlSessionFactory;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.JarURLConnection;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -26,10 +21,9 @@ import java.util.jar.*;
 
 public class MybatisFlexConfig {
 
-
     private static void loadMapperXml(Configuration configuration, String path) {
         Map<String, InputStream> xmlInput = new HashMap<>();
-        if (ConstConfig.RUNJAR) {
+        if (ConstConfig.RUN_JAR) {
             onlineFile(ConstConfig.CLASSPATH, path, xmlInput);
         } else {
             developFile(ConstConfig.CLASSPATH + "/" + path, xmlInput);
@@ -96,7 +90,7 @@ public class MybatisFlexConfig {
     }
 
     public static MybatisFlexBootstrap init(Set<Class<?>> mappers) {
-        MybatisConfig mybatisConfig = IocUtil.getBean(MybatisConfig.class);
+        MybatisConfig mybatisConfig = IocApplicationContext.getBean(MybatisConfig.class);
         MybatisFlexBootstrap instance = MybatisFlexBootstrap.getInstance();
         //配置数据源
         mybatisConfig.getDataSources().forEach(instance::addDataSource);

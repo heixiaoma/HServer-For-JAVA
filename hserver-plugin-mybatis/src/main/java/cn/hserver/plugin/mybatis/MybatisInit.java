@@ -1,7 +1,8 @@
 package cn.hserver.plugin.mybatis;
 
-import cn.hserver.core.ioc.IocUtil;
-import cn.hserver.core.server.util.JarInputStreamUtil;
+import cn.hserver.core.config.ConstConfig;
+import cn.hserver.core.context.IocApplicationContext;
+import cn.hserver.core.util.JarInputStreamUtil;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.MybatisSqlSessionFactoryBuilder;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
@@ -17,7 +18,6 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.hserver.core.server.context.ConstConfig;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,7 +38,7 @@ public class MybatisInit {
     private static final Logger log = LoggerFactory.getLogger(MybatisInit.class);
 
     public static Map<String, SqlSessionFactory> initMybatis(Set<Class<?>> classes) throws IllegalAccessException, InstantiationException {
-        MybatisConfig mybatisConfig = IocUtil.getBean(MybatisConfig.class);
+        MybatisConfig mybatisConfig = IocApplicationContext.getBean(MybatisConfig.class);
         if (mybatisConfig == null) {
             log.error("MybatisConfig 未配置");
             return null;
@@ -116,7 +116,7 @@ public class MybatisInit {
 
     private static void loadMapperXml(Configuration configuration, String path) {
         Map<String, InputStream> xmlInput = new HashMap<>();
-        if (ConstConfig.RUNJAR) {
+        if (ConstConfig.RUN_JAR) {
             onlineFile(ConstConfig.CLASSPATH, path, xmlInput);
         } else {
             developFile(ConstConfig.CLASSPATH + "/" + path, xmlInput);

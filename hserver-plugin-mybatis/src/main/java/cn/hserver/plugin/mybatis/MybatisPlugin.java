@@ -1,80 +1,65 @@
 package cn.hserver.plugin.mybatis;
 
-import cn.hserver.core.ioc.ref.PackageScanner;
+import cn.hserver.core.context.IocApplicationContext;
+import cn.hserver.core.plugin.bean.PluginInfo;
+import cn.hserver.core.plugin.handler.PluginAdapter;
 import cn.hserver.plugin.mybatis.annotation.Mybatis;
 import cn.hserver.plugin.mybatis.proxy.MybatisProxy;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.hserver.core.interfaces.PluginAdapter;
-import cn.hserver.core.ioc.IocUtil;
-import cn.hserver.core.ioc.annotation.Autowired;
-import cn.hserver.core.server.util.ExceptionUtil;
-import cn.hserver.plugin.mybatis.bean.MybatisConfig;
-
-import java.lang.reflect.Field;
 import java.util.*;
 
 /**
- * 参考文献 https://blog.csdn.net/qq_42413011/article/details/118640420
- *
  * @author hxm
  */
-public class MybatisPlugin implements PluginAdapter {
+public class MybatisPlugin extends PluginAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(MybatisPlugin.class);
 
+    private final Set<Class<?>> classes =new HashSet<>();
 
     @Override
-    public void startApp() {
-
+    public PluginInfo getPluginInfo() {
+        return new PluginInfo.Builder()
+                .name("MyBatis-Plus")
+                .description("MyBatis-Plus（简称 MP）是一个 MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生。")
+                .build();
     }
 
     @Override
-    public void startIocInit() {
-
-    }
-
-    @Override
-    public Set<Class<?>> iocInitBeanList() {
-        return null;
-    }
-
-    @Override
-    public void iocInit(PackageScanner packageScanner) {
-        try {
-            Set<Class<?>> annotationList = packageScanner.getAnnotationList(Mybatis.class);
-            Map<String, SqlSessionFactory> stringSqlSessionFactoryMap = MybatisInit.initMybatis(annotationList);
-            if (stringSqlSessionFactoryMap == null) {
-                return;
-            }
-            stringSqlSessionFactoryMap.forEach(IocUtil::addBean);
-            for (Class<?> aClass : annotationList) {
-                Mybatis mybatis = aClass.getAnnotation(Mybatis.class);
-                String value = mybatis.value();
-                if (value.trim().length() == 0) {
-                    value = SqlSessionFactory.class.getName();
-                }
-                SqlSessionFactory sqlSessionFactory = stringSqlSessionFactoryMap.get(value);
-                Object mapper = MybatisProxy.getInstance().getProxy(aClass, sqlSessionFactory);
-                IocUtil.addBean(mapper);
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
+    public void iocStartScan(Class<?> clazz) {
+        Mybatis annotation = clazz.getAnnotation(Mybatis.class);
+        if (annotation!=null){
+            classes.add(clazz);
         }
     }
 
     @Override
-    public void iocInitEnd() {
+    public void iocStartPopulate() {
+        try {
+            Map<String, SqlSessionFactory> stringSqlSessionFactoryMap = MybatisInit.initMybatis(classes);
+            if (stringSqlSessionFactoryMap == null) {
+                return;
+            }
+            stringSqlSessionFactoryMap.forEach(IocApplicationContext::addBean);
 
+            for (Class<?> aClass : classes) {
+                Mybatis mybatis = aClass.getAnnotation(Mybatis.class);
+                String value = mybatis.value();
+                if (value.trim().isEmpty()) {
+                    value = SqlSessionFactory.class.getName();
+                }
+                SqlSessionFactory sqlSessionFactory = stringSqlSessionFactoryMap.get(value);
+                Object mapper = MybatisProxy.getInstance().getProxy(aClass, sqlSessionFactory);
+                IocApplicationContext.addBean(mapper);
+            }
+
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+        }finally {
+            classes.clear();
+        }
     }
 
-    @Override
-    public void startInjection() {
-
-    }
-    @Override
-    public void injectionEnd() {
-        log.info("MybatisPlus插件执行完成");
-    }
 }

@@ -16,9 +16,9 @@ public class BeanDefinition {
     private HookBeanDefinition hookBeanDefinition;
 
     public String getDefaultBeanName() {
-        String className = beanClass.getName();
-        String beanName = className.substring(className.lastIndexOf('.') + 1);
-        return Character.toLowerCase(beanName.charAt(0)) + beanName.substring(1);
+        return beanClass.getName();
+     //   String beanName = className.substring(className.lastIndexOf('.') + 1);
+       // return Character.toLowerCase(beanName.charAt(0)) + beanName.substring(1);
     }
 
     public Class<?> getBeanClass() {

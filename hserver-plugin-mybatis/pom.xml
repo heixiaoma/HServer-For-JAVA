@@ -20,18 +20,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>5.3.37</version>
-        </dependency>
-        <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus</artifactId>
-            <version>3.5.7</version>
+            <version>3.5.12</version>
         </dependency>
         <dependency>
             <groupId>cn.hserver</groupId>
-            <artifactId>hserver</artifactId>
+            <artifactId>hserver-core</artifactId>
             <scope>provided</scope>
         </dependency>
 

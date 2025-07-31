@@ -1,12 +1,11 @@
 package cn.hserver.plugin.forest;
 
 import cn.hserver.core.context.IocApplicationContext;
-import cn.hserver.core.context.handler.AnnotationHandler;
 import cn.hserver.core.plugin.bean.PluginInfo;
 import cn.hserver.core.plugin.handler.PluginAdapter;
 import cn.hserver.plugin.forest.config.ForestClientConfig;
-import cn.hserver.plugin.forest.handler.ForestClientHandler;
 import com.dtflys.forest.Forest;
+import com.dtflys.forest.annotation.ForestClient;
 
 import java.util.List;
 
@@ -14,10 +13,14 @@ public class ForestPlugin extends PluginAdapter {
 
 
     @Override
-    public void startApp() {
-        AnnotationHandler.addHandler(new ForestClientHandler());
+    public void iocStartScan(Class<?> clazz) {
+        if (clazz.isAnnotationPresent(ForestClient.class)) {
+            Object data = Forest.client(clazz);
+            if (data != null) {
+                IocApplicationContext.addBean(data);
+            }
+        }
     }
-
 
     @Override
     public void startedApp() {

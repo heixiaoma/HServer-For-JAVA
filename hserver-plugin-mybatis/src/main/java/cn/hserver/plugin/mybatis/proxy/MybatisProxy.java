@@ -1,6 +1,5 @@
 package cn.hserver.plugin.mybatis.proxy;
 
-import io.netty.util.concurrent.FastThreadLocal;
 import javassist.util.proxy.ProxyFactory;
 import javassist.util.proxy.ProxyObject;
 import cn.hserver.plugin.mybatis.hook.TxHook;
@@ -17,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 public class MybatisProxy {
     private static final Logger log = LoggerFactory.getLogger(MybatisProxy.class);
 
-    private static final FastThreadLocal<SqlSession> sqlSessionFastThreadLocal = new FastThreadLocal<>();
+    private static final ThreadLocal<SqlSession> sqlSessionFastThreadLocal = new ThreadLocal<>();
 
     public static SqlSession get() {
         return sqlSessionFastThreadLocal.get();

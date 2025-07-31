@@ -28,17 +28,17 @@ public abstract class PluginAdapter {
     /**
      * 开始扫描
      */
-    public void iocStartScan(){
+    public void iocStartScan(Class<?> clazz){
 
    }
 
    //扫描完成开始注册bean
-    public void iocStartRegister(Map<String, BeanDefinition> beanDefinitions){
+    public void iocStartRegister(){
 
     }
 
     //注册bean后开始填充bean
-    public void iocStartPopulate(Map<String, BeanDefinition> beanDefinitions){
+    public void iocStartPopulate(){
 
     }
 
