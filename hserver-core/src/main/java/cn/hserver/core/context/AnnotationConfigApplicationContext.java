@@ -88,6 +88,11 @@ public class AnnotationConfigApplicationContext {
     }
 
 
+    /**
+     * 获取指定名称的Bean实例
+     * @param name 要获取的Bean名称
+     * @return 指定名称的Bean实例
+     */
     public static Object getBean(String name) {
         try {
             return beanFactory.getBean(name);
@@ -96,6 +101,12 @@ public class AnnotationConfigApplicationContext {
         }
     }
 
+    /**
+     * 获取指定类型的Bean实例
+     * @param requiredType 要获取的Bean类型
+     * @param <T> Bean类型
+     * @return 指定类型的Bean实例
+     */
     public static  <T> T getBean(Class<T> requiredType){
         try {
             return beanFactory.getBean(requiredType);
@@ -103,4 +114,15 @@ public class AnnotationConfigApplicationContext {
             return null;
         }
     }
+    /**
+     * 获取指定类型的所有Bean实例
+     * @param requiredType 要获取的Bean类型
+     * @param <T> Bean类型
+     * @return 指定类型的所有Bean实例列表
+     */
+    public static  <T> List<T> getBeansOfType(Class<T> requiredType){
+        return beanFactory.getBeansOfType(requiredType);
+    }
+
+
 }

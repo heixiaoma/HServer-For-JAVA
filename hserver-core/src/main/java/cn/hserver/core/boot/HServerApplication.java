@@ -2,7 +2,9 @@ package cn.hserver.core.boot;
 
 import cn.hserver.core.config.ConfigData;
 import cn.hserver.core.context.AnnotationConfigApplicationContext;
+import cn.hserver.core.logging.HServerLogAsyncAppender;
 import cn.hserver.core.logging.HServerLogConfig;
+import cn.hserver.core.logging.LogAdapter;
 import cn.hserver.core.queue.QueueManager;
 import cn.hserver.core.scheduling.TaskManager;
 import cn.hserver.core.util.EnvironmentUtil;
@@ -47,8 +49,8 @@ public class HServerApplication {
             //启动定时任务
             TaskManager.startTask();
             //启动完成
+            success();
             try {
-                log.info("HServer启动完成");
                 shutdownLatch.await();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -72,6 +74,12 @@ public class HServerApplication {
 //        scanPackage.addAll(PlugsManager.getPlugin().getPlugPackages());
         scanPackage.add(HServerApplication.class.getPackage().getName());
         return scanPackage;
+    }
+
+
+    private static void success(){
+        log.info("HServer启动成功");
+        HServerLogAsyncAppender.setHasLog(AnnotationConfigApplicationContext.getBeansOfType(LogAdapter.class));
     }
 
 }

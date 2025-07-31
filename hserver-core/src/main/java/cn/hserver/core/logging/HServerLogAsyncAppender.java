@@ -21,7 +21,7 @@ public class HServerLogAsyncAppender extends AppenderBase<LoggingEvent> {
                 try {
                     logAdapter.log(eventObject);
                 } catch (Throwable e) {
-                    e.printStackTrace();
+                    System.err.println(e.getMessage());
                 }
             }
         }

@@ -35,6 +35,19 @@ public class BeanFactory {
         return doGetBean(name);
     }
 
+    public <T> List<T> getBeansOfType(Class<T> type) {
+        List<T> beans = new ArrayList<>();
+        for (Map.Entry<String, BeanDefinition> entry : beanDefinitionMap.entrySet()) {
+            if (type.isAssignableFrom(entry.getValue().getBeanClass())) {
+                try{
+                beans.add(type.cast(getBean(entry.getKey())));
+                }catch (Exception ignored){
+                }
+            }
+        }
+        return beans;
+    }
+
     public <T> T getBean(Class<T> requiredType) throws Exception {
         List<String> beanNames = new ArrayList<>();
         for (Map.Entry<String, BeanDefinition> entry : beanDefinitionMap.entrySet()) {
