@@ -11,7 +11,7 @@
 
     <name>hserver-parent</name>
     <url>https://gitee.com/HServer/HServer</url>
-    <description>一个基于Netty的高性能Server 服务器</description>
+    <description>一个基于java的高性能Server 服务器</description>
 
 
     <modules>
@@ -52,6 +52,11 @@
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver</artifactId>
+                <version>3.7.M1</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hserver</groupId>
+                <artifactId>hserver-core</artifactId>
                 <version>3.7.M1</version>
             </dependency>
 

@@ -1,60 +1,39 @@
 package cn.hserver.plugin.forest;
 
-import cn.hserver.core.interfaces.PluginAdapter;
-import cn.hserver.core.ioc.IocUtil;
-import cn.hserver.core.ioc.ref.PackageScanner;
+import cn.hserver.core.context.IocApplicationContext;
+import cn.hserver.core.context.handler.AnnotationHandler;
+import cn.hserver.core.plugin.bean.PluginInfo;
+import cn.hserver.core.plugin.handler.PluginAdapter;
 import cn.hserver.plugin.forest.config.ForestClientConfig;
+import cn.hserver.plugin.forest.handler.ForestClientHandler;
 import com.dtflys.forest.Forest;
-import com.dtflys.forest.annotation.ForestClient;
 
-import java.util.Set;
+import java.util.List;
 
-public class ForestPlugin implements PluginAdapter {
+public class ForestPlugin extends PluginAdapter {
+
 
     @Override
-    public void startApp() {
-
+    public void ioc() {
+        AnnotationHandler.addHandler(new ForestClientHandler());
     }
 
-    @Override
-    public void startIocInit() {
-
-    }
 
     @Override
-    public Set<Class<?>> iocInitBeanList() {
-        return null;
-    }
-
-    @Override
-    public void iocInit(PackageScanner packageScanner) {
-        try {
-            Set<Class<?>> annotationList = packageScanner.getAnnotationList(ForestClient.class);
-            for (Class<?> aClass : annotationList) {
-                Object data = Forest.client(aClass);
-                if (data != null) {
-                    IocUtil.addBean(data);
-                }
+    public void startedApp() {
+        List<ForestClientConfig> beansOfType = IocApplicationContext.getBeansOfType(ForestClientConfig.class);
+        if (beansOfType != null && !beansOfType.isEmpty()) {
+            for (ForestClientConfig bean : beansOfType) {
+                bean.config(Forest.config());
             }
-        } catch (Exception e) {
         }
     }
 
     @Override
-    public void iocInitEnd() {
-
-    }
-
-    @Override
-    public void startInjection() {
-
-    }
-
-    @Override
-    public void injectionEnd() {
-        ForestClientConfig supperBean = IocUtil.getSupperBean(ForestClientConfig.class);
-        if (supperBean != null) {
-            supperBean.config(Forest.config());
-        }
+    public PluginInfo getPluginInfo() {
+        return new PluginInfo.Builder()
+                .name("Forest插件")
+                .description("一个高级、轻量级的 Java 声明式 HTTP 客户端框架")
+                .build();
     }
 }

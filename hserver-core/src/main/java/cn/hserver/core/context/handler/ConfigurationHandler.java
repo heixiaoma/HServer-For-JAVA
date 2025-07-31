@@ -16,14 +16,12 @@ public class ConfigurationHandler implements AnnotationHandler {
         String className = clazz.getName();
         if (clazz.isAnnotationPresent(Configuration.class)) {
             Configuration config = clazz.getAnnotation(Configuration.class);
-            String configBeanName = config.value();
-            if (configBeanName.isEmpty()) {
-                configBeanName = className.substring(className.lastIndexOf('.') + 1);
-                configBeanName = Character.toLowerCase(configBeanName.charAt(0)) + configBeanName.substring(1);
-            }
-            // 注册配置类本身作为Bean
             BeanDefinition configBeanDef = new BeanDefinition();
             configBeanDef.setBeanClass(clazz);
+            String configBeanName = config.value();
+            if (configBeanName.isEmpty()) {
+                configBeanName = configBeanDef.getDefaultBeanName();
+            }
             beanDefinitions.put(configBeanName, configBeanDef);
             // 处理@Bean注解的方法
             for (Method method : clazz.getDeclaredMethods()) {
@@ -51,12 +49,10 @@ public class ConfigurationHandler implements AnnotationHandler {
         }
 
         if (clazz.isAnnotationPresent(ConfigurationProperties.class)) {
-            String configBeanName= className.substring(className.lastIndexOf('.') + 1);
-                configBeanName = Character.toLowerCase(configBeanName.charAt(0)) + configBeanName.substring(1);
             // 注册配置类本身作为Bean
             BeanDefinition configBeanDef = new BeanDefinition();
             configBeanDef.setBeanClass(clazz);
-            beanDefinitions.put(configBeanName, configBeanDef);
+            beanDefinitions.put(configBeanDef.getDefaultBeanName(), configBeanDef);
         }
     }
 }

@@ -8,6 +8,7 @@ import cn.hserver.core.life.StartAdapter;
 import cn.hserver.core.logging.HServerLogAsyncAppender;
 import cn.hserver.core.logging.HServerLogConfig;
 import cn.hserver.core.logging.LogAdapter;
+import cn.hserver.core.plugin.PluginManager;
 import cn.hserver.core.queue.QueueManager;
 import cn.hserver.core.scheduling.TaskManager;
 import cn.hserver.core.util.EnvironmentUtil;
@@ -53,18 +54,26 @@ public class HServerApplication {
         if (!running) {
             running = true;
             HServerApplication.mainClass = mainClass;
+            //插件启动
+            PluginManager.getPlugin().startApp();
             //初始化配置
             ConfigData.getInstance();
             //初始化环境
             EnvironmentUtil.init(testClass);
             //启动log配置
             HServerLogConfig.init();
+            PluginManager.getPlugin().ioc();
             //启动IOC容器
-            new IocApplicationContext(packages(testPackageName));
+            Set<String> plugPackages = PluginManager.getPlugin().getPlugPackages();
+            if (testClass != null) {
+                plugPackages.add(testClass.getPackage().getName());
+            }
+            new IocApplicationContext(packages(plugPackages));
             //启动队列
             QueueManager.startQueueServer();
             //启动定时任务
             TaskManager.startTask();
+            PluginManager.getPlugin().startedApp();
             //启动完成
             success(args);
             try {
@@ -85,10 +94,10 @@ public class HServerApplication {
         }
     }
 
-    private static Set<String> packages(String testPackageName){
-        Set<String>   scanPackage = new HashSet<>();
+    private static Set<String> packages(Set<String> testPackageName){
+        Set<String> scanPackage = new HashSet<>();
         if (testPackageName != null) {
-            scanPackage.add(testPackageName);
+            scanPackage.addAll(testPackageName);
         }
         if (mainClass != null) {
             scanPackage.add(mainClass.getPackage().getName());
@@ -100,6 +109,7 @@ public class HServerApplication {
 
 
     private static void success(String[] args){
+        PluginManager.getPlugin().pluginInfo();
         IocApplicationContext.getBeansOfType(InitAdapter.class).forEach(initAdapter -> initAdapter.init(args));
         log.info("HServer启动成功");
         HServerLogAsyncAppender.setHasLog(IocApplicationContext.getBeansOfType(LogAdapter.class));

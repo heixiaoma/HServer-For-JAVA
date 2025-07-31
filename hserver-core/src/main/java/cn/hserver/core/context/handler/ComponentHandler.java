@@ -18,13 +18,12 @@ public class ComponentHandler implements AnnotationHandler {
         String className = clazz.getName();
         if (clazz.isAnnotationPresent(Component.class)) {
             Component component = clazz.getAnnotation(Component.class);
-            String beanName = component.value();
-            if (beanName.isEmpty()) {
-                beanName = className.substring(className.lastIndexOf('.') + 1);
-                beanName = Character.toLowerCase(beanName.charAt(0)) + beanName.substring(1);
-            }
             BeanDefinition beanDefinition = new BeanDefinition();
             beanDefinition.setBeanClass(clazz);
+            String beanName = component.value();
+            if (beanName.isEmpty()) {
+                beanName = beanDefinition.getDefaultBeanName();
+            }
             // 处理作用域
             if (clazz.isAnnotationPresent(Scope.class)) {
                 Scope scope = clazz.getAnnotation(Scope.class);

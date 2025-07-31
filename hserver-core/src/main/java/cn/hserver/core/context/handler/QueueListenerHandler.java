@@ -23,16 +23,14 @@ public class QueueListenerHandler implements AnnotationHandler{
             // 注册配置类本身作为Bean
             BeanDefinition configBeanDef = new BeanDefinition();
             configBeanDef.setBeanClass(clazz);
-            String configBeanName = className.substring(className.lastIndexOf('.') + 1);
-            configBeanName = Character.toLowerCase(configBeanName.charAt(0)) + configBeanName.substring(1);
             QueueListener queueListener = clazz.getAnnotation(QueueListener.class);
             for (Method declaredMethod : clazz.getDeclaredMethods()) {
                 if (declaredMethod.isAnnotationPresent(QueueHandler.class)) {
                     QueueHandleInfo eventHandleInfo = new QueueHandleInfo(queueListener.queueName());
                     eventHandleInfo.setThreadSize(queueListener.threadSize());
-                    eventHandleInfo.setQueueEventHandler(new QueueEventHandler(configBeanName, declaredMethod));
+                    eventHandleInfo.setQueueEventHandler(new QueueEventHandler(configBeanDef.getDefaultBeanName(), declaredMethod));
                     QueueManager.addQueueListener(eventHandleInfo);
-                    beanDefinitions.put(configBeanName, configBeanDef);
+                    beanDefinitions.put(configBeanDef.getDefaultBeanName(), configBeanDef);
                     log.debug("寻找队列 [{}] 的方法 [{}.{}]", queueListener.queueName(), clazz.getSimpleName(),
                             declaredMethod.getName());
                     return;

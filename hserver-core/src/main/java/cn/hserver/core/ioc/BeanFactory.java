@@ -35,6 +35,15 @@ public class BeanFactory {
         return doGetBean(name);
     }
 
+
+    public void addBean(Object bean) {
+        Class<?> clazz = bean.getClass();
+        BeanDefinition configBeanDef = new BeanDefinition();
+        configBeanDef.setBeanClass(clazz);
+        beanDefinitionMap.put(configBeanDef.getDefaultBeanName(), configBeanDef);
+        singletonObjects.put(configBeanDef.getDefaultBeanName(), bean);
+    }
+
     public <T> List<T> getBeansOfType(Class<T> type) {
         List<T> beans = new ArrayList<>();
         for (Map.Entry<String, BeanDefinition> entry : beanDefinitionMap.entrySet()) {

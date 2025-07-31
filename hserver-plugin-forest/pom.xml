@@ -21,14 +21,14 @@
 
         <dependency>
             <groupId>cn.hserver</groupId>
-            <artifactId>hserver</artifactId>
+            <artifactId>hserver-core</artifactId>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.dtflys.forest</groupId>
             <artifactId>forest-core</artifactId>
-            <version>1.7.2</version>
+            <version>1.7.3</version>
         </dependency>
 
     </dependencies>

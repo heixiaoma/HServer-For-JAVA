@@ -25,6 +25,10 @@ public class IocApplicationContext {
         refresh();
     }
 
+    public static void addBean(Object obj) {
+        beanFactory.addBean(obj);
+    }
+
     private void scan(String basePackage) {
         ClassLoadUtil.loadClasses(basePackage, false).forEach(this::processClass);
     }

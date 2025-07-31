@@ -1,39 +1,30 @@
 package cn.hserver.plugin.beetlsql;
 
-import cn.hserver.core.ioc.ref.PackageScanner;
+import cn.hserver.core.plugin.bean.PluginInfo;
+import cn.hserver.core.plugin.handler.PluginAdapter;
 import cn.hserver.plugin.beetlsql.annotation.BeetlSQL;
-import cn.hserver.core.interfaces.PluginAdapter;
-import cn.hserver.core.ioc.IocUtil;
-import cn.hserver.core.ioc.annotation.Autowired;
 import org.beetl.sql.core.SQLManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 
 /**
  * @author hxm
  */
-public class BeetLSqlPlugin implements PluginAdapter {
+public class BeetLSqlPlugin extends PluginAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(BeetLSqlPlugin.class);
 
+
+
     @Override
-    public void startApp() {
+    public void ioc(){
+
 
     }
 
-    @Override
-    public void startIocInit() {
-
-    }
-
-    @Override
-    public Set<Class<?>> iocInitBeanList() {
-        return null;
-    }
 
     @Override
     public void iocInit(PackageScanner packageScanner) {
@@ -65,18 +56,10 @@ public class BeetLSqlPlugin implements PluginAdapter {
     }
 
     @Override
-    public void iocInitEnd() {
-
+    public PluginInfo getPluginInfo() {
+        return new PluginInfo.Builder()
+                .name("beetlsql插件")
+                .description("简洁方便，功能强大的ORM工具，从2015年开始研发")
+                .build();
     }
-
-    @Override
-    public void startInjection() {
-
-    }
-
-    @Override
-    public void injectionEnd() {
-        log.info("Beetlsql插件执行完成");
-    }
-
 }
