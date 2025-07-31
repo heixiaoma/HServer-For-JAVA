@@ -1,12 +1,11 @@
 package cn.hserver.plugin.beetlsql.hook;
 
-import io.netty.util.concurrent.FastThreadLocal;
+import cn.hserver.core.aop.HookAdapter;
+import cn.hserver.core.aop.annotation.Hook;
 import cn.hserver.plugin.beetlsql.tx.Tx;
 import org.beetl.sql.core.DSTransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import cn.hserver.core.interfaces.HookAdapter;
-import cn.hserver.core.ioc.annotation.Hook;
 
 import java.lang.reflect.Method;
 import java.sql.SQLException;
@@ -17,7 +16,7 @@ import java.sql.SQLException;
 @Hook(Tx.class)
 public class TxHook implements HookAdapter {
     private static final Logger logger = LoggerFactory.getLogger(TxHook.class);
-    private static final FastThreadLocal<Long> TIMEOUT_MILLISECOND = new FastThreadLocal<>();
+    private static final ThreadLocal<Long> TIMEOUT_MILLISECOND = new ThreadLocal<>();
 
     @Override
     public void before(Class aClass, Method method, Object[] objects) {

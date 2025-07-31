@@ -13,7 +13,6 @@ public class ConfigurationHandler implements AnnotationHandler {
 
     @Override
     public void handle(Class<?> clazz, Map<String, BeanDefinition> beanDefinitions) {
-        String className = clazz.getName();
         if (clazz.isAnnotationPresent(Configuration.class)) {
             Configuration config = clazz.getAnnotation(Configuration.class);
             BeanDefinition configBeanDef = new BeanDefinition();

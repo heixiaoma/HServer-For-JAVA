@@ -1,6 +1,5 @@
 package cn.hserver.plugin.beetlsql.annotation;
 
-import cn.hserver.core.ioc.annotation.HServerType;
 
 import java.lang.annotation.*;
 
@@ -9,7 +8,6 @@ import java.lang.annotation.*;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@HServerType
 @Documented
 public @interface BeetlSQL {
     String value() default "";
