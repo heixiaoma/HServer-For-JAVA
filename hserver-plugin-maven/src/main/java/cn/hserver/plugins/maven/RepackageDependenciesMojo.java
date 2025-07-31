@@ -17,6 +17,10 @@ public class RepackageDependenciesMojo extends AbstractMojo {
     private String fatJar;
     @Parameter(property = "password", defaultValue = "")
     private String password;
+
+    @Parameter(property = "mainClass",defaultValue = "")
+    private String mainClass;
+
     @Parameter(property = "console",defaultValue = "")
     private String console;
 
@@ -54,7 +58,7 @@ public class RepackageDependenciesMojo extends AbstractMojo {
             //copy源码
 //            reBuilderJar.copySource(project);
             //设置运行参数
-            reBuilderJar.addManifest(project, dependencies);
+            reBuilderJar.addManifest(project, dependencies,mainClass);
             reBuilderJar.addRunner();
             reBuilderJar.close();
             reBuilderJar.rename(project);

@@ -38,7 +38,7 @@ public class Runner {
             checkPassword(manifestInfo);
             ClassLoader classLoader = new URLClassLoader(manifestInfo.getLibs(), contextClassLoader);
             Thread.currentThread().setContextClassLoader(classLoader);
-            Class<?> conf = Class.forName("cn.hserver.core.server.context.ConstConfig", true, classLoader);
+            Class<?> conf = Class.forName("cn.hserver.core.config.ConstConfig", true, classLoader);
             Field field = conf.getDeclaredField("PASSWORD");
             field.set(null, password);
             Class<?> main = Class.forName(manifestInfo.getMainClass(), true, classLoader);

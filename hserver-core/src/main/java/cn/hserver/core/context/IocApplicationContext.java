@@ -4,6 +4,7 @@ import cn.hserver.core.context.handler.AnnotationHandler;
 import cn.hserver.core.ioc.bean.BeanDefinition;
 import cn.hserver.core.ioc.BeanFactory;
 import cn.hserver.core.aop.HookFactory;
+import cn.hserver.core.util.ClassLoadUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,43 +26,13 @@ public class IocApplicationContext {
     }
 
     private void scan(String basePackage) {
-        try {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            String path = basePackage.replace('.', '/');
-            Enumeration<URL> resources = classLoader.getResources(path);
-
-            while (resources.hasMoreElements()) {
-                URL resource = resources.nextElement();
-                File directory = new File(resource.getFile());
-                if (directory.exists()) {
-                    scanDirectory(directory, basePackage);
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Error scanning package: " + basePackage, e);
-        }
+        ClassLoadUtil.loadClasses(basePackage, false).forEach(this::processClass);
     }
 
-    private void scanDirectory(File directory, String basePackage) {
-        for (File file : Objects.requireNonNull(directory.listFiles())) {
-            if (file.isDirectory()) {
-                scanDirectory(file, basePackage + "." + file.getName());
-            } else if (file.getName().endsWith(".class")) {
-                String className = basePackage + '.' + file.getName().substring(0, file.getName().length() - 6);
-                processClass(className);
-            }
-        }
-    }
-
-    private void processClass(String className) {
-        try {
-            Class<?> clazz = Class.forName(className);
-            AnnotationHandler.ANNOTATION_HANDLERS.forEach(handler -> {
-                handler.handle(clazz, beanDefinitions);
-            });
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Error loading class: " + className, e);
-        }
+    private void processClass(Class<?> clazz) {
+        AnnotationHandler.ANNOTATION_HANDLERS.forEach(handler -> {
+            handler.handle(clazz, beanDefinitions);
+        });
     }
 
 

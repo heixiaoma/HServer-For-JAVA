@@ -62,9 +62,14 @@ public class ReBuilderJar {
         return dependencies;
     }
 
-    public void addManifest(MavenProject project, Set<String> dependencies) throws IOException {
+    public void addManifest(MavenProject project, Set<String> dependencies,String mainClass) throws IOException {
         String artifactPath = project.getBuild().getDirectory() + "/" + project.getBuild().getFinalName() + "." + project.getPackaging();
-        String mainClassName = JarUtil.getMainClassName(artifactPath);
+        String mainClassName;
+        if (mainClass!=null&&!mainClass.trim().isEmpty()) {
+            mainClassName = mainClass;
+        }else {
+            mainClassName = JarUtil.getMainClassName(artifactPath);
+        }
         jarOutputStream.putNextEntry(new JarEntry("META-INF/MANIFEST.MF"));
         Manifest manifest = new Manifest();
         manifest.getMainAttributes().putValue("Manifest-Version", "1.0");

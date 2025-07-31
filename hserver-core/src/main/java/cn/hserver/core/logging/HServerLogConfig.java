@@ -27,7 +27,6 @@ public class HServerLogConfig {
     }
 
     private static void loadConfiguration(InputStream in) throws Exception {
-        in = JarInputStreamUtil.decrypt(in);
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         stopAndReset(loggerContext);
         ch.qos.logback.classic.joran.JoranConfigurator configurator = new ch.qos.logback.classic.joran.JoranConfigurator();
