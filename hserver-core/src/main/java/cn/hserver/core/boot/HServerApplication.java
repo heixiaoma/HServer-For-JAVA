@@ -2,6 +2,9 @@ package cn.hserver.core.boot;
 
 import cn.hserver.core.config.ConfigData;
 import cn.hserver.core.context.IocApplicationContext;
+import cn.hserver.core.life.CloseAdapter;
+import cn.hserver.core.life.InitAdapter;
+import cn.hserver.core.life.StartAdapter;
 import cn.hserver.core.logging.HServerLogAsyncAppender;
 import cn.hserver.core.logging.HServerLogConfig;
 import cn.hserver.core.logging.LogAdapter;
@@ -13,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
@@ -24,7 +28,10 @@ public class HServerApplication {
     static {
         Thread shutdown = new NamedThreadFactory("hserver_shutdown").newThread(() -> {
             log.info("服务即将关闭");
-//            List<ServerCloseAdapter> listBean = IocUtil.getListBean(ServerCloseAdapter.class);
+            List<CloseAdapter> beansOfType = IocApplicationContext.getBeansOfType(CloseAdapter.class);
+            for (CloseAdapter closeAdapter : beansOfType) {
+                closeAdapter.close();
+            }
             log.info("服务关闭完成");
         });
         Runtime.getRuntime().addShutdownHook(shutdown);
@@ -49,7 +56,7 @@ public class HServerApplication {
             //启动定时任务
             TaskManager.startTask();
             //启动完成
-            success();
+            success(args);
             try {
                 shutdownLatch.await();
             } catch (InterruptedException e) {
@@ -77,9 +84,11 @@ public class HServerApplication {
     }
 
 
-    private static void success(){
+    private static void success(String[] args){
+        IocApplicationContext.getBeansOfType(InitAdapter.class).forEach(initAdapter -> initAdapter.init(args));
         log.info("HServer启动成功");
         HServerLogAsyncAppender.setHasLog(IocApplicationContext.getBeansOfType(LogAdapter.class));
+        IocApplicationContext.getBeansOfType(StartAdapter.class).forEach(StartAdapter::start);
     }
 
 }
