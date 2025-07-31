@@ -1,7 +1,8 @@
 package cn.hserver.core.context.handler;
 
+import cn.hserver.core.config.annotation.Configuration;
+import cn.hserver.core.config.annotation.ConfigurationProperties;
 import cn.hserver.core.ioc.annotation.Bean;
-import cn.hserver.core.ioc.annotation.Configuration;
 import cn.hserver.core.ioc.annotation.Scope;
 import cn.hserver.core.ioc.bean.BeanDefinition;
 
@@ -47,6 +48,15 @@ public class ConfigurationHandler implements AnnotationHandler {
                     beanDefinitions.put(beanName, beanDef);
                 }
             }
+        }
+
+        if (clazz.isAnnotationPresent(ConfigurationProperties.class)) {
+            String configBeanName= className.substring(className.lastIndexOf('.') + 1);
+                configBeanName = Character.toLowerCase(configBeanName.charAt(0)) + configBeanName.substring(1);
+            // 注册配置类本身作为Bean
+            BeanDefinition configBeanDef = new BeanDefinition();
+            configBeanDef.setBeanClass(clazz);
+            beanDefinitions.put(configBeanName, configBeanDef);
         }
     }
 }

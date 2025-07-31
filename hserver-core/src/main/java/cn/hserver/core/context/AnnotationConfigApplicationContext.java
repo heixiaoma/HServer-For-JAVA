@@ -1,5 +1,6 @@
 package cn.hserver.core.context;
 
+import cn.hserver.core.context.handler.AnnotationHandler;
 import cn.hserver.core.ioc.bean.BeanDefinition;
 import cn.hserver.core.ioc.BeanFactory;
 import cn.hserver.core.aop.HookFactory;
@@ -13,15 +14,13 @@ public class AnnotationConfigApplicationContext {
 
     private final static BeanFactory beanFactory = new BeanFactory();
 
-    private final HookFactory hookFactory = new HookFactory();
-
     private final Map<String, BeanDefinition> beanDefinitions = new HashMap<>();
 
     public AnnotationConfigApplicationContext(Set<String> basePackages) {
         // 扫描
         basePackages.forEach(this::scan);
         //处理aop、hook关系
-        hookFactory.handlerHookData(beanDefinitions);
+        HookFactory.handlerHookData(beanDefinitions);
         refresh();
     }
 
@@ -57,7 +56,9 @@ public class AnnotationConfigApplicationContext {
     private void processClass(String className) {
         try {
             Class<?> clazz = Class.forName(className);
-            AnnotationFactory.processClass(clazz, beanDefinitions);
+            AnnotationHandler.ANNOTATION_HANDLERS.forEach(handler -> {
+                handler.handle(clazz, beanDefinitions);
+            });
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Error loading class: " + className, e);
         }
@@ -87,7 +88,7 @@ public class AnnotationConfigApplicationContext {
     }
 
 
-    public static Object getBean(String name) throws Exception {
+    public static Object getBean(String name) {
         try {
             return beanFactory.getBean(name);
         }catch (Exception e){
@@ -95,7 +96,7 @@ public class AnnotationConfigApplicationContext {
         }
     }
 
-    public static  <T> T getBean(Class<T> requiredType) throws Exception {
+    public static  <T> T getBean(Class<T> requiredType){
         try {
             return beanFactory.getBean(requiredType);
         }catch (Exception e){

@@ -1,12 +1,8 @@
 package cn.hserver.core.context.handler;
 
 import cn.hserver.core.aop.annotation.Hook;
-import cn.hserver.core.ioc.annotation.Bean;
-import cn.hserver.core.ioc.annotation.Configuration;
-import cn.hserver.core.ioc.annotation.Scope;
 import cn.hserver.core.ioc.bean.BeanDefinition;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
 public class HookHandler implements AnnotationHandler {

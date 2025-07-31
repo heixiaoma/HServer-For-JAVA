@@ -15,8 +15,8 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 public class HServerApplication {
-    private static final CountDownLatch shutdownLatch = new CountDownLatch(1);
     private static final Logger log = LoggerFactory.getLogger(HServerApplication.class);
+    private static final CountDownLatch shutdownLatch = new CountDownLatch(1);
     private static boolean running = false;
 
     static {

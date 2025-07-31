@@ -1,4 +1,4 @@
-package cn.hserver.core.ioc.annotation;
+package cn.hserver.core.config.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

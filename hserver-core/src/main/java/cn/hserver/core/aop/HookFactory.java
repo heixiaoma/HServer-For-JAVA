@@ -18,7 +18,7 @@ public class HookFactory {
 
     private final ProxyFactory proxyFactory = new ProxyFactory();
 
-    public void handlerHookData( Map<String, BeanDefinition> beanDefinitions){
+    public static void handlerHookData( Map<String, BeanDefinition> beanDefinitions){
         for (String beanName : beanDefinitions.keySet()) {
             BeanDefinition beanDefinition = beanDefinitions.get(beanName);
             if (beanDefinition.isSingleton()) {

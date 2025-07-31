@@ -15,7 +15,7 @@ import java.util.function.Function;
  * 配置文件读取工具类，支持 YAML 和 Properties 格式
  */
 public class ConfigData {
-    private static final Map<String, Object> configMap = new HashMap<>();
+    private static final ConfigMap configMap = new ConfigMap();
     private final static ConfigData reader = new ConfigData();
 
     public static ConfigData getInstance() {

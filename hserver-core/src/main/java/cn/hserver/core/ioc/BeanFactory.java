@@ -1,10 +1,14 @@
 package cn.hserver.core.ioc;
 
 import cn.hserver.core.aop.HookFactory;
+import cn.hserver.core.config.ConfigData;
+import cn.hserver.core.config.annotation.ConfigurationProperties;
+import cn.hserver.core.config.annotation.Value;
 import cn.hserver.core.ioc.annotation.Autowired;
 import cn.hserver.core.ioc.annotation.Qualifier;
 import cn.hserver.core.ioc.annotation.PostConstruct;
 import cn.hserver.core.ioc.bean.BeanDefinition;
+import cn.hserver.core.ioc.handler.PopulateBeanHandler;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -168,70 +172,17 @@ public class BeanFactory {
      * @throws Exception
      */
     private void populateBean(Object beanInstance) throws Exception {
-        Class<?> beanClass = beanInstance.getClass();
-        Field[] fields = beanClass.getDeclaredFields();
-
-        field:for (Field field : fields) {
-            if (field.isAnnotationPresent(Autowired.class)) {
-                Object fieldValue = null;
-                String beanName = null;
-
-                // 检查字段上是否有@Qualifier注解
-                Qualifier qualifier = field.getAnnotation(Qualifier.class);
-                if (qualifier != null) {
-                    beanName = qualifier.value();
-                }
-
-                // 1. 优先尝试通过setter方法注入
-                try {
-                    // 使用Introspector获取BeanInfo
-                    BeanInfo beanInfo = Introspector.getBeanInfo(beanClass);
-                    PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-
-                    // 查找与字段匹配的属性描述符
-                    for (PropertyDescriptor pd : propertyDescriptors) {
-                        if (pd.getName().equals(field.getName()) && pd.getWriteMethod() != null) {
-                            Method setterMethod = pd.getWriteMethod();
-
-                            // 确保setter方法是public的
-                            if (Modifier.isPublic(setterMethod.getModifiers())) {
-                                // 获取要注入的bean实例
-                                if (beanName != null) {
-                                    fieldValue = getBean(beanName);
-                                } else {
-                                    fieldValue = getBean(field.getType());
-                                }
-
-                                // 调用setter方法
-                                setterMethod.invoke(beanInstance, fieldValue);
-                                continue field; // 成功通过setter注入，跳过字段反射
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    // 忽略异常，继续尝试字段反射注入
-                }
-
-                // 2. 使用字段反射注入
-                field.setAccessible(true);
-                if (beanName != null) {
-                    fieldValue = getBean(beanName);
-                } else {
-                    fieldValue = getBean(field.getType());
-                }
-                field.set(beanInstance, fieldValue);
-            }
+        for (PopulateBeanHandler handler : PopulateBeanHandler.HANDLERS) {
+            handler.populate(beanInstance);
         }
     }
 
     private Object[] resolveConstructorArguments(Constructor<?> constructor) throws Exception {
         Class<?>[] parameterTypes = constructor.getParameterTypes();
         Object[] args = new Object[parameterTypes.length];
-
         for (int i = 0; i < parameterTypes.length; i++) {
             Class<?> parameterType = parameterTypes[i];
             String beanName = null;
-
             // 检查参数上是否有@Qualifier注解
             Parameter parameter = constructor.getParameters()[i];
             Qualifier qualifier = parameter.getAnnotation(Qualifier.class);
