@@ -1,12 +1,19 @@
 package cn.hserver.plugin.beetlsql;
 
+import cn.hserver.core.context.IocApplicationContext;
 import cn.hserver.core.context.handler.AnnotationHandler;
+import cn.hserver.core.ioc.bean.BeanDefinition;
 import cn.hserver.core.plugin.bean.PluginInfo;
 import cn.hserver.core.plugin.handler.PluginAdapter;
+import cn.hserver.plugin.beetlsql.annotation.BeetlSQL;
 import cn.hserver.plugin.beetlsql.handler.BeetlSQLHandler;
+import org.beetl.sql.core.SQLManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -16,9 +23,31 @@ public class BeetLSqlPlugin extends PluginAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(BeetLSqlPlugin.class);
 
+    private static final List<Class<?>> beetlsql=new ArrayList<>();
+
     @Override
-    public void ioc(){
-        AnnotationHandler.addHandler(new BeetlSQLHandler());
+    public void startApp() {
+        AnnotationHandler.addHandler(new BeetlSQLHandler(beetlsql));
+    }
+
+    @Override
+    public void iocStartPopulate(Map<String, BeanDefinition> beanDefinitions){
+        for (Class<?> aClass : beetlsql) {
+            BeetlSQL beetlSQL =aClass.getAnnotation(BeetlSQL.class);
+            if (beetlSQL!=null) {
+                SQLManager sqlManager;
+                if (beetlSQL.value().trim().isEmpty()) {
+                    sqlManager = IocApplicationContext.getBean(SQLManager.class);
+                } else {
+                    sqlManager = (SQLManager) IocApplicationContext.getBean(beetlSQL.value());
+                }
+                if (sqlManager != null) {
+                    Object mapper = sqlManager.getMapper(aClass);
+                    IocApplicationContext.addBean(mapper);
+                }
+            }
+        }
+
     }
 
     @Override

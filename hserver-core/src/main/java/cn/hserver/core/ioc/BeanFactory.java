@@ -44,6 +44,11 @@ public class BeanFactory {
         singletonObjects.put(configBeanDef.getDefaultBeanName(), bean);
     }
 
+    public void addBean(BeanDefinition beanDefinition,Object bean) {
+        beanDefinitionMap.put(beanDefinition.getDefaultBeanName(), beanDefinition);
+        singletonObjects.put(beanDefinition.getDefaultBeanName(), bean);
+    }
+
     public <T> List<T> getBeansOfType(Class<T> type) {
         List<T> beans = new ArrayList<>();
         for (Map.Entry<String, BeanDefinition> entry : beanDefinitionMap.entrySet()) {
@@ -106,7 +111,6 @@ public class BeanFactory {
                 sharedInstance = singletonObjects.get(name);
                 if (sharedInstance == null) {
                     singletonsCurrentlyInCreation.add(name);
-
                     try {
                         final Object beanInstance = createBean(beanDefinition);
                         singletonFactories.put(name, beanInstance);

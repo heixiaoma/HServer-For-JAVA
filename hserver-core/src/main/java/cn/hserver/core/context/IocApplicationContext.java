@@ -4,6 +4,7 @@ import cn.hserver.core.context.handler.AnnotationHandler;
 import cn.hserver.core.ioc.bean.BeanDefinition;
 import cn.hserver.core.ioc.BeanFactory;
 import cn.hserver.core.aop.HookFactory;
+import cn.hserver.core.plugin.PluginManager;
 import cn.hserver.core.util.ClassLoadUtil;
 
 import java.io.File;
@@ -18,15 +19,23 @@ public class IocApplicationContext {
     private final Map<String, BeanDefinition> beanDefinitions = new HashMap<>();
 
     public IocApplicationContext(Set<String> basePackages) {
+        PluginManager.getPlugin().iocStartScan();
         // 扫描
         basePackages.forEach(this::scan);
         //处理aop、hook关系
         HookFactory.handlerHookData(beanDefinitions);
+        PluginManager.getPlugin().iocStartRegister(beanDefinitions);
+        registerBeanDefinition();
+        PluginManager.getPlugin().iocStartPopulate(beanDefinitions);
         refresh();
     }
 
     public static void addBean(Object obj) {
         beanFactory.addBean(obj);
+    }
+
+    public static void addBean(BeanDefinition beanDefinition,Object obj) {
+        beanFactory.addBean(beanDefinition,obj);
     }
 
     private void scan(String basePackage) {
@@ -39,12 +48,14 @@ public class IocApplicationContext {
         });
     }
 
-
-    private void refresh() {
+    private void registerBeanDefinition(){
         // 注册所有Bean定义
         for (Map.Entry<String, BeanDefinition> entry : beanDefinitions.entrySet()) {
             beanFactory.registerBeanDefinition(entry.getKey(), entry.getValue());
         }
+    }
+
+    private void refresh() {
         //单例bean的提前预处理
         // 新增：启动时预初始化所有单例Bean（处理依赖关系）
         for (String beanName : beanDefinitions.keySet()) {

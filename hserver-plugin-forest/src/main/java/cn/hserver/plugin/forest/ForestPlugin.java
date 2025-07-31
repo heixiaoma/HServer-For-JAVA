@@ -14,7 +14,7 @@ public class ForestPlugin extends PluginAdapter {
 
 
     @Override
-    public void ioc() {
+    public void startApp() {
         AnnotationHandler.addHandler(new ForestClientHandler());
     }
 

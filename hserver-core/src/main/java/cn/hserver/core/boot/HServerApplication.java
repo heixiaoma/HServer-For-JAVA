@@ -62,7 +62,6 @@ public class HServerApplication {
             EnvironmentUtil.init(testClass);
             //启动log配置
             HServerLogConfig.init();
-            PluginManager.getPlugin().ioc();
             //启动IOC容器
             Set<String> plugPackages = PluginManager.getPlugin().getPlugPackages();
             if (testClass != null) {

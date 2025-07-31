@@ -1,8 +1,11 @@
 package cn.hserver.core.plugin.handler;
 
+import cn.hserver.core.ioc.bean.BeanDefinition;
 import cn.hserver.core.plugin.bean.PluginInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  * 插件适配器
@@ -23,11 +26,21 @@ public abstract class PluginAdapter {
    }
 
     /**
-     * 开始初始化
+     * 开始扫描
      */
-    public void ioc(){
+    public void iocStartScan(){
 
    }
+
+   //扫描完成开始注册bean
+    public void iocStartRegister(Map<String, BeanDefinition> beanDefinitions){
+
+    }
+
+    //注册bean后开始填充bean
+    public void iocStartPopulate(Map<String, BeanDefinition> beanDefinitions){
+
+    }
 
     /**
      * 启动完成

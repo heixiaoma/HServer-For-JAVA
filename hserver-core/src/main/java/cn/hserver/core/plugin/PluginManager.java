@@ -1,9 +1,11 @@
 package cn.hserver.core.plugin;
 
+import cn.hserver.core.ioc.bean.BeanDefinition;
 import cn.hserver.core.plugin.bean.PluginInfo;
 import cn.hserver.core.plugin.handler.PluginAdapter;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 
@@ -43,12 +45,25 @@ public class PluginManager extends PluginAdapter {
     }
 
     @Override
-    public void ioc() {
+    public void iocStartScan() {
         for (PluginAdapter plugAdapter : obj) {
-            plugAdapter.ioc();
+            plugAdapter.iocStartScan();
         }
     }
 
+    @Override
+    public void iocStartRegister(Map<String, BeanDefinition> beanDefinitions) {
+        for (PluginAdapter plugAdapter : obj) {
+            plugAdapter.iocStartRegister(beanDefinitions);
+        }
+    }
+
+    @Override
+    public void iocStartPopulate(Map<String, BeanDefinition> beanDefinitions) {
+        for (PluginAdapter plugAdapter : obj) {
+            plugAdapter.iocStartPopulate(beanDefinitions);
+        }
+    }
 
     @Override
     public void startApp() {
