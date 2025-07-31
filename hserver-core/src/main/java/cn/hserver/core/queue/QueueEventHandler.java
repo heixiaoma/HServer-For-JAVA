@@ -1,6 +1,6 @@
 package cn.hserver.core.queue;
 
-import cn.hserver.core.context.AnnotationConfigApplicationContext;
+import cn.hserver.core.context.IocApplicationContext;
 import cn.hserver.core.queue.bean.QueueData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class QueueEventHandler {
     public void invoke(QueueData queueData) {
         try {
             if (handler == null) {
-                handler = AnnotationConfigApplicationContext.getBean(handlerName);
+                handler = IocApplicationContext.getBean(handlerName);
             }
             Object[] args = queueData.getArgs();
             if (!method.isAccessible()) {

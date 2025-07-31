@@ -10,13 +10,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-public class AnnotationConfigApplicationContext {
+public class IocApplicationContext {
 
     private final static BeanFactory beanFactory = new BeanFactory();
 
     private final Map<String, BeanDefinition> beanDefinitions = new HashMap<>();
 
-    public AnnotationConfigApplicationContext(Set<String> basePackages) {
+    public IocApplicationContext(Set<String> basePackages) {
         // 扫描
         basePackages.forEach(this::scan);
         //处理aop、hook关系

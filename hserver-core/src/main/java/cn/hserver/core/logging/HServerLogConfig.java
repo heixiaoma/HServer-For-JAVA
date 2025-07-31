@@ -4,7 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import cn.hserver.core.config.ServerConfig;
-import cn.hserver.core.context.AnnotationConfigApplicationContext;
+import cn.hserver.core.context.IocApplicationContext;
 import cn.hserver.core.util.JarInputStreamUtil;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ import java.io.InputStream;
 public class HServerLogConfig {
     public static void init() {
         try {
-            ServerConfig serverConfig = AnnotationConfigApplicationContext.getBean(ServerConfig.class);
+            ServerConfig serverConfig = IocApplicationContext.getBean(ServerConfig.class);
             if (serverConfig!=null&&serverConfig.getLogbackName() != null && !serverConfig.getLogbackName().isEmpty()) {
                 InputStream logbackName = HServerLogConfig.class.getResourceAsStream("/" + serverConfig.getLogbackName().trim());
                 if (logbackName != null) {

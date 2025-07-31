@@ -5,7 +5,7 @@ import cn.hserver.core.ioc.annotation.Qualifier;
 
 import java.lang.reflect.Field;
 
-import static cn.hserver.core.context.AnnotationConfigApplicationContext.getBean;
+import static cn.hserver.core.context.IocApplicationContext.getBean;
 
 public class AutowiredHandler implements PopulateBeanHandler{
 

@@ -1,7 +1,7 @@
 
 package cn.hserver.core.scheduling;
 
-import cn.hserver.core.context.AnnotationConfigApplicationContext;
+import cn.hserver.core.context.IocApplicationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +31,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
                     time = expression.getNextValidTimeAfter(now);
                     try {
                         method.setAccessible(true);
-                        Object bean = AnnotationConfigApplicationContext.getBean(beanName);
+                        Object bean = IocApplicationContext.getBean(beanName);
                         if (bean!=null) {
                             method.invoke(bean,getNullParm(method));
                         }
@@ -53,7 +53,7 @@ public class  ScheduledThreadPoolExecutorPro extends ScheduledThreadPoolExecutor
         Runnable scheduleTask = () -> {
             try {
                 method.setAccessible(true);
-                Object bean = AnnotationConfigApplicationContext.getBean(beanName);
+                Object bean = IocApplicationContext.getBean(beanName);
                 if (bean!=null) {
                     method.invoke(bean,getNullParm(method));
                 }

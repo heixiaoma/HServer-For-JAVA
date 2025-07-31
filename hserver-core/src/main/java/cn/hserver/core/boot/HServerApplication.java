@@ -1,7 +1,7 @@
 package cn.hserver.core.boot;
 
 import cn.hserver.core.config.ConfigData;
-import cn.hserver.core.context.AnnotationConfigApplicationContext;
+import cn.hserver.core.context.IocApplicationContext;
 import cn.hserver.core.logging.HServerLogAsyncAppender;
 import cn.hserver.core.logging.HServerLogConfig;
 import cn.hserver.core.logging.LogAdapter;
@@ -43,7 +43,7 @@ public class HServerApplication {
             //启动log配置
             HServerLogConfig.init();
             //启动IOC容器
-            new AnnotationConfigApplicationContext(packages());
+            new IocApplicationContext(packages());
             //启动队列
             QueueManager.startQueueServer();
             //启动定时任务
@@ -79,7 +79,7 @@ public class HServerApplication {
 
     private static void success(){
         log.info("HServer启动成功");
-        HServerLogAsyncAppender.setHasLog(AnnotationConfigApplicationContext.getBeansOfType(LogAdapter.class));
+        HServerLogAsyncAppender.setHasLog(IocApplicationContext.getBeansOfType(LogAdapter.class));
     }
 
 }

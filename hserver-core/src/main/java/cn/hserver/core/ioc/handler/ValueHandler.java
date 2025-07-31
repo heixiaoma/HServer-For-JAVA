@@ -12,7 +12,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import static cn.hserver.core.context.AnnotationConfigApplicationContext.getBean;
+import static cn.hserver.core.context.IocApplicationContext.getBean;
 
 public class ValueHandler implements PopulateBeanHandler{
 

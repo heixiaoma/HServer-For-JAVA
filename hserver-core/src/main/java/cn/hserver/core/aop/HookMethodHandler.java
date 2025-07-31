@@ -1,7 +1,7 @@
 package cn.hserver.core.aop;
 
 import cn.hserver.core.aop.bean.HookBeanDefinition;
-import cn.hserver.core.context.AnnotationConfigApplicationContext;
+import cn.hserver.core.context.IocApplicationContext;
 import javassist.util.proxy.MethodHandler;
 
 import java.lang.reflect.InvocationTargetException;
@@ -19,7 +19,7 @@ public class HookMethodHandler implements MethodHandler {
     @Override
     public Object invoke(Object self, Method thismethod, Method proceed, Object[] args) throws Throwable {
         if (hookAdapter==null){
-            hookAdapter = (HookAdapter) AnnotationConfigApplicationContext.getBean(hookBeanDefinition.getHookHandler());
+            hookAdapter = (HookAdapter) IocApplicationContext.getBean(hookBeanDefinition.getHookHandler());
         }
         for (Method method : hookBeanDefinition.getHookMethod()) {
             if (method.equals(thismethod)) {
