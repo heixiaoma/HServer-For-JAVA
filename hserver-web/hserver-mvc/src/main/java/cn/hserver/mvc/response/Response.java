@@ -157,11 +157,4 @@ public interface Response {
      */
     boolean hasData();
 
-    /**
-     * 设置为代理模式，就不输出数据了
-     *
-     * @param p
-     */
-    void setUseCtx(boolean p);
-
 }

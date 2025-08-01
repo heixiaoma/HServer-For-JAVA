@@ -5,9 +5,7 @@
 
 package cn.hserver.mvc.request;
 
-public interface Cookie extends Comparable<Cookie> {
-    long UNDEFINED_MAX_AGE = Long.MIN_VALUE;
-
+public interface Cookie  {
     String name();
 
     String value();

@@ -7,53 +7,50 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 /**
  * @author hxm
  */
 public abstract class Ws {
-    private static final Logger log = LoggerFactory.getLogger(Ws.class);
 
-    private String message;
-    private byte[] binary;
-    private String uid;
+    private final String message;
+    private final byte[] binary;
+    private final String uid;
     private final Request request;
-    private WsType type;
+    private final WsType type;
 
-    public Ws(String uid, Request request, WsType type) {
-        this.uid = uid;
-        this.request = request;
-        this.type=type;
-    }
-
-    public Ws(String message, String uid, Request request, WsType type) {
-        this.message = message;
-        this.uid = uid;
-        this.request = request;
-        this.type=type;
-    }
-
-    public Ws(byte[] binary, String uid, Request request, WsType type) {
+    public Ws(byte[] binary,String message, String uid, Request request, WsType type) {
         this.binary = binary;
         this.uid = uid;
         this.request = request;
         this.type=type;
+        this.message = message;
     }
 
     public WsType getType() {
         return type;
     }
 
-    public void setType(WsType type) {
-        this.type = type;
+    public void send(String msg){
+        send(msg, null);
     }
+    public  void send(byte[] msg){
+        send(msg, null);
+    }
+    public  void sendBinary(byte[] msg){
+        sendBinary(msg, null);
+    }
+    public abstract void send(String msg, Consumer<Boolean> callback);
 
-    public abstract void send(String msg);
+    public abstract void send(byte[] msg,Consumer<Boolean> callback);
 
-    public abstract void send(byte[] msg);
+    public abstract void sendBinary(byte[] msg, Consumer<Boolean> callback);
 
-    public  abstract void sendBinary(byte[] msg);
+
+
 
     public String query(String name) {
         return request.query(name);
@@ -63,16 +60,8 @@ public abstract class Ws {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public String getUid() {
         return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
     }
 
     public Request getRequest() {
@@ -85,9 +74,5 @@ public abstract class Ws {
 
     public byte[] getBinary() {
         return binary;
-    }
-
-    public void setBinary(byte[] binary) {
-        this.binary = binary;
     }
 }

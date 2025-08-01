@@ -10,9 +10,15 @@ public class NamedThreadFactory implements ThreadFactory {
 
     private final String prefix;
     private final LongAdder threadNumber = new LongAdder();
-
+    private final   boolean isDaemon;
     public NamedThreadFactory(String prefix) {
         this.prefix = prefix;
+        this.isDaemon = true;
+    }
+
+    public NamedThreadFactory(String prefix, boolean daemon) {
+        this.prefix = prefix;
+        this.isDaemon = daemon;
     }
 
     @Override
@@ -20,7 +26,8 @@ public class NamedThreadFactory implements ThreadFactory {
         threadNumber.add(1);
         Thread thread = new Thread(runnable, prefix + "@" + threadNumber.intValue());
         //不要卡线程
-        thread.setDaemon(true);
+        thread.setDaemon(isDaemon);
         return thread;
     }
+
 }
