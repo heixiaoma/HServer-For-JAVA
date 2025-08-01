@@ -35,6 +35,7 @@
         <module>hserver-go-core</module>
         <module>hserver-plugin-mcp</module>
         <module>hserver-core</module>
+        <module>hserver-web</module>
     </modules>
 
     <properties>
