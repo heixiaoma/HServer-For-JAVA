@@ -1,6 +1,6 @@
 package cn.hserver.netty.web;
 
-import cn.hserver.mvc.server.NetworkServer;
+import cn.hserver.mvc.server.WebServer;
 import cn.hserver.netty.web.constants.NettyConfig;
 import cn.hserver.netty.web.handler.NettyServerHandler;
 import cn.hserver.netty.web.util.EventLoopUtil;
@@ -10,7 +10,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollChannelOption;
 
-public class NettyNetworkServer implements NetworkServer {
+public class NettyServer implements WebServer {
 
    private final ServerBootstrap bootstrap = new ServerBootstrap();
    private  Channel channel;

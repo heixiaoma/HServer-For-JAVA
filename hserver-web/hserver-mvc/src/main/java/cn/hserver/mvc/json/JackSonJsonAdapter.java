@@ -33,7 +33,7 @@ public class JackSonJsonAdapter implements JsonAdapter {
     }
 
     @Override
-    public Object convertObject(String data, Class type) {
+    public Object convertObject(String data, Class<?> type) {
         try {
             return WebConstConfig.OBJECT_MAPPER.readValue(data, type);
         } catch (Throwable e) {
@@ -42,12 +42,12 @@ public class JackSonJsonAdapter implements JsonAdapter {
     }
 
     @Override
-    public Object convertMapToObject(Map data, Class type) {
+    public Object convertMapToObject(Map<?,?> data, Class<?> type) {
         return WebConstConfig.OBJECT_MAPPER.convertValue(data, type);
     }
 
     @Override
-    public Object convertObjToObject(Object data, Class type) {
+    public Object convertObjToObject(Object data, Class<?> type) {
         return WebConstConfig.OBJECT_MAPPER.convertValue(data, type);
     }
 

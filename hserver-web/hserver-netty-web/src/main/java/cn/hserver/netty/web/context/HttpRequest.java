@@ -29,7 +29,7 @@ public class HttpRequest implements Request {
     private static final Logger log = LoggerFactory.getLogger(Request.class);
     private String requestId;
     private String uri;
-    private String nettyUri;
+    private String uriWithParams;
     private HttpSession httpSession;
     private HttpMethod requestType;
     private ChannelHandlerContext ctx;
@@ -153,8 +153,8 @@ public class HttpRequest implements Request {
     }
 
     @Override
-    public String getNettyUri() {
-        return nettyUri;
+    public String getUriWithParams() {
+        return uriWithParams;
     }
 
     @Override
@@ -271,8 +271,8 @@ public class HttpRequest implements Request {
         this.uri = uri;
     }
 
-    public void setNettyUri(String nettyUri) {
-        this.nettyUri = nettyUri;
+    public void setUriWithParams(String uriWithParams) {
+        this.uriWithParams = uriWithParams;
     }
 
     public void setRequestType(HttpMethod requestType) {
@@ -295,6 +295,18 @@ public class HttpRequest implements Request {
     @Override
     public Map<String, List<String>> getUrlParams() {
         return urlParams;
+    }
+
+    @Override
+    public void addUrlParams(String key, String value) {
+        List<String> strings = urlParams.get(key);
+        if (strings == null) {
+            strings = new ArrayList<>();
+            strings.add(value);
+            urlParams.put(key, strings);
+        }else {
+            strings.add(value);
+        }
     }
 
     public void setUrlParams(Map<String, List<String>> urlParams) {

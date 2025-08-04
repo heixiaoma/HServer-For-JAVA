@@ -165,7 +165,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     private cn.hserver.netty.web.context.HttpRequest handlerReq(HttpRequest req) {
         cn.hserver.netty.web.context.HttpRequest request = new cn.hserver.netty.web.context.HttpRequest();
         try {
-            request.setNettyUri(req.uri());
+            request.setUriWithParams(req.uri());
             //获取URi，設置真實的URI
             int i = req.uri().indexOf("?");
             if (i > 0) {

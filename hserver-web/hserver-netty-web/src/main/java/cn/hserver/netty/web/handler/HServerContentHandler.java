@@ -47,7 +47,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         String id = RequestIdGen.getId();
         request.setRequestId(id);
         request.setCtx(ctx);
-        request.setNettyUri(req.uri());
+        request.setUriWithParams(req.uri());
         handlerUrl(request, req);
         handlerBody(request, req);
         //获取URi，設置真實的URI

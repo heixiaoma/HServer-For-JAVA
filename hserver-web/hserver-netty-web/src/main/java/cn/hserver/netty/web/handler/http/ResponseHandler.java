@@ -191,7 +191,7 @@ public class ResponseHandler {
         }
         if (log.isDebugEnabled()) {
             Request request = webContext.request;
-            log.debug("地址：{} 方法：{} 耗时：{}/ms 来源:{}", request.getNettyUri(), request.getRequestMethod().name(), ((System.currentTimeMillis() - request.getCreateTime())), request.getIpAddress());
+            log.debug("地址：{} 方法：{} 耗时：{}/ms 来源:{}", request.getUriWithParams(), request.getRequestMethod().name(), ((System.currentTimeMillis() - request.getCreateTime())), request.getIpAddress());
         }
     }
 

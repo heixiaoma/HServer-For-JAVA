@@ -55,7 +55,7 @@ public interface Request {
      *
      * @return
      */
-    String getNettyUri();
+    String getUriWithParams();
 
     /**
      * 请求方法类型
@@ -77,6 +77,13 @@ public interface Request {
      * @return
      */
     Map<String, List<String>> getUrlParams();
+
+    /**
+     * 添加URL参数
+     * @param key
+     * @param value
+     */
+    void addUrlParams(String key,String value);
 
     /**
      * 查询一个参数

@@ -15,7 +15,7 @@ public interface JsonAdapter {
      * @param type
      * @return
      */
-    Object convertObject(String data, Class type);
+    Object convertObject(String data, Class<?> type);
 
 
     /**
@@ -34,7 +34,7 @@ public interface JsonAdapter {
      * @param type
      * @return
      */
-    Object convertMapToObject(Map data, Class type);
+    Object convertMapToObject(Map<?,?> data, Class<?> type);
 
     /**
      * obj转换
@@ -42,7 +42,7 @@ public interface JsonAdapter {
      * @param type
      * @return
      */
-    Object convertObjToObject(Object data, Class type);
+    Object convertObjToObject(Object data, Class<?> type);
 
     /**
      * 对象转String
