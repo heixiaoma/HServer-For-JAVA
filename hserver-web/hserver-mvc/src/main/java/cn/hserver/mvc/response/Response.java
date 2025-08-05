@@ -131,12 +131,6 @@ public interface Response {
     void setStatus(HttpResponseStatus httpResponseStatus);
 
     /**
-     * 输出流
-     * @return
-     */
-    OutputStream getOutputStream();
-
-    /**
      * 使用SSE
      * 默认超时
      */

@@ -1,11 +1,15 @@
 package cn.hserver.mvc.pipeline;
 
 import cn.hserver.mvc.context.WebContext;
+import cn.hserver.mvc.exception.NotFoundException;
 import cn.hserver.mvc.server.WebServer;
 
 public class PipelineExecutor {
 
-    public static void executor(WebContext webContext) {
-         WebServer.router.matchAndHandle(webContext);
+    public static void executor(WebContext webContext) throws Exception {
+        WebServer.router.matchAndHandle(webContext);
+        if (!webContext.response.hasData()){
+            throw new NotFoundException();
+        }
     }
 }

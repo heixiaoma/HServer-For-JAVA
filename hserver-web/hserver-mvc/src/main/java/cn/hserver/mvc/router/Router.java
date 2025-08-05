@@ -5,6 +5,8 @@ import cn.hserver.mvc.annotation.router.*;
 import cn.hserver.mvc.constants.HttpMethod;
 import cn.hserver.mvc.constants.HttpResponseStatus;
 import cn.hserver.mvc.context.WebContext;
+import cn.hserver.mvc.exception.MethodNotSupportException;
+import cn.hserver.mvc.exception.NotFoundException;
 import cn.hserver.mvc.exception.WebException;
 import cn.hserver.mvc.util.ParameterUtil;
 
@@ -63,12 +65,12 @@ public class Router {
     }
 
 
-    public boolean matchAndHandle(WebContext ctx) {
+    public boolean matchAndHandle(WebContext ctx) throws Exception {
         String requestPath = ctx.request.getUri();
         String[] requestSegments = normalizePath(requestPath).split("/");
         for (Route route : routes) {
             if (!matchMethod(route.getMethods(), ctx.request.getRequestMethod())){
-                return false;
+                throw new MethodNotSupportException();
             }
             if (matchRoute(route, requestSegments, ctx)) {
                 route.getHandler().handle(ctx);

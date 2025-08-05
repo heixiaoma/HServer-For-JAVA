@@ -5,6 +5,7 @@ import cn.hserver.core.ioc.bean.BeanDefinition;
 import cn.hserver.core.plugin.bean.PluginInfo;
 import cn.hserver.core.plugin.handler.PluginAdapter;
 import cn.hserver.mvc.annotation.Controller;
+import cn.hserver.mvc.annotation.WebSocket;
 import cn.hserver.mvc.server.WebServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +16,9 @@ import java.util.Map;
 import java.util.ServiceLoader;
 
 public class MvcPlugin extends PluginAdapter {
-
     private static final Logger log = LoggerFactory.getLogger(MvcPlugin.class);
     private final List<Class<?>> controllers = new ArrayList<>();
-
+    public static WebServer webServer;
     @Override
     public PluginInfo getPluginInfo() {
         return new PluginInfo.Builder().name("MVC").description( "灵活高性能的WEB框架").build();
@@ -35,8 +35,12 @@ public class MvcPlugin extends PluginAdapter {
                 if(clazz.isAnnotationPresent(Controller.class)){
                     defaultHandler(clazz, beanDefinitions);
                 }
+                if(clazz.isAnnotationPresent(WebSocket.class)){
+                    defaultHandler(clazz, beanDefinitions);
+                }
             }
         });
+
     }
 
     @Override
@@ -64,6 +68,7 @@ public class MvcPlugin extends PluginAdapter {
         ServiceLoader<WebServer> loadedParsers = ServiceLoader.load(WebServer.class);
         for (WebServer webServer : loadedParsers) {
             webServer.start(8080);
+            MvcPlugin.webServer = webServer;
             log.debug("web server started at port 8080");
             break;
         }

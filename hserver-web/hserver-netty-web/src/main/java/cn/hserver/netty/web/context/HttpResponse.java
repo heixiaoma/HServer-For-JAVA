@@ -165,12 +165,6 @@ public class HttpResponse implements Response {
     }
 
     @Override
-    public OutputStream getOutputStream() {
-        return null;
-    }
-
-
-    @Override
     public void sendTemplate(String htmlPath, Map<String, Object> obj) {
         try {
             this.result = WebConstConfig.template.getTemplate(htmlPath, obj);

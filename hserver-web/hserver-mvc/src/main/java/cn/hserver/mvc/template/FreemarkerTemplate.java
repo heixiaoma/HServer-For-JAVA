@@ -32,7 +32,8 @@ public class FreemarkerTemplate implements Template{
      * @return 渲染后的模板内容
      * @throws Exception Exception
      */
-    public String getTemplate(String template, Map map) throws Exception {
+    @Override
+    public String getTemplate(String template, Map<?,?> map) throws Exception {
         freemarker.template.Template cfgTemplate = CFG.getTemplate(template);
         StringWriter stringWriter = new StringWriter();
         cfgTemplate.process(map, stringWriter);

@@ -2,7 +2,12 @@ package cn.hserver.mvc.sse;
 
 
 public abstract class SSeStream {
+    private final Integer retryMilliseconds;
     public SSeStream(Integer retryMilliseconds) {
+        this.retryMilliseconds = retryMilliseconds;
+    }
+
+    protected void init(){
         this.sendStartHeader();
         if (retryMilliseconds != null&&retryMilliseconds > 0) {
             sendRetryEvent(("retry: " + retryMilliseconds + "\n\n"));
@@ -25,10 +30,9 @@ public abstract class SSeStream {
         return this;
      }
 
-     public abstract SSeStream sendSseEvent(String event) ;
-     public abstract void sendStartHeader();
+     protected abstract SSeStream sendSseEvent(String event) ;
+     protected abstract void sendStartHeader();
      public abstract SSeStream addCloseListener(Runnable runnable);
-     public abstract void sendRetryEvent(String event) ;
-
-
+     protected abstract void sendRetryEvent(String event) ;
+     public abstract void close();
 }

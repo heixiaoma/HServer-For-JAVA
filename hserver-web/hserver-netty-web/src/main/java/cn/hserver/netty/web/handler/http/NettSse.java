@@ -19,6 +19,7 @@ public class NettSse extends SSeStream {
         super(retryMilliseconds);
         this.channel=response.getCtx().channel();
         this.response=response;
+        init();
     }
 
     @Override
@@ -63,5 +64,10 @@ public class NettSse extends SSeStream {
                 log.error("sendSseEvent error", future.cause());
             }
         });
+    }
+
+    @Override
+    public void close() {
+        channel.close();
     }
 }
