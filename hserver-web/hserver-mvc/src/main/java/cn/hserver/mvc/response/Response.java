@@ -7,7 +7,6 @@ import cn.hserver.mvc.request.Cookie;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Map;
 
 /**
@@ -24,43 +23,62 @@ public interface Response {
     void addHeader(String key, String value);
 
     /**
-     * 设置下载文件
-     *
-     * @param file
+     * 下载文件 字节数组
+     * @param bytes
+     * @param fileName
      */
-    void downloadFile(File file);
-
-    /**
-     * 下载文件名
-     * @param file
-     * @param name
-     */
-    void downloadFile(File file,String name);
+    void downloadBytes(byte[] bytes, String fileName);
 
 
     /**
-     * 下载大文件
-     *
-     * @param file
-     * @param progressStatus
-     * @throws Exception
-     */
-    void downloadChunkFile(File file, ProgressStatus progressStatus) throws Exception;
-
-    /**
-     * 下载大文件
-     * @param file
-     * @throws Exception
-     */
-    void downloadChunkFile(File file) throws Exception;
-
-    /**
-     * 流的下载文件
+     * 流的下载文件-小文件合适
      *
      * @param inputStream
      * @param fileName
      */
-    void downloadFile(InputStream inputStream, String fileName);
+    void downloadStream(InputStream inputStream, String fileName);
+
+    /**
+     * 下载文件 小文件合适
+     * @param file
+     * @param fileName
+     */
+    void downloadFile(File file, String fileName);
+
+    /**
+     * 下载文件-小文件合适
+     * @param file
+     */
+    void downloadFile(File file);
+
+
+    /**
+     * 设置下载文件 中等文件合适，零拷贝
+     *
+     * @param file
+     */
+    void downloadContinueFile(File file);
+
+    /**
+     * 下载文件名 中等文件合适，零拷贝
+     * @param file
+     * @param name
+     */
+    void downloadContinueFile(File file,String name);
+
+    /**
+     * 分块下载流 超大文件合适
+     * @param inputStream
+     * @param fileName
+     */
+    void downloadChunkStream(InputStream inputStream, String fileName);
+
+    /**
+     * 分块下载文件 超大文件合适
+     * @param file
+     * @param fileName
+     */
+    void downloadChunkFile(File file, String fileName);
 
     /**
      * 发送Object对象自动转json

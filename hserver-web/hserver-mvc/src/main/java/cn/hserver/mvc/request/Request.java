@@ -182,4 +182,6 @@ public interface Request {
     HttpSession getHttpSession();
 
     Set<Cookie> getCookies();
+
+    boolean isKeepAlive();
 }
