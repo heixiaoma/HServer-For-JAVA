@@ -67,41 +67,65 @@ public class HttpResponse implements Response {
 
     @Override
     public void downloadBytes(byte[] bytes, String fileName) {
+        if (bytes==null){
+            throw new RuntimeException("下载字节数组不能为空");
+        }
         this.responseFile=new HttpResponseFile(bytes, null,null, fileName,false,false);
     }
 
 
     @Override
     public void downloadFile(File file) {
+        if (!file.isFile()){
+            throw new RuntimeException("这不是一个文件");
+        }
         this.responseFile=new HttpResponseFile(null,file, null, file.getName(),false,false);
     }
     @Override
     public void downloadFile(File file, String name) {
+        if (!file.isFile()){
+            throw new RuntimeException("这不是一个文件");
+        }
         this.responseFile=new HttpResponseFile(null,file, null,name,false,false);
     }
 
     @Override
     public void downloadStream(InputStream inputStream, String fileName) {
+        if (inputStream!=null){
+            throw new RuntimeException("stream不能为空");
+        }
         this.responseFile=new HttpResponseFile(null,null, inputStream, fileName,false,false);
     }
 
     @Override
     public void downloadChunkFile(File file, String fileName) {
+        if (!file.isFile()){
+            throw new RuntimeException("这不是一个文件");
+        }
         this.responseFile=new HttpResponseFile(null,file, null, fileName,true,false);
     }
 
     @Override
     public void downloadChunkStream(InputStream inputStream, String fileName) {
+        if (inputStream!=null){
+            throw new RuntimeException("stream不能为空");
+        }
         this.responseFile=new HttpResponseFile(null,null, inputStream, fileName,true,false);
     }
 
     @Override
     public void downloadContinueFile(File file) {
+        if (!file.isFile()){
+            throw new RuntimeException("这不是一个文件");
+        }
         this.responseFile=new HttpResponseFile(null,file, null,file.getName(),false,true);
     }
 
     @Override
     public void downloadContinueFile(File file, String name) {
+        if (!file.isFile()){
+            throw new RuntimeException("这不是一个文件");
+        }
         this.responseFile=new HttpResponseFile(null,file, null,name,false,true);
     }
 
