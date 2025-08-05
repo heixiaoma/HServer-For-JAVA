@@ -6,7 +6,7 @@ public abstract class GlobalExceptionHandler {
 
     public abstract void handlerException(Throwable throwable, WebContext webContext);
 
-    protected <T> T getException(Throwable throwable,Class<? extends Throwable> clazz){
+    protected <T> T getException(Throwable throwable,Class<T> clazz){
         // 如果传入的异常为null，直接返回null
         if (throwable == null) {
             return null;
