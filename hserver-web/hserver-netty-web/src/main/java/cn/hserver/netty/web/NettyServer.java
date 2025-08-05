@@ -51,7 +51,7 @@ public class NettyServer implements WebServer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        log.info("Netty事件处理模型 {}", EventLoopUtil.getEventLoopType());
+        log.info("Netty事件处理模型:{}", EventLoopUtil.getEventLoopType());
     }
 
     @Override
