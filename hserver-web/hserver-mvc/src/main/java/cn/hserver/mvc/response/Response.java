@@ -21,21 +21,21 @@ public interface Response {
      * @param key
      * @param value
      */
-    void setHeader(String key, String value);
+    void addHeader(String key, String value);
 
     /**
      * 设置下载文件
      *
      * @param file
      */
-    void setDownloadFile(File file);
+    void downloadFile(File file);
 
     /**
      * 下载文件名
      * @param file
      * @param name
      */
-    void setDownloadFile(File file,String name);
+    void downloadFile(File file,String name);
 
 
     /**
@@ -45,14 +45,14 @@ public interface Response {
      * @param progressStatus
      * @throws Exception
      */
-    void setDownloadBigFile(File file, ProgressStatus progressStatus) throws Exception;
+    void downloadChunkFile(File file, ProgressStatus progressStatus) throws Exception;
 
     /**
      * 下载大文件
      * @param file
      * @throws Exception
      */
-    void setDownloadBigFile(File file) throws Exception;
+    void downloadChunkFile(File file) throws Exception;
 
     /**
      * 流的下载文件
@@ -60,7 +60,7 @@ public interface Response {
      * @param inputStream
      * @param fileName
      */
-    void setDownloadFile(InputStream inputStream, String fileName);
+    void downloadFile(InputStream inputStream, String fileName);
 
     /**
      * 发送Object对象自动转json

@@ -27,8 +27,7 @@ public class UseCtxHandler {
         HttpResponseFile responseFile = httpResponse.getResponseFile();
         File file = responseFile.getFile();
         ProgressStatus progressStatus = responseFile.getProgressStatus();
-        try {
-            RandomAccessFile raf = new RandomAccessFile(file, "r");
+        try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
             long fileLength = raf.length();
             HttpResponseStatus status = HttpResponseStatus.OK;
             DefaultHttpHeaders headers = new DefaultHttpHeaders();
@@ -38,7 +37,7 @@ public class UseCtxHandler {
             headers.set(HttpHeaderNames.CONTENT_TYPE, MimeType.getFileType(file.getName()));
             headers.add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("inline; filename=\"%s\"", URLEncoder.encode(file.getName(), "UTF-8")));
             String range = request.getHeaders().get(HttpHeaderNames.RANGE.toString());
-            long offset, length = raf.length();
+            long offset = 0, length = raf.length();
             if (range != null && !range.trim().isEmpty()) {
                 range = range.substring(6);
                 String[] split = range.split("-");
@@ -64,14 +63,13 @@ public class UseCtxHandler {
             DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1, status);
             response.headers().set(headers);
             ctx.write(response);
-            ChannelFuture sendFileFuture = ctx.write(new DefaultFileRegion(raf.getChannel(), 0, fileLength), ctx.newProgressivePromise());
+            ChannelFuture sendFileFuture = ctx.write(new DefaultFileRegion(raf.getChannel(), offset, fileLength), ctx.newProgressivePromise());
             sendFileFuture.addListener(new ChannelProgressiveFutureListener() {
                 @Override
                 public void operationComplete(ChannelProgressiveFuture future)
                         throws Exception {
                     log.debug("文件 {} 下载完成.", file.getName());
-                    raf.close();
-                    if (progressStatus!=null) {
+                    if (progressStatus != null) {
                         progressStatus.operationComplete(file.getAbsolutePath());
                     }
                 }
@@ -79,7 +77,7 @@ public class UseCtxHandler {
                 @Override
                 public void operationProgressed(ChannelProgressiveFuture future,
                                                 long progress, long total) throws Exception {
-                    if (progressStatus!=null) {
+                    if (progressStatus != null) {
                         progressStatus.downloading(progress, total);
                     }
                 }

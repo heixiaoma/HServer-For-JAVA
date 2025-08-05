@@ -68,9 +68,9 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
             request.setHttpSession(WebConstConfig.SESSION_MANAGER.createSession(request));
         }
         HttpResponse response = new HttpResponse();
-        response.setHeader(WebConstConfig.REQUEST_ID, id);
-        response.setHeader(WebConstConfig.SERVER_NAME, ConstConfig.VERSION);
-        response.setHeader("Server", WebConstConfig.SERVER_NAME);
+        response.addHeader(WebConstConfig.REQUEST_ID, id);
+        response.addHeader(WebConstConfig.SERVER_NAME, ConstConfig.VERSION);
+        response.addHeader("Server", WebConstConfig.SERVER_NAME);
         response.setCtx(ctx);
         WebContext webContext = new WebContext(request, response);
         try {

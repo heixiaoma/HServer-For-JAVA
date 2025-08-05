@@ -62,7 +62,7 @@ public class HttpResponse implements Response {
      * @param value
      */
     @Override
-    public void setHeader(String key, String value) {
+    public void addHeader(String key, String value) {
         this.headers.put(key, value);
     }
 
@@ -72,18 +72,18 @@ public class HttpResponse implements Response {
      * @param file
      */
     @Override
-    public void setDownloadFile(File file) {
+    public void downloadFile(File file) {
         this.responseFile=new HttpResponseFile(file, null, file.getName());
     }
 
     @Override
-    public void setDownloadFile(File file, String name) {
+    public void downloadFile(File file, String name) {
         this.responseFile=new HttpResponseFile(file, null,name);
     }
 
     @Override
-    public void setDownloadBigFile(File file) throws Exception {
-        this.setDownloadBigFile(file,null);
+    public void downloadChunkFile(File file) throws Exception {
+        this.downloadChunkFile(file,null);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class HttpResponse implements Response {
      * @param file
      */
     @Override
-    public void setDownloadBigFile(File file, ProgressStatus progressStatus) throws Exception {
+    public void downloadChunkFile(File file, ProgressStatus progressStatus) throws Exception {
         useCtx=true;
         HttpResponseFile httpResponseFile = new HttpResponseFile(file, null, file.getName());
         httpResponseFile.setProgressStatus(progressStatus);
@@ -117,7 +117,7 @@ public class HttpResponse implements Response {
      * @param inputStream
      */
     @Override
-    public void setDownloadFile(InputStream inputStream, String fileName) {
+    public void downloadFile(InputStream inputStream, String fileName) {
         this.responseFile=new HttpResponseFile(null, inputStream, fileName);
     }
 
