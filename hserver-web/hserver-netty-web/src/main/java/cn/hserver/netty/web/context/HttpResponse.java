@@ -163,6 +163,9 @@ public class HttpResponse implements Response {
     @Override
     public void sendTemplate(String htmlPath, Map<String, Object> obj) {
         try {
+            if (WebConstConfig.template==null){
+                throw new Exception("未集成模版引擎");
+            }
             this.result = WebConstConfig.template.getTemplate(htmlPath, obj);
         } catch (Exception e) {
             log.error(e.getMessage(),e);

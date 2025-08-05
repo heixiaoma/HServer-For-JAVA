@@ -15,6 +15,9 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.ACCEPT_EMPTY
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 public class WebConstConfig {
+
+    public static Integer PORT = 8888;
+
     /**
      * session-key
      */

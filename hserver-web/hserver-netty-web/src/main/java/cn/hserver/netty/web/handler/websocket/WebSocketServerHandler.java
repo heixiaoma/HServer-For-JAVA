@@ -95,6 +95,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         } else {
             ReferenceCountUtil.retain(req);
             ctx.fireChannelRead(req);
+            ctx.pipeline().remove(this);
         }
     }
 

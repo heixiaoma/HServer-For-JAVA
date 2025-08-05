@@ -1,5 +1,6 @@
 package cn.hserver.netty.web;
 
+import cn.hserver.core.config.ConfigData;
 import cn.hserver.mvc.server.WebServer;
 import cn.hserver.netty.web.constants.NettyConfig;
 import cn.hserver.netty.web.handler.NettyServerHandler;
@@ -19,6 +20,14 @@ public class NettyServer implements WebServer {
 
     @Override
     public void start(int port) {
+
+        ConfigData instance = ConfigData.getInstance();
+        NettyConfig.BACKLOG=instance.getInteger("netty.backlog",1024);
+        NettyConfig.WORKER_POOL=instance.getInteger("netty.pool",0);
+        NettyConfig.WRITE_LIMIT=instance.getLong("netty.write.limit");
+        NettyConfig.READ_LIMIT=instance.getLong("netty.read.limit");
+        NettyConfig.HTTP_CONTENT_SIZE=instance.getInteger("netty.content",Integer.MAX_VALUE);
+
         bootstrap.option(ChannelOption.SO_REUSEADDR, true);
         hserverGrop = EventLoopUtil.getEventLoop(NettyConfig.WORKER_POOL, "hserver_grop");
         bootstrap.group(hserverGrop).channel(EventLoopUtil.getEventLoopTypeClass());

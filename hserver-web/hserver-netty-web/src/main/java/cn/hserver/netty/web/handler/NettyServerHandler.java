@@ -4,6 +4,7 @@ import cn.hserver.core.context.IocApplicationContext;
 import cn.hserver.mvc.annotation.WebSocket;
 import cn.hserver.mvc.websoket.WebSocketHandler;
 import cn.hserver.netty.web.constants.NettyConfig;
+import cn.hserver.netty.web.handler.http.WebContentHandler;
 import cn.hserver.netty.web.handler.websocket.WebSocketServerHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -51,6 +52,6 @@ public class NettyServerHandler extends ChannelInitializer<SocketChannel> {
         if (!WEB_SOCKET_ROUTER.isEmpty()) {
             pipeline.addLast(new WebSocketServerHandler());
         }
-        pipeline.addLast(HServerContentHandler.getInstance());
+        pipeline.addLast(WebContentHandler.getInstance());
     }
 }

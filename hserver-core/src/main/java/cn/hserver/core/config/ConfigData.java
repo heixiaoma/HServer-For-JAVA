@@ -180,6 +180,25 @@ public class ConfigData {
     }
 
     /**
+     * 通过 key 获取 Integer 类型配置值
+     * @param key 键
+     * @return Integer 值
+     */
+    public Long getLong(String key) {
+        return getAndConvert(key, Long::valueOf);
+    }
+
+    /**
+     * 通过 key 获取 Integer 类型配置值，提供默认值
+     * @param key 键
+     * @param defaultValue 默认值
+     * @return Integer 值，如果不存在则返回默认值
+     */
+    public Long getLong(String key, Long defaultValue) {
+        return getAndConvert(key, Long::valueOf, defaultValue);
+    }
+
+    /**
      * 通过 key 获取 Boolean 类型配置值
      * @param key 键
      * @return Boolean 值

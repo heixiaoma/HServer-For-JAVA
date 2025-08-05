@@ -1,4 +1,4 @@
-package cn.hserver.netty.web.handler;
+package cn.hserver.netty.web.handler.http;
 
 import cn.hserver.core.config.ConstConfig;
 import cn.hserver.mvc.constants.WebConstConfig;
@@ -9,8 +9,6 @@ import cn.hserver.mvc.request.HeadMap;
 import cn.hserver.mvc.util.RequestIdGen;
 import cn.hserver.netty.web.context.HttpRequest;
 import cn.hserver.netty.web.context.HttpResponse;
-import cn.hserver.netty.web.handler.http.ResponseHandler;
-import cn.hserver.netty.web.handler.http.FileHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler;
@@ -28,18 +26,18 @@ import java.util.Map;
  * @author hxm
  */
 @ChannelHandler.Sharable
-public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class WebContentHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
-    private static final HServerContentHandler instance = new HServerContentHandler();
+    private static final WebContentHandler instance = new WebContentHandler();
 
-    private HServerContentHandler() {
+    private WebContentHandler() {
     }
 
-    public static HServerContentHandler getInstance() {
+    public static WebContentHandler getInstance() {
         return instance;
     }
 
-    private static final Logger log = LoggerFactory.getLogger(HServerContentHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(WebContentHandler.class);
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest req) throws Exception {
