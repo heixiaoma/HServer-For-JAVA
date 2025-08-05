@@ -2,7 +2,6 @@ package cn.hserver.netty.web.context;
 
 import cn.hserver.mvc.constants.WebConstConfig;
 import cn.hserver.mvc.request.HeadMap;
-import cn.hserver.mvc.response.ProgressStatus;
 import cn.hserver.mvc.response.Response;
 import cn.hserver.mvc.sse.SSeStream;
 import cn.hserver.netty.web.handler.http.NettSse;
@@ -66,24 +65,44 @@ public class HttpResponse implements Response {
         this.headers.put(key, value);
     }
 
-    /**
-     * 下载文件
-     *
-     * @param file
-     */
+    @Override
+    public void downloadBytes(byte[] bytes, String fileName) {
+        this.responseFile=new HttpResponseFile(bytes, null,null, fileName,false,false);
+    }
+
+
     @Override
     public void downloadFile(File file) {
-        this.responseFile=new HttpResponseFile(file, null, file.getName());
+        this.responseFile=new HttpResponseFile(null,file, null, file.getName(),false,false);
     }
-
     @Override
     public void downloadFile(File file, String name) {
-        this.responseFile=new HttpResponseFile(file, null,name);
+        this.responseFile=new HttpResponseFile(null,file, null,name,false,false);
     }
 
     @Override
-    public void downloadChunkFile(File file) throws Exception {
-        this.downloadChunkFile(file,null);
+    public void downloadStream(InputStream inputStream, String fileName) {
+        this.responseFile=new HttpResponseFile(null,null, inputStream, fileName,false,false);
+    }
+
+    @Override
+    public void downloadChunkFile(File file, String fileName) {
+        this.responseFile=new HttpResponseFile(null,file, null, fileName,true,false);
+    }
+
+    @Override
+    public void downloadChunkStream(InputStream inputStream, String fileName) {
+        this.responseFile=new HttpResponseFile(null,null, inputStream, fileName,true,false);
+    }
+
+    @Override
+    public void downloadContinueFile(File file) {
+        this.responseFile=new HttpResponseFile(null,file, null,file.getName(),false,true);
+    }
+
+    @Override
+    public void downloadContinueFile(File file, String name) {
+        this.responseFile=new HttpResponseFile(null,file, null,name,false,true);
     }
 
     @Override
@@ -97,29 +116,6 @@ public class HttpResponse implements Response {
         return new NettSse(retryMilliseconds,this);
     }
 
-    /**
-     * 下载大文件
-     *
-     * @param file
-     */
-    @Override
-    public void downloadChunkFile(File file, ProgressStatus progressStatus) throws Exception {
-        useCtx=true;
-        HttpResponseFile httpResponseFile = new HttpResponseFile(file, null, file.getName());
-        httpResponseFile.setProgressStatus(progressStatus);
-        httpResponseFile.setBigFile(true);
-        this.responseFile=httpResponseFile;
-    }
-
-    /**
-     * 下载文件啦
-     *
-     * @param inputStream
-     */
-    @Override
-    public void downloadFile(InputStream inputStream, String fileName) {
-        this.responseFile=new HttpResponseFile(null, inputStream, fileName);
-    }
 
 
     @Override

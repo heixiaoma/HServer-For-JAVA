@@ -10,7 +10,7 @@ import cn.hserver.mvc.util.RequestIdGen;
 import cn.hserver.netty.web.context.HttpRequest;
 import cn.hserver.netty.web.context.HttpResponse;
 import cn.hserver.netty.web.handler.http.ResponseHandler;
-import cn.hserver.netty.web.handler.http.UseCtxHandler;
+import cn.hserver.netty.web.handler.http.FileHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler;
@@ -58,6 +58,7 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
         } else {
             request.setUri(req.uri());
         }
+        request.setKeepAlive(HttpUtil.isKeepAlive(req));
         request.setRequestType(req.method());
         //处理Headers
         HeadMap headers = new HeadMap();
@@ -77,8 +78,10 @@ public class HServerContentHandler extends SimpleChannelInboundHandler<FullHttpR
             WebContextHolder.setWebContext(webContext);
             PipelineExecutor.executor(webContext);
             if (response.isUseCtx()){
-                UseCtxHandler.useCtx(ctx,request,response);
-            }else {
+                return;
+            } if (response.isFile()){
+                FileHandler.handler(ctx,request,response);
+            } else {
                 ResponseHandler.writeResponse(ctx, webContext);
             }
         } catch (Throwable e) {

@@ -1,9 +1,6 @@
 package cn.hserver.netty.web.context;
 
-import cn.hserver.mvc.response.ProgressStatus;
-
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 
 public class HttpResponseFile {
@@ -16,18 +13,28 @@ public class HttpResponseFile {
     //文件名
     private final String fileName;
 
-    private ProgressStatus progressStatus;
+    private final boolean chunked;
 
-    private boolean bigFile=false;
+    private final boolean supportContinue;
 
-    public HttpResponseFile(File file, InputStream inputStream, String fileName) {
+    private final byte[] content;
+
+
+    public HttpResponseFile(byte[] content,File file, InputStream inputStream, String fileName, boolean chunked, boolean supportContinue) {
         this.file = file;
+        this.content = content;
         this.inputStream = inputStream;
         this.fileName = fileName;
+        this.chunked = chunked;
+        this.supportContinue = supportContinue;
     }
 
     public File getFile() {
         return file;
+    }
+
+    public byte[] getContent() {
+        return content;
     }
 
     public InputStream getInputStream() {
@@ -38,19 +45,11 @@ public class HttpResponseFile {
         return fileName;
     }
 
-    public void setBigFile(boolean bigFile) {
-        this.bigFile = bigFile;
+    public boolean isChunked() {
+        return chunked;
     }
 
-    public boolean isBigFile() {
-        return bigFile;
-    }
-
-    public ProgressStatus getProgressStatus() {
-        return progressStatus;
-    }
-
-    public void setProgressStatus(ProgressStatus progressStatus) {
-        this.progressStatus = progressStatus;
+    public boolean isSupportContinue() {
+        return supportContinue;
     }
 }

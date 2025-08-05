@@ -9,7 +9,6 @@ import cn.hserver.mvc.request.Request;
 import cn.hserver.netty.web.context.DefaultCookie;
 import cn.hserver.netty.web.context.HttpRequest;
 import cn.hserver.netty.web.context.HttpResponse;
-import cn.hserver.netty.web.util.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,13 +17,9 @@ import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.FOUND;
@@ -48,46 +43,6 @@ public class ResponseHandler {
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
         response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
-    }
-
-
-    /**
-     * 响应文件类型
-     *
-     * @param response1
-     * @return
-     */
-    private static FullHttpResponse buildFileType(HttpResponse response1) {
-        FullHttpResponse response;
-        if (response1.getResponseFile().getInputStream() != null) {
-            InputStream inputStream = response1.getResponseFile().getInputStream();
-            //getInputStream类型
-            response = new DefaultFullHttpResponse(
-                    HTTP_1_1,
-                    HttpResponseStatus.OK,
-                    Unpooled.wrappedBuffer(Objects.requireNonNull(ByteBufUtil.fileToByteBuf(inputStream))));
-            try {
-                inputStream.close();
-            } catch (IOException ignored) {
-            }
-        } else {
-            //File类型
-            response = new DefaultFullHttpResponse(
-                    HTTP_1_1,
-                    HttpResponseStatus.OK,
-                    Unpooled.wrappedBuffer(Objects.requireNonNull(ByteBufUtil.fileToByteBuf(response1.getResponseFile().getFile()))));
-        }
-
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE, MimeType.getFileType(response1.getResponseFile().getFileName()) + ";charset=UTF-8");
-        //attachment下载模式，inline预览模式
-        String fileName = response1.getResponseFile().getFileName();
-        try {
-            fileName = URLEncoder.encode(fileName, "UTF-8");
-        } catch (Exception e) {
-            log.warn("URL:{} 编码失败:{}", fileName, e.getMessage());
-        }
-        response.headers().add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("inline; filename=\"%s\"", fileName));
-        return response;
     }
 
 
@@ -116,8 +71,9 @@ public class ResponseHandler {
             response.setStatus(response1.getHttpResponseStatus());
         }
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
-        response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-
+        if (request.isKeepAlive()) {
+            response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+        }
         if (request.getInnerHttpSession() != null) {
             cn.hserver.netty.web.context.DefaultCookie defaultCookie = new DefaultCookie(WebConstConfig.SESSION_KEY, request.getInnerHttpSession().id());
             defaultCookie.setHttpOnly(true);
@@ -152,13 +108,7 @@ public class ResponseHandler {
     private static FullHttpResponse buildResponse(WebContext webContext) throws Throwable {
         HttpResponse httpResponse = (HttpResponse) webContext.response;
         FullHttpResponse response = null;
-        if (httpResponse.isUseCtx()) {
-            return null;
-        }
-        if (httpResponse.isFile()) {
-            //控制器下载文件的
-            response = buildFileType(httpResponse);
-        } else if (httpResponse.getResult() != null) {
+       if (httpResponse.getResult() != null) {
             //是否Response的
             response = buildHttpResponseData(httpResponse.getResult());
         }
@@ -188,6 +138,9 @@ public class ResponseHandler {
             }
         } catch (Throwable e) {
             writeException(ctx, e);
+        }
+        if (!webContext.request.isKeepAlive()){
+            ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT).addListener(ChannelFutureListener.CLOSE);
         }
         if (log.isDebugEnabled()) {
             Request request = webContext.request;

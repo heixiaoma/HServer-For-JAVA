@@ -42,6 +42,15 @@ public class HttpRequest implements Request {
     private static final String TEMP_PATH = System.getProperty("java.io.tmpdir") + File.separator;
     private Map<String, Object> attributes;
 
+    private boolean keepAlive;
+
+    @Override
+    public boolean isKeepAlive() {
+        return keepAlive;
+    }
+
+
+
     @Override
     public void setAttribute(String key, Object value) {
         if (attributes == null) {
@@ -335,5 +344,9 @@ public class HttpRequest implements Request {
 
     public void setRequestId(String requestId) {
         this.requestId = requestId;
+    }
+
+    public void setKeepAlive(boolean keepAlive) {
+        this.keepAlive = keepAlive;
     }
 }

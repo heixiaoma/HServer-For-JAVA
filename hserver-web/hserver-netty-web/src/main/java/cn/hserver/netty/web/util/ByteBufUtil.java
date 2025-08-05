@@ -35,15 +35,13 @@ public class ByteBufUtil {
             babs.close();
             return byteBuf;
         } catch (IOException e) {
-            e.printStackTrace();
             return null;
         } finally {
             try {
                 if (input != null) {
                     input.close();
                 }
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            } catch (IOException ignored) {
             }
         }
     }

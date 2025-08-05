@@ -10,6 +10,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.traffic.GlobalTrafficShapingHandler;
 
 import java.util.List;
@@ -45,6 +46,7 @@ public class NettyServerHandler extends ChannelInitializer<SocketChannel> {
         }
         pipeline.addLast(new HttpServerCodec());
         pipeline.addLast(new HttpObjectAggregator(NettyConfig.HTTP_CONTENT_SIZE));
+        pipeline.addLast(new ChunkedWriteHandler());
         //有websocket才走他
         if (!WEB_SOCKET_ROUTER.isEmpty()) {
             pipeline.addLast(new WebSocketServerHandler());

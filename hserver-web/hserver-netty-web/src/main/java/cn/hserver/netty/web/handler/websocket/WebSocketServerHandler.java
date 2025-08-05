@@ -9,6 +9,7 @@ import cn.hserver.netty.web.handler.NettyServerHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.ReferenceCountUtil;
@@ -174,6 +175,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
             } else {
                 request.setUri(req.uri());
             }
+            request.setKeepAlive(HttpUtil.isKeepAlive(req));
             request.setRequestType(req.method());
             HeadMap headers=new HeadMap();
             req.headers().names().forEach(a -> headers.put(a, req.headers().get(a)));
