@@ -67,4 +67,6 @@ public class WebConstConfig {
      * 内部自用名字
      */
     public final static String SERVER_NAME = "HServer-Web";
+
+    public static String STATIC_PATH;
 }
