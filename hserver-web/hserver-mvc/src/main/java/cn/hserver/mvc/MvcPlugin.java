@@ -80,11 +80,11 @@ public class MvcPlugin extends PluginAdapter {
         for (WebServer webServer : loadedParsers) {
             webServer.start(WebConstConfig.PORT);
             MvcPlugin.webServer = webServer;
-            log.debug("WEB容器启动成功:{}", WebConstConfig.PORT);
+            log.info("WEB容器端口:{}", WebConstConfig.PORT);
             break;
         }
         if (webServer == null) {
-            log.warn("WEB容器未找到,请检查是否引入了WEB容器的依赖");
+            throw new RuntimeException("WEB容器未找到,请检查是否引入了WEB容器的依赖");
         }
     }
 }

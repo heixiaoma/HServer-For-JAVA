@@ -2,7 +2,7 @@ package cn.hserver.netty.web.constants;
 
 
 public class NettyConfig {
-    public static IoMultiplexer IO_MOD = IoMultiplexer.IO_URING;
+    public static IoMultiplexer IO_MODE = IoMultiplexer.IO_URING;
 
     /**
      * backlog 指定了内核为此套接口排队的最大连接个数；

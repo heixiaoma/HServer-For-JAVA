@@ -31,7 +31,11 @@ public class HServerApplication {
             log.info("服务即将关闭");
             List<CloseAdapter> beansOfType = IocApplicationContext.getBeansOfType(CloseAdapter.class);
             for (CloseAdapter closeAdapter : beansOfType) {
-                closeAdapter.close();
+                try {
+                    closeAdapter.close();
+                } catch (Throwable e) {
+                    log.error(e.getMessage(), e);
+                }
             }
             log.info("服务关闭完成");
         });
@@ -42,15 +46,15 @@ public class HServerApplication {
 
 
     public static synchronized void run(Class<?> mainClass, String... args){
-        runCore(mainClass,null,null, args);
+        runCore(mainClass,null, args);
     }
 
-    public static synchronized void runTest(Class<?> testClass,String testPackageName){
-        runCore(null,testClass, testPackageName);
+    public static synchronized void runTest(Class<?> testClass){
+        runCore(null,testClass);
     }
 
 
-    private static synchronized void runCore(Class<?> mainClass,Class<?> testClass,String testPackageName, String... args) {
+    private static synchronized void runCore(Class<?> mainClass,Class<?> testClass, String... args) {
         if (!running) {
             running = true;
             HServerApplication.mainClass = mainClass;
@@ -101,7 +105,6 @@ public class HServerApplication {
         if (mainClass != null) {
             scanPackage.add(mainClass.getPackage().getName());
         }
-//        scanPackage.addAll(PlugsManager.getPlugin().getPlugPackages());
         scanPackage.add(HServerApplication.class.getPackage().getName());
         return scanPackage;
     }
@@ -109,10 +112,22 @@ public class HServerApplication {
 
     private static void success(String[] args){
         PluginManager.getPlugin().pluginInfo();
-        IocApplicationContext.getBeansOfType(InitAdapter.class).forEach(initAdapter -> initAdapter.init(args));
+        IocApplicationContext.getBeansOfType(InitAdapter.class).forEach(initAdapter -> {
+            try{
+                initAdapter.init(args);
+            }catch (Throwable e) {
+                log.error(e.getMessage(), e);
+            }
+        });
         log.info("HServer启动成功");
         HServerLogAsyncAppender.setHasLog(IocApplicationContext.getBeansOfType(LogAdapter.class));
-        IocApplicationContext.getBeansOfType(StartAdapter.class).forEach(StartAdapter::start);
+        IocApplicationContext.getBeansOfType(StartAdapter.class).forEach(startAdapter -> {
+            try{
+                startAdapter.start();
+            }catch (Throwable e) {
+                log.error(e.getMessage(), e);
+            }
+        });
     }
 
 }

@@ -12,12 +12,7 @@ public class HServerTest extends BlockJUnit4ClassRunner {
 
     public HServerTest(Class<?> klass) throws InitializationError {
         super(klass);
-        String name = klass.getPackage().getName();
-        int i = name.indexOf(".");
-        if (i > -1) {
-            name = name.substring(0, i);
-        }
-        HServerApplication.runTest(klass,name);
+        HServerApplication.runTest(klass);
     }
 
     @Override
