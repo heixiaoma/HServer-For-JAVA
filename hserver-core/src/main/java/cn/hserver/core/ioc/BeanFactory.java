@@ -5,6 +5,7 @@ import cn.hserver.core.config.ConfigData;
 import cn.hserver.core.config.annotation.ConfigurationProperties;
 import cn.hserver.core.config.annotation.Value;
 import cn.hserver.core.ioc.annotation.Autowired;
+import cn.hserver.core.ioc.annotation.Order;
 import cn.hserver.core.ioc.annotation.Qualifier;
 import cn.hserver.core.ioc.annotation.PostConstruct;
 import cn.hserver.core.ioc.bean.BeanDefinition;
@@ -16,6 +17,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class BeanFactory {
 
@@ -53,7 +55,26 @@ public class BeanFactory {
         singletonObjects.put(beanName, bean);
     }
 
-    public <T> List<T> getBeansOfType(Class<T> type) {
+
+    // 核心排序逻辑：根据@Order注解的值排序（值越小优先级越高）
+    private <T> List<T> sortByOrder(List<T> beans) {
+        return beans.stream()
+                .sorted((bean1, bean2) -> {
+                    int order1 = getOrderValue(bean1.getClass());
+                    int order2 = getOrderValue(bean2.getClass());
+                    return Integer.compare(order1, order2);
+                })
+                .collect(Collectors.toList());
+    }
+
+    // 获取类上@Order注解的值，默认值为Integer.MAX_VALUE（最低优先级）
+    private int getOrderValue(Class<?> clazz) {
+        Order orderAnnotation = clazz.getAnnotation(Order.class);
+        return orderAnnotation != null ? orderAnnotation.value() : Integer.MAX_VALUE;
+    }
+
+
+    public <T> List<T> getBeansOfType(Class<T> type,boolean sorted) {
         List<T> beans = new ArrayList<>();
         for (Map.Entry<String, BeanDefinition> entry : beanDefinitionMap.entrySet()) {
             if (type.isAssignableFrom(entry.getValue().getBeanClass())) {
@@ -62,6 +83,9 @@ public class BeanFactory {
                 }catch (Exception ignored){
                 }
             }
+        }
+        if (sorted) {
+            return sortByOrder(beans);
         }
         return beans;
     }

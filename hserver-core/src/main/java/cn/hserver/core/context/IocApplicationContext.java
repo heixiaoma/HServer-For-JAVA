@@ -106,8 +106,17 @@ public class IocApplicationContext {
      * @return 指定类型的所有Bean实例列表
      */
     public static  <T> List<T> getBeansOfType(Class<T> requiredType){
-        return beanFactory.getBeansOfType(requiredType);
+        return beanFactory.getBeansOfType(requiredType,false);
     }
 
+    /**
+     * 获取排序后的bean
+     * @param requiredType
+     * @return
+     * @param <T>
+     */
+    public static  <T> List<T> getBeansOfTypeSorted(Class<T> requiredType){
+        return beanFactory.getBeansOfType(requiredType,true);
+    }
 
 }
