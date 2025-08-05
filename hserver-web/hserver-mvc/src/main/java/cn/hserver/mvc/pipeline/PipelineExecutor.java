@@ -21,7 +21,7 @@ public class PipelineExecutor {
     private static final List<FilterAdapter> filters = IocApplicationContext.getBeansOfTypeSorted(FilterAdapter.class);
     private static final List<GlobalExceptionHandler> globalExceptionHandlers = IocApplicationContext.getBeansOfTypeSorted(GlobalExceptionHandler.class);
 
-    public static void executor(WebContext webContext) {
+    public static void executor(WebContext webContext) throws Throwable {
         try {
             //全局拦截器
             for (GlobalFilterAdapter globalFilter : globalFilters) {
@@ -54,6 +54,7 @@ public class PipelineExecutor {
                     return;
                 }
             }
+            throw e;
         }
     }
 }

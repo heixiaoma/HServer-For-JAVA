@@ -65,7 +65,7 @@ public class Router {
     }
 
 
-    public boolean matchAndHandle(WebContext ctx) throws Exception {
+    public boolean matchAndHandle(WebContext ctx) throws Throwable {
         String requestPath = ctx.request.getUri();
         String[] requestSegments = normalizePath(requestPath).split("/");
         for (Route route : routes) {
@@ -189,26 +189,17 @@ public class Router {
 
             httpMethodAnnotations.forEach((key, value) -> {
                 Handler handler = ctx -> {
-                    try {
-                        Object[] methodArgs = ParameterUtil.getMethodArgs(method, methodsParamNames, ctx);
-                        Object res = method.invoke(controllerInstance,methodArgs);
-                        //调用结果进行设置
-                        if (res == null) {
-                            if (!ctx.response.hasData()) {
-                                ctx.response.sendText("");
-                            }
-                        } else if (res instanceof String) {
-                            ctx.response.sendText(res.toString());
-                        } else {
-                            //非字符串类型的将对象转换Json字符串
-                            try {
-                                ctx.response.sendJson(res);
-                            } catch (Exception e) {
-                                throw new WebException(HttpResponseStatus.INTERNAL_SERVER_ERROR.getCode(), "返回的数据非字符串被转换JSON异常", e, ctx);
-                            }
+                    Object[] methodArgs = ParameterUtil.getMethodArgs(method, methodsParamNames, ctx);
+                    Object res = method.invoke(controllerInstance,methodArgs);
+                    //调用结果进行设置
+                    if (res == null) {
+                        if (!ctx.response.hasData()) {
+                            ctx.response.sendText("");
                         }
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new WebException(HttpResponseStatus.INTERNAL_SERVER_ERROR.getCode(), "方法调用失败", e, ctx);
+                    } else if (res instanceof String) {
+                        ctx.response.sendText(res.toString());
+                    } else {
+                        ctx.response.sendJson(res);
                     }
                 };
                 route(key, handler,value.toArray(new HttpMethod[0]));
