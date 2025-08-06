@@ -15,6 +15,7 @@
         <module>hserver-mvc</module>
         <module>hserver-netty-web</module>
         <module>hserver-smart-web</module>
+        <module>hserver-web-starter</module>
     </modules>
 
     <properties>

@@ -24,6 +24,7 @@
         <dependency>
             <groupId>cn.hserver</groupId>
             <artifactId>hserver-core</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!--   模板引擎     -->

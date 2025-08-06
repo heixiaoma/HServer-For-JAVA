@@ -17,7 +17,7 @@ public class AnnotationIntersection {
     /**
      * 查找方法注解与HTTP方法注解的交集
      */
-    public static Map<String, List<HttpMethod>> findHttpMethodAnnotations(Method method) {
+    public static Map<String, List<HttpMethod>> findHttpMethodAnnotations(String basePath,Method method) {
         Map<String, List<HttpMethod>> result = new HashMap<>();
         Annotation[] methodAnnotations = method.getAnnotations();
         // 遍历方法上的所有注解
@@ -31,7 +31,7 @@ public class AnnotationIntersection {
                     Method value = inArray.getMethod("value");
                     value.setAccessible(true);
                     String path = value.invoke(annotation).toString();
-                    List<HttpMethod> httpMethods = result.computeIfAbsent(path, k -> new ArrayList<>());
+                    List<HttpMethod> httpMethods = result.computeIfAbsent(basePath + path, k -> new ArrayList<>());
                     httpMethods.add(HttpMethod.valueOf(annotation.annotationType().getSimpleName()));
                 } catch (Exception ignored) {
                 }
@@ -40,7 +40,7 @@ public class AnnotationIntersection {
             if (annotation.annotationType().equals(RequestMapping.class)){
                 RequestMapping requestMapping = (RequestMapping) annotation;
                 String path = requestMapping.value();
-                List<HttpMethod> httpMethods = result.computeIfAbsent(path, k -> new ArrayList<>());
+                List<HttpMethod> httpMethods = result.computeIfAbsent(basePath + path, k -> new ArrayList<>());
                 HttpMethod[] method1 = requestMapping.method();
                 if (method1.length==0) {
                     for (Class<?> httpMethodAnnotation : HTTP_METHOD_ANNOTATIONS) {

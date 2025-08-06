@@ -49,12 +49,18 @@
             <version>${netty.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>cn.hserver</groupId>
+            <artifactId>hserver-core</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>cn.hserver</groupId>
             <artifactId>hserver-mvc</artifactId>
-            <version>3.7.M1</version>
-            <scope>compile</scope>
+            <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

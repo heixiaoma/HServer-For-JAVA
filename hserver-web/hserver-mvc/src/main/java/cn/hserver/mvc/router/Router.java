@@ -1,6 +1,7 @@
 package cn.hserver.mvc.router;
 
 import cn.hserver.core.context.IocApplicationContext;
+import cn.hserver.mvc.annotation.Controller;
 import cn.hserver.mvc.annotation.router.*;
 import cn.hserver.mvc.constants.HttpMethod;
 import cn.hserver.mvc.constants.HttpResponseStatus;
@@ -178,9 +179,10 @@ public class Router {
     // 注册控制器中的路由
     public void registerControllerRoutes(Class<?> controllerClass) throws InstantiationException, IllegalAccessException {
         Object controllerInstance = IocApplicationContext.getBean(controllerClass);
+        Controller annotation = controllerClass.getAnnotation(Controller.class);
         Method[] methods = controllerClass.getDeclaredMethods();
         for (Method method : methods) {
-            Map<String, List<HttpMethod>> httpMethodAnnotations = AnnotationIntersection.findHttpMethodAnnotations(method);
+            Map<String, List<HttpMethod>> httpMethodAnnotations = AnnotationIntersection.findHttpMethodAnnotations(annotation.value(),method);
             if (httpMethodAnnotations.isEmpty()) {
                 continue;
             }
