@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>cn.hserver</groupId>
-            <artifactId>hserver</artifactId>
+            <artifactId>hserver-core</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>

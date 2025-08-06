@@ -2,20 +2,20 @@ package cn.hserver.plugin.satoken.mode;
 
 import cn.dev33.satoken.context.model.SaResponse;
 import cn.dev33.satoken.exception.SaTokenException;
-import cn.hserver.plugin.web.interfaces.HttpResponse;
-import io.netty.handler.codec.http.HttpResponseStatus;
+import cn.hserver.mvc.constants.HttpResponseStatus;
+import cn.hserver.mvc.response.Response;
 
 public class SaResponseForHServer implements SaResponse {
 	/**
 	 * 底层Request对象
 	 */
-	protected HttpResponse response;
+	protected Response response;
 
 	/**
 	 * 实例化
 	 * @param response response对象
 	 */
-	public SaResponseForHServer(HttpResponse response) {
+	public SaResponseForHServer(Response response) {
 		this.response = response;
 	}
 
@@ -32,7 +32,7 @@ public class SaResponseForHServer implements SaResponse {
 	 */
 	@Override
 	public SaResponse setStatus(int sc) {
-		response.sendStatusCode(HttpResponseStatus.valueOf(sc));
+		response.setStatus(HttpResponseStatus.value(sc));
 		return this;
 	}
 
@@ -41,7 +41,7 @@ public class SaResponseForHServer implements SaResponse {
 	 */
 	@Override
 	public SaResponse setHeader(String name, String value) {
-		response.setHeader(name, value);
+		response.addHeader(name, value);
 		return this;
 	}
 
@@ -52,7 +52,7 @@ public class SaResponseForHServer implements SaResponse {
 	 * @return 对象自身
 	 */
 	public SaResponse addHeader(String name, String value) {
-		response.setHeader(name, value);
+		response.addHeader(name, value);
 		return this;
 	}
 

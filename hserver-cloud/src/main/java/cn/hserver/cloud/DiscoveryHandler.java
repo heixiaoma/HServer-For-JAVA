@@ -14,13 +14,9 @@ public interface DiscoveryHandler {
     Map<String, Map<String, DynamicRoundRobin>> S_DATA = new ConcurrentHashMap<>();
 
     default void handler(String group, Map<String, List<ServerInstance>> data) {
-        Map<String, DynamicRoundRobin> stringDynamicRoundRobinMap = S_DATA.get(group);
-        if (stringDynamicRoundRobinMap == null) {
-            stringDynamicRoundRobinMap = new ConcurrentHashMap<>();
-            S_DATA.put(group, stringDynamicRoundRobinMap);
-        }
+        S_DATA.computeIfAbsent(group, k -> new ConcurrentHashMap<>());
         online(group, data);
-        if (data.size() > 0) {
+        if (!data.isEmpty()) {
             data.forEach((k, v) -> {
                 DynamicRoundRobin dynamicRoundRobin = S_DATA.get(group).get(k);
                 if (dynamicRoundRobin != null) {

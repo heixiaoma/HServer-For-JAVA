@@ -1,20 +1,20 @@
 package cn.hserver.plugin.satoken.mode;
 
 import cn.dev33.satoken.context.model.SaStorage;
-import cn.hserver.plugin.web.interfaces.HttpRequest;
+import cn.hserver.mvc.request.Request;
 
 public class SaStorageForHServer implements SaStorage {
 
 	/**
 	 * 底层Request对象
 	 */
-	protected HttpRequest request;
+	protected Request request;
 
 	/**
 	 * 实例化
 	 * @param request request对象
 	 */
-	public SaStorageForHServer(HttpRequest request) {
+	public SaStorageForHServer(Request request) {
 		this.request = request;
 	}
 

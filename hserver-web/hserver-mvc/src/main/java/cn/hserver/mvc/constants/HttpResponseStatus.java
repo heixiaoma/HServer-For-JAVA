@@ -79,7 +79,7 @@ public class HttpResponseStatus  {
         return new HttpResponseStatus(statusCode, reasonPhrase);
     }
 
-    private static HttpResponseStatus value(int code) {
+    public static HttpResponseStatus value(int code) {
         switch (code) {
             case 100:
                 return CONTINUE;

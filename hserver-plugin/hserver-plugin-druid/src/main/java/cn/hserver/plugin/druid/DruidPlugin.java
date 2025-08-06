@@ -1,43 +1,17 @@
 package cn.hserver.plugin.druid;
 
-import cn.hserver.core.interfaces.PluginAdapter;
-import cn.hserver.core.ioc.ref.PackageScanner;
 
-import java.util.Set;
+import cn.hserver.core.plugin.bean.PluginInfo;
+import cn.hserver.core.plugin.handler.PluginAdapter;
 
-public class DruidPlugin implements PluginAdapter {
-    @Override
-    public void startApp() {
 
-    }
+public class DruidPlugin extends PluginAdapter {
 
     @Override
-    public void startIocInit() {
-
-    }
-
-    @Override
-    public Set<Class<?>> iocInitBeanList() {
-        return null;
-    }
-
-    @Override
-    public void iocInit(PackageScanner packageScanner) {
-
-    }
-
-    @Override
-    public void iocInitEnd() {
-
-    }
-
-    @Override
-    public void startInjection() {
-
-    }
-
-    @Override
-    public void injectionEnd() {
-
+    public PluginInfo getPluginInfo() {
+        return new PluginInfo.Builder()
+                .name("Druid")
+                .description("Druid 是一个 JDBC 组件库，包含数据库连接池，安全检查，防火墙等功能")
+                .build();
     }
 }

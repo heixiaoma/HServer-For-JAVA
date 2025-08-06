@@ -110,6 +110,20 @@ public class IocApplicationContext {
     }
 
     /**
+     * 获取一个
+     * @param requiredType
+     * @return
+     * @param <T>
+     */
+    public static  <T> T getBeansOfTypeOne(Class<T> requiredType){
+        List<T> beansOfType = beanFactory.getBeansOfType(requiredType, false);
+        if(!beansOfType.isEmpty()){
+            return beansOfType.get(0);
+        }
+        return null;
+    }
+
+    /**
      * 获取排序后的bean
      * @param requiredType
      * @return

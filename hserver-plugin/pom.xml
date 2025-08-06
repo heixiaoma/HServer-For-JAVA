@@ -22,7 +22,6 @@
         <module>hserver-plugin-beetlsql</module>
         <module>hserver-plugin-mybatis</module>
         <module>hserver-plugin-maven</module>
-        <module>hserver-plugin-mqtt</module>
         <module>hserver-plugin-druid</module>
         <module>hserver-plugin-nacos</module>
         <module>hserver-plugin-mybatis_flex</module>

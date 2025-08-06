@@ -21,13 +21,15 @@
     <dependencies>
         <dependency>
             <groupId>cn.hserver</groupId>
-            <artifactId>hserver</artifactId>
+            <artifactId>hserver-core</artifactId>
             <scope>provided</scope>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.hserver</groupId>
-            <artifactId>hserver-plugin-web</artifactId>
+            <artifactId>hserver-mvc</artifactId>
             <scope>provided</scope>
+            <version>${project.parent.version}</version>
         </dependency>
         <!-- Sa-Token 权限认证（core核心包）, 在线文档：https://sa-token.cc -->
         <dependency>

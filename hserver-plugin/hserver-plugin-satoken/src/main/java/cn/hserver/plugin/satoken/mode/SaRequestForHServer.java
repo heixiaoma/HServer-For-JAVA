@@ -5,12 +5,11 @@ import cn.dev33.satoken.application.ApplicationInfo;
 import cn.dev33.satoken.context.model.SaRequest;
 import cn.dev33.satoken.exception.SaTokenException;
 import cn.dev33.satoken.util.SaFoxUtil;
-import cn.hserver.plugin.web.context.HServerContextHolder;
-import cn.hserver.plugin.web.interfaces.HttpRequest;
-import cn.hserver.plugin.web.interfaces.HttpResponse;
-import io.netty.handler.codec.http.cookie.Cookie;
+import cn.hserver.mvc.context.WebContextHolder;
+import cn.hserver.mvc.request.Cookie;
+import cn.hserver.mvc.request.Request;
+import cn.hserver.mvc.response.Response;
 
-import java.io.IOException;
 import java.util.*;
 
 public class SaRequestForHServer implements SaRequest {
@@ -18,14 +17,14 @@ public class SaRequestForHServer implements SaRequest {
     /**
      * 底层Request对象
      */
-    protected HttpRequest request;
+    protected Request request;
 
     /**
      * 实例化
      *
      * @param request request对象
      */
-    public SaRequestForHServer(HttpRequest request) {
+    public SaRequestForHServer(Request request) {
         this.request = request;
     }
 
@@ -141,7 +140,7 @@ public class SaRequestForHServer implements SaRequest {
      */
     @Override
     public String getMethod() {
-        return request.getRequestType().name();
+        return request.getRequestMethod().name();
     }
 
 
@@ -156,7 +155,7 @@ public class SaRequestForHServer implements SaRequest {
     @Override
     public Object forward(String path) {
         try {
-            HttpResponse response = HServerContextHolder.getWebKit().httpResponse;
+            Response response = WebContextHolder.getWebContext().response;
             response.redirect(path);
             return null;
         } catch (Exception e) {

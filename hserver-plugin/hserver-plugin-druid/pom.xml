@@ -20,12 +20,15 @@
         </dependency>
         <dependency>
             <groupId>cn.hserver</groupId>
-            <artifactId>hserver</artifactId>
+            <artifactId>hserver-core</artifactId>
             <scope>provided</scope>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.hserver</groupId>
-            <artifactId>hserver-plugin-web</artifactId>
+            <artifactId>hserver-mvc</artifactId>
+            <scope>provided</scope>
+            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 

@@ -7,8 +7,9 @@ import cn.dev33.satoken.oauth2.annotation.SaCheckClientIdSecret;
 import cn.dev33.satoken.oauth2.annotation.SaCheckClientToken;
 import cn.dev33.satoken.sign.annotation.SaCheckSign;
 import cn.dev33.satoken.strategy.SaAnnotationStrategy;
-import cn.hserver.core.interfaces.HookAdapter;
-import cn.hserver.core.ioc.annotation.Hook;
+import cn.hserver.core.aop.HookAdapter;
+import cn.hserver.core.aop.annotation.Hook;
+
 import java.lang.reflect.Method;
 
 @Hook(value = {
