@@ -1,39 +1,36 @@
 package cn.hserver.mvc.exception;
 
-import java.lang.reflect.Field;
-
 /**
  * 验证异常类型
  * @author hxm
  */
 public class ValidateException extends RuntimeException{
-
-    private Field field;
-
-    private Object data;
+    private final Class<?> type;
+    private final Object data;
     public ValidateException(String message){
         super(message);
+        this.type=null;
+        this.data=null;
     }
 
-    public ValidateException(String message, Field field,Object data){
+    public ValidateException(String message, Class<?> type,Object data){
         super(message);
-        this.field=field;
+        this.type=type;
         this.data=data;
     }
-
-    public Field getField() {
-        return field;
+    public ValidateException(String message, Class<?> type){
+        super(message);
+        this.type=type;
+        this.data=null;
     }
 
-    public void setField(Field field) {
-        this.field = field;
+
+
+    public Class<?> getType() {
+        return type;
     }
 
     public Object getData() {
         return data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
     }
 }

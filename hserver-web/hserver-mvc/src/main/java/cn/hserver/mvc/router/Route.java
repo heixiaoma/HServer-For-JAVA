@@ -6,6 +6,7 @@ import cn.hserver.mvc.constants.HttpMethod;
  * 路由信息封装类，包含路径、处理器和路由类型
  */
 public class Route {
+
     public enum Type {
         EXACT,       // 精确匹配
         PATH_PARAM,  // 路径参数匹配
@@ -54,4 +55,5 @@ public class Route {
     public String[] getPathSegments() {
         return pathSegments;
     }
+
 }

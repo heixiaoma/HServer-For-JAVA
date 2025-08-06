@@ -10,12 +10,14 @@ import cn.hserver.mvc.exception.MethodNotSupportException;
 import cn.hserver.mvc.exception.NotFoundException;
 import cn.hserver.mvc.exception.WebException;
 import cn.hserver.mvc.util.ParameterUtil;
+import cn.hserver.mvc.util.ValidateUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -182,16 +184,22 @@ public class Router {
         Controller annotation = controllerClass.getAnnotation(Controller.class);
         Method[] methods = controllerClass.getDeclaredMethods();
         for (Method method : methods) {
+            method.setAccessible(true);
             Map<String, List<HttpMethod>> httpMethodAnnotations = AnnotationIntersection.findHttpMethodAnnotations(annotation.value(),method);
             if (httpMethodAnnotations.isEmpty()) {
                 continue;
             }
-
             String[] methodsParamNames = ParameterUtil.getMethodsParamNames(method);
-
+            boolean validate = ValidateUtil.isValidate(method);
+            Parameter[] parameterTypes = method.getParameters();
             httpMethodAnnotations.forEach((key, value) -> {
                 Handler handler = ctx -> {
-                    Object[] methodArgs = ParameterUtil.getMethodArgs(method, methodsParamNames, ctx);
+                    Object[] methodArgs = ParameterUtil.getMethodArgs(parameterTypes, methodsParamNames, ctx);
+                    if (validate&&methodArgs!=null) {
+                        for (int i = 0; i < methodArgs.length; i++) {
+                            ValidateUtil.validate(methodArgs[i],parameterTypes[i]);
+                        }
+                    }
                     Object res = method.invoke(controllerInstance,methodArgs);
                     //调用结果进行设置
                     if (res == null) {

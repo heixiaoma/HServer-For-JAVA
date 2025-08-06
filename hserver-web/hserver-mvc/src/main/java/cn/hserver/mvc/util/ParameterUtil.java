@@ -72,11 +72,10 @@ public class ParameterUtil {
         }
     }
 
-    public static Object[] getMethodArgs(Method method, String[] argsNames, WebContext ctx){
+    public static Object[] getMethodArgs(Parameter[] parameterTypes, String[] argsNames, WebContext ctx){
         if (argsNames.length == 0) {
             return null;
         }
-        Parameter[] parameterTypes = method.getParameters();
         Object[] objects = new Object[parameterTypes.length];
         for (int i = 0; i < parameterTypes.length; i++) {
             //构建方法参数
