@@ -16,26 +16,12 @@
 
     <modules>
         <module>hserver</module>
-        <module>hserver-plugin-beetlsql</module>
-        <module>hserver-plugin-mybatis</module>
-        <module>hserver-plugin-rpc</module>
-        <module>hserver-plugin-maven</module>
         <module>hserver-plugin-web</module>
-        <module>hserver-plugin-mqtt</module>
-        <module>hserver-plugin-druid</module>
-        <module>hserver-plugin-gateway</module>
-        <module>hserver-plugin-node</module>
-        <module>hserver-plugin-nacos</module>
-        <module>hserver-plugin-cloud</module>
-        <module>hserver-plugin-mybatis_flex</module>
-        <module>hserver-net</module>
-        <module>hserver-plugin-runner</module>
-        <module>hserver-plugin-satoken</module>
-        <module>hserver-plugin-forest</module>
-        <module>hserver-go-core</module>
-        <module>hserver-plugin-mcp</module>
+        <module>hserver-cloud</module>
+        <module>hserver-runner</module>
         <module>hserver-core</module>
         <module>hserver-web</module>
+        <module>hserver-plugin</module>
     </modules>
 
     <properties>
@@ -95,7 +81,7 @@
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
-                <artifactId>hserver-plugin-runner</artifactId>
+                <artifactId>hserver-runner</artifactId>
                 <version>3.7.M1</version>
             </dependency>
             <dependency>
@@ -105,7 +91,7 @@
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
-                <artifactId>hserver-plugin-cloud</artifactId>
+                <artifactId>hserver-cloud</artifactId>
                 <version>3.7.M1</version>
             </dependency>
             <dependency>
