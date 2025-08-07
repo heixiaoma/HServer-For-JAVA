@@ -91,7 +91,7 @@ public class HttpResponse implements Response {
 
     @Override
     public void downloadStream(InputStream inputStream, String fileName) {
-        if (inputStream!=null){
+        if (inputStream==null){
             throw new RuntimeException("stream不能为空");
         }
         this.responseFile=new HttpResponseFile(null,null, inputStream, fileName,false,false);
@@ -107,7 +107,7 @@ public class HttpResponse implements Response {
 
     @Override
     public void downloadChunkStream(InputStream inputStream, String fileName) {
-        if (inputStream!=null){
+        if (inputStream==null){
             throw new RuntimeException("stream不能为空");
         }
         this.responseFile=new HttpResponseFile(null,null, inputStream, fileName,true,false);

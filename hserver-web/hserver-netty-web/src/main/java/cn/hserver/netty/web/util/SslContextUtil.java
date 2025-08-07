@@ -25,7 +25,7 @@ public class SslContextUtil {
                 return false;
             }
             if (sslData.getCertInputStream() != null && sslData.getKeyInputStream() != null) {
-                SslContextBuilder sslContext = SslContextBuilder.forServer(sslData.getKeyInputStream(), sslData.getCertInputStream()).sslProvider(defaultSslProvider());
+                SslContextBuilder sslContext = SslContextBuilder.forServer(sslData.getCertInputStream(), sslData.getKeyInputStream()).sslProvider(defaultSslProvider());
                 NettyConfig.SSL_CONTEXT = sslContext.build();
                 NettyConfig.SSL_PORT = sslPort;
                 return true;
