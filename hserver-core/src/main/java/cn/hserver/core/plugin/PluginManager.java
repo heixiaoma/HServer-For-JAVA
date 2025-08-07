@@ -28,6 +28,10 @@ public class PluginManager extends PluginAdapter {
         ServiceLoader<PluginAdapter> loadedParsers = ServiceLoader.load(PluginAdapter.class);
         for (PluginAdapter pluginAdapter : loadedParsers) {
             obj.add(pluginAdapter);
+            Set<String> strings = pluginAdapter.extScanPackages();
+            if (strings != null) {
+                plugPackages.addAll(strings);
+            }
             plugPackages.add(pluginAdapter.getClass().getPackage().getName());
         }
     }

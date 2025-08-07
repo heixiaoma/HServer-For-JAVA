@@ -5,34 +5,23 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>cn.hserver</groupId>
-        <artifactId>hserver-plugin</artifactId>
+        <artifactId>hserver-cloud</artifactId>
         <version>3.7.M1</version>
     </parent>
 
-    <artifactId>hserver-plugin-nacos</artifactId>
+    <artifactId>hserver-cloud-discovery</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <nacos.version>2.3.0</nacos.version>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>cn.hserver</groupId>
-            <artifactId>hserver</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <!--注册配置中心-->
-        <dependency>
-            <groupId>com.alibaba.nacos</groupId>
-            <artifactId>nacos-client</artifactId>
-            <version>${nacos.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.hserver</groupId>
-            <artifactId>hserver-cloud</artifactId>
+            <artifactId>hserver-cloud-common</artifactId>
+            <version>3.7.M1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

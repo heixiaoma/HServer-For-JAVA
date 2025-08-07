@@ -6,11 +6,7 @@ import java.util.List;
 /**
  * @author hxm
  */
-public interface DiscoveryService {
-
-    String DISCOVERY_SERVICE = "DISCOVERY_SERVICE";
-
-
+public interface Registration {
     /**
      * 注册服务实例
      */

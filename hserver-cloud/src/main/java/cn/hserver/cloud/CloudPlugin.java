@@ -21,12 +21,12 @@ public class CloudPlugin extends PluginAdapter {
                 .build();
     }
 
-    @Override
-    public Set<Class<?>> iocInitBeanList() {
-        Set<Class<?>> classes=new HashSet<>();
-        classes.add(DiscoveryService.class);
-        StartDiscoveryServer.init();
-        return classes;
-    }
+//    @Override
+//    public Set<Class<?>> iocInitBeanList() {
+//        Set<Class<?>> classes=new HashSet<>();
+//        classes.add(DiscoveryService.class);
+//        StartDiscoveryServer.init();
+//        return classes;
+//    }
 
 }

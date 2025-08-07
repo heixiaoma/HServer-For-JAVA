@@ -1,4 +1,4 @@
-package cn.hserver.cloud;
+package cn.hserver.cloud.common;
 
 public class RegProp {
     //注册名字

@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 插件适配器
@@ -23,14 +24,22 @@ public abstract class PluginAdapter {
      */
     public void startApp(){
 
-   }
+    }
+
+    /**
+     * 添加扫描包
+     * @return
+     */
+    public Set<String> extScanPackages(){
+        return null;
+    }
 
     /**
      * 开始扫描
      */
     public void iocStartScan(Class<?> clazz){
 
-   }
+    }
 
    //扫描完成开始注册bean
     public void iocStartRegister(){

@@ -1,6 +1,7 @@
 package cn.hserver.netty.web;
 
 import cn.hserver.core.config.ConfigData;
+import cn.hserver.core.ioc.annotation.Component;
 import cn.hserver.mvc.server.SslData;
 import cn.hserver.mvc.server.WebServer;
 import cn.hserver.netty.web.constants.IoMultiplexer;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+@Component
 public class NettyServer implements WebServer {
 
     private static final Logger log = LoggerFactory.getLogger(NettyServer.class);

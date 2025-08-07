@@ -1,6 +1,7 @@
 package cn.hserver.mvc;
 
 import cn.hserver.core.config.ConfigData;
+import cn.hserver.core.context.IocApplicationContext;
 import cn.hserver.core.context.handler.AnnotationHandler;
 import cn.hserver.core.ioc.bean.BeanDefinition;
 import cn.hserver.core.plugin.bean.PluginInfo;
@@ -15,18 +16,16 @@ import cn.hserver.mvc.util.SslUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.ServiceLoader;
+import java.util.*;
 
 public class MvcPlugin extends PluginAdapter {
     private static final Logger log = LoggerFactory.getLogger(MvcPlugin.class);
     private final List<Class<?>> controllers = new ArrayList<>();
     public static WebServer webServer;
+
     @Override
     public PluginInfo getPluginInfo() {
-        return new PluginInfo.Builder().name("MVC").description( "灵活高性能的WEB框架").build();
+        return new PluginInfo.Builder().name("MVC").description("灵活高性能的WEB框架").build();
     }
 
     /**
@@ -37,10 +36,10 @@ public class MvcPlugin extends PluginAdapter {
         AnnotationHandler.addHandler(new AnnotationHandler() {
             @Override
             public void handle(Class<?> clazz, Map<String, BeanDefinition> beanDefinitions) {
-                if(clazz.isAnnotationPresent(Controller.class)){
+                if (clazz.isAnnotationPresent(Controller.class)) {
                     defaultHandler(clazz, beanDefinitions);
                 }
-                if(clazz.isAnnotationPresent(WebSocket.class)){
+                if (clazz.isAnnotationPresent(WebSocket.class)) {
                     defaultHandler(clazz, beanDefinitions);
                 }
             }
@@ -48,20 +47,20 @@ public class MvcPlugin extends PluginAdapter {
 
         //初始化环境配置依赖
         ConfigData instance = ConfigData.getInstance();
-        WebConstConfig.PORT=instance.getInteger("web.port", 8888);
-        WebConstConfig.SSL_PORT=instance.getInteger("web.ssl.port", 8443);
-        WebConstConfig.SSL_KEY=instance.getString("web.ssl.key", null);
-        WebConstConfig.SSL_CERT=instance.getString("web.ssl.cert", null);
-        WebConstConfig.SESSION_TIME_OUT=instance.getInteger("web.session.timeout", 7200);
+        WebConstConfig.PORT = instance.getInteger("web.port", 8888);
+        WebConstConfig.SSL_PORT = instance.getInteger("web.ssl.port", 8443);
+        WebConstConfig.SSL_KEY = instance.getString("web.ssl.key", null);
+        WebConstConfig.SSL_CERT = instance.getString("web.ssl.cert", null);
+        WebConstConfig.SESSION_TIME_OUT = instance.getInteger("web.session.timeout", 7200);
         Boolean session = instance.getBoolean("web.session.enable", false);
         if (session) {
-            WebConstConfig.SESSION_MANAGER=new SessionManager();
+            WebConstConfig.SESSION_MANAGER = new SessionManager();
         }
     }
 
     @Override
     public void iocStartScan(Class<?> clazz) {
-        if(clazz.isAnnotationPresent(Controller.class)){
+        if (clazz.isAnnotationPresent(Controller.class)) {
             controllers.add(clazz);
         }
     }
@@ -78,17 +77,24 @@ public class MvcPlugin extends PluginAdapter {
         });
     }
 
+
+    @Override
+    public Set<String> extScanPackages() {
+        Set<String> strings = new HashSet<>();
+        strings.add("cn.hserver.netty");
+        strings.add("cn.hserver.smart");
+        return strings;
+    }
+
     @Override
     public void startedApp() {
         //启动web容器服务器
         SslData sslData = SslUtil.loadSSlData();
-        ServiceLoader<WebServer> loadedParsers = ServiceLoader.load(WebServer.class);
-        for (WebServer webServer : loadedParsers) {
-            webServer.start(WebConstConfig.PORT, WebConstConfig.SSL_PORT,sslData);
-            MvcPlugin.webServer = webServer;
-            break;
-        }
-        if (webServer == null) {
+        WebServer beansOfTypeOne = IocApplicationContext.getBeansOfTypeOne(WebServer.class);
+        if (beansOfTypeOne != null) {
+            beansOfTypeOne.start(WebConstConfig.PORT, WebConstConfig.SSL_PORT, sslData);
+            MvcPlugin.webServer = beansOfTypeOne;
+        } else {
             throw new RuntimeException("WEB容器未找到,请检查是否引入了WEB容器的依赖");
         }
     }

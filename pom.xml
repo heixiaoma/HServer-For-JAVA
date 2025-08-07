@@ -86,17 +86,7 @@
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
-                <artifactId>hserver-plugin-mqtt</artifactId>
-                <version>3.7.M1</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hserver</groupId>
                 <artifactId>hserver-cloud</artifactId>
-                <version>3.7.M1</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hserver</groupId>
-                <artifactId>hserver-plugin-nacos</artifactId>
                 <version>3.7.M1</version>
             </dependency>
             <dependency>

@@ -5,19 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>cn.hserver</groupId>
-        <artifactId>hserver-parent</artifactId>
+        <artifactId>hserver-cloud</artifactId>
         <version>3.7.M1</version>
     </parent>
 
-    <artifactId>hserver-cloud</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>hserver-cloud-register</module>
-        <module>hserver-cloud-discovery</module>
-        <module>hserver-cloud-common</module>
-        <module>hserver-cloud-impl</module>
-        <module>hserver-cloud-impl/hserver-cloud-nacos</module>
-    </modules>
+    <artifactId>hserver-cloud-register</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -27,9 +19,10 @@
     <dependencies>
         <dependency>
             <groupId>cn.hserver</groupId>
-            <artifactId>hserver-core</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>provided</scope>
+            <artifactId>hserver-cloud-common</artifactId>
+            <version>3.7.M1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
+
 </project>
