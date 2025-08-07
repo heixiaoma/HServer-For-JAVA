@@ -10,7 +10,7 @@ public class RegProp {
     //注册我的端口
     private Integer registerMyPort;
     //注册分组
-    private String groupName = "DEFAULT_GROUP";
+    private String registerGroupName = "DEFAULT_GROUP";
 
     public String getRegisterAddress() {
         return registerAddress;
@@ -44,12 +44,12 @@ public class RegProp {
         this.registerMyPort = registerMyPort;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public String getRegisterGroupName() {
+        return registerGroupName;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setRegisterGroupName(String groupName) {
+        this.registerGroupName = groupName;
     }
 
     public boolean hasNull() {

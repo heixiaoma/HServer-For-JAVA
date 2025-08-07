@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author hxm
  */
-public abstract class DiscoveryHandler {
+public abstract class DiscoveryService {
 
     /**
      * 查询服务
@@ -16,12 +16,12 @@ public abstract class DiscoveryHandler {
    public abstract List<ServerInstance> find(String group, String service);
 
     /**
-     * 选择服务实例
+     * 更具权重查询一个服务
+     * @param group
+     * @param service
+     * @return
      */
-    public  ServerInstance choose(){
-        return null;
-    }
-
+   public abstract ServerInstance findOne(String group, String service);
     /**
      * 订阅服务
      */

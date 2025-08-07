@@ -1,13 +1,13 @@
 package cn.hserver.cloud.nacos;
 
-import cn.hserver.cloud.common.RegProp;
+import cn.hserver.cloud.common.DisProp;
 import cn.hserver.cloud.common.ServerInstance;
-import cn.hserver.cloud.discovery.DiscoveryHandler;
 import cn.hserver.cloud.discovery.DiscoveryListener;
-import cn.hserver.cloud.register.RegisterService;
+import cn.hserver.cloud.discovery.DiscoveryService;
+import cn.hserver.core.config.ConfigData;
+import cn.hserver.core.context.IocApplicationContext;
 import cn.hserver.core.ioc.annotation.Component;
 import com.alibaba.nacos.api.common.Constants;
-import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.listener.EventListener;
@@ -21,13 +21,24 @@ import java.util.stream.Collectors;
 
 
 @Component
-public class NacosDiscoveryService extends DiscoveryHandler implements RegisterService {
+public class NacosDiscoveryService extends DiscoveryService{
 
     private static final Logger log = LoggerFactory.getLogger(NacosDiscoveryService.class);
 
-    private NamingService naming;
+    private  NamingService naming;
 
-    private RegProp regProp;
+    public  NacosDiscoveryService() {
+        DisProp disProp = IocApplicationContext.getBean(DisProp.class);
+        if (disProp==null) {
+            String string = ConfigData.getInstance().getString("nacos.discovery.address",null);
+            disProp=new DisProp(string);
+        }
+        try {
+            naming = NamingFactory.createNamingService(disProp.getDiscoveryAddress());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
 
     @Override
     public void subscribe(String group, String service, DiscoveryListener discoveryListener) {
@@ -40,7 +51,7 @@ public class NacosDiscoveryService extends DiscoveryHandler implements RegisterS
                 if (event instanceof NamingEvent) {
                     NamingEvent evn = (NamingEvent) event;
                     List<Instance> instances = evn.getInstances();
-                    log.debug("服务变化：" + instances);
+                    log.debug("服务变化{}" , instances);
                     Map<String, List<ServerInstance>> data = new HashMap<>();
                     for (Instance k : instances) {
                         List<ServerInstance> serverInstances = data.computeIfAbsent(k.getClusterName(), k1 -> new ArrayList<>());
@@ -60,6 +71,28 @@ public class NacosDiscoveryService extends DiscoveryHandler implements RegisterS
             naming.subscribe(service, group, listener);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
+        }
+    }
+
+
+    @Override
+    public ServerInstance findOne(String group, String service) {
+        if (group == null) {
+            group = Constants.DEFAULT_GROUP;
+        }
+        try {
+            Instance instance = naming.selectOneHealthyInstance(service, group, true);
+            return new ServerInstance(
+                    instance.getIp(),
+                    instance.getPort(),
+                    instance.getWeight(),
+                    instance.isHealthy(),
+                    instance.getServiceName(),
+                    instance.getClusterName(),
+                    instance.getMetadata()
+            );
+        }catch (Exception e) {
+            return null;
         }
     }
 
@@ -83,42 +116,6 @@ public class NacosDiscoveryService extends DiscoveryHandler implements RegisterS
         } catch (Exception e) {
             return null;
         }
-    }
-
-    @Override
-    public boolean register(RegProp regProp) {
-        this.regProp = regProp;
-        try {
-            naming = NamingFactory.createNamingService(regProp.getRegisterAddress());
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return false;
-        }
-        try {
-            //注册服务
-            naming.registerInstance(
-                    regProp.getRegisterName(),
-                    regProp.getGroupName(),
-                    regProp.getRegisterMyIp(),
-                    regProp.getRegisterMyPort(),
-                    regProp.getRegisterName()
-            );
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean deregister() {
-        try {
-            naming.deregisterInstance(regProp.getRegisterName(), regProp.getGroupName(), regProp.getRegisterMyIp(), regProp.getRegisterMyPort());
-        } catch (NacosException e) {
-            log.error(e.getMessage(), e);
-            return false;
-        }
-        return true;
     }
 
 }
