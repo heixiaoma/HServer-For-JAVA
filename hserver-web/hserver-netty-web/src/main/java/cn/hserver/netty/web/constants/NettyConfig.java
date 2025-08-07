@@ -1,6 +1,8 @@
 package cn.hserver.netty.web.constants;
 
 
+import io.netty.handler.ssl.SslContext;
+
 public class NettyConfig {
     public static IoMultiplexer IO_MODE = IoMultiplexer.IO_URING;
 
@@ -17,5 +19,7 @@ public class NettyConfig {
     public static Integer HTTP_CONTENT_SIZE = Integer.MAX_VALUE;
 
     public static Integer MAX_WEBSOCKET_FRAME_LENGTH = 65535;
+    public static SslContext SSL_CONTEXT;
+    public static Integer SSL_PORT;
 
 }

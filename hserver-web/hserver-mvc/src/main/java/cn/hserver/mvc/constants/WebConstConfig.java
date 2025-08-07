@@ -17,6 +17,10 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
 public class WebConstConfig {
 
     public static Integer PORT = 8888;
+    public static Integer SSL_PORT = 8443;
+
+    public static String SSL_KEY;
+    public static String SSL_CERT;
 
     /**
      * session-key

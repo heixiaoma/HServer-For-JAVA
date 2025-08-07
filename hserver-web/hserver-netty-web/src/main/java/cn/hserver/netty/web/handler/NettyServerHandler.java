@@ -11,6 +11,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.ssl.OptionalSslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.traffic.GlobalTrafficShapingHandler;
 
@@ -39,6 +40,10 @@ public class NettyServerHandler extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         ChannelPipeline pipeline = socketChannel.pipeline();
+        int port = socketChannel.localAddress().getPort();
+        if (NettyConfig.SSL_CONTEXT!=null&&port==NettyConfig.SSL_PORT) {
+            pipeline.addLast(new OptionalSslHandler(NettyConfig.SSL_CONTEXT));
+        }
         if (NettyConfig.WRITE_LIMIT != null && NettyConfig.READ_LIMIT != null) {
             if (globalTrafficShapingHandler == null) {
                 globalTrafficShapingHandler = new GlobalTrafficShapingHandler( socketChannel.eventLoop(), NettyConfig.WRITE_LIMIT, NettyConfig.READ_LIMIT);

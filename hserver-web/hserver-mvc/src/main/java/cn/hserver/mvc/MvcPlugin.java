@@ -8,8 +8,10 @@ import cn.hserver.core.plugin.handler.PluginAdapter;
 import cn.hserver.mvc.annotation.Controller;
 import cn.hserver.mvc.annotation.WebSocket;
 import cn.hserver.mvc.constants.WebConstConfig;
+import cn.hserver.mvc.server.SslData;
 import cn.hserver.mvc.server.WebServer;
 import cn.hserver.mvc.session.SessionManager;
+import cn.hserver.mvc.util.SslUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +49,9 @@ public class MvcPlugin extends PluginAdapter {
         //初始化环境配置依赖
         ConfigData instance = ConfigData.getInstance();
         WebConstConfig.PORT=instance.getInteger("web.port", 8888);
+        WebConstConfig.SSL_PORT=instance.getInteger("web.ssl.port", 8443);
+        WebConstConfig.SSL_KEY=instance.getString("web.ssl.key", null);
+        WebConstConfig.SSL_CERT=instance.getString("web.ssl.cert", null);
         WebConstConfig.SESSION_TIME_OUT=instance.getInteger("web.session.timeout", 7200);
         Boolean session = instance.getBoolean("web.session.enable", false);
         if (session) {
@@ -76,11 +81,11 @@ public class MvcPlugin extends PluginAdapter {
     @Override
     public void startedApp() {
         //启动web容器服务器
+        SslData sslData = SslUtil.loadSSlData();
         ServiceLoader<WebServer> loadedParsers = ServiceLoader.load(WebServer.class);
         for (WebServer webServer : loadedParsers) {
-            webServer.start(WebConstConfig.PORT);
+            webServer.start(WebConstConfig.PORT, WebConstConfig.SSL_PORT,sslData);
             MvcPlugin.webServer = webServer;
-            log.info("WEB容器端口:{}", WebConstConfig.PORT);
             break;
         }
         if (webServer == null) {
