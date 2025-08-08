@@ -30,7 +30,7 @@ public class NacosDiscoveryService extends DiscoveryService{
     public  NacosDiscoveryService() {
         DisProp disProp = IocApplicationContext.getBean(DisProp.class);
         if (disProp==null) {
-            String string = ConfigData.getInstance().getString("nacos.discovery.address",null);
+            String string = ConfigData.getInstance().getString("cloud.discovery.address",null);
             disProp=new DisProp(string);
         }
         try {

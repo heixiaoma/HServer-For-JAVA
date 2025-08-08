@@ -27,13 +27,15 @@ public class RegisterPlugin extends PluginAdapter {
             log.warn("未找到注册服务实现类");
             return;
         }
+
+        //服务注册
         RegProp regProp = IocApplicationContext.getBean(RegProp.class);
         if (regProp == null) {
             regProp = new RegProp();
             regProp.setRegisterMyIp(ConfigData.getInstance().getString("cloud.register.ip"));
             regProp.setRegisterMyPort(ConfigData.getInstance().getInteger("cloud.register.port"));
             regProp.setRegisterName(ConfigData.getInstance().getString("cloud.register.name"));
-            regProp.setRegisterGroupName(ConfigData.getInstance().getString("cloud.register.group"));
+            regProp.setRegisterGroupName(ConfigData.getInstance().getString("cloud.register.group","DEFAULT_GROUP"));
             regProp.setRegisterAddress(ConfigData.getInstance().getString("cloud.register.address"));
         }
         if (regProp.hasNull()) {
@@ -41,5 +43,8 @@ public class RegisterPlugin extends PluginAdapter {
             return;
         }
         beansOfTypeOne.register(regProp);
+        //服务发现
+
+
     }
 }
