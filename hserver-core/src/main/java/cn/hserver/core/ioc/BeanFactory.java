@@ -1,12 +1,15 @@
 package cn.hserver.core.ioc;
 
 import cn.hserver.core.aop.ProxyFactory;
+import cn.hserver.core.boot.HServerApplication;
 import cn.hserver.core.ioc.annotation.Autowired;
 import cn.hserver.core.ioc.annotation.Order;
 import cn.hserver.core.ioc.annotation.Qualifier;
 import cn.hserver.core.ioc.annotation.PostConstruct;
 import cn.hserver.core.ioc.bean.BeanDefinition;
 import cn.hserver.core.ioc.handler.PopulateBeanHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -14,6 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class BeanFactory {
+
+    private static final Logger log = LoggerFactory.getLogger(BeanFactory.class);
+
 
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
     // 刷新作用域的真实实例缓存（键：Bean名称，值：真实实例）
@@ -203,7 +209,8 @@ public class BeanFactory {
             Method factoryMethod = beanDefinition.getFactoryMethod();
             Object[] args = resolveMethodArguments(factoryMethod);
             if (beanDefinition.isRefresh()&&!real){
-               return ProxyFactory.newRefreshProxyInstance(beanDefinition,beanDefinition.getConstructor(),args);
+                Constructor<?> constructor = beanDefinition.getConstructor();
+                return ProxyFactory.newRefreshProxyInstance(beanDefinition,beanDefinition.getConstructor(),new Object[constructor.getParameterTypes().length]);
             }else {
                 return factoryMethod.invoke(factoryBean, args);
             }
@@ -257,19 +264,23 @@ public class BeanFactory {
         Class<?>[] parameterTypes = constructor.getParameterTypes();
         Object[] args = new Object[parameterTypes.length];
         for (int i = 0; i < parameterTypes.length; i++) {
-            Class<?> parameterType = parameterTypes[i];
-            String beanName = null;
-            // 检查参数上是否有@Qualifier注解
-            Parameter parameter = constructor.getParameters()[i];
-            Qualifier qualifier = parameter.getAnnotation(Qualifier.class);
-            if (qualifier != null) {
-                beanName = qualifier.value();
-            }
+            try {
+                Class<?> parameterType = parameterTypes[i];
+                String beanName = null;
+                // 检查参数上是否有@Qualifier注解
+                Parameter parameter = constructor.getParameters()[i];
+                Qualifier qualifier = parameter.getAnnotation(Qualifier.class);
+                if (qualifier != null) {
+                    beanName = qualifier.value();
+                }
 
-            if (beanName != null) {
-                args[i] = getBean(beanName);
-            } else {
-                args[i] = getBean(parameterType);
+                if (beanName != null) {
+                    args[i] = getBean(beanName);
+                } else {
+                    args[i] = getBean(parameterType);
+                }
+            }catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
         }
 
@@ -280,22 +291,25 @@ public class BeanFactory {
     private Object[] resolveMethodArguments(Method method) throws Exception {
         Class<?>[] parameterTypes = method.getParameterTypes();
         Object[] args = new Object[parameterTypes.length];
-
         for (int i = 0; i < parameterTypes.length; i++) {
-            Class<?> parameterType = parameterTypes[i];
-            String beanName = null;
-    
-            // 处理@Qualifier注解
-            Parameter parameter = method.getParameters()[i];
-            Qualifier qualifier = parameter.getAnnotation(Qualifier.class);
-            if (qualifier != null) {
-                beanName = qualifier.value();
-            }
-    
-            if (beanName != null) {
-                args[i] = getBean(beanName);
-            } else {
-                args[i] = getBean(parameterType);
+            try {
+                Class<?> parameterType = parameterTypes[i];
+                String beanName = null;
+
+                // 处理@Qualifier注解
+                Parameter parameter = method.getParameters()[i];
+                Qualifier qualifier = parameter.getAnnotation(Qualifier.class);
+                if (qualifier != null) {
+                    beanName = qualifier.value();
+                }
+
+                if (beanName != null) {
+                    args[i] = getBean(beanName);
+                } else {
+                    args[i] = getBean(parameterType);
+                }
+            }catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
         }
         return args;
