@@ -1,8 +1,6 @@
 package cn.hserver.cloud.common;
 
-public class RegProp {
-    //注册名字
-    private String registerAddress;
+public class RegisterConfig extends CloudAddress{
     //注册名字
     private String registerName;
     //注册我的Ip
@@ -11,14 +9,6 @@ public class RegProp {
     private Integer registerMyPort;
     //注册分组
     private String registerGroupName = "DEFAULT_GROUP";
-
-    public String getRegisterAddress() {
-        return registerAddress;
-    }
-
-    public void setRegisterAddress(String registerAddress) {
-        this.registerAddress = registerAddress;
-    }
 
     public String getRegisterName() {
         return registerName;
@@ -53,10 +43,6 @@ public class RegProp {
     }
 
     public boolean hasNull() {
-        if (this.registerAddress == null || this.registerMyIp == null || this.registerMyPort == null || this.registerName == null) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.getCloudAddress() == null || this.registerMyIp == null || this.registerMyPort == null || this.registerName == null;
     }
 }

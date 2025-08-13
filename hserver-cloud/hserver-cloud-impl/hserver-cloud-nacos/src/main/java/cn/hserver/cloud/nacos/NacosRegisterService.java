@@ -1,7 +1,8 @@
 package cn.hserver.cloud.nacos;
 
-import cn.hserver.cloud.common.RegProp;
+import cn.hserver.cloud.common.RegisterConfig;
 import cn.hserver.cloud.register.RegisterService;
+import cn.hserver.core.ioc.annotation.Autowired;
 import cn.hserver.core.ioc.annotation.Component;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingFactory;
@@ -16,19 +17,14 @@ public class NacosRegisterService implements RegisterService {
 
     private static final Logger log = LoggerFactory.getLogger(NacosRegisterService.class);
 
+    @Autowired
     private NamingService naming;
 
-    private RegProp regProp;
+    private RegisterConfig regProp;
 
     @Override
-    public boolean register(RegProp regProp) {
+    public boolean register(RegisterConfig regProp) {
         this.regProp = regProp;
-        try {
-            naming = NamingFactory.createNamingService(regProp.getRegisterAddress());
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return false;
-        }
         try {
             //注册服务
             naming.registerInstance(

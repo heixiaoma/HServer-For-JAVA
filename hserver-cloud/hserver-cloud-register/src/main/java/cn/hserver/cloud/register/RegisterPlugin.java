@@ -1,8 +1,8 @@
 package cn.hserver.cloud.register;
 
-import cn.hserver.cloud.common.RegProp;
+import cn.hserver.cloud.common.ConstConfig;
+import cn.hserver.cloud.common.RegisterConfig;
 import cn.hserver.core.config.ConfigData;
-import cn.hserver.core.config.ConstConfig;
 import cn.hserver.core.context.IocApplicationContext;
 import cn.hserver.core.plugin.bean.PluginInfo;
 import cn.hserver.core.plugin.handler.PluginAdapter;
@@ -27,24 +27,18 @@ public class RegisterPlugin extends PluginAdapter {
             log.warn("未找到注册服务实现类");
             return;
         }
-
         //服务注册
-        RegProp regProp = IocApplicationContext.getBean(RegProp.class);
+        RegisterConfig regProp = IocApplicationContext.getBean(RegisterConfig.class);
         if (regProp == null) {
-            regProp = new RegProp();
-            regProp.setRegisterMyIp(ConfigData.getInstance().getString("cloud.register.ip"));
-            regProp.setRegisterMyPort(ConfigData.getInstance().getInteger("cloud.register.port"));
-            regProp.setRegisterName(ConfigData.getInstance().getString("cloud.register.name"));
-            regProp.setRegisterGroupName(ConfigData.getInstance().getString("cloud.register.group","DEFAULT_GROUP"));
-            regProp.setRegisterAddress(ConfigData.getInstance().getString("cloud.register.address"));
+            regProp = new RegisterConfig();
+            regProp.setRegisterMyIp(ConfigData.getInstance().getString(ConstConfig.REGISTER_MY_IP));
+            regProp.setRegisterMyPort(ConfigData.getInstance().getInteger(ConstConfig.REGISTER_MY_PORT));
+            regProp.setRegisterName(ConfigData.getInstance().getString(ConstConfig.REGISTER_NAME));
+            regProp.setRegisterGroupName(ConfigData.getInstance().getString(ConstConfig.REGISTER_GROUP_NAME,"DEFAULT_GROUP"));
+            regProp.setCloudAddress(ConfigData.getInstance().getString(ConstConfig.CLOUD_ADDRESS));
         }
-        if (regProp.hasNull()) {
-            log.warn("注册服务配置错误");
-            return;
+        if (!regProp.hasNull()) {
+            beansOfTypeOne.register(regProp);
         }
-        beansOfTypeOne.register(regProp);
-        //服务发现
-
-
     }
 }

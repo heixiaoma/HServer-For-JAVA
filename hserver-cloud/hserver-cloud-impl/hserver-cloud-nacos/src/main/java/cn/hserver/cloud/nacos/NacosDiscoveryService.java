@@ -1,14 +1,11 @@
 package cn.hserver.cloud.nacos;
 
-import cn.hserver.cloud.common.DisProp;
 import cn.hserver.cloud.common.ServerInstance;
 import cn.hserver.cloud.discovery.DiscoveryListener;
 import cn.hserver.cloud.discovery.DiscoveryService;
-import cn.hserver.core.config.ConfigData;
-import cn.hserver.core.context.IocApplicationContext;
+import cn.hserver.core.ioc.annotation.Autowired;
 import cn.hserver.core.ioc.annotation.Component;
 import com.alibaba.nacos.api.common.Constants;
-import com.alibaba.nacos.api.naming.NamingFactory;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.listener.EventListener;
 import com.alibaba.nacos.api.naming.listener.NamingEvent;
@@ -25,23 +22,14 @@ public class NacosDiscoveryService extends DiscoveryService{
 
     private static final Logger log = LoggerFactory.getLogger(NacosDiscoveryService.class);
 
+    @Autowired
     private  NamingService naming;
-
-    public  NacosDiscoveryService() {
-        DisProp disProp = IocApplicationContext.getBean(DisProp.class);
-        if (disProp==null) {
-            String string = ConfigData.getInstance().getString("cloud.discovery.address",null);
-            disProp=new DisProp(string);
-        }
-        try {
-            naming = NamingFactory.createNamingService(disProp.getDiscoveryAddress());
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-    }
 
     @Override
     public void subscribe(String group, String service, DiscoveryListener discoveryListener) {
+        if (naming == null) {
+            return;
+        }
         if (group == null) {
             group = Constants.DEFAULT_GROUP;
         }
