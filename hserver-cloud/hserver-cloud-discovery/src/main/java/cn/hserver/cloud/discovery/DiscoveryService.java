@@ -1,6 +1,7 @@
 package cn.hserver.cloud.discovery;
 
 
+import cn.hserver.cloud.common.ConstConfig;
 import cn.hserver.cloud.common.ServerInstance;
 
 import java.util.List;
@@ -22,6 +23,20 @@ public abstract class DiscoveryService {
      * @return
      */
    public abstract ServerInstance findOne(String group, String service);
+
+    public  List<ServerInstance> find( String service){
+        return find(ConstConfig.DEFAULT_GROUP_NAME,service);
+    }
+
+    /**
+     * 更具权重查询一个服务
+     * @param service
+     * @return
+     */
+    public  ServerInstance findOne(String service){
+        return findOne(ConstConfig.DEFAULT_GROUP_NAME,service);
+    }
+
     /**
      * 订阅服务
      */

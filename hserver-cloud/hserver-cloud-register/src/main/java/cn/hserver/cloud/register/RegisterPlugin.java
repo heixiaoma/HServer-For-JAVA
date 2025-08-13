@@ -34,7 +34,7 @@ public class RegisterPlugin extends PluginAdapter {
             regProp.setRegisterMyIp(ConfigData.getInstance().getString(ConstConfig.REGISTER_MY_IP));
             regProp.setRegisterMyPort(ConfigData.getInstance().getInteger(ConstConfig.REGISTER_MY_PORT));
             regProp.setRegisterName(ConfigData.getInstance().getString(ConstConfig.REGISTER_NAME));
-            regProp.setRegisterGroupName(ConfigData.getInstance().getString(ConstConfig.REGISTER_GROUP_NAME,"DEFAULT_GROUP"));
+            regProp.setRegisterGroupName(ConfigData.getInstance().getString(ConstConfig.REGISTER_GROUP_NAME,ConstConfig.DEFAULT_GROUP_NAME));
             regProp.setCloudAddress(ConfigData.getInstance().getString(ConstConfig.CLOUD_ADDRESS));
         }
         if (!regProp.hasNull()) {

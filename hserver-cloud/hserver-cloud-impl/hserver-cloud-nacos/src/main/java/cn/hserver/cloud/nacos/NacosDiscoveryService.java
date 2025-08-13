@@ -1,5 +1,6 @@
 package cn.hserver.cloud.nacos;
 
+import cn.hserver.cloud.common.ConstConfig;
 import cn.hserver.cloud.common.ServerInstance;
 import cn.hserver.cloud.discovery.DiscoveryListener;
 import cn.hserver.cloud.discovery.DiscoveryService;
@@ -87,7 +88,7 @@ public class NacosDiscoveryService extends DiscoveryService{
     @Override
     public List<ServerInstance> find(String group, String service) {
         if (group == null) {
-            group = Constants.DEFAULT_GROUP;
+            group = ConstConfig.DEFAULT_GROUP_NAME;
         }
         try {
             final List<Instance> instances = naming.selectInstances(service, group, true);
