@@ -21,6 +21,12 @@ public class ConfigurationHandler implements AnnotationHandler {
             if (configBeanName.isEmpty()) {
                 configBeanName = configBeanDef.getDefaultBeanName();
             }
+            // 处理@Scope注解
+            if (clazz.isAnnotationPresent(Scope.class)) {
+                Scope scope = clazz.getAnnotation(Scope.class);
+                configBeanDef.setScope(scope.value());
+            }
+
             beanDefinitions.put(configBeanName, configBeanDef);
             // 处理@Bean注解的方法
             for (Method method : clazz.getDeclaredMethods()) {
