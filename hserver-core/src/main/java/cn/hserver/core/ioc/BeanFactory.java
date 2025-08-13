@@ -1,9 +1,6 @@
 package cn.hserver.core.ioc;
 
-import cn.hserver.core.aop.HookFactory;
-import cn.hserver.core.config.ConfigData;
-import cn.hserver.core.config.annotation.ConfigurationProperties;
-import cn.hserver.core.config.annotation.Value;
+import cn.hserver.core.aop.ProxyFactory;
 import cn.hserver.core.ioc.annotation.Autowired;
 import cn.hserver.core.ioc.annotation.Order;
 import cn.hserver.core.ioc.annotation.Qualifier;
@@ -11,9 +8,6 @@ import cn.hserver.core.ioc.annotation.PostConstruct;
 import cn.hserver.core.ioc.bean.BeanDefinition;
 import cn.hserver.core.ioc.handler.PopulateBeanHandler;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,9 +15,9 @@ import java.util.stream.Collectors;
 
 public class BeanFactory {
 
-    private HookFactory hookFactory=new HookFactory();
-
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
+    // 刷新作用域的真实实例缓存（键：Bean名称，值：真实实例）
+    private final Map<String, Object> refreshScopeCache = new ConcurrentHashMap<>();
     // 一级缓存：存储完全初始化的单例Bean
     private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>();
     // 二级缓存：存储早期曝光的单例Bean（未完全初始化）
@@ -134,13 +128,13 @@ public class BeanFactory {
             throw new IllegalArgumentException("No bean named '" + name + "' found");
         }
 
-        if (beanDefinition.isSingleton()) {
+        if (beanDefinition.isSingleton()||beanDefinition.isRefresh()) {
             synchronized (singletonObjects) {
                 sharedInstance = singletonObjects.get(name);
                 if (sharedInstance == null) {
                     singletonsCurrentlyInCreation.add(name);
                     try {
-                        final Object beanInstance = createBean(beanDefinition);
+                        final Object beanInstance = createBean(beanDefinition,false);
                         singletonFactories.put(name, beanInstance);
                         populateBean(beanInstance);
                         if (!singletonObjects.containsKey(name)){
@@ -159,7 +153,7 @@ public class BeanFactory {
                 }
             }
         } else if (beanDefinition.isPrototype()) {
-            Object prototypeInstance = createBean(beanDefinition);
+            Object prototypeInstance = createBean(beanDefinition,false);
             // 新增：执行@PostConstruct注解方法
             initializeBean(prototypeInstance);
             return (T) prototypeInstance;
@@ -170,27 +164,56 @@ public class BeanFactory {
         return (T) sharedInstance;
     }
 
+
+    // 容器中获取/创建刷新作用域真实实例
+    public Object getOrCreateRefreshTarget(BeanDefinition beanDefinition) throws Exception {
+        synchronized (refreshScopeCache) {
+             Object   target = refreshScopeCache.get(beanDefinition.getDefaultBeanName());
+                if (target == null) {
+                    // 1. 创建真实实例（未注入依赖）
+                    if (beanDefinition.getFactoryMethod() != null) {
+                        Object factoryBean = getBean(beanDefinition.getFactoryBeanName());
+                        Method factoryMethod = beanDefinition.getFactoryMethod();
+                        Object[] args = resolveMethodArguments(factoryMethod);
+                        target = factoryMethod.invoke(factoryBean, args);
+                    }else {
+                        target = createBean(beanDefinition, true);
+                    }
+                    // 2. 执行依赖注入（关键：为实例注入依赖）
+                    populateBean(target);
+                    // 3. 执行初始化（如@PostConstruct）
+                    initializeBean(target);
+                    // 4. 存入刷新缓存
+                    refreshScopeCache.put(beanDefinition.getDefaultBeanName(), target);
+                }
+                return target;
+        }
+    }
+
+
+
     public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) {
         beanDefinitionMap.put(beanName, beanDefinition);
     }
 
-    private Object createBean(BeanDefinition beanDefinition) throws Exception {
+    private Object createBean(BeanDefinition beanDefinition,boolean real) throws Exception {
         // 新增：支持工厂方法创建Bean
         if (beanDefinition.getFactoryMethod() != null) {
             Object factoryBean = getBean(beanDefinition.getFactoryBeanName());
             Method factoryMethod = beanDefinition.getFactoryMethod();
             Object[] args = resolveMethodArguments(factoryMethod);
-            return factoryMethod.invoke(factoryBean, args);
+            if (beanDefinition.isRefresh()&&!real){
+               return ProxyFactory.newRefreshProxyInstance(beanDefinition,beanDefinition.getConstructor(),args);
+            }else {
+                return factoryMethod.invoke(factoryBean, args);
+            }
         }
-
         Class<?> beanClass = beanDefinition.getBeanClass();
         Constructor<?> constructorToUse = beanDefinition.getConstructor();
-
         // 如果没有指定构造器，尝试查找带有@Autowired注解的构造器
         if (constructorToUse == null) {
             Constructor<?>[] constructors = beanClass.getDeclaredConstructors();
             Constructor<?> autowiredConstructor = null;
-
             for (Constructor<?> constructor : constructors) {
                 if (constructor.isAnnotationPresent(Autowired.class)) {
                     if (autowiredConstructor != null) {
@@ -199,18 +222,17 @@ public class BeanFactory {
                     autowiredConstructor = constructor;
                 }
             }
-
             // 如果没有找到@Autowired注解的构造器，使用默认无参构造器
             constructorToUse = (autowiredConstructor != null) ? autowiredConstructor :
                     constructors[0]; // 确保使用无参构造器
         }
-
         // 处理构造器参数
         Object[] args = resolveConstructorArguments(constructorToUse);
-
         Object beanInstance;
-        if (beanDefinition.isHook()){
-            beanInstance= hookFactory.newProxyInstance(beanDefinition,constructorToUse,args);
+        if (beanDefinition.isHook()&&!real){
+            beanInstance= ProxyFactory.newHookProxyInstance(beanDefinition,constructorToUse,args);
+        }else if (beanDefinition.isRefresh()&&!real){
+            beanInstance = ProxyFactory.newRefreshProxyInstance(beanDefinition,constructorToUse,args);
         }else {
             beanInstance = constructorToUse.newInstance(args);
         }
@@ -302,5 +324,9 @@ public class BeanFactory {
             postConstructMethod.setAccessible(true);
             postConstructMethod.invoke(beanInstance);
         }
+    }
+
+    public void clearRefreshScope() {
+        refreshScopeCache.clear();
     }
 }

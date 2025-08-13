@@ -8,14 +8,11 @@ import cn.hserver.core.scheduling.annotation.Task;
 import cn.hserver.core.scheduling.bean.TaskDefinition;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class ComponentHandler implements AnnotationHandler {
     @Override
     public void handle(Class<?> clazz, Map<String, BeanDefinition> beanDefinitions) {
-        String className = clazz.getName();
         if (clazz.isAnnotationPresent(Component.class)) {
             Component component = clazz.getAnnotation(Component.class);
             BeanDefinition beanDefinition = new BeanDefinition();

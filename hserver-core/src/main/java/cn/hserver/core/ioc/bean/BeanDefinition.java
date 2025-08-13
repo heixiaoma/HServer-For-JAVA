@@ -45,6 +45,10 @@ public class BeanDefinition {
         return ScopeType.PROTOTYPE == scope;
     }
 
+    public boolean isRefresh() {
+        return ScopeType.REFRESH == scope;
+    }
+
     public Constructor<?> getConstructor() {
         return constructor;
     }

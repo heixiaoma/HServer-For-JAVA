@@ -30,8 +30,8 @@ public class ConfigurationHandler implements AnnotationHandler {
                     if (beanName.isEmpty()) {
                         beanName = method.getName();
                     }
-
                     BeanDefinition beanDef = new BeanDefinition();
+                    beanDef.setConstructor(method.getReturnType().getConstructors()[0]);
                     beanDef.setBeanClass(method.getReturnType());
                     beanDef.setFactoryBeanName(configBeanName);
                     beanDef.setFactoryMethod(method);
@@ -41,7 +41,6 @@ public class ConfigurationHandler implements AnnotationHandler {
                         Scope scope = method.getAnnotation(Scope.class);
                         beanDef.setScope(scope.value());
                     }
-
                     beanDefinitions.put(beanName, beanDef);
                 }
             }

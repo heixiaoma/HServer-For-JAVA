@@ -131,6 +131,17 @@ public class ConfigData {
         return configMap.get(key);
     }
 
+
+    /**
+     * 设置配置值
+     * @param key 键
+     * @param value 值
+     */
+    public void set(String key, Object value) {
+        configMap.put(key, value);
+    }
+
+
     /**
      * 通过 key 获取配置值，提供默认值
      * @param key 键

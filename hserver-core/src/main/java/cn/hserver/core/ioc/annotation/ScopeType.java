@@ -2,7 +2,8 @@ package cn.hserver.core.ioc.annotation;
 
 public enum ScopeType {
     SINGLETON("singleton"),
-    PROTOTYPE("prototype");
+    PROTOTYPE("prototype"),
+    REFRESH("refresh");
 
     private final String value;
 

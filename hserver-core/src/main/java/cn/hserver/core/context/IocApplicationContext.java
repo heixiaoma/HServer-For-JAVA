@@ -133,4 +133,18 @@ public class IocApplicationContext {
         return beanFactory.getBeansOfType(requiredType,true);
     }
 
+
+    public static  <T> T getOrCreateRefreshTarget(BeanDefinition beanDefinition){
+        try {
+            return (T)beanFactory.getOrCreateRefreshTarget(beanDefinition);
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+
+    public static  void clearRefreshScope(){
+       beanFactory.clearRefreshScope();
+    }
+
 }

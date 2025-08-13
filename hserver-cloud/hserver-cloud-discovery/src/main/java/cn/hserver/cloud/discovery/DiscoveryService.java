@@ -41,5 +41,7 @@ public abstract class DiscoveryService {
      * 订阅服务
      */
     public abstract void subscribe(String group, String service,DiscoveryListener discoveryListener);
-
+    public  void subscribe(String service,DiscoveryListener discoveryListener) {
+        subscribe(ConstConfig.DEFAULT_GROUP_NAME,service,discoveryListener);
+    }
 }

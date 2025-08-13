@@ -1,9 +1,0 @@
-hserver:
-  - port: 8080ww
-  - port: 8080ww
-test:
-  name: hserver
-  height: 1.88
-  age: 18
-
-log: info
