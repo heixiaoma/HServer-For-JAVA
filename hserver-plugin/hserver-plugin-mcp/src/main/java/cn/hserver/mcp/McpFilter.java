@@ -1,27 +1,27 @@
 package cn.hserver.mcp;
 
-import cn.hserver.core.ioc.annotation.Autowired;
-import cn.hserver.core.ioc.annotation.Bean;
-import cn.hserver.modelcontextprotocol.server.transport.HServerSseServerTransportProvider;
-import cn.hserver.plugin.web.context.Webkit;
-import cn.hserver.plugin.web.interfaces.FilterAdapter;
-import io.netty.handler.codec.http.HttpMethod;
+import cn.hserver.core.ioc.annotation.Component;
+import cn.hserver.mvc.constants.HttpMethod;
+import cn.hserver.mvc.context.WebContext;
+import cn.hserver.mvc.filter.FilterAdapter;
 
-@Bean
+import static cn.hserver.mcp.McpPlugin.hServerSseServerTransportProviderList;
+
+@Component
 public class McpFilter implements FilterAdapter {
 
-    @Autowired
-    private HServerSseServerTransportProvider hServerSseServerTransportProvider;
-
-
     @Override
-    public void doFilter(Webkit webkit) throws Exception {
-        if (webkit.httpRequest.getRequestType() == HttpMethod.POST) {
-            hServerSseServerTransportProvider.doPost(webkit.httpRequest,webkit.httpResponse);
+    public void doFilter(WebContext webContext) throws Exception {
+        if (hServerSseServerTransportProviderList.isEmpty()){
+            return;
         }
-        if (webkit.httpRequest.getRequestType() == HttpMethod.GET) {
-            hServerSseServerTransportProvider.doGet(webkit.httpRequest,webkit.httpResponse);
-        }
+        hServerSseServerTransportProviderList.forEach(provider -> {
+            if (webContext.request.getRequestMethod() == HttpMethod.POST) {
+                provider.doPost(webContext.request,webContext.response);
+            }
+            if (webContext.request.getRequestMethod() == HttpMethod.GET) {
+                provider.doGet(webContext.request,webContext.response);
+            }
+        });
     }
-
 }

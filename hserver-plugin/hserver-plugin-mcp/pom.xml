@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>cn.hserver</groupId>
-            <artifactId>hserver</artifactId>
+            <artifactId>hserver-core</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -34,7 +34,8 @@
         </dependency>
         <dependency>
             <groupId>cn.hserver</groupId>
-            <artifactId>hserver-plugin-web</artifactId>
+            <artifactId>hserver-mvc</artifactId>
+            <version>3.7.M1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

@@ -5,17 +5,14 @@ package cn.hserver.modelcontextprotocol.server.transport;
 
 import cn.hserver.core.ioc.annotation.Bean;
 import cn.hserver.modelcontextprotocol.spec.*;
-import cn.hserver.plugin.web.context.WebConstConfig;
-import cn.hserver.plugin.web.context.Webkit;
-import cn.hserver.plugin.web.context.sse.SSeEvent;
-import cn.hserver.plugin.web.context.sse.SSeStream;
-import cn.hserver.plugin.web.interfaces.FilterAdapter;
-import cn.hserver.plugin.web.interfaces.HttpRequest;
-import cn.hserver.plugin.web.interfaces.HttpResponse;
+import cn.hserver.mvc.constants.HttpResponseStatus;
+import cn.hserver.mvc.constants.WebConstConfig;
+import cn.hserver.mvc.request.Request;
+import cn.hserver.mvc.response.Response;
+import cn.hserver.mvc.sse.SSeEvent;
+import cn.hserver.mvc.sse.SSeStream;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
@@ -96,14 +93,14 @@ public class HServerSseServerTransportProvider  implements McpServerTransportPro
 	}
 
 
-	public void doGet(HttpRequest request, HttpResponse response) {
+	public void doGet(Request request, Response response) {
 		String pathInfo = request.getUri();
 		if (!sseEndpoint.equals(pathInfo)) {
 			return;
 		}
-		response.setHeader("Cache-Control", "no-cache");
-		response.setHeader("Connection", "keep-alive");
-		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.addHeader("Cache-Control", "no-cache");
+		response.addHeader("Connection", "keep-alive");
+		response.addHeader("Access-Control-Allow-Origin", "*");
 
 		String sessionId = UUID.randomUUID().toString();
 
@@ -121,7 +118,7 @@ public class HServerSseServerTransportProvider  implements McpServerTransportPro
 		this.sendEvent(sSeStream, ENDPOINT_EVENT_TYPE, this.messageEndpoint + "?sessionId=" + sessionId);
 	}
 
-	public void doPost(HttpRequest request, HttpResponse response){
+	public void doPost(Request request, Response response){
 
 		String pathInfo = request.getUri();
 		if (!messageEndpoint.equals(pathInfo)) {
@@ -131,7 +128,7 @@ public class HServerSseServerTransportProvider  implements McpServerTransportPro
 		// Get the session ID from the request parameter
 		String sessionId = request.query("sessionId");
 		if (sessionId == null) {
-			response.sendStatusCode(HttpResponseStatus.BAD_REQUEST);
+			response.setStatus(HttpResponseStatus.BAD_REQUEST);
 			response.sendJson(new McpError("Session ID missing in message endpoint"));
 			return;
 		}
@@ -139,20 +136,20 @@ public class HServerSseServerTransportProvider  implements McpServerTransportPro
 		// Get the session from the sessions map
 		McpServerSession session = sessions.get(sessionId);
 		if (session == null) {
-			response.sendStatusCode(HttpResponseStatus.NOT_FOUND);
+			response.setStatus(HttpResponseStatus.NOT_FOUND);
 			response.sendJson(new McpError("Session not found: " + sessionId));
 			return;
 		}
 		try {
 			McpSchema.JSONRPCMessage message = McpSchema.deserializeJsonRpcMessage(objectMapper,request.getRawData());
 			session.handle(message).block(); // Block for Servlet compatibility
-			response.sendStatusCode(HttpResponseStatus.OK);
+			response.setStatus(HttpResponseStatus.OK);
 			response.sendText("");
 		}
 		catch (Exception e) {
 			logger.error("Error processing message: {}", e.getMessage());
             McpError mcpError = new McpError(e.getMessage());
-            response.sendStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+            response.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
             response.sendJson(mcpError);
         }
 	}
