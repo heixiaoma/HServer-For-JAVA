@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.hserver</groupId>
         <artifactId>hserver-parent</artifactId>
-        <version>3.7.M1</version>
+        <version>4.0.0-beta.1</version>
     </parent>
 
     <artifactId>hserver-cloud</artifactId>
@@ -16,7 +16,6 @@
         <module>hserver-cloud-discovery</module>
         <module>hserver-cloud-common</module>
         <module>hserver-cloud-impl</module>
-        <module>hserver-cloud-impl/hserver-cloud-nacos</module>
     </modules>
 
     <properties>

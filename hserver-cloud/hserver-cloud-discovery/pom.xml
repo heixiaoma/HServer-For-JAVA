@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.hserver</groupId>
         <artifactId>hserver-cloud</artifactId>
-        <version>3.7.M1</version>
+        <version>4.0.0-beta.1</version>
     </parent>
 
     <artifactId>hserver-cloud-discovery</artifactId>
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>cn.hserver</groupId>
             <artifactId>hserver-cloud-common</artifactId>
-            <version>3.7.M1</version>
+            <version>4.0.0-beta.1</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
