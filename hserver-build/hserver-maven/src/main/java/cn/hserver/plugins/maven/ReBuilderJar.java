@@ -1,9 +1,9 @@
 package cn.hserver.plugins.maven;
 
 import cn.hserver.runner.Runner;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.utils.StringUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

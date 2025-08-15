@@ -1,11 +1,11 @@
 package cn.hserver.plugins.maven;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.utils.StringUtils;
 
 import java.util.Set;
 
@@ -64,7 +64,6 @@ public class RepackageDependenciesMojo extends AbstractMojo {
             reBuilderJar.rename(project);
             logger.info("耗时:" + (System.currentTimeMillis() - startTime) / 1000 + " 秒");
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
         }
     }

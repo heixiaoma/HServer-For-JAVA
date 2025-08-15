@@ -3,7 +3,7 @@ package cn.hserver.plugins.maven;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.shared.utils.StringUtils;
 
 import javax.crypto.CipherInputStream;
 import java.io.File;

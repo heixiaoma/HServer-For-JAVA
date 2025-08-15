@@ -55,6 +55,12 @@
 
             <dependency>
                 <groupId>cn.hserver</groupId>
+                <artifactId>hserver-cloud-nacos</artifactId>
+                <version>${hserver.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-beetlsql</artifactId>
                 <version>${hserver.version}</version>
             </dependency>
