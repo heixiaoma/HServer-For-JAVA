@@ -67,7 +67,7 @@
 
             <dependency>
                 <groupId>cn.hserver</groupId>
-                <artifactId>hserver-plugin-mybatis</artifactId>
+                <artifactId>hserver-plugin-mybatisplus</artifactId>
                 <version>${hserver.version}</version>
             </dependency>
             <dependency>
@@ -157,18 +157,19 @@
     <profiles>
         <profile>
             <id>release</id>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>heixiaoma</id>
-                    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-                </snapshotRepository>
-                <repository>
-                    <id>heixiaoma</id>
-                    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.8.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>heixiaoma</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                        </configuration>
+                    </plugin>
+
                     <!--  Source  -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

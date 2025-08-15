@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>hserver-cloud</artifactId>
+    <name>hserver-cloud</name>
     <packaging>pom</packaging>
     <modules>
         <module>hserver-cloud-register</module>

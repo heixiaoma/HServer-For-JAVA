@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>hserver-smart-web</artifactId>
-
+    <name>hserver-smart-web</name>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>

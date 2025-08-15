@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>hserver-plugin-mcp</artifactId>
+    <name>hserver-plugin-mcp</name>
     <dependencies>
         <dependency>
             <groupId>cn.hserver</groupId>

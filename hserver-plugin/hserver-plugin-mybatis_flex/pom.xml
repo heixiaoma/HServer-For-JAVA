@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>hserver-plugin-mybatis_flex</artifactId>
+    <name>hserver-plugin-mybatis_flex</name>
 
     <dependencies>
         <dependency>

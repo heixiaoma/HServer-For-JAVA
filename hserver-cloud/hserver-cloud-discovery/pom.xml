@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>hserver-cloud-discovery</artifactId>
+    <name>hserver-cloud-discovery</name>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

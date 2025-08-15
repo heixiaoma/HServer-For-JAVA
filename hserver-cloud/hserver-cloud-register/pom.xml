@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>hserver-cloud-register</artifactId>
+    <name>hserver-cloud-register</name>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

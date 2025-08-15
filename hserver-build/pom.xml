@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>hserver-build</artifactId>
+    <name>hserver-build</name>
     <packaging>pom</packaging>
     <modules>
         <module>hserver-maven</module>

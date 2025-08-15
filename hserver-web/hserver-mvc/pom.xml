@@ -8,8 +8,8 @@
         <artifactId>hserver-web</artifactId>
         <version>4.0.0-beta.1</version>
     </parent>
-
     <artifactId>hserver-mvc</artifactId>
+    <name>hserver-mvc</name>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

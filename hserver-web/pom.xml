@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>hserver-web</artifactId>
+    <name>hserver-web</name>
     <packaging>pom</packaging>
     <modules>
         <module>hserver-mvc</module>

@@ -9,6 +9,7 @@
         <version>4.0.0-beta.1</version>
     </parent>
     <artifactId>hserver-cloud-impl</artifactId>
+    <name>hserver-cloud-impl</name>
     <packaging>pom</packaging>
     <modules>
         <module>hserver-cloud-nacos</module>

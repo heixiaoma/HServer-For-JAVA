@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>hserver-netty-web</artifactId>
+    <name>hserver-netty-web</name>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

@@ -11,6 +11,7 @@
 
     <packaging>pom</packaging>
     <artifactId>hserver-plugin</artifactId>
+    <name>hserver-plugin</name>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -20,7 +21,7 @@
 
     <modules>
         <module>hserver-plugin-beetlsql</module>
-        <module>hserver-plugin-mybatis</module>
+        <module>hserver-plugin-mybatisplus</module>
         <module>hserver-plugin-druid</module>
         <module>hserver-plugin-mybatis_flex</module>
         <module>hserver-plugin-satoken</module>

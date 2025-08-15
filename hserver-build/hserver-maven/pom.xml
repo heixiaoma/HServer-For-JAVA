@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>hserver-maven</artifactId>
-
+    <name>hserver-maven</name>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
