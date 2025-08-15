@@ -7,7 +7,7 @@
     <groupId>cn.hserver</groupId>
     <artifactId>hserver-parent</artifactId>
     <packaging>pom</packaging>
-    <version>4.0.0-beta.1</version>
+    <version>4.0.0-beta.2</version>
 
     <name>hserver-parent</name>
     <url>https://gitee.com/HServer/HServer</url>
@@ -23,7 +23,7 @@
     </modules>
 
     <properties>
-        <hserver.version>4.0.0-beta.1</hserver.version>
+        <hserver.version>4.0.0-beta.2</hserver.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <java.version>1.8</java.version>

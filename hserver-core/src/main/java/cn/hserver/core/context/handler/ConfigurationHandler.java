@@ -37,7 +37,11 @@ public class ConfigurationHandler implements AnnotationHandler {
                         beanName = method.getName();
                     }
                     BeanDefinition beanDef = new BeanDefinition();
-                    beanDef.setConstructor(method.getReturnType().getConstructors()[0]);
+                    if (method.getReturnType().getConstructors().length > 0) {
+                        beanDef.setConstructor(method.getReturnType().getConstructors()[0]);
+                    }else {
+                        beanDef.setConstructor(null);
+                    }
                     beanDef.setBeanClass(method.getReturnType());
                     beanDef.setFactoryBeanName(configBeanName);
                     beanDef.setFactoryMethod(method);

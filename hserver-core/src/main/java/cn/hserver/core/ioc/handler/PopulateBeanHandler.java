@@ -1,5 +1,7 @@
 package cn.hserver.core.ioc.handler;
 
+import cn.hserver.core.util.ObjConvertUtil;
+
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -39,8 +41,13 @@ public interface PopulateBeanHandler {
                         // 确保setter方法是public的
                         if (Modifier.isPublic(setterMethod.getModifiers())) {
                             // 调用setter方法
-                            setterMethod.invoke(beanInstance, fieldValue);
-                            return true; // 成功通过setter注入，跳过字段反射
+                            if (field.getType().isAssignableFrom(fieldValue.getClass())) {
+                                setterMethod.invoke(beanInstance, fieldValue);
+                                return true; // 成功通过setter注入，跳过字段反射
+                            }else {
+                                setterMethod.invoke(beanInstance, ObjConvertUtil.convert(field.getType(),fieldValue.toString()));
+                                return true;
+                            }
                         }
                     }
                 }

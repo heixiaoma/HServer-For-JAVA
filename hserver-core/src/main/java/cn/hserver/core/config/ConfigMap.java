@@ -15,4 +15,14 @@ public class ConfigMap extends ConcurrentHashMap<String, Object> {
         public Object get(String key) {
             return super.get(key.toLowerCase());
         }
-    }
+
+        @Override
+        public Object get(Object key) {
+            return super.get(key.toString().toLowerCase());
+        }
+
+        @Override
+        public Object getOrDefault(Object key, Object defaultValue) {
+            return super.getOrDefault(key.toString().toLowerCase(), defaultValue);
+        }
+}
