@@ -1,6 +1,6 @@
 package cn.hserver.mcp.function;
 
-import cn.hserver.core.ioc.IocUtil;
+import cn.hserver.core.context.IocApplicationContext;
 import cn.hserver.mcp.ObjConvertUtil;
 import cn.hserver.mcp.annotation.Param;
 import cn.hserver.mcp.type.McpType;
@@ -109,7 +109,7 @@ public class FunctionTool {
         List<McpSchema.Content> data = new ArrayList<>();
         try {
             if (this.object == null) {
-                this.object = IocUtil.getBean(aClass);
+                this.object = IocApplicationContext.getBean(aClass);
             }
             Object invoke = method.invoke(object, genArgs(args));
             if (invoke instanceof McpSchema.Content) {

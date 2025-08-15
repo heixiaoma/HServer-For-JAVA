@@ -1,11 +1,10 @@
 package cn.hserver.mcp.function;
 
-import cn.hserver.core.ioc.IocUtil;
+import cn.hserver.core.context.IocApplicationContext;
 import cn.hserver.mcp.ObjConvertUtil;
 import cn.hserver.mcp.annotation.Param;
-import cn.hserver.mcp.type.McpType;
 import cn.hserver.modelcontextprotocol.spec.McpSchema;
-import cn.hserver.plugin.web.util.ParameterUtil;
+import cn.hserver.mvc.util.ParameterUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,6 @@ import java.util.*;
 @NoArgsConstructor
 public class FunctionPrompt {
 
-
     private Object object;
 
     private Class<?> aClass;
@@ -35,7 +33,7 @@ public class FunctionPrompt {
     public FunctionPrompt(Class<?> aClass, Method method) {
         this.aClass = aClass;
         this.method = method;
-        this.argumentNames = ParameterUtil.getParamNames(method);
+        this.argumentNames = ParameterUtil.getMethodsParamNames(method);
         Class<?> returnType1 = method.getReturnType();
         if (Collection.class.isAssignableFrom(returnType1)) {
             try {
@@ -99,7 +97,7 @@ public class FunctionPrompt {
         McpSchema.CallToolResult res = new McpSchema.CallToolResult();
         try {
             if (this.object == null) {
-                this.object = IocUtil.getBean(aClass);
+                this.object = IocApplicationContext.getBean(aClass);
             }
             Object invoke = method.invoke(object, genArgs(request.getArguments()));
             if (invoke instanceof McpSchema.PromptMessage) {

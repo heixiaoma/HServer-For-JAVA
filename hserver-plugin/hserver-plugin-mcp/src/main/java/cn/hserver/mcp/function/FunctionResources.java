@@ -1,10 +1,10 @@
 package cn.hserver.mcp.function;
 
-import cn.hserver.core.ioc.IocUtil;
+import cn.hserver.core.context.IocApplicationContext;
 import cn.hserver.mcp.ObjConvertUtil;
 import cn.hserver.mcp.annotation.ResourcesMapping;
 import cn.hserver.modelcontextprotocol.spec.McpSchema;
-import cn.hserver.plugin.web.util.ParameterUtil;
+import cn.hserver.mvc.util.ParameterUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,7 +36,7 @@ public class FunctionResources {
     public FunctionResources(Class<?> aClass, Method method) {
         this.aClass = aClass;
         this.method = method;
-        this.argumentNames = ParameterUtil.getParamNames(method);
+        this.argumentNames = ParameterUtil.getMethodsParamNames(method);
         Class<?> returnType1 = method.getReturnType();
         if (Collection.class.isAssignableFrom(returnType1)) {
             try {
@@ -122,7 +122,7 @@ public class FunctionResources {
         Map<String, String> stringStringMap = parseString(resourcesMapping.uri(), request.getUri());
         try {
             if (this.object == null) {
-                this.object = IocUtil.getBean(aClass);
+                this.object = IocApplicationContext.getBean(aClass);
             }
             Object invoke = method.invoke(object, genArgs(stringStringMap));
             if (invoke instanceof Collection) {

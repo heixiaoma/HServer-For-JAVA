@@ -16,14 +16,12 @@
 package cn.hserver.mcp.annotation;
 
 
-import cn.hserver.core.ioc.annotation.HServerType;
 
 import java.lang.annotation.*;
 
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@HServerType
 @Documented
 public @interface McpServerEndpoint {
     /**
