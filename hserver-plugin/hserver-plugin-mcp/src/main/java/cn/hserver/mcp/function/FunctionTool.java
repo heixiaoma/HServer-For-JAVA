@@ -5,7 +5,7 @@ import cn.hserver.mcp.ObjConvertUtil;
 import cn.hserver.mcp.annotation.Param;
 import cn.hserver.mcp.type.McpType;
 import cn.hserver.modelcontextprotocol.spec.McpSchema;
-import cn.hserver.plugin.web.util.ParameterUtil;
+import cn.hserver.mvc.util.ParameterUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,7 +37,7 @@ public class FunctionTool {
     public FunctionTool(Class<?> aClass, Method method) {
         this.aClass = aClass;
         this.method = method;
-        this.argumentNames = ParameterUtil.getParamNames(method);
+        this.argumentNames = ParameterUtil.getMethodsParamNames(method);
         Class<?> returnType1 = method.getReturnType();
         if (Collection.class.isAssignableFrom(returnType1)) {
             try {
