@@ -22,13 +22,11 @@
             <groupId>cn.hserver</groupId>
             <artifactId>hserver-core</artifactId>
             <scope>provided</scope>
-            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.hserver</groupId>
             <artifactId>hserver-mvc</artifactId>
             <scope>provided</scope>
-            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 

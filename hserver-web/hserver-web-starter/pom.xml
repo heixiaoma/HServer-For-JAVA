@@ -21,17 +21,17 @@
         <dependency>
             <groupId>cn.hserver</groupId>
             <artifactId>hserver-core</artifactId>
-            <version>${project.version}</version>
+            <version>${hserver.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.hserver</groupId>
             <artifactId>hserver-mvc</artifactId>
-            <version>${project.version}</version>
+            <version>${hserver.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.hserver</groupId>
             <artifactId>hserver-netty-web</artifactId>
-            <version>${project.version}</version>
+            <version>${hserver.version}</version>
         </dependency>
     </dependencies>
 

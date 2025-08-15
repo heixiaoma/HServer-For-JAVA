@@ -5,9 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>cn.hserver</groupId>
-        <artifactId>hserver-cloud</artifactId>
+        <artifactId>hserver-cloud-impl</artifactId>
         <version>4.0.0-beta.1</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>hserver-cloud-nacos</artifactId>
@@ -34,19 +33,19 @@
         <dependency>
             <groupId>cn.hserver</groupId>
             <artifactId>hserver-cloud-common</artifactId>
-            <version>4.0.0-beta.1</version>
+            <version>${hserver.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>cn.hserver</groupId>
             <artifactId>hserver-cloud-discovery</artifactId>
-            <version>4.0.0-beta.1</version>
+            <version>${hserver.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>cn.hserver</groupId>
             <artifactId>hserver-cloud-register</artifactId>
-            <version>4.0.0-beta.1</version>
+            <version>${hserver.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

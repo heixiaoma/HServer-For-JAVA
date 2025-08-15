@@ -9,7 +9,12 @@
         <version>4.0.0-beta.1</version>
     </parent>
 
-    <artifactId>hserver-runner</artifactId>
+    <artifactId>hserver-build</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>hserver-maven</module>
+        <module>hserver-runner</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

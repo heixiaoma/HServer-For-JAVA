@@ -16,13 +16,14 @@
 
     <modules>
         <module>hserver-cloud</module>
-        <module>hserver-runner</module>
         <module>hserver-core</module>
         <module>hserver-web</module>
         <module>hserver-plugin</module>
+        <module>hserver-build</module>
     </modules>
 
     <properties>
+        <hserver.version>4.0.0-beta.1</hserver.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <java.version>1.8</java.version>
@@ -37,70 +38,67 @@
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-core</artifactId>
-                <version>4.0.0-beta.1</version>
+                <version>${hserver.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hserver</groupId>
+                <artifactId>hserver-mvc</artifactId>
+                <version>${hserver.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hserver</groupId>
+                <artifactId>hserver-web-starter</artifactId>
+                <version>${hserver.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-beetlsql</artifactId>
-                <version>4.0.0-beta.1</version>
+                <version>${hserver.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-mybatis</artifactId>
-                <version>4.0.0-beta.1</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hserver</groupId>
-                <artifactId>hserver-plugin-gateway</artifactId>
-                <version>4.0.0-beta.1</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hserver</groupId>
-                <artifactId>hserver-plugin-rpc</artifactId>
-                <version>4.0.0-beta.1</version>
+                <version>${hserver.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-druid</artifactId>
-                <version>4.0.0-beta.1</version>
+                <version>${hserver.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>cn.hserver</groupId>
-                <artifactId>hserver-plugin-web</artifactId>
-                <version>4.0.0-beta.1</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hserver</groupId>
                 <artifactId>hserver-runner</artifactId>
-                <version>4.0.0-beta.1</version>
+                <version>${hserver.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-cloud</artifactId>
-                <version>4.0.0-beta.1</version>
+                <version>${hserver.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-mybatis_flex</artifactId>
-                <version>4.0.0-beta.1</version>
+                <version>${hserver.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-satoken</artifactId>
-                <version>4.0.0-beta.1</version>
+                <version>${hserver.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-forest</artifactId>
-                <version>4.0.0-beta.1</version>
+                <version>${hserver.version}</version>
             </dependency>
             <dependency>
                 <groupId>cn.hserver</groupId>
                 <artifactId>hserver-plugin-mcp</artifactId>
-                <version>4.0.0-beta.1</version>
+                <version>${hserver.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -110,8 +108,8 @@
             <plugins>
                 <plugin>
                     <groupId>cn.hserver</groupId>
-                    <artifactId>hserver-plugin-maven</artifactId>
-                    <version>4.0.0-beta.1</version>
+                    <artifactId>hserver-maven</artifactId>
+                    <version>${hserver.version}</version>
                     <executions>
                         <execution>
                             <phase>package</phase>
@@ -149,9 +147,6 @@
             <url>https://gitee.com/HServer/HServer</url>
         </developer>
     </developers>
-
-
-
 
     <profiles>
         <profile>

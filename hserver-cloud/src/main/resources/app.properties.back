@@ -1,9 +1,0 @@
-app.cloud.reg.registerAddress=http://127.0.0.1:8848
-#注册名字
-app.cloud.reg.registerName=dsds
-#注册我的Ip
-app.cloud.reg.registerMyIp=127.0.0.1
-#注册我的端口
-app.cloud.reg.registerMyPort=8080
-#注册分组
-app.cloud.reg.groupName=DEFAULT_GROUP

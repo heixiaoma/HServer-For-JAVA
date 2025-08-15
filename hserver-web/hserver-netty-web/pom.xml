@@ -52,14 +52,12 @@
         <dependency>
             <groupId>cn.hserver</groupId>
             <artifactId>hserver-core</artifactId>
-            <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>cn.hserver</groupId>
             <artifactId>hserver-mvc</artifactId>
-            <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
 
