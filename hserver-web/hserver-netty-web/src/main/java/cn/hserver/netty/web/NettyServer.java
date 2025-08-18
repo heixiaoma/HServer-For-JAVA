@@ -33,7 +33,7 @@ public class NettyServer implements WebServer {
     @Override
     public void start(int port, int sslPort, SslData sslData) {
         ConfigData instance = ConfigData.getInstance();
-        NettyConfig.IO_MODE = IoMultiplexer.valueOf(instance.getString("netty.mode", "IO_URING").toUpperCase(Locale.ROOT));
+        NettyConfig.IO_MODE = IoMultiplexer.valueOf(instance.getString("netty.mode", "DEFAULT").toUpperCase(Locale.ROOT));
         NettyConfig.BACKLOG = instance.getInteger("netty.backlog", 1024);
         NettyConfig.WORKER_POOL = instance.getInteger("netty.pool", 0);
         NettyConfig.WRITE_LIMIT = instance.getLong("netty.write.limit");

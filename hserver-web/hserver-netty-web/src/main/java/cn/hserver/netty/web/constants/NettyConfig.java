@@ -4,7 +4,7 @@ package cn.hserver.netty.web.constants;
 import io.netty.handler.ssl.SslContext;
 
 public class NettyConfig {
-    public static IoMultiplexer IO_MODE = IoMultiplexer.IO_URING;
+    public static IoMultiplexer IO_MODE = IoMultiplexer.DEFAULT;
 
     /**
      * backlog 指定了内核为此套接口排队的最大连接个数；
