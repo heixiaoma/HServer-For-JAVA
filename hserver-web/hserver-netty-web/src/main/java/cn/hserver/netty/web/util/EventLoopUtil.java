@@ -27,7 +27,7 @@ public class EventLoopUtil {
         } else if (KQueue.isAvailable()&&(NettyConfig.IO_MODE== IoMultiplexer.KQUEUE||NettyConfig.IO_MODE==IoMultiplexer.DEFAULT)) {
             return IoMultiplexer.KQUEUE;
         } else {
-            return IoMultiplexer.JDK;
+            return IoMultiplexer.NIO;
         }
     }
 
