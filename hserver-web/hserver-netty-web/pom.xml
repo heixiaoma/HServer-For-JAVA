@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.hserver</groupId>
         <artifactId>hserver-web</artifactId>
-        <version>4.0.0-beta.3</version>
+        <version>4.0.0-beta.4</version>
     </parent>
 
     <artifactId>hserver-netty-web</artifactId>
@@ -33,14 +33,12 @@
         </dependency>
 
         <!--    io-mode    -->
-
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-transport-native-io_uring</artifactId>
             <version>${netty.version}</version>
             <classifier>linux-x86_64</classifier>
         </dependency>
-
 
         <dependency>
             <groupId>io.netty</groupId>
