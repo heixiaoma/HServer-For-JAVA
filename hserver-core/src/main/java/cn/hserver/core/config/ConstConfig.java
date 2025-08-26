@@ -13,7 +13,7 @@ public class ConstConfig {
     /**
      * 版本
      */
-    public final static String VERSION = "4.0.0-beta.5";
+    public final static String VERSION = "4.0.0-beta.6";
     /**
      * 当前项目路径
      */
