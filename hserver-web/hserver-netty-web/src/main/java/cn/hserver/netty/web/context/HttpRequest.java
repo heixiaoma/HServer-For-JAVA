@@ -224,19 +224,11 @@ public class HttpRequest implements Request {
     }
 
     public void addReqParams(String key, String value) {
-        if (requestParams.containsKey(key)) {
-            requestParams.get(key).add(value);
-        } else {
-            requestParams.put(key, Collections.singletonList(value));
-        }
+        requestParams.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
     }
 
     public void addReqUrlParams(String key, String value) {
-        if (urlParams.containsKey(key)) {
-            urlParams.get(key).add(value);
-        } else {
-            urlParams.put(key, Collections.singletonList(value));
-        }
+        urlParams.computeIfAbsent(key, k -> new ArrayList<>()).add(value);
     }
 
 
