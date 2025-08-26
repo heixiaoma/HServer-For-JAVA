@@ -66,7 +66,7 @@ public class SaTokenPlugin extends PluginAdapter {
 
 
     @Override
-    public void iocStartPopulate() {
+    public void iocBeanPreparation() {
 
         SaTokenContext saTokenContext = new SaTokenContextForHServer();
         SaManager.setSaTokenContext(saTokenContext);

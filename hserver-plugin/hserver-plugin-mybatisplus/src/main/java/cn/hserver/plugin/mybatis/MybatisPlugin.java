@@ -36,7 +36,7 @@ public class MybatisPlugin extends PluginAdapter {
     }
 
     @Override
-    public void iocStartPopulate() {
+    public void iocBeanPreparation() {
         try {
             Map<String, SqlSessionFactory> stringSqlSessionFactoryMap = MybatisInit.initMybatis(classes);
             if (stringSqlSessionFactoryMap == null) {

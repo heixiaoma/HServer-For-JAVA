@@ -6,6 +6,8 @@ import cn.hserver.core.scheduling.bean.TaskDefinition;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BeanDefinition {
     private Class<?> beanClass;
@@ -13,7 +15,7 @@ public class BeanDefinition {
     private Constructor<?> constructor;
     private String factoryBeanName;
     private Method factoryMethod;
-    private HookBeanDefinition hookBeanDefinition;
+    private List<HookBeanDefinition> hookBeanDefinitions=new ArrayList<>();
 
     public String getDefaultBeanName() {
         return beanClass.getName();
@@ -73,15 +75,15 @@ public class BeanDefinition {
         this.factoryMethod = factoryMethod;
     }
 
-    public HookBeanDefinition getHookBeanDefinition() {
-        return hookBeanDefinition;
+    public List<HookBeanDefinition> getHookBeanDefinitions() {
+        return hookBeanDefinitions;
     }
 
-    public void setHookBeanDefinition(HookBeanDefinition hookBeanDefinition) {
-        this.hookBeanDefinition = hookBeanDefinition;
+    public void addHookBeanDefinition(HookBeanDefinition hookBeanDefinition) {
+        this.hookBeanDefinitions.add(hookBeanDefinition);
     }
 
     public boolean isHook() {
-        return hookBeanDefinition != null;
+        return !hookBeanDefinitions.isEmpty();
     }
 }

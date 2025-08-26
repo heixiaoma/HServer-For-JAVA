@@ -227,9 +227,7 @@ public class HttpRequest implements Request {
         if (requestParams.containsKey(key)) {
             requestParams.get(key).add(value);
         } else {
-            List<String> data = new ArrayList<>();
-            data.add(value);
-            requestParams.put(key, data);
+            requestParams.put(key, Collections.singletonList(value));
         }
     }
 
@@ -307,15 +305,11 @@ public class HttpRequest implements Request {
     }
 
     @Override
-    public void addUrlParams(String key, String value) {
-        List<String> strings = urlParams.get(key);
-        if (strings == null) {
-            strings = new ArrayList<>();
-            strings.add(value);
-            urlParams.put(key, strings);
-        }else {
-            strings.add(value);
-        }
+    public void addParams(String key, String value) {
+        addReqUrlParams(key,value);
+        //添加一份到request里方便处理对象转换
+        addReqParams(key, value);
+
     }
 
     public void setUrlParams(Map<String, List<String>> urlParams) {

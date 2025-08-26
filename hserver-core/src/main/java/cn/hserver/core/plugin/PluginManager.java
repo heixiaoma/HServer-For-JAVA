@@ -70,6 +70,13 @@ public class PluginManager extends PluginAdapter {
     }
 
     @Override
+    public void iocBeanPreparation() {
+        for (PluginAdapter plugAdapter : obj) {
+            plugAdapter.iocBeanPreparation();
+        }
+    }
+
+    @Override
     public void startApp() {
         for (PluginAdapter plugAdapter : obj) {
             plugAdapter.startApp();

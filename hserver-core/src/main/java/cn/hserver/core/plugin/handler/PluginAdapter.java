@@ -46,6 +46,13 @@ public abstract class PluginAdapter {
 
     }
 
+    //注册一些bean方便后面填充
+    public void iocBeanPreparation(){
+
+    }
+
+
+
     //注册bean后开始填充bean
     public void iocStartPopulate(){
 

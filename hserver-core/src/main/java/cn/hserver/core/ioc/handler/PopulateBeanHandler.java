@@ -56,7 +56,12 @@ public interface PopulateBeanHandler {
             }
             // 2. 使用字段反射注入
             field.setAccessible(true);
-            field.set(beanInstance, fieldValue);
+            // 调用setter方法
+            if (field.getType().isAssignableFrom(fieldValue.getClass())) {
+                field.set(beanInstance, fieldValue);
+            }else {
+                field.set(beanInstance, ObjConvertUtil.convert(field.getType(),fieldValue.toString()));
+            }
             return true;
         } catch (Exception e) {
             return false;

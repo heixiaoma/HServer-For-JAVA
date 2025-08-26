@@ -71,16 +71,22 @@ public class Router {
     public boolean matchAndHandle(WebContext ctx) throws Throwable {
         String requestPath = ctx.request.getUri();
         String[] requestSegments = normalizePath(requestPath).split("/");
+        boolean hasPathMatchingButMethodMismatch = false; // 标记是否存在路径匹配但方法不匹配的情况
         for (Route route : routes) {
-            if (!matchMethod(route.getMethods(), ctx.request.getRequestMethod())){
-                throw new MethodNotSupportException();
-            }
             if (matchRoute(route, requestSegments, ctx)) {
-                route.getHandler().handle(ctx);
-                return true;
+                if (matchMethod(route.getMethods(), ctx.request.getRequestMethod())) {
+                    route.getHandler().handle(ctx);
+                    return true;
+                } else {
+                    hasPathMatchingButMethodMismatch = true;
+                }
             }
         }
-        return false; // 没有匹配的路由
+        if (hasPathMatchingButMethodMismatch) {
+            throw new MethodNotSupportException();
+        } else {
+            return false;
+        }
     }
 
     private boolean matchMethod(HttpMethod[] routeMethods, HttpMethod requestMethod) {
@@ -133,7 +139,7 @@ public class Router {
             // 路径参数匹配
             if (route.getType() == Route.Type.PATH_PARAM && routeSeg.startsWith(":")) {
                 String paramName = routeSeg.substring(1);
-                ctx.request.addUrlParams(paramName, reqSeg);
+                ctx.request.addParams(paramName, reqSeg);
                 continue;
             }
 

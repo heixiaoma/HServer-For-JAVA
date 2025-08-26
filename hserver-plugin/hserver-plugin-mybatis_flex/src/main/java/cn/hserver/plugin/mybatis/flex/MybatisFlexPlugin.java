@@ -29,7 +29,7 @@ public class MybatisFlexPlugin extends PluginAdapter {
     }
 
     @Override
-    public void iocStartPopulate() {
+    public void iocBeanPreparation() {
         MybatisFlexBootstrap mybatisFlexBootstrap = MybatisFlexConfig.init(annotationList);
         for (Class<?> aClass : annotationList) {
             Object mapper = mybatisFlexBootstrap.getMapper(aClass);

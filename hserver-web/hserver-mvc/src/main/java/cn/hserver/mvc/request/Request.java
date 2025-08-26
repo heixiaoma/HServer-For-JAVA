@@ -83,7 +83,7 @@ public interface Request {
      * @param key
      * @param value
      */
-    void addUrlParams(String key,String value);
+    void addParams(String key,String value);
 
     /**
      * 查询一个参数

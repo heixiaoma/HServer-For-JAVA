@@ -25,6 +25,7 @@ public class IocApplicationContext {
         HookFactory.handlerHookData(beanDefinitions);
         PluginManager.getPlugin().iocStartRegister();
         registerBeanDefinition();
+        PluginManager.getPlugin().iocBeanPreparation();
         PluginManager.getPlugin().iocStartPopulate();
         refresh();
     }

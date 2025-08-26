@@ -34,7 +34,7 @@ public class BeetLSqlPlugin extends PluginAdapter {
     }
 
     @Override
-    public void iocStartPopulate(){
+    public void iocBeanPreparation(){
         for (Class<?> aClass : beetlsql) {
             BeetlSQL beetlSQL =aClass.getAnnotation(BeetlSQL.class);
             if (beetlSQL!=null) {
