@@ -50,7 +50,7 @@ public class TaskManager {
                 CRON_TASK.put(name, submit);
             } catch (Exception e) {
                 try {
-                    int times = Integer.parseInt(time);
+                    int times = (int) Calculator.calculate(time);
                     ScheduledFuture<?> submit = SCHEDULED_THREAD_POOL_EXECUTOR.submit(times, taskJob1, args);
                     CRON_TASK.put(name, submit);
                 } catch (Exception e2) {
